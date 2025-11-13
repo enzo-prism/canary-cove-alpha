@@ -1,100 +1,94 @@
 import Link from "next/link"
 
+const columns = [
+  {
+    title: "Plan",
+    links: [
+      { label: "Suites & Villa", href: "/stay" },
+      { label: "Experiences", href: "/experiences" },
+      { label: "Cuisine", href: "/dining" },
+      { label: "Gallery", href: "/gallery" },
+    ],
+  },
+  {
+    title: "Logistics",
+    links: [
+      { label: "Rates & availability", href: "/rates" },
+      { label: "Getting here", href: "/about/getting-here" },
+      { label: "FAQ", href: "/about/faq" },
+      { label: "Contact concierge", href: "/contact" },
+    ],
+  },
+]
+
 export function Footer() {
   return (
-    <footer className="bg-primary text-primary-foreground py-16">
-      <div className="container mx-auto px-4">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
-          {/* Brand */}
+    <footer className="border-t border-border/70 bg-white/70 px-4 py-16 backdrop-blur">
+      <div className="mx-auto max-w-6xl space-y-12">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
           <div>
-            <h3 className="text-2xl font-serif mb-4">Canary Cove</h3>
-            <p className="text-primary-foreground/80 leading-relaxed">Your exclusive island retreat</p>
+            <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Canary Cove</p>
+            <h3 className="mt-3 text-3xl font-semibold text-foreground">Where silence, light, and water are curated.</h3>
+            <p className="mt-3 text-sm text-muted-foreground">
+              Direct concierge: <a href="mailto:hello@canarycove.com" className="text-foreground">hello@canarycove.com</a>
+            </p>
           </div>
-
-          {/* Stay */}
-          <div>
-            <h4 className="font-semibold mb-4">Stay</h4>
-            <ul className="space-y-2 text-primary-foreground/80">
-              <li>
-                <Link href="/stay" className="hover:text-primary-foreground transition-colors">
-                  Overview
-                </Link>
-              </li>
-              <li>
-                <Link href="/stay/suites" className="hover:text-primary-foreground transition-colors">
-                  Suites
-                </Link>
-              </li>
-              <li>
-                <Link href="/stay/villa" className="hover:text-primary-foreground transition-colors">
-                  Villa
-                </Link>
-              </li>
-              <li>
-                <Link href="/stay/amenities" className="hover:text-primary-foreground transition-colors">
-                  Amenities
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Experiences */}
-          <div>
-            <h4 className="font-semibold mb-4">Experiences</h4>
-            <ul className="space-y-2 text-primary-foreground/80">
-              <li>
-                <Link href="/experiences" className="hover:text-primary-foreground transition-colors">
-                  All Experiences
-                </Link>
-              </li>
-              <li>
-                <Link href="/experiences/power-boating" className="hover:text-primary-foreground transition-colors">
-                  Power-Boating
-                </Link>
-              </li>
-              <li>
-                <Link href="/experiences/diving-fishing" className="hover:text-primary-foreground transition-colors">
-                  Diving & Fishing
-                </Link>
-              </li>
-              <li>
-                <Link href="/dining" className="hover:text-primary-foreground transition-colors">
-                  Dining
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Connect */}
-          <div>
-            <h4 className="font-semibold mb-4">Connect</h4>
-            <ul className="space-y-2 text-primary-foreground/80">
-              <li>
-                <Link href="/about" className="hover:text-primary-foreground transition-colors">
-                  About
-                </Link>
-              </li>
-              <li>
-                <Link href="/rates" className="hover:text-primary-foreground transition-colors">
-                  Rates
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-primary-foreground transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/about/faq" className="hover:text-primary-foreground transition-colors">
-                  FAQ
-                </Link>
-              </li>
-            </ul>
+          <div className="flex flex-wrap gap-3">
+            <div className="rounded-full border border-border/80 px-4 py-2 text-sm text-muted-foreground">
+              Latitude 17.25° N
+            </div>
+            <div className="rounded-full border border-border/80 px-4 py-2 text-sm text-muted-foreground">
+              Private airstrip access
+            </div>
           </div>
         </div>
 
-        <div className="pt-8 border-t border-primary-foreground/20 text-center text-primary-foreground/60 text-sm">
-          <p>&copy; {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
+        <div className="grid gap-8 border-y border-border/70 py-8 md:grid-cols-[1fr_0.7fr_0.7fr]">
+          <div>
+            <p className="text-sm text-muted-foreground">
+              Subscribe to intelligence briefings—seasonal releases, design notes, and itineraries filmed in Spatial Video.
+            </p>
+            <form className="mt-4 flex flex-col gap-3 sm:flex-row">
+              <input
+                type="email"
+                placeholder="you@email.com"
+                className="h-11 flex-1 rounded-full border border-border/80 bg-white/70 px-5 text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-primary/30"
+              />
+              <button
+                type="submit"
+                className="rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              >
+                Join
+              </button>
+            </form>
+          </div>
+
+          {columns.map((column) => (
+            <div key={column.title}>
+              <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">{column.title}</p>
+              <ul className="mt-4 space-y-2 text-sm text-muted-foreground">
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href} className="transition-colors hover:text-foreground">
+                      {link.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>© {new Date().getFullYear()} Canary Cove. Crafted for discerning explorers.</p>
+          <div className="flex gap-4">
+            <Link href="/privacy" className="hover:text-foreground">
+              Privacy
+            </Link>
+            <Link href="/terms" className="hover:text-foreground">
+              Terms
+            </Link>
+          </div>
         </div>
       </div>
     </footer>

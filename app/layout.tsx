@@ -1,12 +1,25 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Geist, Geist_Mono, Playfair_Display } from "next/font/google"
+import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 
-const _geist = Geist({ subsets: ["latin"] })
-const _geistMono = Geist_Mono({ subsets: ["latin"] })
-const _playfairDisplay = Playfair_Display({ subsets: ["latin"] })
+const sfPro = localFont({
+  variable: "--font-sf",
+  display: "swap",
+  src: [
+    { path: "../font/SF-Pro-Display-Light.otf", weight: "300", style: "normal" },
+    { path: "../font/SF-Pro-Display-LightItalic.otf", weight: "300", style: "italic" },
+    { path: "../font/SF-Pro-Display-Regular.otf", weight: "400", style: "normal" },
+    { path: "../font/SF-Pro-Display-RegularItalic.otf", weight: "400", style: "italic" },
+    { path: "../font/SF-Pro-Display-Medium.otf", weight: "500", style: "normal" },
+    { path: "../font/SF-Pro-Display-MediumItalic.otf", weight: "500", style: "italic" },
+    { path: "../font/SF-Pro-Display-Semibold.otf", weight: "600", style: "normal" },
+    { path: "../font/SF-Pro-Display-SemiboldItalic.otf", weight: "600", style: "italic" },
+    { path: "../font/SF-Pro-Display-Bold.otf", weight: "700", style: "normal" },
+    { path: "../font/SF-Pro-Display-BoldItalic.otf", weight: "700", style: "italic" },
+  ],
+})
 
 export const metadata: Metadata = {
   title: "Canary Cove - Luxury Island Retreat",
@@ -38,9 +51,9 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en">
-      <body className={`font-sans antialiased`}>
-        {children}
+    <html lang="en" className={sfPro.variable}>
+      <body className={`${sfPro.className} font-sans antialiased selection:bg-primary/10 selection:text-primary`}>
+        <div className="min-h-screen">{children}</div>
         <Analytics />
       </body>
     </html>
