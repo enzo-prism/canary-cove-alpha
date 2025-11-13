@@ -27,3 +27,9 @@
 - Follow the existing history: short, imperative subject lines (e.g., `Add hero CTA animation`). Include a concise body when context is non-obvious.
 - Each PR should outline the change, mention affected routes/components, and link the related issue or Vercel deployment. Attach screenshots or recordings for visual updates.
 - Verify `pnpm build` and `pnpm lint` locally before requesting review, and summarize the verification steps in the PR checklist.
+
+## Git Workflow Tips
+- Sync often: `git fetch origin && git rebase origin/main` keeps your branch current without merge commits. Resolve conflicts locally, rerun `pnpm lint`, then continue the rebase (`git rebase --continue`).
+- Stage deliberately (`git add path/to/file.tsx`) and review with `git status` before committing to avoid noise from generated assets.
+- Push with `git push origin <branch>`; if the push is rejected because the remote advanced, re-run the fetch/rebase sequence and push again.
+- For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
