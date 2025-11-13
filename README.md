@@ -40,5 +40,8 @@ pnpm dev
 
 - The dev server may pick a different port if `3000` is occupied; watch the CLI output.
 - Fonts are loaded via `next/font/local` from `font/`. Ensure those files exist before running `next build`.
-- Navigation content is defined in `components/header.tsx` inside the `NAV_ITEMS` array. Edit that array when IA changes instead of touching JSX directly.
+- Navigation content is defined in `lib/nav-items.ts` inside the `NAV_ITEMS` array. Edit that array when IA changes instead of touching JSX directly.
+- Desktop and mobile navs live in `components/navigation/desktop-nav.tsx` and `components/navigation/mobile-nav.tsx`, while `components/header.tsx` just composes them. Desktop dropdowns rely on internal hover state (no Radix), so labels must stay unique.
+- All leaf pages (Stay, Dining, etc.) render through `components/basic-page.tsx`, which includes the header, shared carousel, and footer. To add a new page, create `app/<segment>/page.tsx` that returns `<BasicPage title="Your Title" />`.
+- Both `app/globals.css` and `styles/globals.css` define color tokens; change them in tandem if you adjust the Canary-yellow palette.
 - The hero section streams a Cloudinary video—if you are offline, swap in a local MP4 or update the `poster` image so the section still renders.

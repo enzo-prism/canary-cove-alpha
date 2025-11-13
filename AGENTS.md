@@ -35,13 +35,15 @@
 - For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
 
 ## Navigation Architecture Notes
-- The entire navigation is data-driven via `NAV_ITEMS` in `components/header.tsx`. Each entry is either `{ type: "link", label, href, cta? }` or `{ type: "dropdown", label, items: DropdownItem[] }`. Dropdown items include `caption` strings that render above each row. Update this array whenever IA changes; no JSX edits are necessary if the structure stays the same.
-- Dropdown visibility is controlled by React state instead of Radix primitives. Desktop menus open on hover/focus and use `desktopDropdown` state, while mobile accordions use `accordionOpen`. When adding new dropdowns, ensure labels are unique because they act as state keys.
+- The entire navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Each entry is either `{ type: "link", label, href, cta? }` or `{ type: "dropdown", label, href, items: DropdownItem[] }`. Dropdown items include `caption` strings that render above each row. Update this array whenever IA changes; no JSX edits are necessary if the structure stays the same.
+- Desktop dropdowns live in `components/navigation/desktop-nav.tsx` and use lightweight hover/click state (no Radix). Because labels map to state keys, keep them unique and avoid conditional rendering that would scramble order on hydration. Mobile nav accordions remain in `components/navigation/mobile-nav.tsx`.
+- `components/header.tsx` is intentionally thin—compose new header chrome there, but prefer touching the nav components or `NAV_ITEMS` for IA tweaks.
 - The sticky header tracks scroll (`scrolled` state) to shrink and solidify the bar; be mindful when modifying padding/height values so the shrink animation remains smooth.
 - Mobile navigation uses the shared `Sheet` component; body scroll is locked when `mobileOpen` is true. If you add additional modal layers, avoid conflicting body overflow changes.
 
 ## Assets, Fonts & Media
 - All SF Pro font weights live under `font/` and are registered through `next/font/local` in `app/layout.tsx`. When adjusting typography, keep the `src` array aligned with the files on disk—Next.js will fail if any entry is missing.
 - Hero visuals use a looping Cloudinary MP4 (`components/hero.tsx`). Include a high-resolution `poster` image when swapping media so the hero renders cleanly before autoplay kicks in.
-- `components/photo-carousel.tsx` wraps Embla for touch-friendly carousels. Import and reuse this component for future galleries to ensure consistent swipe behavior and indicator styling.
+- `components/photo-carousel.tsx` wraps Embla for touch-friendly carousels. `components/basic-page.tsx` already embeds it (plus header/footer), so prefer that wrapper whenever creating a new route.
+- We keep color variables in both `app/globals.css` (App Router scope) and `styles/globals.css` (legacy styles). Update both when shifting brand palettes to avoid mismatched accents.
 - Store new imagery in `public/` and reference via absolute paths (e.g., `/my-photo.jpg`). This keeps Next.js static serving happy and avoids CORS surprises.
