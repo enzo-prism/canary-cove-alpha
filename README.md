@@ -28,3 +28,17 @@ Continue building your app on:
 2. Deploy your chats from the v0 interface
 3. Changes are automatically pushed to this repository
 4. Vercel deploys the latest version from this repository
+
+## Local Development
+
+Even though the project syncs from v0, contributors often iterate locally before pushing updates. Common workflow:
+
+```bash
+pnpm install
+pnpm dev
+```
+
+- The dev server may pick a different port if `3000` is occupied; watch the CLI output.
+- Fonts are loaded via `next/font/local` from `font/`. Ensure those files exist before running `next build`.
+- Navigation content is defined in `components/header.tsx` inside the `NAV_ITEMS` array. Edit that array when IA changes instead of touching JSX directly.
+- The hero section streams a Cloudinary video—if you are offline, swap in a local MP4 or update the `poster` image so the section still renders.

@@ -39,3 +39,9 @@
 - Dropdown visibility is controlled by React state instead of Radix primitives. Desktop menus open on hover/focus and use `desktopDropdown` state, while mobile accordions use `accordionOpen`. When adding new dropdowns, ensure labels are unique because they act as state keys.
 - The sticky header tracks scroll (`scrolled` state) to shrink and solidify the bar; be mindful when modifying padding/height values so the shrink animation remains smooth.
 - Mobile navigation uses the shared `Sheet` component; body scroll is locked when `mobileOpen` is true. If you add additional modal layers, avoid conflicting body overflow changes.
+
+## Assets, Fonts & Media
+- All SF Pro font weights live under `font/` and are registered through `next/font/local` in `app/layout.tsx`. When adjusting typography, keep the `src` array aligned with the files on disk—Next.js will fail if any entry is missing.
+- Hero visuals use a looping Cloudinary MP4 (`components/hero.tsx`). Include a high-resolution `poster` image when swapping media so the hero renders cleanly before autoplay kicks in.
+- `components/photo-carousel.tsx` wraps Embla for touch-friendly carousels. Import and reuse this component for future galleries to ensure consistent swipe behavior and indicator styling.
+- Store new imagery in `public/` and reference via absolute paths (e.g., `/my-photo.jpg`). This keeps Next.js static serving happy and avoids CORS surprises.
