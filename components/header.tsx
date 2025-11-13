@@ -1,255 +1,298 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import Link from "next/link"
-import { Menu, ChevronDown } from "lucide-react"
+import { usePathname } from "next/navigation"
+import { ChevronDown, Menu, X } from "lucide-react"
+
 import { Button } from "@/components/ui/button"
-import {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuTrigger,
-} from "@/components/ui/navigation-menu"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
+import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
 
-const stayItems = [
-  { title: "Overview", href: "/stay" },
-  { title: "Suites", href: "/stay/suites" },
-  { title: "Villa", href: "/stay/villa" },
-  { title: "Amenities", href: "/stay/amenities" },
-]
+type DropdownItem = {
+  label: string
+  href: string
+  caption: string
+}
 
-const experiencesItems = [
+type NavItem =
+  | {
+      type: "link"
+      label: string
+      href: string
+      cta?: boolean
+    }
+  | {
+      type: "dropdown"
+      label: string
+      items: DropdownItem[]
+    }
+
+const NAV_ITEMS: NavItem[] = [
+  { type: "link", label: "Home", href: "/" },
   {
-    category: "On the Water",
+    type: "dropdown",
+    label: "Stay",
     items: [
-      { title: "Power-Boating", href: "/experiences/power-boating" },
-      { title: "Diving & Fishing", href: "/experiences/diving-fishing" },
-      { title: "Boats & Crew", href: "/experiences/boats-crew" },
+      { label: "Overview", href: "/stay", caption: "Stay" },
+      { label: "Suites", href: "/stay/suites", caption: "Stay" },
+      { label: "Villa", href: "/stay/villa", caption: "Stay" },
+      { label: "Amenities", href: "/stay/amenities", caption: "Stay" },
     ],
   },
   {
-    category: "Land & Relaxation",
+    type: "dropdown",
+    label: "Experience",
     items: [
-      { title: "Land Activities", href: "/experiences/land" },
-      { title: "Day Trips & Certifications", href: "/experiences/day-trips" },
+      { label: "Overview", href: "/experiences", caption: "Experience" },
+      { label: "Power-Boating", href: "/experiences/power-boating", caption: "Experience" },
+      { label: "Land & Relaxation", href: "/experiences/land", caption: "Experience" },
+      { label: "On the Water", href: "/experiences/on-the-water", caption: "Experience" },
+      { label: "Diving & Fishing", href: "/experiences/diving-fishing", caption: "Experience" },
     ],
   },
+  {
+    type: "dropdown",
+    label: "Dining",
+    items: [
+      { label: "Overview", href: "/dining", caption: "Dining" },
+      { label: "Breakfast & Snacks", href: "/dining/breakfast", caption: "Dining" },
+      { label: "Special Moments", href: "/dining/special-moments", caption: "Dining" },
+      { label: "Private Chef", href: "/dining/private-chef", caption: "Dining" },
+      { label: "Provisioning", href: "/dining/provisioning", caption: "Dining" },
+      { label: "Eating Out", href: "/dining/eating-out", caption: "Dining" },
+    ],
+  },
+  {
+    type: "dropdown",
+    label: "Adventures",
+    items: [
+      { label: "Overview", href: "/adventures", caption: "Adventures" },
+      { label: "Fishing", href: "/adventures/fishing", caption: "Adventures" },
+      { label: "Day Trips & Certifications", href: "/adventures/day-trips", caption: "Adventures" },
+      { label: "Diving", href: "/adventures/diving", caption: "Adventures" },
+      { label: "Boats & Crew", href: "/adventures/boats-crew", caption: "Adventures" },
+    ],
+  },
+  {
+    type: "dropdown",
+    label: "About",
+    items: [
+      { label: "Rates", href: "/rates", caption: "About" },
+      { label: "Gallery", href: "/gallery", caption: "About" },
+      { label: "Reviews", href: "/about/reviews", caption: "About" },
+      { label: "About", href: "/about", caption: "About" },
+      { label: "Getting Here", href: "/about/getting-here", caption: "About" },
+      { label: "FAQ", href: "/about/faq", caption: "About" },
+    ],
+  },
+  { type: "link", label: "Contact", href: "/contact", cta: true },
 ]
 
-const diningItems = [
-  { title: "Overview", href: "/dining" },
-  { title: "Breakfast & Snacks", href: "/dining/breakfast" },
-  { title: "Special Moments", href: "/dining/special-moments" },
-  { title: "Private Chef", href: "/dining/private-chef" },
-  { title: "Provisioning", href: "/dining/provisioning" },
-  { title: "Eating Out", href: "/dining/eating-out" },
-]
-
-const aboutItems = [
-  { title: "About", href: "/about" },
-  { title: "Reviews", href: "/about/reviews" },
-  { title: "Getting Here", href: "/about/getting-here" },
-  { title: "FAQ", href: "/about/faq" },
-]
+const normalizePath = (href: string) => {
+  if (!href || href === "/") return "/"
+  return href.endsWith("/") ? href.slice(0, -1) : href
+}
 
 export function Header() {
-  const [isOpen, setIsOpen] = useState(false)
+  const pathname = normalizePath(usePathname() ?? "/")
+  const [scrolled, setScrolled] = useState(false)
+  const [desktopDropdown, setDesktopDropdown] = useState<string | null>(null)
+  const [mobileOpen, setMobileOpen] = useState(false)
+  const [accordionOpen, setAccordionOpen] = useState<string | null>(null)
+
+  const isActive = (href: string) => {
+    const normalized = normalizePath(href)
+    if (normalized === "/") return pathname === "/"
+    return pathname === normalized || pathname.startsWith(`${normalized}/`)
+  }
+
+  const dropdownActiveMap = useMemo(() => {
+    const map = new Map<string, boolean>()
+    NAV_ITEMS.forEach((item) => {
+      if (item.type === "dropdown") {
+        map.set(item.label, item.items.some((child) => isActive(child.href)))
+      }
+    })
+    return map
+  }, [pathname])
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 40)
+    onScroll()
+    window.addEventListener("scroll", onScroll)
+    return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  useEffect(() => {
+    document.body.style.overflow = mobileOpen ? "hidden" : ""
+    return () => {
+      document.body.style.overflow = ""
+    }
+  }, [mobileOpen])
+
+  useEffect(() => {
+    setDesktopDropdown(null)
+    setAccordionOpen(null)
+  }, [pathname])
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/40">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-serif tracking-tight">
-            Canary Cove
-          </Link>
+    <header
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+        scrolled ? "border-b border-border/40 bg-background/95 shadow-[0_12px_40px_rgba(15,23,42,0.08)]" : "bg-transparent"
+      }`}
+    >
+      <div className={`mx-auto flex max-w-6xl items-center gap-4 px-4 ${scrolled ? "py-3" : "py-5"}`}>
+        <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
+          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">CC</span>
+          Canary Cove
+        </Link>
 
-          {/* Desktop Navigation */}
-          <NavigationMenu className="hidden lg:flex">
-            <NavigationMenuList className="gap-1">
-              {/* Stay */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent">Stay</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-48 gap-3 p-4">
-                    {stayItems.map((item) => (
-                      <li key={item.title}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              {/* Experiences */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent">Experiences</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <div className="grid w-[400px] gap-4 p-6">
-                    {experiencesItems.map((group) => (
-                      <div key={group.category}>
-                        <h4 className="mb-2 text-sm font-semibold text-muted-foreground">{group.category}</h4>
-                        <ul className="space-y-2">
-                          {group.items.map((item) => (
-                            <li key={item.title}>
-                              <NavigationMenuLink asChild>
-                                <Link
-                                  href={item.href}
-                                  className="block select-none rounded-md p-2 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                                >
-                                  <div className="text-sm font-medium leading-none">{item.title}</div>
-                                </Link>
-                              </NavigationMenuLink>
-                            </li>
-                          ))}
-                        </ul>
-                      </div>
-                    ))}
+        <nav aria-label="Primary" className="hidden flex-1 justify-center lg:flex">
+          <ul className="flex flex-1 flex-wrap items-center justify-center gap-2 rounded-full border border-border/60 bg-white/70 px-4 py-2 shadow-[0_18px_40px_rgba(15,23,42,0.08)]">
+            {NAV_ITEMS.map((item) =>
+              item.type === "link" ? (
+                <li key={item.label}>
+                  <Link
+                    href={item.href}
+                    className={`rounded-full px-4 py-2 text-sm font-medium transition ${
+                      item.cta
+                        ? "bg-foreground text-background hover:bg-foreground/90"
+                        : isActive(item.href)
+                          ? "text-foreground underline underline-offset-4"
+                          : "text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ) : (
+                <li
+                  key={item.label}
+                  className="relative"
+                  onMouseEnter={() => setDesktopDropdown(item.label)}
+                  onMouseLeave={() => setDesktopDropdown(null)}
+                  onFocus={() => setDesktopDropdown(item.label)}
+                  onBlur={(event) => {
+                    if (!event.currentTarget.contains(event.relatedTarget as Node)) {
+                      setDesktopDropdown(null)
+                    }
+                  }}
+                >
+                  <button
+                    type="button"
+                    aria-expanded={desktopDropdown === item.label}
+                    className={`inline-flex items-center gap-1 rounded-full px-4 py-2 text-sm font-medium transition focus-visible:ring-2 focus-visible:ring-primary/40 ${
+                      dropdownActiveMap.get(item.label) ? "text-foreground" : "text-muted-foreground"
+                    }`}
+                    onClick={() =>
+                      setDesktopDropdown((prev) => (prev === item.label ? null : item.label))
+                    }
+                  >
+                    {item.label}
+                    <ChevronDown
+                      className={`h-4 w-4 transition ${desktopDropdown === item.label ? "rotate-180" : ""}`}
+                    />
+                  </button>
+                  <div
+                    className={`pointer-events-none absolute left-1/2 top-full mt-3 w-[min(520px,calc(100vw-2rem))] -translate-x-1/2 rounded-[32px] border border-border/70 bg-white/95 p-6 shadow-[0_35px_120px_rgba(15,23,42,0.15)] backdrop-blur transition ${
+                      desktopDropdown === item.label ? "pointer-events-auto opacity-100" : "opacity-0"
+                    }`}
+                  >
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {item.items.map((link) => (
+                        <Link
+                          key={link.label}
+                          href={link.href}
+                          className={`rounded-2xl border border-border/60 px-4 py-3 transition ${
+                            isActive(link.href) ? "border-primary bg-primary/5" : "hover:border-primary hover:bg-primary/5"
+                          }`}
+                        >
+                          <p className="text-[11px] uppercase tracking-[0.35em] text-muted-foreground">{link.caption}</p>
+                          <p className="mt-1 text-base font-medium text-foreground">{link.label}</p>
+                        </Link>
+                      ))}
+                    </div>
                   </div>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
+                </li>
+              ),
+            )}
+          </ul>
+        </nav>
 
-              {/* Dining */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent">Dining</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-48 gap-3 p-4">
-                    {diningItems.map((item) => (
-                      <li key={item.title}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-
-              {/* Gallery */}
-              <NavigationMenuItem>
-                <Link href="/gallery" legacyBehavior passHref>
-                  <NavigationMenuLink
-                    className={cn("px-4 py-2 text-sm font-medium transition-colors hover:text-primary")}
-                  >
-                    Gallery
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-
-              {/* Rates */}
-              <NavigationMenuItem>
-                <Link href="/rates" legacyBehavior passHref>
-                  <NavigationMenuLink
-                    className={cn("px-4 py-2 text-sm font-medium transition-colors hover:text-primary")}
-                  >
-                    Rates
-                  </NavigationMenuLink>
-                </Link>
-              </NavigationMenuItem>
-
-              {/* About */}
-              <NavigationMenuItem>
-                <NavigationMenuTrigger className="bg-transparent">About</NavigationMenuTrigger>
-                <NavigationMenuContent>
-                  <ul className="grid w-48 gap-3 p-4">
-                    {aboutItems.map((item) => (
-                      <li key={item.title}>
-                        <NavigationMenuLink asChild>
-                          <Link
-                            href={item.href}
-                            className="block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
-                          >
-                            <div className="text-sm font-medium leading-none">{item.title}</div>
-                          </Link>
-                        </NavigationMenuLink>
-                      </li>
-                    ))}
-                  </ul>
-                </NavigationMenuContent>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
-
-          {/* Contact Button & Mobile Menu */}
-          <div className="flex items-center gap-4">
-            <Button asChild className="hidden lg:inline-flex">
-              <Link href="/contact">Contact</Link>
-            </Button>
-
-            {/* Mobile Menu */}
-            <Sheet open={isOpen} onOpenChange={setIsOpen}>
-              <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Toggle menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="right" className="w-80 overflow-y-auto">
-                <nav className="flex flex-col gap-6 mt-8">
-                  <MobileNavSection title="Stay" items={stayItems} />
-                  <MobileNavSection title="Experiences" items={experiencesItems.flatMap((g) => g.items)} />
-                  <MobileNavSection title="Dining" items={diningItems} />
-                  <Link href="/gallery" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
-                    Gallery
-                  </Link>
-                  <Link href="/rates" className="text-lg font-medium" onClick={() => setIsOpen(false)}>
-                    Rates
-                  </Link>
-                  <MobileNavSection title="About" items={aboutItems} />
-                  <Button asChild className="mt-4">
-                    <Link href="/contact" onClick={() => setIsOpen(false)}>
-                      Contact
+        <div className="ml-auto flex items-center gap-2">
+          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+            <SheetTrigger asChild>
+              <Button variant="ghost" size="icon" className="rounded-full border border-border/70 bg-white/70 text-foreground lg:hidden">
+                <Menu className="h-5 w-5" />
+                <span className="sr-only">Open navigation</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent
+              side="right"
+              className="w-full border-none bg-surface px-6 pb-10 pt-8 sm:w-[70vw]"
+            >
+              <div className="flex items-center justify-between">
+                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Navigation</p>
+                <SheetClose asChild>
+                  <button className="rounded-full border border-border/60 p-2 text-muted-foreground">
+                    <X className="h-4 w-4" />
+                    <span className="sr-only">Close menu</span>
+                  </button>
+                </SheetClose>
+              </div>
+              <div className="mt-6 space-y-4">
+                {NAV_ITEMS.map((item) =>
+                  item.type === "link" ? (
+                    <Link
+                      key={item.label}
+                      href={item.href}
+                      onClick={() => setMobileOpen(false)}
+                      className={`block rounded-2xl px-5 py-3 text-lg font-medium ${
+                        item.cta ? "bg-foreground text-background" : "bg-white/70 text-foreground"
+                      }`}
+                    >
+                      {item.label}
                     </Link>
-                  </Button>
-                </nav>
-              </SheetContent>
-            </Sheet>
-          </div>
+                  ) : (
+                    <div key={item.label} className="rounded-2xl border border-border/60 px-4 py-3">
+                      <button
+                        type="button"
+                        aria-expanded={accordionOpen === item.label}
+                        className="flex w-full items-center justify-between text-left text-foreground"
+                        onClick={() =>
+                          setAccordionOpen((prev) => (prev === item.label ? null : item.label))
+                        }
+                      >
+                        <span className="text-base font-medium">{item.label}</span>
+                        <ChevronDown
+                          className={`h-5 w-5 transition ${accordionOpen === item.label ? "rotate-180" : ""}`}
+                        />
+                      </button>
+                      {accordionOpen === item.label && (
+                        <div className="mt-4 space-y-2 text-sm">
+                          {item.items.map((link) => (
+                            <Link
+                              key={link.label}
+                              href={link.href}
+                              onClick={() => setMobileOpen(false)}
+                              className="block rounded-2xl bg-white/80 px-4 py-3 text-foreground"
+                            >
+                              <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
+                                {link.caption}
+                              </p>
+                              <p className="text-base font-medium">{link.label}</p>
+                            </Link>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  ),
+                )}
+              </div>
+            </SheetContent>
+          </Sheet>
         </div>
       </div>
     </header>
-  )
-}
-
-function MobileNavSection({ title, items }: { title: string; items: Array<{ title: string; href: string }> }) {
-  const [isExpanded, setIsExpanded] = useState(false)
-
-  return (
-    <div>
-      <button
-        onClick={() => setIsExpanded(!isExpanded)}
-        className="flex items-center justify-between w-full text-lg font-medium"
-      >
-        {title}
-        <ChevronDown className={cn("h-5 w-5 transition-transform", isExpanded && "rotate-180")} />
-      </button>
-      {isExpanded && (
-        <ul className="mt-3 space-y-3 pl-4">
-          {items.map((item) => (
-            <li key={item.title}>
-              <Link href={item.href} className="text-muted-foreground hover:text-foreground transition-colors">
-                {item.title}
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   )
 }

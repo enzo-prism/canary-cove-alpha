@@ -33,3 +33,9 @@
 - Stage deliberately (`git add path/to/file.tsx`) and review with `git status` before committing to avoid noise from generated assets.
 - Push with `git push origin <branch>`; if the push is rejected because the remote advanced, re-run the fetch/rebase sequence and push again.
 - For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
+
+## Navigation Architecture Notes
+- The entire navigation is data-driven via `NAV_ITEMS` in `components/header.tsx`. Each entry is either `{ type: "link", label, href, cta? }` or `{ type: "dropdown", label, items: DropdownItem[] }`. Dropdown items include `caption` strings that render above each row. Update this array whenever IA changes; no JSX edits are necessary if the structure stays the same.
+- Dropdown visibility is controlled by React state instead of Radix primitives. Desktop menus open on hover/focus and use `desktopDropdown` state, while mobile accordions use `accordionOpen`. When adding new dropdowns, ensure labels are unique because they act as state keys.
+- The sticky header tracks scroll (`scrolled` state) to shrink and solidify the bar; be mindful when modifying padding/height values so the shrink animation remains smooth.
+- Mobile navigation uses the shared `Sheet` component; body scroll is locked when `mobileOpen` is true. If you add additional modal layers, avoid conflicting body overflow changes.
