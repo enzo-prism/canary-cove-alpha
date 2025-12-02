@@ -38,7 +38,7 @@ export default function Page() {
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
 
           <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="space-y-8">
+            <div className="order-2 space-y-8 lg:order-1">
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
                   Availability & holds {EMOJI.book}
@@ -112,7 +112,7 @@ export default function Page() {
             </div>
 
             <form
-              className="frosted-panel relative space-y-6 rounded-[32px] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]"
+              className="frosted-panel relative order-1 space-y-6 rounded-[32px] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)] lg:order-2"
               onSubmit={handleSubmit}
             >
               <div className="space-y-2">
