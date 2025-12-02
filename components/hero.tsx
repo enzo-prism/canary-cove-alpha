@@ -43,7 +43,6 @@ export function Hero() {
               className="border border-border/70 bg-white/60 text-foreground shadow-sm focus-ring"
             >
               <Link href="/stay">
-                <Play className="mr-2 h-4 w-4" />
                 Preview Villa 🏡
               </Link>
             </Button>
