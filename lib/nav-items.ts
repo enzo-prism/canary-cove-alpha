@@ -25,6 +25,7 @@ export const NAV_ITEMS: NavItem[] = [
   { type: "link", label: "Dining", href: "/dining" },
   { type: "link", label: "Adventures", href: "/adventures" },
   { type: "link", label: "About", href: "/about" },
+  { type: "link", label: "Getting Here", href: "/getting-here" },
   { type: "link", label: "Book", href: "/book", cta: true },
   { type: "link", label: "Contact", href: "/contact", cta: true },
 ]
