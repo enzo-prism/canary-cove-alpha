@@ -29,7 +29,6 @@ export default function Page() {
               IMAGES.waffles,
               IMAGES.salad,
               IMAGES.drinksBar,
-              IMAGES.wedding,
               IMAGES.romanticViews,
             ]}
           />
