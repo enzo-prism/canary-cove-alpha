@@ -6,31 +6,38 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 import useEmblaCarousel from "embla-carousel-react"
 
 import { Button } from "@/components/ui/button"
+import { IMAGES } from "@/lib/images"
 
 const photos = [
   {
-    src: "/luxury-tropical-beachfront-villa-sunset-ocean-view.jpg",
-    alt: "Sunset over the shoreline",
-    caption: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
-    detail: "Vestibulum ante ipsum primis in faucibus orci luctus.",
+    ...IMAGES.villaPool,
+    caption: "🌅 Private pool, beach, and dock exclusive to your group.",
+    detail: "Swim, lounge, or step onto the dock for a sunset cruise.",
   },
   {
-    src: "/scuba-diving-coral-reef-tropical-fish.jpg",
-    alt: "Underwater coral reef",
-    caption: "Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.",
-    detail: "Suspendisse potenti in faucibus orci luctus et ultrices.",
+    ...IMAGES.turtleDive,
+    caption: "🤿 Calm, clear water minutes from the property.",
+    detail: "Sea turtles, bright reefs, and gentle currents for all levels.",
   },
   {
-    src: "/fine-dining-gourmet-chef-plating-food.jpg",
-    alt: "Chef plating dish",
-    caption: "Ut enim ad minim veniam quis nostrud exercitation ullamco.",
-    detail: "Curabitur vitae magna sit amet lacus ullamcorper tristique.",
+    ...IMAGES.chefNatalie,
+    caption: "🍽️ Private-chef dinners without leaving the villa.",
+    detail: "Seasonal menus, local catch, and candlelit tables on the deck.",
   },
   {
-    src: "/tropical-island-beach-boat-trip.jpg",
-    alt: "Boat near islands",
-    caption: "Duis aute irure dolor in reprehenderit in voluptate velit esse.",
-    detail: "Integer tincidunt libero nec lorem efficitur, et vulputate est rutrum.",
+    ...IMAGES.tubing,
+    caption: "🛥️ Adventure days crafted for every age.",
+    detail: "Tubing, sandbars, and blue holes planned around the tides.",
+  },
+  {
+    ...IMAGES.wedding,
+    caption: "💍 Celebrate under the palms.",
+    detail: "Intimate weddings, milestone dinners, and effortless setups.",
+  },
+  {
+    ...IMAGES.drinksBar,
+    caption: "🕯️ Slow sunsets and easy evenings.",
+    detail: "Drinks by the water after a day on the boats.",
   },
 ]
 
@@ -73,14 +80,14 @@ export function PhotoCarousel() {
           <div className="lg:flex-1">
             <div className="overflow-hidden rounded-[32px]" ref={emblaRef}>
               <div className="-ml-4 flex">
-                {photos.map((photo) => (
+                {photos.map((photo, index) => (
                   <div key={photo.src} className="ml-4 flex-[0_0_100%]">
                     <div className="relative h-[360px] overflow-hidden rounded-[28px] bg-surface-elevated sm:h-[440px]">
                       <Image
                         src={photo.src}
                         alt={photo.alt}
                         fill
-                        priority
+                        priority={index === 0}
                         className="object-cover"
                         sizes="(min-width: 1024px) 800px, 100vw"
                       />
@@ -131,26 +138,12 @@ export function PhotoCarousel() {
             </div>
           </div>
           <div className="lg:w-[320px]">
-            <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Lorem ipsum</p>
-            <h3 className="mt-4 text-3xl font-semibold leading-tight text-foreground">Dolor sit amet consectetur.</h3>
+            <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Canary Cove</p>
+            <h3 className="mt-4 text-3xl font-semibold leading-tight text-foreground">Scenes from your stay ✨</h3>
             <p className="mt-4 text-sm text-muted-foreground">
-              Nullam rhoncus, ipsum eget laoreet porttitor, nisi lacus lacinia mauris, at pulvinar orci lorem ac arcu.
-              Mauris non ipsum ut massa iaculis cursus sit amet eget neque. Integer egestas varius efficitur.
+              From sunrise dives to sunset dinners, every moment is private to your group. Tap through to see the estate,
+              boats, and the way we celebrate.
             </p>
-            <ul className="mt-8 space-y-3 text-sm text-foreground">
-              <li className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                Swipe horizontally to explore the gallery.
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                Tap the dots to jump directly to a moment.
-              </li>
-              <li className="flex items-center gap-3">
-                <span className="h-2 w-2 rounded-full bg-primary" />
-                Buttons offer precise control on tablet and desktop.
-              </li>
-            </ul>
           </div>
         </div>
       </div>

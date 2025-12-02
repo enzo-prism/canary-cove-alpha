@@ -38,6 +38,13 @@ pnpm install
 pnpm dev
 ```
 
+If you prefer `npm`:
+
+```bash
+npm install
+npm run dev
+```
+
 - The dev server may pick a different port if `3000` is occupied; watch the CLI output.
 - Fonts are loaded via `next/font/local` from `font/`. Ensure those files exist before running `next build`.
 - Navigation content is defined in `lib/nav-items.ts` inside the `NAV_ITEMS` array. Edit that array when IA changes instead of touching JSX directly.

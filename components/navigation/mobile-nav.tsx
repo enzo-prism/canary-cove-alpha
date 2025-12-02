@@ -1,10 +1,9 @@
 "use client"
 
-import { useState } from "react"
 import Link from "next/link"
-import { ChevronDown } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
+import { EMOJI } from "@/lib/emoji"
 
 type MobileNavProps = {
   items: NavItem[]
@@ -12,61 +11,48 @@ type MobileNavProps = {
 }
 
 export function MobileNav({ items, onNavigate }: MobileNavProps) {
-  const [openSection, setOpenSection] = useState<string | null>(null)
+  const primary = items.filter((item) => item.type === "link" && !item.cta) as Extract<NavItem, { type: "link" }>[]
+  const ctas = items.filter((item) => item.type === "link" && item.cta) as Extract<NavItem, { type: "link" }>[]
 
   return (
-    <div className="mt-6 space-y-4">
-      {items.map((item) =>
-        item.type === "link" ? (
+    <div className="mt-6 flex flex-col gap-4">
+      <div className="flex flex-col gap-3">
+        {primary.map((item) => (
           <Link
             key={item.label}
             href={item.href}
             onClick={onNavigate}
-            className={`block rounded-2xl px-5 py-3 text-lg font-medium transition ${
-              item.cta
-                ? "bg-foreground text-background hover:bg-foreground/90"
-                : "bg-white/70 text-foreground hover:bg-primary/5 hover:font-semibold"
-            }`}
+            className="block rounded-2xl bg-white/85 px-5 py-3 text-lg font-medium text-foreground shadow-sm shadow-black/5 transition hover:-translate-y-0.5 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/10"
           >
+            {item.label}{" "}
+            {item.label === "Stay"
+              ? EMOJI.stay
+              : item.label === "Experience"
+                ? EMOJI.experiences
+                : item.label === "Dining"
+                  ? EMOJI.dining
+                  : item.label === "Adventures"
+                    ? EMOJI.adventures
+                    : item.label === "About"
+                      ? EMOJI.about
+                      : null}
+          </Link>
+        ))}
+      </div>
+      <div className="flex flex-col gap-2 rounded-2xl bg-white/75 p-3 shadow-inner shadow-black/5">
+        {ctas.map((item) => (
+          <Link
+            key={item.label}
+            href={item.href}
+            onClick={onNavigate}
+            className="block rounded-xl bg-primary px-4 py-3 text-center text-base font-semibold text-primary-foreground transition hover:bg-primary/90"
+          >
+            {item.label === "Book" && `${EMOJI.book} `}
+            {item.label === "Contact" && `${EMOJI.contact} `}
             {item.label}
           </Link>
-        ) : (
-          <div key={item.label} className="rounded-2xl border border-border/60 px-4 py-3">
-            <button
-              type="button"
-              aria-expanded={openSection === item.label}
-              className="flex w-full items-center justify-between text-left text-foreground"
-              onClick={() =>
-                setOpenSection((prev) => (prev === item.label ? null : item.label))
-              }
-            >
-              <span className="text-base font-medium">{item.label}</span>
-              <ChevronDown
-                className={`h-5 w-5 transition ${openSection === item.label ? "rotate-180" : ""}`}
-              />
-            </button>
-            {openSection === item.label && (
-              <div className="mt-4 space-y-2 text-sm">
-                {item.items.map((link) => (
-                  <Link
-                    key={link.label}
-                    href={link.href}
-                    onClick={onNavigate}
-                    className="group block rounded-2xl bg-white/80 px-4 py-3 text-foreground transition hover:-translate-y-0.5 hover:bg-primary/5 hover:shadow-lg hover:shadow-primary/15"
-                  >
-                    <p className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground transition group-hover:text-primary">
-                      {link.caption}
-                    </p>
-                    <p className="text-base font-medium transition group-hover:font-semibold group-hover:text-primary">
-                      {link.label}
-                    </p>
-                  </Link>
-                ))}
-              </div>
-            )}
-          </div>
-        ),
-      )}
+        ))}
+      </div>
     </div>
   )
 }

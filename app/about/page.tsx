@@ -1,5 +1,42 @@
-import { BasicPage } from "@/components/basic-page"
+import { Footer } from "@/components/footer"
+import { GalleryGrid } from "@/components/gallery-grid"
+import { Header } from "@/components/header"
+import { IMAGES } from "@/lib/images"
 
 export default function Page() {
-  return <BasicPage title="About" />
+  return (
+    <main className="min-h-screen">
+      <Header />
+      <section className="px-4 py-16 sm:py-24">
+        <div className="mx-auto max-w-6xl space-y-8">
+          <div className="space-y-3">
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">About Canary Cove</h1>
+            <p className="text-lg text-muted-foreground sm:text-xl">
+              A private, family-owned estate with a dedicated team, quiet beaches, and dock access for effortless arrivals.
+            </p>
+          </div>
+          <GalleryGrid
+            items={[
+              IMAGES.villaPool,
+              IMAGES.livingRoom,
+              IMAGES.villaBedroom,
+              IMAGES.wedding,
+              IMAGES.romanticViews,
+              IMAGES.mainDock,
+              IMAGES.helipad,
+              IMAGES.logoDrink,
+              IMAGES.diningRoom,
+              IMAGES.villaLawn,
+              IMAGES.villaSign,
+              IMAGES.hammock,
+              IMAGES.bikes,
+              IMAGES.drinksBar,
+              IMAGES.viewFromKitchen,
+            ]}
+          />
+        </div>
+      </section>
+      <Footer />
+    </main>
+  )
 }

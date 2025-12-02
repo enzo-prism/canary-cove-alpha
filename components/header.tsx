@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
@@ -12,8 +13,10 @@ import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/s
 import { NAV_ITEMS } from "@/lib/nav-items"
 
 const normalizePath = (href: string) => {
-  if (!href || href === "/") return "/"
-  return href.endsWith("/") ? href.slice(0, -1) : href
+  if (!href) return "/"
+  const [path] = href.split("#")
+  if (!path || path === "/") return "/"
+  return path.endsWith("/") ? path.slice(0, -1) : path
 }
 
 export function Header() {
@@ -52,11 +55,21 @@ export function Header() {
     >
       <div className={`mx-auto flex max-w-6xl items-center gap-4 px-4 ${scrolled ? "py-3" : "py-5"}`}>
         <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
-          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary">CC</span>
-          Canary Cove
+          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-sm bg-[#0b1d3a]">
+            <span className="relative block h-10 w-10">
+              <Image
+                src="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1764690650/Canary_Cove_logo_website_suvurg.png"
+                alt="Canary Cove logo"
+                fill
+                sizes="48px"
+                className="object-contain"
+                priority
+              />
+            </span>
+          </span>
         </Link>
 
-        <DesktopNav items={NAV_ITEMS} isActive={isActive} activePath={pathname} />
+        <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
         <div className="ml-auto flex items-center gap-2 lg:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>

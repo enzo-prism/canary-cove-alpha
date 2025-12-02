@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import { ScrollReset } from "@/components/scroll-reset"
 
 const sfPro = localFont({
   variable: "--font-sf",
@@ -53,6 +54,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={sfPro.variable}>
       <body className={`${sfPro.className} font-sans antialiased selection:bg-primary/10 selection:text-primary`}>
+        <ScrollReset />
         <div className="min-h-screen">{children}</div>
         <Analytics />
       </body>
