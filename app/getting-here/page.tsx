@@ -1,4 +1,5 @@
 import Link from "next/link"
+import type { Metadata } from "next"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
@@ -29,6 +30,12 @@ const steps = [
     badge: "🛥️",
   },
 ]
+
+export const metadata: Metadata = {
+  title: "Getting to Canary Cove | Belize arrival guide",
+  description:
+    "Follow these simple steps to reach Canary Cove: customs, a 15-minute hop to San Pedro, airport meet & greet, and a quick boat ride to the estate.",
+}
 
 export default function Page() {
   return (

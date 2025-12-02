@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+
+export const metadata: Metadata = {
+  title: "Stay at Canary Cove | Private beachfront villa and suites",
+  description:
+    "Spread out across the villa, suites, docks, and beach at Canary Cove—your all-inclusive private estate on Ambergris Caye.",
+}
 
 export default function Page() {
   return (

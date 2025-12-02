@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+
+export const metadata: Metadata = {
+  title: "Dining at Canary Cove | Private chef meals and beach picnics",
+  description:
+    "Sunrise espresso, chef-prepared dinners, beach picnics, and bespoke menus timed to your adventures at Canary Cove.",
+}
 
 export default function Page() {
   return (

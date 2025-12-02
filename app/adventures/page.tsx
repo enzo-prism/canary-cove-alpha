@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+
+export const metadata: Metadata = {
+  title: "Adventures at Canary Cove | Reef dives, sandbars, and boat days",
+  description:
+    "Plan adrenaline days and mellow island hops: tubing, reef dives, sandbar picnics, and boat runs from your private dock at Canary Cove.",
+}
 
 export default function Page() {
   return (

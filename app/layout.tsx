@@ -23,9 +23,9 @@ const sfPro = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Canary Cove - Luxury Island Retreat",
+  title: "Canary Cove | Private All-Inclusive Estate in Belize",
   description:
-    "Experience unparalleled luxury at Canary Cove, where pristine beaches meet world-class hospitality. Your exclusive island paradise awaits.",
+    "Canary Cove is a private, all-inclusive beachfront estate on Ambergris Caye with chef-prepared meals, boats, dock access, and full staff—reserved for one group at a time.",
   generator: "v0.app",
   icons: {
     icon: [

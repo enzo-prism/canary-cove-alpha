@@ -1,5 +1,13 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+
+export const metadata: Metadata = {
+  title: "Contact Canary Cove | Talk to our team",
+  description:
+    "Reach out to the Canary Cove team for bookings, questions, or travel help. We reply within one business day.",
+}
 
 export default function Page() {
   return (

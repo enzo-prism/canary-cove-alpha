@@ -1,6 +1,7 @@
 "use client"
 
 import type { FormEvent } from "react"
+import type { Metadata } from "next"
 import { Calendar, Clock3, Send, Sparkles } from "lucide-react"
 
 import { Footer } from "@/components/footer"
@@ -14,6 +15,12 @@ const stayDetails = [
   { label: "Arrival", value: "Flexible; private dock & airport transfers" },
   { label: "Minimum stay", value: "4 nights (peak), 3 nights (shoulder)" },
 ]
+
+export const metadata: Metadata = {
+  title: "Book Canary Cove | Check availability and request to book",
+  description:
+    "View live availability and request to book Canary Cove—our private, all-inclusive beachfront estate on Ambergris Caye.",
+}
 
 export default function Page() {
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {

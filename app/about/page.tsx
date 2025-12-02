@@ -1,7 +1,15 @@
+import type { Metadata } from "next"
+
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+
+export const metadata: Metadata = {
+  title: "About Canary Cove | Family-owned all-inclusive estate in Belize",
+  description:
+    "Learn about Canary Cove—our private, family-owned, all-inclusive beachfront estate with dock access, full staff, and tailored hosting on Ambergris Caye.",
+}
 
 export default function Page() {
   return (
