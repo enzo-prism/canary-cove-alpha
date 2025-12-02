@@ -1,3 +1,5 @@
+import Link from "next/link"
+
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 
@@ -5,22 +7,26 @@ const steps = [
   {
     title: "Clear customs & immigration",
     detail:
-      "Use the Belize digital forms at https://ideclare.gov.bz/Belize_Digital_Forms/. On the form, list BELIZE as the destination country and SAN PEDRO as where you are staying.",
+      "Use the Belize digital forms (https://ideclare.gov.bz/Belize_Digital_Forms/). On the form, list BELIZE as the destination country and SAN PEDRO as where you are staying.",
+    badge: "✈️",
   },
   {
     title: "Hop on a commuter flight",
     detail:
       "After baggage claim, head to Maya Island Air or Tropic Air. Our staff books this for you. It’s a 15-minute flight to Ambergris Caye, landing in San Pedro.",
+    badge: "🛩️",
   },
   {
     title: "Meet our team in San Pedro",
     detail:
       "Our staff meets you at the San Pedro airport. The boat dock is a 10-minute walk or a 5-minute taxi ride away.",
+    badge: "🤝",
   },
   {
     title: "Boat to Canary Cove",
     detail:
       "Board our boat for a 15-minute ride about 6 miles north to the compound. Your bags come with you; we handle the rest.",
+    badge: "🛥️",
   },
 ]
 
@@ -29,27 +35,57 @@ export default function Page() {
     <main className="min-h-screen">
       <Header />
       <section className="px-4 py-16 sm:py-24">
-        <div className="mx-auto max-w-4xl space-y-8">
+        <div className="mx-auto flex max-w-6xl flex-col gap-10">
           <div className="space-y-3">
+            <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Travel made easy</p>
             <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">How to get here</h1>
             <p className="text-lg text-muted-foreground sm:text-xl">
               A simple, guided journey: customs, a short hop to San Pedro, and a quick boat ride to Canary Cove.
             </p>
           </div>
-          <div className="space-y-4 rounded-2xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-            <ol className="space-y-4 text-sm text-foreground">
-              {steps.map((step, index) => (
-                <li key={step.title} className="space-y-2 rounded-xl bg-white/80 p-4">
-                  <div className="flex items-center gap-3 text-xs uppercase tracking-[0.3em] text-muted-foreground">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-primary font-semibold">
+
+          <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+            <div className="rounded-[20px] border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+              <ol className="relative space-y-6 border-l border-border/70 pl-6">
+                {steps.map((step, index) => (
+                  <li key={step.title} className="space-y-2">
+                    <div className="absolute -left-[13px] mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-primary">
                       {index + 1}
-                    </span>
-                    {step.title}
-                  </div>
-                  <p className="text-base text-foreground">{step.detail}</p>
-                </li>
-              ))}
-            </ol>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
+                      <span className="text-base">{step.badge}</span>
+                      {step.title}
+                    </div>
+                    <p className="text-sm text-muted-foreground">{step.detail}</p>
+                  </li>
+                ))}
+              </ol>
+            </div>
+
+            <div className="space-y-4 rounded-[20px] border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+              <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Quick links</p>
+              <div className="space-y-2 text-sm text-foreground">
+                <Link
+                  href="https://ideclare.gov.bz/Belize_Digital_Forms/"
+                  className="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-border/70 bg-primary/10 px-4 py-3 text-primary transition hover:bg-primary/15"
+                >
+                  Fill Belize digital forms →
+                </Link>
+                <p className="text-muted-foreground">
+                  Destination country: BELIZE · Staying in: SAN PEDRO · Flights: Maya Island Air or Tropic Air
+                </p>
+              </div>
+              <div className="grid gap-2 text-sm text-muted-foreground">
+                <div className="rounded-xl bg-surface/80 p-3">
+                  <p className="text-foreground font-semibold">Timing</p>
+                  <p>15-minute hop to San Pedro · 10-minute walk/5-minute taxi to dock · 15-minute boat ride north</p>
+                </div>
+                <div className="rounded-xl bg-surface/80 p-3">
+                  <p className="text-foreground font-semibold">We handle</p>
+                  <p>Local flight bookings, airport meet & greet, and luggage on the boat to the estate.</p>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>

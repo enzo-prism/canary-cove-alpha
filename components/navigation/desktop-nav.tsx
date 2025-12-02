@@ -55,6 +55,7 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
               {item.label === "Dining" && ` ${EMOJI.dining}`}
               {item.label === "Adventures" && ` ${EMOJI.adventures}`}
               {item.label === "About" && ` ${EMOJI.about}`}
+              {item.label === "Getting Here" && " 📍"}
             </Link>
           )
         })}

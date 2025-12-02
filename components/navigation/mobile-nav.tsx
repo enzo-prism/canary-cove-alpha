@@ -35,7 +35,9 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
                     ? EMOJI.adventures
                     : item.label === "About"
                       ? EMOJI.about
-                      : null}
+                      : item.label === "Getting Here"
+                        ? "📍"
+                        : null}
           </Link>
         ))}
       </div>
