@@ -22,8 +22,8 @@ export default function Page() {
         <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
 
         <div className="mx-auto flex max-w-6xl flex-col gap-10">
-          <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="order-2 space-y-8 lg:order-1">
+          <div className="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <div className="space-y-8">
               <div className="space-y-4">
                 <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
                   Availability & holds {EMOJI.book}
@@ -49,54 +49,52 @@ export default function Page() {
                   />
                 </div>
               </div>
-
-              <div className="space-y-4 rounded-3xl border border-border/70 bg-white/90 p-5 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-                <p className="text-sm uppercase tracking-[0.28em] text-muted-foreground">
-                  Payment & policies {EMOJI.rates}
-                </p>
-                <div className="space-y-2">
-                  <p className="text-base font-semibold text-foreground">Payment Terms</p>
-                  <p className="text-sm text-muted-foreground">
-                    50% down, balance due 45 business days prior to arrival.
-                  </p>
-                </div>
-                <div className="space-y-2">
-                  <p className="text-base font-semibold text-foreground">Cancellation Policy</p>
-                  <ul className="space-y-2 text-sm text-muted-foreground">
-                    <li>
-                      Cancellations must be made in writing. If a guest cancellation is made more than 60 business days
-                      before the scheduled guest arrival date, a full (100%) refund less a 10% administrative fee will
-                      be given.
-                    </li>
-                    <li>
-                      If a guest cancellation is made less than 60 business days before the scheduled guest arrival date
-                      but more than 45 business days before the scheduled guest arrival date 50% of the total amount
-                      deposited will be refunded.
-                    </li>
-                    <li>
-                      If a guest cancellation is made less than 45 business days before the scheduled guest arrival
-                      date, NO refund of any deposit will be given and the full deposit will be forfeited (includes
-                      early check-outs or no-shows).
-                    </li>
-                    <li>
-                      The balance is due 45 business days prior to check-in or your special event. Any amounts accrued
-                      during your stay will be charged upon your departure.
-                    </li>
-                    <li>
-                      Note: NO REFUNDS OF DEPOSITS WILL BE GIVEN for cancellations of reservations for the dates of
-                      December 16th-January 7th once your reservation has been confirmed.
-                    </li>
-                    <li>Business days are considered any day of the week Monday to Friday.</li>
-                    <li>
-                      We strongly recommend full coverage travel insurance in the event of delays / cancellations,
-                      weather, health, family, personal issues, etc.
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
 
-            <BookingForm className="order-1 lg:order-2" />
+            <BookingForm className="order-2 lg:order-1" />
+
+            <div className="order-3 space-y-4 rounded-3xl border border-border/70 bg-white/90 p-5 shadow-[0_16px_55px_rgba(15,23,42,0.08)] lg:col-span-2">
+              <p className="text-sm uppercase tracking-[0.28em] text-muted-foreground">
+                Payment & policies {EMOJI.rates}
+              </p>
+              <div className="space-y-2">
+                <p className="text-base font-semibold text-foreground">Payment Terms</p>
+                <p className="text-sm text-muted-foreground">50% down, balance due 45 business days prior to arrival.</p>
+              </div>
+              <div className="space-y-2">
+                <p className="text-base font-semibold text-foreground">Cancellation Policy</p>
+                <ul className="space-y-2 text-sm text-muted-foreground">
+                  <li>
+                    Cancellations must be made in writing. If a guest cancellation is made more than 60 business days
+                    before the scheduled guest arrival date, a full (100%) refund less a 10% administrative fee will be
+                    given.
+                  </li>
+                  <li>
+                    If a guest cancellation is made less than 60 business days before the scheduled guest arrival date
+                    but more than 45 business days before the scheduled guest arrival date 50% of the total amount
+                    deposited will be refunded.
+                  </li>
+                  <li>
+                    If a guest cancellation is made less than 45 business days before the scheduled guest arrival date,
+                    NO refund of any deposit will be given and the full deposit will be forfeited (includes early
+                    check-outs or no-shows).
+                  </li>
+                  <li>
+                    The balance is due 45 business days prior to check-in or your special event. Any amounts accrued
+                    during your stay will be charged upon your departure.
+                  </li>
+                  <li>
+                    Note: NO REFUNDS OF DEPOSITS WILL BE GIVEN for cancellations of reservations for the dates of
+                    December 16th-January 7th once your reservation has been confirmed.
+                  </li>
+                  <li>Business days are considered any day of the week Monday to Friday.</li>
+                  <li>
+                    We strongly recommend full coverage travel insurance in the event of delays / cancellations, weather,
+                    health, family, personal issues, etc.
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
         </div>
       </section>
