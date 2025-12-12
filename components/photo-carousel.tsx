@@ -74,15 +74,15 @@ export function PhotoCarousel() {
   }, [emblaApi, onSelect])
 
   return (
-    <section className="px-4 pb-24">
-      <div className="mx-auto max-w-6xl rounded-[40px] border border-border/70 bg-white/80 p-6 backdrop-blur lg:p-10">
+    <section className="px-4 pb-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-6xl xl:max-w-7xl rounded-[40px] border border-border/70 bg-white/80 p-6 backdrop-blur lg:p-10">
         <div className="flex flex-col gap-8 lg:flex-row">
           <div className="lg:flex-1">
             <div className="overflow-hidden rounded-[32px]" ref={emblaRef}>
               <div className="-ml-4 flex">
                 {photos.map((photo, index) => (
                   <div key={photo.src} className="ml-4 flex-[0_0_100%]">
-                    <div className="relative h-[360px] overflow-hidden rounded-[28px] bg-surface-elevated sm:h-[440px]">
+                    <div className="relative h-[300px] overflow-hidden rounded-[28px] bg-surface-elevated min-[420px]:h-[360px] sm:h-[440px]">
                       <Image
                         src={photo.src}
                         alt={photo.alt}
@@ -137,7 +137,7 @@ export function PhotoCarousel() {
               </div>
             </div>
           </div>
-          <div className="lg:w-[320px]">
+          <div className="lg:w-[340px] xl:w-[380px]">
             <p className="text-xs uppercase tracking-[0.4em] text-muted-foreground">Canary Cove</p>
             <h3 className="mt-4 text-3xl font-semibold leading-tight text-foreground">Scenes from your stay ✨</h3>
             <p className="mt-4 text-sm text-muted-foreground">

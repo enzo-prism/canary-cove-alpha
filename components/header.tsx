@@ -53,7 +53,7 @@ export function Header() {
         scrolled ? "border-b border-border/40 bg-background/95 shadow-[0_12px_40px_rgba(15,23,42,0.08)]" : "bg-transparent"
       }`}
     >
-      <div className={`mx-auto flex max-w-6xl items-center gap-4 px-4 ${scrolled ? "py-3" : "py-5"}`}>
+      <div className={`mx-auto flex max-w-6xl xl:max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8 ${scrolled ? "py-3" : "py-5"}`}>
         <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
           <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-sm bg-primary">
             <span className="relative block h-10 w-10">

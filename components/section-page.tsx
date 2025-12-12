@@ -24,12 +24,12 @@ type SectionPageContentProps = {
 
 export function SectionPageContent({ eyebrow, title, intro, sections, aside }: SectionPageContentProps) {
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:pb-28">
+    <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-gradient-to-b from-surface/80 via-white to-surface-muted/60" />
       <div className="absolute left-[12%] top-[18%] -z-10 h-64 w-64 rounded-full bg-primary/10 blur-[120px]" />
       <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
 
-      <div className="mx-auto max-w-6xl space-y-10">
+      <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-10">
         <div className="flex flex-wrap items-center gap-3 rounded-full border border-border/70 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.32em] text-muted-foreground backdrop-blur">
           {eyebrow}
           <span className="h-1 w-1 rounded-full bg-primary" />

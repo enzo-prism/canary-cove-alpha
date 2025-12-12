@@ -2,8 +2,8 @@ import Link from "next/link"
 
 export function Footer() {
   return (
-    <footer className="border-t border-border/60 bg-white/85 px-4 py-14 backdrop-blur">
-      <div className="mx-auto flex max-w-6xl flex-col gap-8">
+    <footer className="border-t border-border/60 bg-white/85 px-4 py-14 backdrop-blur sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-8">
         <div className="flex flex-col gap-3">
           <h3 className="text-2xl font-semibold text-foreground">Canary Cove</h3>
           <p className="text-sm text-muted-foreground">

@@ -82,8 +82,8 @@ export default function Page() {
   return (
     <main className="min-h-screen">
       <Header />
-      <section className="px-4 py-16 sm:py-24">
-        <div className="mx-auto max-w-6xl space-y-12">
+      <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-12">
           <div className="space-y-3">
             <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Canary Cove Rates</h1>
           </div>

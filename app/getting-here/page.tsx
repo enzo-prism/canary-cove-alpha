@@ -41,8 +41,8 @@ export default function Page() {
   return (
     <main className="min-h-screen">
       <Header />
-      <section className="px-4 py-16 sm:py-24">
-        <div className="mx-auto flex max-w-6xl flex-col gap-10">
+      <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
+        <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
           <div className="space-y-3">
             <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Travel made easy</p>
             <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">How to get here</h1>

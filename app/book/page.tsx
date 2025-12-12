@@ -16,12 +16,12 @@ export default function Page() {
   return (
     <main className="min-h-screen">
       <Header />
-      <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:pb-28">
+      <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-surface/80 via-white to-surface-muted/60" />
         <div className="absolute left-[12%] top-[18%] -z-10 h-64 w-64 rounded-full bg-primary/10 blur-[120px]" />
         <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
 
-        <div className="mx-auto flex max-w-6xl flex-col gap-10">
+        <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
           <div className="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr]">
             <div className="space-y-8">
               <div className="space-y-4">

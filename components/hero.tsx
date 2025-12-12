@@ -6,11 +6,11 @@ import { SiteSearch } from "@/components/site-search"
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden px-4 pb-24 pt-28">
+    <section className="relative isolate overflow-hidden px-4 pb-24 pt-24 sm:px-6 sm:pt-28 lg:px-8">
       <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white via-surface to-surface-muted" />
       <div className="absolute right-[5%] top-[15%] -z-10 h-72 w-72 rounded-full bg-primary/10 blur-[120px]" />
 
-      <div className="mx-auto grid max-w-6xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
+      <div className="mx-auto grid max-w-6xl xl:max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div className="order-2 space-y-8 lg:order-1">
           <div className="inline-flex items-center gap-3 rounded-full border border-white/40 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.3em] text-muted-foreground backdrop-blur">
             Welcome to Canary Cove!
@@ -56,9 +56,9 @@ export function Hero() {
 
         <div className="relative order-1 lg:order-2">
           <div className="rounded-[32px] border border-white/40 bg-white/80 p-4 shadow-[0_35px_120px_rgba(15,23,42,0.15)] backdrop-blur-xl">
-            <div className="overflow-hidden rounded-[28px] border border-white/60">
+            <div className="aspect-[4/3] overflow-hidden rounded-[28px] border border-white/60 sm:aspect-video">
               <video
-                className="h-[420px] w-full object-cover"
+                className="h-full w-full object-cover"
                 autoPlay
                 loop
                 muted
