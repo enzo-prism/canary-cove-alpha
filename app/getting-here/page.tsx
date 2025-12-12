@@ -94,6 +94,16 @@ export default function Page() {
               </div>
             </div>
           </div>
+
+          <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+            <h2 className="text-2xl font-semibold text-foreground">Getting around</h2>
+            <p className="mt-2 text-base text-muted-foreground">
+              Canary Cove sits about 6.5 miles north of San Pedro and is accessed primarily by boat. Arrival and departure boat
+              transfers are complimentary. For trips into town, we can run our 30-foot boat ($75 round-trip) or arrange private
+              charters ($100/hr + gas). Golf carts are available—ask about current policies and rates. Prefer to skip the commuter
+              flight? We can help arrange a direct boat transfer from Belize City.
+            </p>
+          </div>
         </div>
       </section>
       <Footer />

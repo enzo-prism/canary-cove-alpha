@@ -8,7 +8,7 @@ import { PhotoCarousel } from "@/components/photo-carousel"
 export const metadata: Metadata = {
   title: "Canary Cove | Private All-Inclusive Belize Estate",
   description:
-    "Welcome to Canary Cove, a one-of-a-kind all-inclusive beachfront estate on Ambergris Caye with private chef, boats, and full staff—reserved for one group at a time.",
+    "Welcome to Canary Cove, a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, and gear—reserved for one group at a time.",
 }
 
 export default function Home() {

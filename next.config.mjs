@@ -42,7 +42,6 @@ const nextConfig = {
       { source: "/about/reviews", destination: "/about#reviews", permanent: true },
       { source: "/about/getting-here", destination: "/about#getting-here", permanent: true },
       { source: "/about/faq", destination: "/about#faq", permanent: true },
-      { source: "/rates", destination: "/about#rates", permanent: true },
       { source: "/gallery", destination: "/about#gallery", permanent: true },
     ]
   },

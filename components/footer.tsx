@@ -7,7 +7,7 @@ export function Footer() {
         <div className="flex flex-col gap-3">
           <h3 className="text-2xl font-semibold text-foreground">Canary Cove</h3>
           <p className="text-sm text-muted-foreground">
-            Private, all-inclusive beachfront estate on Ambergris Caye. One booking at a time.
+            Private, fully staffed beachfront estate on Ambergris Caye. One booking at a time.
           </p>
           <p className="text-sm text-muted-foreground">17′ 59.914 NORTH · 87′ 54.901 WEST</p>
           <p className="text-sm text-muted-foreground">

@@ -1,7 +1,8 @@
 import Link from "next/link"
-import { ArrowUpRight, Play } from "lucide-react"
+import { ArrowUpRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { SiteSearch } from "@/components/site-search"
 
 export function Hero() {
   return (
@@ -21,14 +22,18 @@ export function Hero() {
               Your All-Inclusive Dream Vacation on Belize’s Ambergris Caye
             </h1>
             <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Canary Cove is truly a one-of-a-kind elite beachfront experience that is all inclusive—with world-class
-              amenities, a vast array of sports equipment, activities, private chef-prepared meals to order, and a full staff
-              to make your Belize vacation as fun as it is relaxing. Enjoy a memorable tropical island vacation at our private,
-              5-acre property. Built in 2005, our private compound is an ideal celebration destination for a special getaway
-              with family and friends looking for the beauty and fun of the tropics with all of the comforts of a fully-staffed
-              private home in a Villa for up to 10 guests.
+              Canary Cove is a private, staffed beachfront estate reserved entirely for your group. Enjoy chef-prepared meals,
+              private docks and boats, an infinity pool, and a full lineup of water-sport gear—so every day runs on your schedule.
+              Our 5-acre compound is built for celebrations and slow island living, with a villa that hosts up to 10 guests.
+            </p>
+            <p className="mt-4 text-sm text-muted-foreground">
+              Our all-inclusive model includes the estate, private-chef service, staff, and on-site amenities. Groceries and
+              beverages, boat fuel, diving/fishing/excursions, hot-tub heating, gratuities, and the 9% Belize hotel tax are
+              additional.
             </p>
           </div>
+
+          <SiteSearch className="max-w-2xl" />
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button asChild size="lg" className="focus-ring">

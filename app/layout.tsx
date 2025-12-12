@@ -25,7 +25,7 @@ const sfPro = localFont({
 export const metadata: Metadata = {
   title: "Canary Cove | Private All-Inclusive Estate in Belize",
   description:
-    "Canary Cove is a private, all-inclusive beachfront estate on Ambergris Caye with chef-prepared meals, boats, dock access, and full staff—reserved for one group at a time.",
+    "Canary Cove is a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, dock access, and on-site gear—reserved for one group at a time. Provisions and excursions are billed separately.",
   generator: "v0.app",
   icons: {
     icon: [
