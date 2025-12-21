@@ -117,7 +117,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
     href: "/contact",
     section: "Contact",
     description: "Reach Gil and Consi for planning and questions.",
-    keywords: ["email", "phone", "location", "address"],
+    keywords: ["phone", "location", "address"],
   },
   {
     title: "Canary Cove Rates",
@@ -169,4 +169,3 @@ export const SEARCH_ITEMS: SearchItem[] = [
     keywords: ["golf cart", "rental", "half day", "full day"],
   },
 ]
-

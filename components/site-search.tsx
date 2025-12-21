@@ -2,11 +2,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react"
 import { useRouter } from "next/navigation"
-import { Command } from "cmdk"
 import { Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { SEARCH_ITEMS } from "@/lib/search-index"
+import { Command, CommandEmpty, CommandInput, CommandItem, CommandList } from "@/components/ui/command"
 
 type SiteSearchProps = {
   className?: string
@@ -47,7 +47,7 @@ export function SiteSearch({
       >
         <div className="flex items-center gap-3 rounded-2xl border border-border/70 bg-white/90 px-4 py-3 shadow-sm backdrop-blur focus-within:ring-2 focus-within:ring-primary/30">
           <Search className="h-5 w-5 text-muted-foreground" />
-          <Command.Input
+          <CommandInput
             value={query}
             onFocus={() => setOpen(true)}
             onValueChange={(value) => {
@@ -55,18 +55,18 @@ export function SiteSearch({
               setOpen(true)
             }}
             placeholder={placeholder}
-            className="w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground focus:outline-none"
+            className="w-full bg-transparent text-base text-foreground placeholder:text-muted-foreground"
           />
         </div>
 
         {open && (
-          <Command.List className="absolute z-20 mt-2 max-h-[380px] w-full overflow-auto rounded-2xl border border-border/70 bg-white/95 p-2 shadow-[0_20px_60px_rgba(15,23,42,0.12)] backdrop-blur">
-            <Command.Empty className="px-3 py-6 text-sm text-muted-foreground">
+          <CommandList className="absolute z-20 mt-2 max-h-[380px] w-full overflow-auto rounded-2xl border border-border/70 bg-white/95 p-2 shadow-[0_20px_60px_rgba(15,23,42,0.12)] backdrop-blur">
+            <CommandEmpty className="px-3 py-6 text-sm text-muted-foreground">
               No matches. Try “suites”, “diving”, “boat”, “chef”, or “cancellation”.
-            </Command.Empty>
+            </CommandEmpty>
 
             {items.map((item) => (
-              <Command.Item
+              <CommandItem
                 key={`${item.href}-${item.title}`}
                 value={`${item.title} ${item.section} ${(item.keywords ?? []).join(" ")}`}
                 onSelect={() => {
@@ -79,12 +79,11 @@ export function SiteSearch({
                 <span className="font-medium">{item.title}</span>
                 <span className="text-xs text-muted-foreground">{item.section}</span>
                 {item.description && <span className="text-xs text-muted-foreground">{item.description}</span>}
-              </Command.Item>
+              </CommandItem>
             ))}
-          </Command.List>
+          </CommandList>
         )}
       </Command>
     </div>
   )
 }
-

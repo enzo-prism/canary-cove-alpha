@@ -1,5 +1,8 @@
 import Link from "next/link"
 
+import { FacebookLink } from "@/components/facebook-link"
+import { Button } from "@/components/ui/button"
+
 export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-white/85 px-4 py-14 backdrop-blur sm:px-6 lg:px-8">
@@ -10,37 +13,32 @@ export function Footer() {
             Private, fully staffed beachfront estate on Ambergris Caye. One booking at a time.
           </p>
           <p className="text-sm text-muted-foreground">17′ 59.914 NORTH · 87′ 54.901 WEST</p>
-          <p className="text-sm text-muted-foreground">
-            Email{" "}
-            <a href="mailto:hello@canarycove.com" className="text-foreground underline-offset-4 hover:underline">
-              hello@canarycove.com
-            </a>{" "}
-            or call Gil: 011 501-610-5121 · Consi: 011 501-626-7534
-          </p>
+          <p className="text-sm text-muted-foreground">Call Gil: 011 501-610-5121 · Consi: 011 501-626-7534</p>
         </div>
 
         <div className="flex flex-wrap gap-3 text-sm text-muted-foreground">
-          <Link href="/stay" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Stay
-          </Link>
-          <Link href="/experiences" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Experiences
-          </Link>
-          <Link href="/dining" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Dining
-          </Link>
-          <Link href="/adventures" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Adventures
-          </Link>
-          <Link href="/about" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            About
-          </Link>
-          <Link href="/book" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Book
-          </Link>
-          <Link href="/contact" className="rounded-full border border-border/60 px-4 py-2 hover:text-foreground">
-            Contact
-          </Link>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/stay">Stay</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/experiences">Experiences</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/dining">Dining</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/adventures">Adventures</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/about">About</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/book">Book</Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link href="/contact">Contact</Link>
+          </Button>
+          <FacebookLink />
         </div>
 
         <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">

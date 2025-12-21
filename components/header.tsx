@@ -9,7 +9,7 @@ import { Menu, X } from "lucide-react"
 import { DesktopNav } from "@/components/navigation/desktop-nav"
 import { MobileNav } from "@/components/navigation/mobile-nav"
 import { Button } from "@/components/ui/button"
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { NAV_ITEMS } from "@/lib/nav-items"
 
 const normalizePath = (href: string) => {
@@ -74,7 +74,11 @@ export function Header() {
         <div className="ml-auto flex items-center gap-2 lg:hidden">
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
-              <Button variant="ghost" size="icon" className="rounded-full border border-border/70 bg-white/70 text-foreground">
+              <Button
+                variant="outline"
+                size="icon"
+                className="rounded-full border border-border/70 bg-white/70 text-foreground hover:bg-white"
+              >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open navigation</span>
               </Button>
@@ -85,15 +89,21 @@ export function Header() {
               hideClose
               className="w-full border-none bg-surface px-6 pb-10 pt-8 sm:w-[70vw]"
             >
-              <div className="flex items-center justify-between">
-                <p className="text-xs uppercase tracking-[0.35em] text-muted-foreground">Navigation</p>
+              <SheetHeader className="flex-row items-center justify-between gap-3 p-0">
+                <SheetTitle className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                  Navigation
+                </SheetTitle>
                 <SheetClose asChild>
-                  <button className="rounded-full border border-border/60 p-2 text-muted-foreground">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="rounded-full border border-border/60 text-muted-foreground hover:text-foreground"
+                  >
                     <X className="h-4 w-4" />
                     <span className="sr-only">Close menu</span>
-                  </button>
+                  </Button>
                 </SheetClose>
-              </div>
+              </SheetHeader>
               <MobileNav items={NAV_ITEMS} onNavigate={() => setMobileOpen(false)} />
             </SheetContent>
           </Sheet>

@@ -2,6 +2,11 @@ import type { Metadata } from "next"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import { NitroxPopover } from "@/components/nitrox-popover"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Badge } from "@/components/ui/badge"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 
 const villaSeasons = [
   {
@@ -88,9 +93,11 @@ export default function Page() {
             <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Canary Cove Rates</h1>
           </div>
 
-          <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-            <h2 className="text-2xl font-semibold text-foreground">A Note From Us</h2>
-            <div className="mt-3 space-y-4 text-base text-muted-foreground">
+          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+            <CardHeader className="p-6 pb-3">
+              <CardTitle className="text-2xl font-semibold text-foreground">A Note From Us</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 px-6 pb-6 pt-0 text-base text-muted-foreground">
               <p>Our rates are published below for full transparency.</p>
               <p>
                 For our repeat guests, you’ll notice that our rates have remained unchanged for over a decade. During that time,
@@ -105,174 +112,214 @@ export default function Page() {
                 choose to tip generously, gratuities are always optional and entirely at your discretion.
               </p>
               <p>
-                The <strong>Main House</strong> is reserved for <strong>repeat guests only</strong> and is ideal for larger groups
-                such as family reunions.
+                We look forward to creating a truly special vacation for you and your guests.
               </p>
-              <p>We look forward to creating a truly special vacation for you and your guests.</p>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
 
           <div className="space-y-8">
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Villa Accommodations</h2>
               {villaSeasons.map((season) => (
-                <div
+                <Card
                   key={season.name}
-                  className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+                  className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
                 >
-                  <h3 className="text-2xl font-semibold text-foreground">{season.name}</h3>
-                  <p className="mt-1 text-sm uppercase tracking-[0.2em] text-muted-foreground">{season.months}</p>
-                  <div className="mt-5 grid gap-4 sm:grid-cols-2">
-                    {season.rates.map((rate) => (
-                      <div key={rate.label} className="rounded-2xl bg-surface/70 p-5">
-                        <p className="text-base font-semibold text-foreground">{rate.label}</p>
-                        <p className="mt-1 text-sm text-muted-foreground">{rate.description}</p>
-                        <p className="mt-3 text-3xl font-semibold text-foreground">{rate.price}</p>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+                  <CardHeader className="p-6 pb-4">
+                    <CardTitle className="text-2xl font-semibold text-foreground">{season.name}</CardTitle>
+                    <Badge variant="outline" className="w-fit border-border/70 text-sm uppercase tracking-[0.2em] text-muted-foreground">
+                      {season.months}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="px-6 pb-6 pt-0">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {season.rates.map((rate) => (
+                        <Card key={rate.label} className="rounded-2xl border-transparent bg-surface/70 shadow-none">
+                          <CardContent className="p-5">
+                            <p className="text-base font-semibold text-foreground">{rate.label}</p>
+                            <p className="mt-1 text-sm text-muted-foreground">{rate.description}</p>
+                            <p className="mt-3 text-3xl font-semibold text-foreground">{rate.price}</p>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Main House Accommodations</h2>
-              <p className="text-sm text-muted-foreground italic">Available to repeat guests only</p>
+              <Alert className="border-primary/20 bg-primary/5">
+                <AlertTitle className="text-base font-semibold text-foreground">Repeat guests only</AlertTitle>
+                <AlertDescription className="text-sm text-muted-foreground">
+                  The Main House is reserved for repeat guests only and is ideal for larger groups such as family reunions.
+                </AlertDescription>
+              </Alert>
               {mainHouseSeasons.map((season) => (
-                <div
+                <Card
                   key={season.name}
-                  className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+                  className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
                 >
-                  <h3 className="text-2xl font-semibold text-foreground">{season.name}</h3>
-                  <p className="mt-1 text-sm uppercase tracking-[0.2em] text-muted-foreground">{season.months}</p>
-                  <p className="mt-3 text-3xl font-semibold text-foreground">{season.price}</p>
-                </div>
+                  <CardHeader className="p-6 pb-4">
+                    <CardTitle className="text-2xl font-semibold text-foreground">{season.name}</CardTitle>
+                    <Badge variant="outline" className="w-fit border-border/70 text-sm uppercase tracking-[0.2em] text-muted-foreground">
+                      {season.months}
+                    </Badge>
+                  </CardHeader>
+                  <CardContent className="px-6 pb-6 pt-0">
+                    <p className="text-3xl font-semibold text-foreground">{season.price}</p>
+                  </CardContent>
+                </Card>
               ))}
             </div>
 
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Boat Services</h2>
-              <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)] space-y-5">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Complimentary Transfers</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Free arrival and departure boat transfers to ensure a seamless experience
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Vern Boat Rental</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Round-trip travel to town on our 30-foot boat, <em>Vern</em>
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$75</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Long Trip Adventures</h3>
-                  <p className="mt-2 text-base text-muted-foreground">Extended excursions</p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$100 per hour + fuel</p>
-                </div>
-              </div>
+              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+                <CardContent className="p-6">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Service</TableHead>
+                        <TableHead className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Details</TableHead>
+                        <TableHead className="text-right text-xs uppercase tracking-[0.2em] text-muted-foreground">Price</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      <TableRow>
+                        <TableCell className="font-semibold text-foreground">Complimentary Transfers</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          Free arrival and departure boat transfers to ensure a seamless experience.
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-foreground">Included</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-foreground">Vern Boat Rental</TableCell>
+                        <TableCell className="text-muted-foreground">
+                          Round-trip travel to town on our 30-foot boat, <em>Vern</em>.
+                        </TableCell>
+                        <TableCell className="text-right font-semibold text-foreground">$75</TableCell>
+                      </TableRow>
+                      <TableRow>
+                        <TableCell className="font-semibold text-foreground">Long Trip Adventures</TableCell>
+                        <TableCell className="text-muted-foreground">Extended excursions.</TableCell>
+                        <TableCell className="text-right font-semibold text-foreground">$100 per hour + fuel</TableCell>
+                      </TableRow>
+                    </TableBody>
+                  </Table>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Fishing Packages</h2>
-              <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)] space-y-5">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Half-Day Fishing Adventure</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    A guided half-day experience in Belize’s rich fishing waters
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$275</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Full-Day Fishing Excursion</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    A full day exploring premier fishing locations with our expert crew
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$400</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Deep-Sea Fishing Offshore</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    An offshore deep-sea adventure for serious anglers
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$600 per day</p>
-                  <p className="mt-2 text-sm text-muted-foreground">
-                    <strong>Note:</strong> Replacement tackle costs may apply.
-                  </p>
-                </div>
-              </div>
+              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+                <CardContent className="space-y-5 p-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Half-Day Fishing Adventure</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      A guided half-day experience in Belize’s rich fishing waters
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">$275</p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Full-Day Fishing Excursion</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      A full day exploring premier fishing locations with our expert crew
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">$400</p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Deep-Sea Fishing Offshore</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      An offshore deep-sea adventure for serious anglers
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">$600 per day</p>
+                    <p className="mt-2 text-sm text-muted-foreground">
+                      <strong>Note:</strong> Replacement tackle costs may apply.
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Water Sports Adventures</h2>
-              <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)] space-y-6">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Snorkeling</h3>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-base text-muted-foreground">
-                    <li>Complimentary local snorkeling with gear included</li>
-                    <li>Park fees apply where required</li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Diving</h3>
-                  <ul className="mt-2 list-disc space-y-1 pl-5 text-base text-muted-foreground">
-                    <li>
-                      <strong>One-tank dive:</strong> $100
-                    </li>
-                    <li>
-                      <strong>Two-tank dive:</strong> $125
-                    </li>
-                    <li>
-                      <strong>Nitrox:</strong> +$15 per tank
-                    </li>
-                  </ul>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Paddle Boards & Kayaks</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Complimentary use of paddle boards and kayaks
-                  </p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Sailing</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Complimentary Hobie Cat sailing experiences
-                  </p>
-                </div>
-              </div>
+              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+                <CardContent className="space-y-6 p-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Snorkeling</h3>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-base text-muted-foreground">
+                      <li>Complimentary local snorkeling with gear included</li>
+                      <li>Park fees apply where required</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Diving</h3>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-base text-muted-foreground">
+                      <li>
+                        <strong>One-tank dive:</strong> $100
+                      </li>
+                      <li>
+                        <strong>Two-tank dive:</strong> $125
+                      </li>
+                      <li className="flex flex-wrap items-center gap-1">
+                        <NitroxPopover />
+                        <span>+$15 per tank</span>
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Paddle Boards & Kayaks</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      Complimentary use of paddle boards and kayaks
+                    </p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Sailing</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      Complimentary Hobie Cat sailing experiences
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
             <div className="space-y-5">
               <h2 className="text-3xl font-semibold text-foreground">Golf Cart Rentals</h2>
-              <div className="rounded-3xl border border-border/70 bg-white/90 p-6 shadow-[0_16px_55px_rgba(15,23,42,0.08)] space-y-5">
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Half-Day Rental</h3>
-                  <p className="mt-2 text-base text-muted-foreground">Explore the island at your own pace</p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$50</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Full-Day Rental</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Maximum flexibility for island exploration
-                  </p>
-                  <p className="mt-2 text-2xl font-semibold text-foreground">$80</p>
-                </div>
-                <div>
-                  <h3 className="text-xl font-semibold text-foreground">Flexible Options</h3>
-                  <p className="mt-2 text-base text-muted-foreground">
-                    Rental durations can be adjusted to fit your schedule
-                  </p>
-                </div>
-              </div>
+              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+                <CardContent className="space-y-5 p-6">
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Half-Day Rental</h3>
+                    <p className="mt-2 text-base text-muted-foreground">Explore the island at your own pace</p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">$50</p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Full-Day Rental</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      Maximum flexibility for island exploration
+                    </p>
+                    <p className="mt-2 text-2xl font-semibold text-foreground">$80</p>
+                  </div>
+                  <div>
+                    <h3 className="text-xl font-semibold text-foreground">Flexible Options</h3>
+                    <p className="mt-2 text-base text-muted-foreground">
+                      Rental durations can be adjusted to fit your schedule
+                    </p>
+                  </div>
+                </CardContent>
+              </Card>
             </div>
 
-            <div className="rounded-3xl border border-border/70 bg-white/90 p-6 text-center shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-              <h2 className="text-2xl font-semibold text-foreground">Ready to Plan Your Stay?</h2>
-              <p className="mt-2 text-base text-muted-foreground">
-                Contact us to confirm availability, discuss your group’s needs, and begin planning your Canary Cove experience.
-              </p>
-            </div>
+            <Card className="rounded-3xl border border-border/70 bg-white/90 text-center shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+              <CardContent className="p-6">
+                <h2 className="text-2xl font-semibold text-foreground">Ready to Plan Your Stay?</h2>
+                <p className="mt-2 text-base text-muted-foreground">
+                  Contact us to confirm availability, discuss your group’s needs, and begin planning your Canary Cove experience.
+                </p>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>

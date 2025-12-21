@@ -32,8 +32,11 @@ export default function Page() {
               IMAGES.turtleDive,
               IMAGES.platformFun,
               IMAGES.caveTubing,
+              IMAGES.fishingTrophy,
+              IMAGES.lionFishCatch,
               IMAGES.mainDock,
               IMAGES.helipad,
+              IMAGES.jungleAdventure,
               IMAGES.familyScuba,
               IMAGES.gilBoat,
             ]}
