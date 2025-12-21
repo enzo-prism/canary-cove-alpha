@@ -55,7 +55,7 @@ export function Header() {
     >
       <div className={`mx-auto flex max-w-6xl xl:max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8 ${scrolled ? "py-3" : "py-5"}`}>
         <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
-          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-sm bg-primary">
+          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[1px] bg-[#0b1f3a]">
             <span className="relative block h-10 w-10">
               <Image
                 src="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1764690650/Canary_Cove_logo_website_suvurg.png"
