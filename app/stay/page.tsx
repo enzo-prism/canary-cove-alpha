@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
+import { StayAmenities } from "@/components/stay-amenities"
 import { StayHighlights } from "@/components/stay-highlights"
 import { IMAGES } from "@/lib/images"
 
@@ -25,6 +26,7 @@ export default function Page() {
             </p>
           </div>
           <StayHighlights />
+          <StayAmenities />
           <GalleryGrid
             items={[
               IMAGES.villaPool,

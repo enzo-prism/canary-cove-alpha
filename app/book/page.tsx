@@ -61,8 +61,31 @@ export default function Page() {
 
             <BookingForm className="order-2 lg:order-1" />
 
-            <div className="order-3 lg:col-span-2">
+            <div className="order-3 space-y-6 lg:col-span-2">
               <BookingPolicies />
+              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+                <CardHeader className="px-5 pb-3 pt-5">
+                  <Badge
+                    variant="outline"
+                    className="w-fit border-border/70 text-xs uppercase tracking-[0.28em] text-muted-foreground"
+                  >
+                    Comfort &amp; confidence
+                  </Badge>
+                </CardHeader>
+                <CardContent className="space-y-3 px-5 pb-5 pt-0 text-sm text-muted-foreground">
+                  <p>
+                    Canary Cove is designed for ease and peace of mind, with modern infrastructure and attentive staff on site.
+                  </p>
+                  <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
+                    <li>Central air conditioning, non-smoking property, indoor/outdoor dining.</li>
+                    <li>Walled, well-lit compound with onsite staff and discreet security.</li>
+                    <li>Purified water from onsite desalination and filtration.</li>
+                    <li>Backup generator and fiber internet for reliable power and streaming.</li>
+                    <li>Double locking doors, smoke detectors, and in-room safes.</li>
+                    <li>Private helipad access from Belize's international airport by request.</li>
+                  </ul>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>

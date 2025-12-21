@@ -30,12 +30,25 @@ const highlights: Highlight[] = [
     title: "Outside, just for you",
     tabLabel: "Outdoors",
     description:
-      "A private infinity pool, swim-up bar, Viking grill, gardens, hammocks, and two docks create a true \"your own resort\" feel - no shared spaces, no schedules.",
+      "A private, solar-heated infinity pool, swim-up bar, Viking grill, gardens, hammocks, and two docks create a true \"your own resort\" feel - no shared spaces, no schedules.",
     features: [
-      "Infinity pool and shaded deck.",
-      "Swim-up bar with fridge, tap, and TV.",
-      "Two private docks for lounging and fishing.",
+      "Swim-up bar with TV, speakers, and iPod dock.",
+      "Viking gas grill for poolside dinners.",
+      "Private dock with boat and driver (gas only).",
       "Hot tub on site (heating is a daily add-on).",
+    ],
+  },
+  {
+    id: "services",
+    title: "All-inclusive service",
+    tabLabel: "Service",
+    description:
+      "Private chef meals, full-staff support, and smooth arrivals mean your group can focus on the fun from day one.",
+    features: [
+      "Complimentary airport pickup and drop-off.",
+      "Chef-prepared lunches and dinners served daily.",
+      "Daily housekeeping with laundry available.",
+      "Fiber Wi-Fi plus backup generators on site.",
     ],
   },
 ]
@@ -63,7 +76,7 @@ export function StayHighlights() {
     <div className="space-y-6">
       <div className="lg:hidden">
         <Tabs defaultValue={highlights[0]?.id ?? "villa"}>
-          <TabsList className="grid w-full grid-cols-2 rounded-full bg-surface/70 p-1 text-sm text-muted-foreground">
+        <TabsList className="grid w-full grid-cols-3 rounded-full bg-surface/70 p-1 text-sm text-muted-foreground">
             {highlights.map((highlight) => (
               <TabsTrigger
                 key={highlight.id}
@@ -81,7 +94,7 @@ export function StayHighlights() {
           ))}
         </Tabs>
       </div>
-      <div className="hidden gap-6 lg:grid lg:grid-cols-2">
+      <div className="hidden gap-6 lg:grid lg:grid-cols-3">
         {highlights.map((highlight) => (
           <HighlightCard key={highlight.id} highlight={highlight} />
         ))}

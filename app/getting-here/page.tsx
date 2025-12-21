@@ -111,7 +111,16 @@ export default function Page() {
                   <Card className="rounded-xl border-border/70 bg-surface/80 shadow-none">
                     <CardContent className="p-3">
                       <p className="text-foreground font-semibold">We handle</p>
-                      <p>Local flight bookings, airport meet & greet, and luggage on the boat to the estate.</p>
+                      <p>
+                        Local flight bookings, complimentary airport pickup and drop-off, and luggage on the boat to the estate.
+                        We welcome you at the dock with tropical drinks.
+                      </p>
+                    </CardContent>
+                  </Card>
+                  <Card className="rounded-xl border-border/70 bg-surface/80 shadow-none">
+                    <CardContent className="p-3">
+                      <p className="text-foreground font-semibold">On-site transport</p>
+                      <p>Private helipad available with advance notice, including direct access from Belize's international airport by request. Golf cart ready for town runs.</p>
                     </CardContent>
                   </Card>
                 </div>

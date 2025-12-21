@@ -49,8 +49,9 @@ export default function Page() {
             </CardHeader>
             <CardContent className="space-y-4 px-6 pb-6 pt-0">
               <p className="text-base text-muted-foreground">
-                Your private chef prepares lunch and dinner to order and serves whenever you’d like. The kitchen is stocked before
-                arrival for breakfasts and snacks, and we shop locally for your meals.
+                Your private chef prepares and serves lunch and dinner whenever you'd like, and our team handles cleanup. The
+                kitchen is stocked before arrival for self-serve breakfasts and snacks, with food and beverage purchases billed at
+                cost.
               </p>
               <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
                 <li>Chef service, cooking, and cleanup included.</li>
