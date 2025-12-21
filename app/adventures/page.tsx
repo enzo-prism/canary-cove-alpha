@@ -6,9 +6,9 @@ import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
 
 export const metadata: Metadata = {
-  title: "Adventures at Canary Cove | Reef dives, sandbars, and boat days",
+  title: "Adventures at Canary Cove | Dives, Sandbars, and Fishing",
   description:
-    "Plan adrenaline days and mellow island hops: tubing, reef dives, sandbar picnics, and boat runs from your private dock at Canary Cove.",
+    "Reef dives, tubing, sandbar days, and fishing charters arranged from your private dock with our local crews.",
 }
 
 export default function Page() {

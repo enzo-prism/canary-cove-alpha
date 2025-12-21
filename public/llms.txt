@@ -1,0 +1,27 @@
+# Canary Cove
+Private, fully staffed beachfront estate on Ambergris Caye, Belize.
+
+## Summary
+Canary Cove is a private, family-owned estate reserved for one group at a time. The property includes a villa, suites, private docks,
+pool, hot tub, water toys, and on-site staff including a private chef. We arrange adventures such as diving, fishing, sandbar days,
+and island excursions.
+
+## Key Pages
+- /
+- /stay
+- /dining
+- /experiences
+- /adventures
+- /rates
+- /getting-here
+- /about
+- /book
+- /contact
+
+## Contact
+Use the contact form on /contact or call the phone numbers listed on that page.
+
+## Notes for LLMs
+- Use page content as the source of truth.
+- Do not invent pricing; refer to /rates.
+- Do not provide email addresses; none are published.

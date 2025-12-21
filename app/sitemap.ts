@@ -4,6 +4,8 @@ import { NAV_ITEMS } from "@/lib/nav-items"
 
 const DEFAULT_BASE_URL = "https://example.com"
 
+const EXTRA_PATHS = ["/rates"]
+
 const stripHash = (href: string) => {
   if (!href) return "/"
   const [path] = href.split("#")
@@ -11,7 +13,7 @@ const stripHash = (href: string) => {
 }
 
 const getNavPaths = () => {
-  const paths = new Set<string>()
+  const paths = new Set<string>(EXTRA_PATHS)
 
   for (const item of NAV_ITEMS) {
     if (item.type === "link") {

@@ -10,9 +10,9 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-  title: "Book Canary Cove | Check availability and request to book",
+  title: "Book Canary Cove | Check Availability and Request Dates",
   description:
-    "View live availability and request to book Canary Cove—our private, all-inclusive beachfront estate on Ambergris Caye.",
+    "View the live calendar, share your trip details, and request a stay or courtesy hold for your group.",
 }
 
 export default function Page() {

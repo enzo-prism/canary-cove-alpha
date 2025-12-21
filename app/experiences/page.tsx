@@ -7,9 +7,9 @@ import { IMAGES } from "@/lib/images"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-  title: "Experiences at Canary Cove | Boat days, dives, and sandbars",
+  title: "Experiences at Canary Cove | Included Gear and Add-On Trips",
   description:
-    "See how we plan boat days, reef dives, sandbar picnics, and calm mornings on property—crafted around the tides for your group.",
+    "Explore included water toys and on-site amenities, then add diving, fishing, or island excursions planned around your pace.",
 }
 
 export default function Page() {

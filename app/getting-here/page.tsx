@@ -37,9 +37,9 @@ const steps = [
 ]
 
 export const metadata: Metadata = {
-  title: "Getting to Canary Cove | Belize arrival guide",
+  title: "Getting Here | Belize Arrival Guide to Canary Cove",
   description:
-    "Follow these simple steps to reach Canary Cove: customs, a 15-minute hop to San Pedro, airport meet & greet, and a quick boat ride to the estate.",
+    "Step-by-step arrival guide from Belize City to San Pedro and the boat transfer to the estate.",
 }
 
 export default function Page() {

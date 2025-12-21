@@ -7,9 +7,9 @@ import { StayHighlights } from "@/components/stay-highlights"
 import { IMAGES } from "@/lib/images"
 
 export const metadata: Metadata = {
-  title: "Stay at Canary Cove | Private beachfront villa and suites",
+  title: "Stay at Canary Cove | Beachfront Villa, Suites, and Docks",
   description:
-    "Spread out across the villa, suites, docks, and beach at Canary Cove—your private, fully staffed estate on Ambergris Caye.",
+    "Private villa estate with suites, docks, pool, hot tub, and open-air living reserved entirely for your group in Belize.",
 }
 
 export default function Page() {

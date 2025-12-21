@@ -10,9 +10,9 @@ import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
 export const metadata: Metadata = {
-  title: "Contact Canary Cove | Talk to our team",
+  title: "Contact Canary Cove | Call, Message, or Send a Request",
   description:
-    "Reach out to the Canary Cove team for bookings, questions, or travel help. We reply within one business day.",
+    "Reach our team by phone or contact form for bookings, questions, and travel planning support.",
 }
 
 export default function Page() {

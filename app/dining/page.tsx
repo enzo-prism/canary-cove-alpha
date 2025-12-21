@@ -9,9 +9,9 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 export const metadata: Metadata = {
-  title: "Dining at Canary Cove | Private chef meals and beach picnics",
+  title: "Dining at Canary Cove | Private Chef and Beach Picnics",
   description:
-    "Sunrise espresso, chef-prepared dinners, beach picnics, and bespoke menus timed to your adventures at Canary Cove.",
+    "Daily breakfasts, chef-prepared lunches and dinners, and beach picnics tailored to your schedule and tastes.",
 }
 
 export default function Page() {

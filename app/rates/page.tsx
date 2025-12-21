@@ -78,9 +78,9 @@ const mainHouseSeasons = [
 ]
 
 export const metadata: Metadata = {
-  title: "Canary Cove Rates | Canary Cove",
+  title: "Canary Cove Rates | Seasons, Villa Pricing, and Add-Ons",
   description:
-    "Published rates for the Canary Cove villa and main house, plus boat, fishing, and activity pricing.",
+    "Seasonal villa rates plus pricing for boats, fishing, diving, and additional services at Canary Cove.",
 }
 
 export default function Page() {
