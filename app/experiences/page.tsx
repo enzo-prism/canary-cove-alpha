@@ -4,6 +4,7 @@ import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+import { ExperiencesMiniGallery } from "@/components/experiences-mini-gallery"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 
@@ -25,6 +26,7 @@ export default function Page() {
               Calm mornings, adrenaline afternoons, and sunset cruises—all planned around the tides and your pace.
             </p>
           </div>
+          <ExperiencesMiniGallery />
           <div className="grid gap-6 lg:grid-cols-2">
             <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
               <CardHeader className="p-6 pb-4">

@@ -16,13 +16,15 @@ import {
 import { IMAGES } from "@/lib/images"
 
 const miniPhotos = [
-  { ...IMAGES.villaPool, caption: "Infinity pool and swim-up bar" },
-  { ...IMAGES.villaInteriorWide, caption: "Open-air villa interior" },
-  { ...IMAGES.villaMasterBedroom, caption: "Master suite retreat" },
-  { ...IMAGES.viewFromKitchen, caption: "Views toward the water" },
+  { ...IMAGES.tubing, caption: "Tubing and boat days" },
+  { ...IMAGES.divingFun, caption: "Reef dives and snorkel time" },
+  { ...IMAGES.caveTubing, caption: "Cave tubing adventures" },
+  { ...IMAGES.landAdventure, caption: "Mainland jungle excursions" },
+  { ...IMAGES.romanticViews, caption: "Sunset cruises and calm water" },
+  { ...IMAGES.mainDock, caption: "Private dock departures" },
 ]
 
-export function StayMiniGallery() {
+export function ExperiencesMiniGallery() {
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
 

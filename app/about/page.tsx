@@ -5,9 +5,9 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
 import { EMOJI } from "@/lib/emoji"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "About Canary Cove | Family Estate and On-Site Team",
@@ -567,29 +567,7 @@ export default function Page() {
                   Notes from guest books and letters shared over the years.
                 </p>
               </div>
-              <Accordion type="multiple" defaultValue={["2024"]} className="space-y-3">
-                {TESTIMONIALS.map((group) => (
-                  <AccordionItem
-                    key={group.year}
-                    value={group.year.toLowerCase().replace(/[^a-z0-9]+/g, "-")}
-                    className="rounded-2xl border border-border/60 border-b-0 bg-white/80 px-4 shadow-sm shadow-black/5"
-                  >
-                    <AccordionTrigger className="text-base font-semibold text-foreground">{group.year}</AccordionTrigger>
-                    <AccordionContent className="pt-2">
-                      <div className="space-y-4 text-sm text-muted-foreground">
-                        {group.entries.map((entry, index) => (
-                          <div key={`${group.year}-${index}`} className="space-y-1">
-                            <p className="leading-relaxed">"{entry.quote}"</p>
-                            {entry.author ? (
-                              <p className="text-xs font-semibold text-foreground">- {entry.author}</p>
-                            ) : null}
-                          </div>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
+              <TestimonialsGrid groups={TESTIMONIALS} />
             </CardContent>
           </Card>
           <GalleryGrid
