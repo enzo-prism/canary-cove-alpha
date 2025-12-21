@@ -7,6 +7,8 @@ import { StayAmenities } from "@/components/stay-amenities"
 import { StayHighlights } from "@/components/stay-highlights"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { IMAGES } from "@/lib/images"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Stay at Canary Cove | Beachfront Villa, Suites, and Docks",
@@ -28,6 +30,15 @@ export default function Page() {
           </div>
           <StayMiniGallery />
           <StayHighlights />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">What guests say about the stay</h2>
+              <p className="text-base text-muted-foreground">
+                Notes on the home, staff, and what it feels like to settle into the estate.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.stay} />
+          </div>
           <StayAmenities />
           <GalleryGrid
             items={[

@@ -6,8 +6,10 @@ import { BookingForm } from "@/components/booking-form"
 import { BookingPolicies } from "@/components/booking-policies"
 import { PhotoCarousel } from "@/components/photo-carousel"
 import { EMOJI } from "@/lib/emoji"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Book Canary Cove | Check Availability and Request Dates",
@@ -86,6 +88,10 @@ export default function Page() {
                   </ul>
                 </CardContent>
               </Card>
+              <div className="space-y-3">
+                <h2 className="text-2xl font-semibold text-foreground">Why guests return</h2>
+                <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.book} />
+              </div>
             </div>
           </div>
         </div>

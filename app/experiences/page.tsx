@@ -7,6 +7,8 @@ import { IMAGES } from "@/lib/images"
 import { ExperiencesMiniGallery } from "@/components/experiences-mini-gallery"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WaysToEnjoy } from "@/components/ways-to-enjoy"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Experiences at Canary Cove | Included Gear and Add-On Trips",
@@ -82,6 +84,15 @@ export default function Page() {
               </ul>
             </CardContent>
           </Card>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Adventure highlights from guests</h2>
+              <p className="text-base text-muted-foreground">
+                Stories from snorkeling, dives, fishing days, and sunset runs planned around the tides.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.experiences} />
+          </div>
           <WaysToEnjoy />
           <GalleryGrid
             items={[

@@ -6,8 +6,10 @@ import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Dining at Canary Cove | Private Chef and Beach Picnics",
@@ -64,6 +66,15 @@ export default function Page() {
               </ul>
             </CardContent>
           </Card>
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Dining memories</h2>
+              <p className="text-base text-muted-foreground">
+                A few guest notes about chef-prepared meals and favorite dishes.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.dining} />
+          </div>
           <GalleryGrid
             items={[
               IMAGES.diningRoom,

@@ -5,9 +5,11 @@ import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 const steps = [
   {
@@ -126,6 +128,16 @@ export default function Page() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Arrival impressions</h2>
+              <p className="text-base text-muted-foreground">
+                Guests often mention the welcome ride and the dock greeting as part of the Canary Cove magic.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.gettingHere} />
           </div>
 
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">

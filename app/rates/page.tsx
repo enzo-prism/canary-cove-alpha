@@ -4,10 +4,12 @@ import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { NitroxPopover } from "@/components/nitrox-popover"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 const villaSeasons = [
   {
@@ -119,6 +121,16 @@ export default function Page() {
               </p>
             </CardContent>
           </Card>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Why guests say it is worth it</h2>
+              <p className="text-base text-muted-foreground">
+                Notes on the experience, service, and overall value of an all-inclusive stay.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.rates} />
+          </div>
 
           <div className="space-y-8">
             <div className="space-y-5">

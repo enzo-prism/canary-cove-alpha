@@ -5,6 +5,8 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 import { IMAGES } from "@/lib/images"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Adventures at Canary Cove | Dives, Sandbars, and Fishing",
@@ -25,6 +27,15 @@ export default function Page() {
             </p>
           </div>
           <WaysToEnjoy />
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Guest adventures</h2>
+              <p className="text-base text-muted-foreground">
+                Reef days, jungle tours, and island time brought to life by guest stories.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.adventures} />
+          </div>
           <GalleryGrid
             items={[
               IMAGES.tubing,

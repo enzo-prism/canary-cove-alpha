@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog"
+import type { Testimonial } from "@/lib/testimonial-spotlights"
 
 type TestimonialEntry = {
   quote: string
@@ -20,29 +21,31 @@ type TestimonialGroup = {
   entries: TestimonialEntry[]
 }
 
-type Testimonial = TestimonialEntry & {
+type TestimonialWithYear = TestimonialEntry & {
   year: string
 }
 
 type TestimonialsGridProps = {
-  groups: TestimonialGroup[]
+  groups?: TestimonialGroup[]
+  testimonials?: Testimonial[]
 }
 
-export function TestimonialsGrid({ groups }: TestimonialsGridProps) {
-  const testimonials = useMemo<Testimonial[]>(
+export function TestimonialsGrid({ groups, testimonials: testimonialsProp }: TestimonialsGridProps) {
+  const testimonials = useMemo<TestimonialWithYear[]>(
     () =>
-      groups.flatMap((group) =>
+      testimonialsProp ??
+      (groups ?? []).flatMap((group) =>
         group.entries.map((entry) => ({
           ...entry,
           year: group.year,
         })),
       ),
-    [groups],
+    [groups, testimonialsProp],
   )
-  const [active, setActive] = useState<Testimonial | null>(null)
+  const [active, setActive] = useState<TestimonialWithYear | null>(null)
   const [open, setOpen] = useState(false)
 
-  const handleOpen = (testimonial: Testimonial) => {
+  const handleOpen = (testimonial: TestimonialWithYear) => {
     setActive(testimonial)
     setOpen(true)
   }

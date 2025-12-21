@@ -3,11 +3,13 @@ import type { Metadata } from "next"
 import { ContactDetails } from "@/components/contact-details"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
   title: "Contact Canary Cove | Call, Message, or Send a Request",
@@ -70,6 +72,16 @@ export default function Page() {
             </Card>
 
             <ContactDetails />
+          </div>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold text-foreground">Guests on our team</h2>
+              <p className="text-base text-muted-foreground">
+                A few notes about the people who make every stay feel effortless.
+              </p>
+            </div>
+            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.contact} />
           </div>
         </div>
       </section>
