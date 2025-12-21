@@ -5,6 +5,7 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 
 export const metadata: Metadata = {
   title: "Experiences at Canary Cove | Included Gear and Add-On Trips",
@@ -79,6 +80,7 @@ export default function Page() {
               </ul>
             </CardContent>
           </Card>
+          <WaysToEnjoy />
           <GalleryGrid
             items={[
               IMAGES.tubing,

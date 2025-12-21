@@ -1,3 +1,4 @@
+import { EMOJI } from "@/lib/emoji"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const basics = [
@@ -74,7 +75,9 @@ export function StayAmenities() {
   return (
     <div className="space-y-5">
       <div className="space-y-2">
-        <h2 className="text-3xl font-semibold text-foreground">All-inclusive basics and amenities</h2>
+        <h2 className="text-3xl font-semibold text-foreground">
+          All-inclusive basics and amenities {EMOJI.amenities}
+        </h2>
         <p className="text-base text-muted-foreground">
           An all-inclusive stay with private chef and staff means more fun and relaxation. We meet you in San Pedro and welcome you
           at the dock with tropical drinks, then handle the details so you can settle into vacation mode.

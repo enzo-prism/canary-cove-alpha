@@ -4,8 +4,10 @@ import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { IMAGES } from "@/lib/images"
+import { EMOJI } from "@/lib/emoji"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Card, CardContent } from "@/components/ui/card"
+import { StayMiniGallery } from "@/components/stay-mini-gallery"
 
 export const metadata: Metadata = {
   title: "About Canary Cove | Family Estate and On-Site Team",
@@ -513,6 +515,7 @@ export default function Page() {
               A private, family-owned estate with a dedicated team, quiet beaches, and dock access for effortless arrivals.
             </p>
           </div>
+          <StayMiniGallery />
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
             <CardContent className="space-y-8 p-6">
               <div className="space-y-3">
@@ -559,7 +562,7 @@ export default function Page() {
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
             <CardContent className="space-y-6 p-6">
               <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-foreground">Guest Testimonials</h2>
+                <h2 className="text-2xl font-semibold text-foreground">Guest Testimonials {EMOJI.reviews}</h2>
                 <p className="text-base text-muted-foreground">
                   Notes from guest books and letters shared over the years.
                 </p>

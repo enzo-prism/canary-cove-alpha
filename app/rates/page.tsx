@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { NitroxPopover } from "@/components/nitrox-popover"
@@ -90,7 +91,9 @@ export default function Page() {
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-12">
           <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Canary Cove Rates</h1>
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+              Canary Cove Rates {EMOJI.rates}
+            </h1>
           </div>
 
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">

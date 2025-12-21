@@ -1,6 +1,7 @@
 import Image from "next/image"
 import type { Metadata } from "next"
 
+import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
@@ -45,7 +46,9 @@ export default function Page() {
           </Card>
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
             <CardHeader className="p-6 pb-4">
-              <CardTitle className="text-2xl font-semibold text-foreground">How dining works</CardTitle>
+              <CardTitle className="text-2xl font-semibold text-foreground">
+                How dining works {EMOJI.chef}
+              </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 px-6 pb-6 pt-0">
               <p className="text-base text-muted-foreground">

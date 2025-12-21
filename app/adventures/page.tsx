@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
+import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 import { IMAGES } from "@/lib/images"
 
 export const metadata: Metadata = {
@@ -23,6 +24,7 @@ export default function Page() {
               From reef dives to sandbar picnics and boat days, we line up the crews and routes so you can just show up.
             </p>
           </div>
+          <WaysToEnjoy />
           <GalleryGrid
             items={[
               IMAGES.tubing,

@@ -5,6 +5,7 @@ import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { StayAmenities } from "@/components/stay-amenities"
 import { StayHighlights } from "@/components/stay-highlights"
+import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { IMAGES } from "@/lib/images"
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function Page() {
               One private estate with beach, docks, suites, and open-air living—reserved entirely for your group.
             </p>
           </div>
+          <StayMiniGallery />
           <StayHighlights />
           <StayAmenities />
           <GalleryGrid
