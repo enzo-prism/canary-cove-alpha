@@ -54,7 +54,7 @@ export function BookingForm({ className }: BookingFormProps) {
           <CardHeader className="space-y-3 p-0">
             <Badge
               variant="secondary"
-              className="w-fit gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-primary"
+              className="w-fit gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black"
             >
               <Send className="h-4 w-4" />
               Request to book {EMOJI.book}

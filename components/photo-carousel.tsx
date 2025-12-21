@@ -134,8 +134,10 @@ export function PhotoCarousel() {
                       key={index}
                       type="button"
                       onClick={() => scrollTo(index)}
-                      className={`h-2 rounded-full transition-all ${
-                        selectedIndex === index ? "w-8 bg-foreground" : "w-2 bg-muted-foreground/40"
+                      className={`h-2 rounded-full transition-all motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100 ${
+                        selectedIndex === index
+                          ? "w-8 bg-foreground"
+                          : "w-2 bg-muted-foreground/40 hover:bg-foreground/60"
                       }`}
                       aria-label={`Go to slide ${index + 1}`}
                     />

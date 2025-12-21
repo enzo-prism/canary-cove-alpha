@@ -53,7 +53,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={sfPro.variable}>
-      <body className={`${sfPro.className} font-sans antialiased selection:bg-primary/10 selection:text-primary`}>
+      <body className={`${sfPro.className} font-sans antialiased selection:bg-primary/10 selection:text-black`}>
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
         <Analytics />

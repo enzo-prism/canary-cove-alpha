@@ -87,7 +87,7 @@ export function SiteSearch({
                     router.push(item.href)
                     setOpen(false)
                   }}
-                  className="flex cursor-pointer flex-col gap-0.5 rounded-xl px-4 py-3 text-sm text-foreground outline-none aria-selected:bg-primary/10 aria-selected:text-primary"
+                  className="flex cursor-pointer flex-col gap-0.5 rounded-xl px-4 py-3 text-sm text-foreground outline-none aria-selected:bg-primary/10 aria-selected:text-black"
                 >
                   <span className="font-medium">{item.title}</span>
                   <span className="text-xs text-muted-foreground">{item.section}</span>

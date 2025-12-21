@@ -27,7 +27,7 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
             if (item.type !== "link") return null
             const active = isActive(item.href)
             const baseClasses =
-              "inline-flex flex-row items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40"
+              "relative inline-flex flex-row items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-[transform,color,background-color,box-shadow] duration-200 ease-out motion-reduce:transition-none motion-reduce:transform-none motion-safe:hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/40 after:absolute after:inset-x-4 after:bottom-1 after:h-px after:rounded-full after:bg-primary/60 after:scale-x-0 after:origin-left after:transition-transform after:duration-300 after:ease-out"
             if (item.cta) {
               return (
                 <NavigationMenuItem key={item.label}>
@@ -52,8 +52,8 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       baseClasses,
-                      "text-muted-foreground hover:text-foreground hover:bg-primary/5",
-                      active && "bg-primary/10 text-foreground",
+                      "text-muted-foreground hover:text-foreground hover:bg-primary/5 hover:shadow-[0_8px_18px_rgba(15,23,42,0.08)] hover:after:scale-x-100",
+                      active && "bg-primary/10 text-foreground after:scale-x-100",
                     )}
                   >
                     {item.label}

@@ -23,7 +23,7 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
             key={item.label}
             asChild
             variant="ghost"
-            className="h-auto w-full justify-start rounded-2xl bg-white/85 px-5 py-3 text-lg font-medium text-foreground shadow-sm shadow-black/5 transition hover:-translate-y-0.5 hover:bg-primary/5 hover:text-foreground hover:shadow-lg hover:shadow-primary/10"
+            className="h-auto w-full justify-start rounded-2xl bg-white/85 px-5 py-3 text-lg font-medium text-foreground shadow-sm shadow-black/5 hover:bg-primary/5 hover:text-foreground hover:shadow-lg hover:shadow-primary/15"
           >
             <Link href={item.href} onClick={onNavigate}>
               {item.label}{" "}

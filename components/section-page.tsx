@@ -55,7 +55,7 @@ export function SectionPageContent({ eyebrow, title, intro, sections, aside }: S
                   asChild
                   variant="outline"
                   size="sm"
-                  className="rounded-full border-border/70 bg-white/80 px-4 py-2 text-sm font-medium text-foreground transition hover:-translate-y-0.5 hover:border-primary hover:bg-primary/10 hover:text-primary"
+                  className="rounded-full border-border/70 bg-white/80 px-4 py-2 text-sm font-medium text-foreground hover:border-primary hover:bg-primary/10 hover:text-black"
                 >
                   <Link href={`#${section.id}`}>{section.label}</Link>
                 </Button>
