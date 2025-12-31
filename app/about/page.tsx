@@ -8,6 +8,7 @@ import { EMOJI } from "@/lib/emoji"
 import { Card, CardContent } from "@/components/ui/card"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { filterHighResGalleryItems } from "@/lib/gallery-utils"
 
 export const metadata: Metadata = {
   title: "About Canary Cove | Family Estate and On-Site Team",
@@ -503,6 +504,25 @@ const TESTIMONIALS: TestimonialGroup[] = [
   },
 ]
 
+const aboutGalleryItems = [
+  IMAGES.villaPool,
+  IMAGES.livingRoom,
+  IMAGES.villaBedroom,
+  IMAGES.wedding,
+  IMAGES.romanticViews,
+  IMAGES.mainDock,
+  IMAGES.helipad,
+  IMAGES.logoDrink,
+  IMAGES.diningRoom,
+  IMAGES.villaLawn,
+  IMAGES.villaSign,
+  IMAGES.hammock,
+  IMAGES.bikes,
+  IMAGES.drinksBar,
+  IMAGES.viewFromKitchen,
+]
+const aboutSliderItems = filterHighResGalleryItems(aboutGalleryItems)
+
 export default function Page() {
   return (
     <main className="min-h-screen">
@@ -515,7 +535,7 @@ export default function Page() {
               A private, family-owned estate with a dedicated team, quiet beaches, and dock access for effortless arrivals.
             </p>
           </div>
-          <StayMiniGallery />
+          <StayMiniGallery items={aboutSliderItems} />
           <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
             <CardContent className="space-y-8 p-6">
               <div className="space-y-3">
@@ -570,25 +590,7 @@ export default function Page() {
               <TestimonialsGrid groups={TESTIMONIALS} />
             </CardContent>
           </Card>
-          <GalleryGrid
-            items={[
-              IMAGES.villaPool,
-              IMAGES.livingRoom,
-              IMAGES.villaBedroom,
-              IMAGES.wedding,
-              IMAGES.romanticViews,
-              IMAGES.mainDock,
-              IMAGES.helipad,
-              IMAGES.logoDrink,
-              IMAGES.diningRoom,
-              IMAGES.villaLawn,
-              IMAGES.villaSign,
-              IMAGES.hammock,
-              IMAGES.bikes,
-              IMAGES.drinksBar,
-              IMAGES.viewFromKitchen,
-            ]}
-          />
+          <GalleryGrid items={aboutGalleryItems} />
         </div>
       </section>
       <Footer />

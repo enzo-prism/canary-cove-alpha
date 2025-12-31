@@ -54,8 +54,11 @@ export function Header() {
       }`}
     >
       <div className={`mx-auto flex max-w-6xl xl:max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8 ${scrolled ? "py-3" : "py-5"}`}>
-        <Link href="/" className="flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground">
-          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[3px] bg-[#1f6f3f]">
+        <Link
+          href="/"
+          className="group flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground focus-ring"
+        >
+          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[3px] bg-[#1f6f3f] transition-all duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-[0_12px_30px_rgba(15,23,42,0.18)] group-hover:ring-2 group-hover:ring-primary/30">
             <span className="relative block h-10 w-10">
               <Image
                 src="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1764690650/Canary_Cove_logo_website_suvurg.png"

@@ -41,7 +41,12 @@ export function Hero() {
           <SiteSearch className="max-w-2xl" />
 
           <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-            <Button asChild size="lg" className="focus-ring">
+            <Button
+              asChild
+              size="lg"
+              variant="outline"
+              className="border-primary/70 bg-white text-foreground shadow-sm shadow-primary/15 hover:bg-primary/10 hover:text-foreground focus-ring"
+            >
               <Link href="/book">
                 Book 🗓️ <ArrowUpRight className="h-4 w-4" />
               </Link>

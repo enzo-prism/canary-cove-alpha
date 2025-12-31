@@ -33,7 +33,11 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
                 <NavigationMenuItem key={item.label}>
                   <Button
                     asChild
-                    className={cn("rounded-full", active && "ring-2 ring-primary/30")}
+                    variant="outline"
+                    className={cn(
+                      "rounded-full border-primary/70 bg-white text-foreground shadow-sm shadow-primary/15 hover:bg-primary/10 hover:text-foreground",
+                      active && "ring-2 ring-primary/30",
+                    )}
                   >
                     <Link href={item.href} aria-current={active ? "page" : undefined}>
                       {item.label === "Book" && `${EMOJI.book} `}

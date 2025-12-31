@@ -9,12 +9,33 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { filterHighResGalleryItems } from "@/lib/gallery-utils"
 
 export const metadata: Metadata = {
   title: "Experiences at Canary Cove | Included Gear and Add-On Trips",
   description:
     "Explore included water toys and on-site amenities, then add diving, fishing, or island excursions planned around your pace.",
 }
+
+const experienceGalleryItems = [
+  IMAGES.tubing,
+  IMAGES.platformFun,
+  IMAGES.familyScuba,
+  IMAGES.divingLessons,
+  IMAGES.divingFun,
+  IMAGES.turtleDive,
+  IMAGES.scubaPhoto,
+  IMAGES.romanticViews,
+  IMAGES.caveTubing,
+  IMAGES.landAdventure,
+  { ...IMAGES.zooVisit, caption: "Zoo" },
+  IMAGES.belizeSign,
+  IMAGES.adventureGroup,
+  IMAGES.mainDock,
+  IMAGES.gilBoat,
+  IMAGES.drinksBar,
+]
+const experienceSliderItems = filterHighResGalleryItems(experienceGalleryItems)
 
 export default function Page() {
   return (
@@ -28,7 +49,7 @@ export default function Page() {
               Calm mornings, adrenaline afternoons, and sunset cruises—all planned around the tides and your pace.
             </p>
           </div>
-          <ExperiencesMiniGallery />
+          <ExperiencesMiniGallery items={experienceSliderItems} />
           <div className="grid gap-6 lg:grid-cols-2">
             <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
               <CardHeader className="p-6 pb-4">
@@ -94,26 +115,7 @@ export default function Page() {
             <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.experiences} />
           </div>
           <WaysToEnjoy />
-          <GalleryGrid
-            items={[
-              IMAGES.tubing,
-              IMAGES.platformFun,
-              IMAGES.familyScuba,
-              IMAGES.divingLessons,
-              IMAGES.divingFun,
-              IMAGES.turtleDive,
-              IMAGES.scubaPhoto,
-              IMAGES.romanticViews,
-              IMAGES.caveTubing,
-              IMAGES.landAdventure,
-              { ...IMAGES.zooVisit, caption: "Zoo" },
-              IMAGES.belizeSign,
-              IMAGES.adventureGroup,
-              IMAGES.mainDock,
-              IMAGES.gilBoat,
-              IMAGES.drinksBar,
-            ]}
-          />
+          <GalleryGrid items={experienceGalleryItems} />
         </div>
       </section>
       <Footer />

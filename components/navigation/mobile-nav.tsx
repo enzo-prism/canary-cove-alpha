@@ -46,7 +46,13 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
       </div>
       <div className="flex flex-col gap-2 rounded-2xl bg-white/75 p-3 shadow-inner shadow-black/5">
         {ctas.map((item) => (
-          <Button key={item.label} asChild size="lg" className="w-full rounded-xl">
+          <Button
+            key={item.label}
+            asChild
+            size="lg"
+            variant="outline"
+            className="w-full rounded-xl border-primary/70 bg-white text-foreground shadow-sm shadow-primary/10 hover:bg-primary/10 hover:text-foreground"
+          >
             <Link href={item.href} onClick={onNavigate}>
               {item.label === "Book" && `${EMOJI.book} `}
               {item.label === "Contact" && `${EMOJI.contact} `}

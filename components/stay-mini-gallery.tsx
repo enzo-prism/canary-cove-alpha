@@ -15,6 +15,12 @@ import {
 } from "@/components/ui/carousel"
 import { IMAGES } from "@/lib/images"
 
+type GalleryItem = {
+  src: string
+  alt: string
+  caption?: string
+}
+
 const miniPhotos = [
   { ...IMAGES.villaPool, caption: "Infinity pool and swim-up bar" },
   { ...IMAGES.villaInteriorWide, caption: "Open-air villa interior" },
@@ -22,7 +28,12 @@ const miniPhotos = [
   { ...IMAGES.viewFromKitchen, caption: "Views toward the water" },
 ]
 
-export function StayMiniGallery() {
+type StayMiniGalleryProps = {
+  items?: GalleryItem[]
+}
+
+export function StayMiniGallery({ items }: StayMiniGalleryProps) {
+  const galleryItems = items ?? miniPhotos
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -53,7 +64,7 @@ export function StayMiniGallery() {
       <CardContent className="space-y-4 p-4 sm:p-6">
         <Carousel opts={{ align: "start", loop: true }} setApi={setApi}>
           <CarouselContent>
-            {miniPhotos.map((photo, index) => (
+            {galleryItems.map((photo, index) => (
               <CarouselItem key={photo.src}>
                 <AspectRatio ratio={16 / 9} className="relative overflow-hidden rounded-2xl bg-surface-elevated">
                   <Image
@@ -64,9 +75,11 @@ export function StayMiniGallery() {
                     sizes="(min-width: 1024px) 1000px, 100vw"
                     className="object-cover"
                   />
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent p-3">
-                    <p className="text-xs font-medium text-white/90">{photo.caption}</p>
-                  </div>
+                  {photo.caption ? (
+                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent p-3">
+                      <p className="text-xs font-medium text-white/90">{photo.caption}</p>
+                    </div>
+                  ) : null}
                 </AspectRatio>
               </CarouselItem>
             ))}
@@ -81,7 +94,7 @@ export function StayMiniGallery() {
           />
         </Carousel>
         <div className="flex flex-wrap justify-center gap-2">
-          {miniPhotos.map((_, index) => (
+          {galleryItems.map((_, index) => (
             <button
               key={index}
               type="button"

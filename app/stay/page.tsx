@@ -9,12 +9,47 @@ import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { IMAGES } from "@/lib/images"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { filterHighResGalleryItems } from "@/lib/gallery-utils"
 
 export const metadata: Metadata = {
   title: "Stay at Canary Cove | Beachfront Villa, Suites, and Docks",
   description:
     "Private villa estate with suites, docks, pool, hot tub, and open-air living reserved entirely for your group in Belize.",
 }
+
+const stayGalleryItems = [
+  IMAGES.villaPool,
+  IMAGES.villaLawn,
+  IMAGES.villaSign,
+  IMAGES.mainDock,
+  IMAGES.hobieCat,
+  IMAGES.hammock,
+  IMAGES.grillPool,
+  IMAGES.bikes,
+  IMAGES.hotTub,
+  { ...IMAGES.villaInteriorWide, caption: "Villa interior, wide view" },
+  IMAGES.livingRoom,
+  { ...IMAGES.livingRoomAlt, caption: "Living room" },
+  { ...IMAGES.livingRoomTv, caption: "Living room" },
+  { ...IMAGES.livingRoomPhoto, caption: "Living room" },
+  { ...IMAGES.viewFromKitchen, caption: "View from kitchen" },
+  { ...IMAGES.kitchen, caption: "Kitchen" },
+  { ...IMAGES.kitchenAlt, caption: "Kitchen" },
+  { ...IMAGES.diningRoom, caption: "Dining room" },
+  { ...IMAGES.diningRoomAlt, caption: "Dining room" },
+  { ...IMAGES.villaMasterBedroom, caption: "Master bedroom, poolside view" },
+  { ...IMAGES.villaBedroom, caption: "Bedroom 2 of 3, poolside view" },
+  { ...IMAGES.bedroomGardenView, caption: "Bedroom 3 of 3, garden view" },
+  { ...IMAGES.bunkBeds, caption: "Bunk beds" },
+  { ...IMAGES.bedDetail, caption: "Bed detail" },
+  { ...IMAGES.bedDetailAlt, caption: "Bed detail" },
+  { ...IMAGES.bathroomMaster, caption: "Master bathroom" },
+  { ...IMAGES.bathroomMasterAlt, caption: "Master bath" },
+  { ...IMAGES.bathroomSuite, caption: "Living room bathroom" },
+  { ...IMAGES.bathroomAlt, caption: "Bathroom" },
+  IMAGES.logoDrink,
+]
+const staySliderItems = filterHighResGalleryItems(stayGalleryItems)
 
 export default function Page() {
   return (
@@ -28,7 +63,7 @@ export default function Page() {
               One private estate with beach, docks, suites, and open-air living—reserved entirely for your group.
             </p>
           </div>
-          <StayMiniGallery />
+          <StayMiniGallery items={staySliderItems} />
           <StayHighlights />
           <div className="space-y-4">
             <div className="space-y-2">
@@ -40,40 +75,7 @@ export default function Page() {
             <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.stay} />
           </div>
           <StayAmenities />
-          <GalleryGrid
-            items={[
-              IMAGES.villaPool,
-              IMAGES.villaLawn,
-              IMAGES.villaSign,
-              IMAGES.mainDock,
-              IMAGES.hobieCat,
-              IMAGES.hammock,
-              IMAGES.grillPool,
-              IMAGES.bikes,
-              IMAGES.hotTub,
-              { ...IMAGES.villaInteriorWide, caption: "Villa interior, wide view" },
-              IMAGES.livingRoom,
-              { ...IMAGES.livingRoomAlt, caption: "Living room" },
-              { ...IMAGES.livingRoomTv, caption: "Living room" },
-              { ...IMAGES.livingRoomPhoto, caption: "Living room" },
-              { ...IMAGES.viewFromKitchen, caption: "View from kitchen" },
-              { ...IMAGES.kitchen, caption: "Kitchen" },
-              { ...IMAGES.kitchenAlt, caption: "Kitchen" },
-              { ...IMAGES.diningRoom, caption: "Dining room" },
-              { ...IMAGES.diningRoomAlt, caption: "Dining room" },
-              { ...IMAGES.villaMasterBedroom, caption: "Master bedroom, poolside view" },
-              { ...IMAGES.villaBedroom, caption: "Bedroom 2 of 3, poolside view" },
-              { ...IMAGES.bedroomGardenView, caption: "Bedroom 3 of 3, garden view" },
-              { ...IMAGES.bunkBeds, caption: "Bunk beds" },
-              { ...IMAGES.bedDetail, caption: "Bed detail" },
-              { ...IMAGES.bedDetailAlt, caption: "Bed detail" },
-              { ...IMAGES.bathroomMaster, caption: "Master bathroom" },
-              { ...IMAGES.bathroomMasterAlt, caption: "Master bath" },
-              { ...IMAGES.bathroomSuite, caption: "Living room bathroom" },
-              { ...IMAGES.bathroomAlt, caption: "Bathroom" },
-              IMAGES.logoDrink,
-            ]}
-          />
+          <GalleryGrid items={stayGalleryItems} />
         </div>
       </section>
       <Footer />

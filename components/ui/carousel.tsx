@@ -180,7 +180,10 @@ const CarouselPrevious = React.forwardRef<
       data-slot="carousel-previous"
       variant={variant}
       size={size}
-      className={cn('absolute left-0 top-1/2 -translate-y-1/2', className)}
+      className={cn(
+        'absolute left-0 top-1/2 -translate-y-1/2 hover:opacity-80 motion-safe:hover:-translate-y-1/2 motion-safe:active:-translate-y-1/2',
+        className,
+      )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
       {...props}
@@ -204,7 +207,10 @@ const CarouselNext = React.forwardRef<
       data-slot="carousel-next"
       variant={variant}
       size={size}
-      className={cn('absolute right-0 top-1/2 -translate-y-1/2', className)}
+      className={cn(
+        'absolute right-0 top-1/2 -translate-y-1/2 hover:opacity-80 motion-safe:hover:-translate-y-1/2 motion-safe:active:-translate-y-1/2',
+        className,
+      )}
       disabled={!canScrollNext}
       onClick={scrollNext}
       {...props}

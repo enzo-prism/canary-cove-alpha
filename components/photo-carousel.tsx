@@ -183,23 +183,25 @@ export function PhotoCarousel() {
                     View full gallery
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="max-w-5xl">
+                <DialogContent className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]">
                   <DialogHeader>
                     <DialogTitle>Canary Cove photo gallery</DialogTitle>
                     <DialogDescription>Browse a few highlights from the villa, beach, and docks.</DialogDescription>
                   </DialogHeader>
-                  <div className="grid gap-4 sm:grid-cols-2">
-                    {photos.map((photo) => (
-                      <div key={photo.src} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-elevated">
-                        <Image
-                          src={photo.src}
-                          alt={photo.alt}
-                          fill
-                          className="object-cover"
-                          sizes="(min-width: 1024px) 520px, 100vw"
-                        />
-                      </div>
-                    ))}
+                  <div className="min-h-0 flex-1 overflow-y-auto pr-2 sm:pr-3">
+                    <div className="grid gap-4 sm:grid-cols-2">
+                      {photos.map((photo) => (
+                        <div key={photo.src} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-elevated">
+                          <Image
+                            src={photo.src}
+                            alt={photo.alt}
+                            fill
+                            className="object-cover"
+                            sizes="(min-width: 1024px) 520px, 100vw"
+                          />
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </DialogContent>
               </Dialog>
