@@ -56,6 +56,7 @@ export function PhotoCarousel() {
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({})
+  const galleryDialogId = "photo-carousel-gallery"
 
   const onSelect = useCallback(
     (carouselApi: CarouselApi) => {
@@ -178,12 +179,15 @@ export function PhotoCarousel() {
                 boats, and the way we celebrate.
               </p>
               <Dialog>
-                <DialogTrigger asChild>
+                <DialogTrigger asChild aria-controls={galleryDialogId}>
                   <Button variant="outline" size="sm" className="mt-6 rounded-full">
                     View full gallery
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]">
+                <DialogContent
+                  id={galleryDialogId}
+                  className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]"
+                >
                   <DialogHeader>
                     <DialogTitle>Canary Cove photo gallery</DialogTitle>
                     <DialogDescription>Browse a few highlights from the villa, beach, and docks.</DialogDescription>

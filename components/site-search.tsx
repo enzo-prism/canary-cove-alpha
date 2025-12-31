@@ -22,6 +22,7 @@ export function SiteSearch({
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [open, setOpen] = useState(false)
+  const dialogId = "site-search-dialog"
 
   const items = useMemo(() => SEARCH_ITEMS, [])
 
@@ -46,7 +47,7 @@ export function SiteSearch({
   return (
     <div className={cn("w-full max-w-xl", className)}>
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
+        <DialogTrigger asChild aria-controls={dialogId}>
           <Button
             type="button"
             variant="outline"
@@ -62,7 +63,7 @@ export function SiteSearch({
             </span>
           </Button>
         </DialogTrigger>
-        <DialogContent className="max-w-xl gap-0 overflow-hidden p-0">
+        <DialogContent id={dialogId} className="max-w-xl gap-0 overflow-hidden p-0">
           <DialogHeader className="sr-only">
             <DialogTitle>Site search</DialogTitle>
           </DialogHeader>

@@ -23,6 +23,7 @@ export function Header() {
   const pathname = normalizePath(usePathname() ?? "/")
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const mobileSheetId = "mobile-nav-sheet"
 
   const isActive = useCallback(
     (href: string) => {
@@ -78,6 +79,7 @@ export function Header() {
           <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
             <SheetTrigger asChild>
               <Button
+                aria-controls={mobileSheetId}
                 variant="outline"
                 size="icon"
                 className="rounded-full border border-border/70 bg-white/70 text-foreground hover:bg-white"
@@ -90,6 +92,7 @@ export function Header() {
               side="right"
               title="Navigation"
               hideClose
+              id={mobileSheetId}
               className="w-full border-none bg-surface px-6 pb-10 pt-8 sm:w-[70vw]"
             >
               <SheetHeader className="flex-row items-center justify-between gap-3 p-0">

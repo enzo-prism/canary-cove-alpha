@@ -4,7 +4,7 @@ import { ArrowUpRight } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { SiteSearch } from "@/components/site-search"
 import { Badge } from "@/components/ui/badge"
-import { Card, CardContent } from "@/components/ui/card"
+import { HeroImageRotator } from "@/components/hero-image-rotator"
 
 export function Hero() {
   return (
@@ -65,26 +65,7 @@ export function Hero() {
         </div>
 
         <div className="relative order-1 lg:order-2">
-          <Card className="rounded-[32px] border border-white/40 bg-white/80 p-4 shadow-[0_35px_120px_rgba(15,23,42,0.15)] backdrop-blur-xl">
-            <CardContent className="p-0">
-              <div className="aspect-[4/3] overflow-hidden rounded-[28px] border border-white/60 sm:aspect-video">
-                <video
-                  className="h-full w-full object-cover"
-                  autoPlay
-                  loop
-                  muted
-                  playsInline
-                  preload="auto"
-                  poster="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp"
-                >
-                  <source
-                    src="https://res.cloudinary.com/dhqpqfw6w/video/upload/v1762995355/pv_mwqjho.mp4"
-                    type="video/mp4"
-                  />
-                </video>
-              </div>
-            </CardContent>
-          </Card>
+          <HeroImageRotator />
         </div>
       </div>
     </section>

@@ -13,9 +13,30 @@ export const TESTIMONIAL_SPOTLIGHTS = {
       author: "R. And family",
     },
     {
+      year: "3/2016",
+      quote:
+        "Thank you so much Nathalie, Gil, Palma, Michael for being so kind to us, and for creating such an unforgettable experience. We are so grateful!",
+      author: "R.",
+    },
+    {
       year: "7/2015",
       quote: "One of the most amazing houses I've ever stayed at. Impeccable service. Just wow! Can't wait to come back.",
       author: "E.",
+    },
+    {
+      year: "7/2015",
+      quote: "House & food & staff were a perfect combo. View was amazing as well!",
+      author: "M., Texas",
+    },
+    {
+      year: "7/2015",
+      quote: "Had a wonderful time, amazing food and the staff was so nice. Thank you!",
+      author: "T.",
+    },
+    {
+      year: "3/2015",
+      quote: "Best trip ever! I definitely won't forget it!",
+      author: "G., kid",
     },
   ],
   stay: [

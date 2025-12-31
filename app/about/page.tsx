@@ -536,7 +536,10 @@ export default function Page() {
             </p>
           </div>
           <StayMiniGallery items={aboutSliderItems} />
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+          <Card
+            id="guest-testimonials"
+            className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+          >
             <CardContent className="space-y-8 p-6">
               <div className="space-y-3">
                 <h2 className="text-2xl font-semibold text-foreground">Don's Dream: Canary Cove</h2>
