@@ -119,10 +119,6 @@ export const IMAGES = {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059666/Canary-Cove-Nathalie_Eat_xjcxmt.webp",
     alt: "Chef carrying plated dishes with a smile",
   },
-  familyScuba: {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059678/IMG_8895_Guests_SCUBA_and_Snorkel_gallery-1-400x284_w6uizz.webp",
-    alt: "Family preparing for scuba and snorkel",
-  },
   bathroomMaster: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059672/canarycove-haydeelustudio-6-400x284_tqkqk0.webp",
     alt: "Villa master bathroom with double vanity",

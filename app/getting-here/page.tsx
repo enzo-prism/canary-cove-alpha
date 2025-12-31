@@ -64,7 +64,10 @@ export default function Page() {
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
-            <Card className="rounded-[20px] border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+            <Card
+              id="arrival-steps"
+              className="scroll-mt-24 rounded-[20px] border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+            >
               <CardContent className="p-6">
                 <ol className="relative space-y-6 border-l border-border/70 pl-6">
                   {steps.map((step, index) => (
@@ -140,7 +143,10 @@ export default function Page() {
             <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.gettingHere} />
           </div>
 
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+          <Card
+            id="getting-around"
+            className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+          >
             <CardContent className="space-y-4 p-6">
               <h2 className="text-2xl font-semibold text-foreground">Arrival snapshots</h2>
               <GalleryGrid

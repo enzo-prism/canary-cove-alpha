@@ -38,7 +38,10 @@ export default function Page() {
                 </p>
               </div>
 
-              <Card className="rounded-[28px] border border-border/80 bg-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
+              <Card
+                id="availability-calendar"
+                className="scroll-mt-24 rounded-[28px] border border-border/80 bg-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
+              >
                 <CardHeader className="px-4 pb-3 pt-4">
                   <Badge
                     variant="outline"
@@ -65,7 +68,10 @@ export default function Page() {
 
             <div className="order-3 space-y-6 lg:col-span-2">
               <BookingPolicies />
-              <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+              <Card
+                id="comfort-confidence"
+                className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+              >
                 <CardHeader className="px-5 pb-3 pt-5">
                   <Badge
                     variant="outline"

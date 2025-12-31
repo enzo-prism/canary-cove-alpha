@@ -98,7 +98,10 @@ export default function Page() {
             </h1>
           </div>
 
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+          <Card
+            id="included-costs"
+            className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+          >
             <CardHeader className="p-6 pb-3">
               <CardTitle className="text-2xl font-semibold text-foreground">A Note From Us</CardTitle>
             </CardHeader>
@@ -134,7 +137,9 @@ export default function Page() {
 
           <div className="space-y-8">
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Villa Accommodations</h2>
+              <h2 id="villa-accommodations" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Villa Accommodations
+              </h2>
               {villaSeasons.map((season) => (
                 <Card
                   key={season.name}
@@ -164,7 +169,9 @@ export default function Page() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Main House Accommodations</h2>
+              <h2 id="main-house-accommodations" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Main House Accommodations
+              </h2>
               <Alert className="border-primary/20 bg-primary/5">
                 <AlertTitle className="text-base font-semibold text-foreground">Repeat guests only</AlertTitle>
                 <AlertDescription className="text-sm text-muted-foreground">
@@ -190,7 +197,9 @@ export default function Page() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Boat Services</h2>
+              <h2 id="boat-services" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Boat Services
+              </h2>
               <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
                 <CardContent className="p-6">
                   <Table>
@@ -228,7 +237,9 @@ export default function Page() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Fishing Packages</h2>
+              <h2 id="fishing-packages" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Fishing Packages
+              </h2>
               <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
                 <CardContent className="space-y-5 p-6">
                   <div>
@@ -260,7 +271,9 @@ export default function Page() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Water Sports Adventures</h2>
+              <h2 id="water-sports-adventures" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Water Sports Adventures
+              </h2>
               <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
                 <CardContent className="space-y-6 p-6">
                   <div>
@@ -302,7 +315,9 @@ export default function Page() {
             </div>
 
             <div className="space-y-5">
-              <h2 className="text-3xl font-semibold text-foreground">Golf Cart Rentals</h2>
+              <h2 id="golf-cart-rentals" className="scroll-mt-24 text-3xl font-semibold text-foreground">
+                Golf Cart Rentals
+              </h2>
               <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
                 <CardContent className="space-y-5 p-6">
                   <div>

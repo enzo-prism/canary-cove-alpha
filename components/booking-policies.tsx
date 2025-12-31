@@ -18,13 +18,17 @@ export function BookingPolicies() {
       </CardHeader>
       <CardContent className="px-5 pb-5 pt-0">
         <Accordion type="multiple" defaultValue={["payment", "cancellation"]} className="space-y-2">
-          <AccordionItem value="payment" className="border-border/60">
+          <AccordionItem id="payment-terms" value="payment" className="scroll-mt-24 border-border/60">
             <AccordionTrigger className="text-base font-semibold text-foreground">Payment Terms</AccordionTrigger>
             <AccordionContent className="text-sm text-muted-foreground">
               50% down, balance due 45 business days prior to arrival.
             </AccordionContent>
           </AccordionItem>
-          <AccordionItem value="cancellation" className="border-border/60">
+          <AccordionItem
+            id="cancellation-policy"
+            value="cancellation"
+            className="scroll-mt-24 border-border/60"
+          >
             <AccordionTrigger className="text-base font-semibold text-foreground">Cancellation Policy</AccordionTrigger>
             <AccordionContent className="text-sm text-muted-foreground">
               <ul className="space-y-2 pl-4">

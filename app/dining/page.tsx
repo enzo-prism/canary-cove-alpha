@@ -46,7 +46,10 @@ export default function Page() {
               </AspectRatio>
             </CardContent>
           </Card>
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+          <Card
+            id="how-dining-works"
+            className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+          >
             <CardHeader className="p-6 pb-4">
               <CardTitle className="text-2xl font-semibold text-foreground">
                 How dining works {EMOJI.chef}
