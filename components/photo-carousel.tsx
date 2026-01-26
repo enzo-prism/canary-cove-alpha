@@ -121,10 +121,11 @@ export function PhotoCarousel() {
                           sizes="(min-width: 1280px) 1200px, (min-width: 1024px) 900px, 100vw"
                           onLoadingComplete={() => handleLoaded(index)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
                         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
-                          <p className="text-base text-white sm:text-lg">{photo.caption}</p>
-                          <p className="mt-2 hidden text-sm text-white/80 sm:block">{photo.detail}</p>
+                          <div className="max-w-2xl rounded-2xl border border-white/20 bg-black/55 p-4 backdrop-blur-sm sm:p-5">
+                            <p className="text-base text-white sm:text-lg">{photo.caption}</p>
+                            <p className="mt-2 hidden text-sm text-white/80 sm:block">{photo.detail}</p>
+                          </div>
                         </div>
                       </div>
                     </CarouselItem>
@@ -133,19 +134,16 @@ export function PhotoCarousel() {
               </Carousel>
               <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-8">
                 <div className="flex items-center justify-between gap-3">
-                  <Badge
-                    variant="outline"
-                    className="border-white/60 bg-white/10 text-white"
-                  >
+                  <span className="rounded-full border border-white/30 bg-black/30 px-3 py-1 text-[11px] uppercase tracking-[0.32em] text-white/80 backdrop-blur-sm">
                     Gallery
-                  </Badge>
+                  </span>
                   <div className="pointer-events-auto">
                     <Dialog>
                       <DialogTrigger asChild aria-controls={galleryDialogId}>
                         <Button
-                          variant="outline"
+                          variant="ghost"
                           size="sm"
-                          className="border-white/70 text-white hover:bg-white hover:text-foreground"
+                          className="rounded-full border border-white/30 bg-black/30 px-4 text-xs uppercase tracking-[0.24em] text-white/80 backdrop-blur-sm hover:bg-white hover:text-foreground"
                         >
                           View full gallery
                         </Button>
@@ -187,7 +185,7 @@ export function PhotoCarousel() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="border border-white/70 bg-white/10 text-white hover:bg-white hover:text-foreground"
+                      className="border border-white/25 bg-black/30 text-white/80 hover:bg-white hover:text-foreground"
                       onClick={scrollPrev}
                       aria-label="Previous slide"
                     >
@@ -196,7 +194,7 @@ export function PhotoCarousel() {
                     <Button
                       variant="ghost"
                       size="icon"
-                      className="border border-white/70 bg-white/10 text-white hover:bg-white hover:text-foreground"
+                      className="border border-white/25 bg-black/30 text-white/80 hover:bg-white hover:text-foreground"
                       onClick={scrollNext}
                       aria-label="Next slide"
                     >
@@ -215,8 +213,8 @@ export function PhotoCarousel() {
               type="button"
               onClick={() => scrollTo(index)}
               className={cn(
-                "relative h-20 w-28 flex-none overflow-hidden rounded-2xl border border-border/60 bg-surface-elevated transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
-                selectedIndex === index ? "opacity-100 ring-2 ring-foreground/40" : "opacity-60 hover:opacity-100",
+                "relative h-20 w-28 flex-none overflow-hidden rounded-2xl border border-border/60 bg-surface-elevated transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-24 sm:w-32",
+                selectedIndex === index ? "opacity-100 ring-2 ring-foreground/40" : "opacity-55 hover:opacity-100",
               )}
               aria-label={`Go to slide ${index + 1}`}
             >

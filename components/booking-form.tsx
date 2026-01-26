@@ -23,16 +23,44 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
 
+const FORM_ENDPOINT = "https://formspree.io/f/xqeqllek"
+
 type BookingFormProps = {
   className?: string
 }
 
 export function BookingForm({ className }: BookingFormProps) {
   const [alertOpen, setAlertOpen] = useState(false)
+  const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
-    setAlertOpen(true)
+    if (status === "sending") return
+
+    setStatus("sending")
+    const form = event.currentTarget
+    const formData = new FormData(form)
+
+    try {
+      const response = await fetch(FORM_ENDPOINT, {
+        method: "POST",
+        body: formData,
+        headers: {
+          Accept: "application/json",
+        },
+      })
+
+      if (response.ok) {
+        form.reset()
+        setStatus("success")
+        setAlertOpen(true)
+        return
+      }
+
+      setStatus("error")
+    } catch (error) {
+      setStatus("error")
+    }
   }
 
   const fieldClassName =
@@ -42,8 +70,15 @@ export function BookingForm({ className }: BookingFormProps) {
   const selectClassName =
     "h-12 rounded-2xl border-border/80 bg-white/90 px-4 shadow-inner shadow-primary/5 focus:ring-primary/30"
 
+  const handleAlertChange = (open: boolean) => {
+    setAlertOpen(open)
+    if (!open && status === "success") {
+      setStatus("idle")
+    }
+  }
+
   return (
-    <AlertDialog open={alertOpen} onOpenChange={setAlertOpen}>
+    <AlertDialog open={alertOpen} onOpenChange={handleAlertChange}>
       <Card
         className={cn(
           "frosted-panel relative space-y-6 rounded-[32px] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]",
@@ -207,10 +242,17 @@ export function BookingForm({ className }: BookingFormProps) {
             </div>
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-              <Button type="submit" size="lg" className="w-full sm:w-auto focus-ring">
-                Send booking request
-                <Send className="h-4 w-4" />
-              </Button>
+              <div className="flex w-full flex-col gap-2 sm:w-auto">
+                <Button type="submit" size="lg" className="w-full sm:w-auto focus-ring" disabled={status === "sending"}>
+                  {status === "sending" ? "Sending request..." : "Send booking request"}
+                  <Send className="h-4 w-4" />
+                </Button>
+                {status === "error" ? (
+                  <p className="text-xs text-destructive">
+                    Something went wrong. Please try again or email us directly.
+                  </p>
+                ) : null}
+              </div>
               <p className="text-xs text-muted-foreground">
                 We only host one group at a time. Sending this form places a tentative hold while we confirm details.
               </p>
