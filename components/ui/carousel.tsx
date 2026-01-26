@@ -215,7 +215,7 @@ const CarouselContent = React.forwardRef<
         carouselRef(node)
       }}
       className={cn(
-        'overflow-hidden overscroll-x-contain overscroll-y-contain',
+        'overflow-hidden overscroll-x-contain overscroll-y-contain carousel-viewport',
         panClass,
         'cursor-grab select-none active:cursor-grabbing',
       )}

@@ -151,7 +151,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
       </div>
 
       <div
-        className="overflow-hidden touch-pan-y overscroll-x-contain overscroll-y-contain cursor-grab select-none active:cursor-grabbing"
+        className="overflow-hidden touch-pan-y overscroll-x-contain overscroll-y-contain carousel-viewport cursor-grab select-none active:cursor-grabbing"
         ref={(node) => {
           viewportNode.current = node
           viewportRef(node)

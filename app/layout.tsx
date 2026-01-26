@@ -50,8 +50,10 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={sfPro.variable}>
-      <body className={`${sfPro.className} font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}>
+    <html lang="en" className={`${sfPro.variable} overflow-x-hidden`}>
+      <body
+        className={`${sfPro.className} overflow-x-hidden font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
+      >
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
         <Analytics />
