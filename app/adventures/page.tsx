@@ -40,17 +40,17 @@ export default function Page() {
             items={[
               IMAGES.tubing,
               IMAGES.waterSlide,
-              IMAGES.hobieCat,
+              IMAGES.scubaPhoto,
               IMAGES.divingFun,
               IMAGES.turtleDive,
-              IMAGES.platformFun,
+              IMAGES.adventureGroup,
               IMAGES.caveTubing,
               IMAGES.fishingTrophy,
               IMAGES.lionFishCatch,
               IMAGES.mainDock,
               IMAGES.helipad,
               IMAGES.jungleAdventure,
-              IMAGES.familyScuba,
+              IMAGES.landAdventure,
               IMAGES.gilBoat,
             ]}
           />

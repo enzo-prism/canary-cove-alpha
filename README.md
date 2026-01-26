@@ -1,37 +1,8 @@
-# Canary Cove navbar structure
+# Canary Cove
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
+Marketing site for the Canary Cove private estate. Built with the Next.js App Router and Tailwind CSS.
 
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/enzo-design-prisms-projects/v0-canary-cove-navbar-structure)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/nmVYxB63RfA)
-
-## Overview
-
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
-
-## Deployment
-
-Your project is live at:
-
-**[https://vercel.com/enzo-design-prisms-projects/v0-canary-cove-navbar-structure](https://vercel.com/enzo-design-prisms-projects/v0-canary-cove-navbar-structure)**
-
-## Build your app
-
-Continue building your app on:
-
-**[https://v0.app/chat/nmVYxB63RfA](https://v0.app/chat/nmVYxB63RfA)**
-
-## How It Works
-
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
-
-## Local Development
-
-Even though the project syncs from v0, contributors often iterate locally before pushing updates. Common workflow:
+## Quick start
 
 ```bash
 pnpm install
@@ -45,10 +16,36 @@ npm install
 npm run dev
 ```
 
-- The dev server may pick a different port if `3000` is occupied; watch the CLI output.
-- Fonts are loaded via `next/font/local` from `font/`. Ensure those files exist before running `next build`.
-- Navigation content is defined in `lib/nav-items.ts` inside the `NAV_ITEMS` array. Edit that array when IA changes instead of touching JSX directly.
-- Desktop and mobile navs live in `components/navigation/desktop-nav.tsx` and `components/navigation/mobile-nav.tsx`, while `components/header.tsx` just composes them. Desktop dropdowns rely on internal hover state (no Radix), so labels must stay unique.
-- All leaf pages (Stay, Dining, etc.) render through `components/basic-page.tsx`, which includes the header, shared carousel, and footer. To add a new page, create `app/<segment>/page.tsx` that returns `<BasicPage title="Your Title" />`.
-- Both `app/globals.css` and `styles/globals.css` define color tokens; change them in tandem if you adjust the Canary-yellow palette.
-- The hero section streams a Cloudinary video—if you are offline, swap in a local MP4 or update the `poster` image so the section still renders.
+## Scripts
+
+- `pnpm dev`: Run the Next.js dev server.
+- `pnpm build`: Production build.
+- `pnpm start`: Serve the production build.
+- `pnpm lint`: Lint the repo.
+- `pnpm typecheck`: TypeScript check (`next build` ignores TS errors).
+- `pnpm test`: Run Vitest.
+- `pnpm test:e2e`: Run Playwright.
+
+## Project map
+
+- `app/page.tsx`: Homepage composition and section order (hero, film, search, testimonials).
+- `components/hero.tsx`: Hero copy and CTA overlay.
+- `components/hero-image-rotator.tsx`: Rotating hero background images (high-res only).
+- `components/navigation/desktop-nav.tsx`: Desktop nav UI and dropdown structure.
+- `components/navigation/mobile-nav.tsx`: Mobile nav UI.
+- `lib/nav-items.ts`: Navigation data source.
+- `lib/emoji.ts`: Emoji map used in nav items.
+- `components/site-search.tsx`: Search module on the homepage.
+- `lib/testimonial-spotlights.ts`: Testimonial copy.
+- `components/basic-page.tsx`: Shared layout for leaf pages.
+
+## Media notes
+
+- Image URLs live in `lib/images.ts` and use Cloudinary. Add new hosts to `next.config.mjs`.
+- Hero and testimonial images should be high resolution; update the arrays, not the JSX.
+- The homepage film is an inline video in `app/page.tsx`.
+
+## Styling notes
+
+- Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
+- Fonts are loaded via `next/font/local` from `font/`.

@@ -8,6 +8,7 @@ import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { Container } from "@/components/layout/container"
 
 export type SectionContent = {
   id: string
@@ -29,34 +30,21 @@ type SectionPageContentProps = {
 
 export function SectionPageContent({ eyebrow, title, intro, sections, aside }: SectionPageContentProps) {
   return (
-    <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 lg:px-8">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-b from-surface/80 via-white to-surface-muted/60" />
-      <div className="absolute left-[12%] top-[18%] -z-10 h-64 w-64 rounded-full bg-primary/10 blur-[120px]" />
-      <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
-
-      <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-10">
-        <Badge
-          variant="outline"
-          className="flex flex-wrap items-center gap-3 rounded-full border border-border/70 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.32em] text-muted-foreground backdrop-blur"
-        >
+    <section className="relative overflow-hidden py-16 sm:py-24 lg:py-28">
+      <Container className="flow flow-lg">
+        <Badge variant="outline" className="w-fit flex flex-wrap items-center gap-3">
           {eyebrow}
           <span className="h-1 w-1 rounded-full bg-primary" />
           One private estate
         </Badge>
 
-        <div className="grid items-start gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-          <div className="space-y-5">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">{title}</h1>
-            <p className="text-lg text-muted-foreground sm:text-xl">{intro}</p>
-            <div className="flex flex-wrap gap-2">
+        <div className="grid items-start gap-10 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="flow flow-md">
+            <h1 className="text-display">{title}</h1>
+            <p className="text-body text-foreground/80 sm:text-lg">{intro}</p>
+            <div className="flex flex-wrap gap-3">
               {sections.map((section) => (
-                <Button
-                  key={section.id}
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="rounded-full border-border/70 bg-white/80 px-4 py-2 text-sm font-medium text-foreground hover:border-primary hover:bg-primary/10 hover:text-black"
-                >
+                <Button key={section.id} asChild variant="outline" size="sm" className="rounded-full">
                   <Link href={`#${section.id}`}>{section.label}</Link>
                 </Button>
               ))}
@@ -64,32 +52,25 @@ export function SectionPageContent({ eyebrow, title, intro, sections, aside }: S
           </div>
 
           {aside && (
-            <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.08)]">
-              <CardContent className="p-5">{aside}</CardContent>
+            <Card className="rounded-[28px] border border-border/70 bg-surface">
+              <CardContent className="p-6">{aside}</CardContent>
             </Card>
           )}
         </div>
 
-        <div className="space-y-6">
+        <div className="flow flow-md">
           {sections.map((section) => (
-            <Card
-              key={section.id}
-              id={section.id}
-              className="scroll-mt-28 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
-            >
-              <CardContent className="space-y-3 p-6">
-                <Badge
-                  variant="outline"
-                  className="w-fit border-border/70 text-[11px] uppercase tracking-[0.3em] text-muted-foreground"
-                >
+            <Card key={section.id} id={section.id} className="scroll-mt-28 rounded-[28px] border border-border/70 bg-surface">
+              <CardContent className="p-6 flow flow-sm">
+                <Badge variant="outline" className="w-fit">
                   {section.label}
                 </Badge>
-                <h2 className="text-2xl font-semibold text-foreground sm:text-3xl">{section.title}</h2>
-                <p className="text-base text-muted-foreground">{section.description}</p>
+                <h2 className="text-section">{section.title}</h2>
+                <p className="text-body text-foreground/80">{section.description}</p>
                 {section.bullets && section.bullets.length > 0 && (
-                  <ul className="grid gap-2 sm:grid-cols-2">
+                  <ul className="grid gap-3 sm:grid-cols-2">
                     {section.bullets.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-foreground">
+                      <li key={item} className="flex items-start gap-3 text-sm text-foreground">
                         <span className="mt-2 h-1.5 w-3 rounded-full bg-primary" />
                         <span>{item}</span>
                       </li>
@@ -98,9 +79,9 @@ export function SectionPageContent({ eyebrow, title, intro, sections, aside }: S
                 )}
                 {section.note && <p className="text-sm text-muted-foreground">{section.note}</p>}
                 {section.images && section.images.length > 0 && (
-                  <div className="grid gap-3 sm:grid-cols-2">
+                  <div className="grid gap-4 sm:grid-cols-2">
                     {section.images.map((image) => (
-                      <Card key={image.src} className="overflow-hidden rounded-2xl border-border/70">
+                      <Card key={image.src} className="overflow-hidden rounded-[22px] border-border/70">
                         <CardContent className="p-0">
                           <AspectRatio ratio={4 / 3}>
                             <Image
@@ -121,7 +102,7 @@ export function SectionPageContent({ eyebrow, title, intro, sections, aside }: S
             </Card>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

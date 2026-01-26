@@ -1,73 +1,53 @@
+import Image from "next/image"
 import Link from "next/link"
-import { ArrowUpRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
-import { SiteSearch } from "@/components/site-search"
 import { Badge } from "@/components/ui/badge"
 import { HeroImageRotator } from "@/components/hero-image-rotator"
+import { Container } from "@/components/layout/container"
 
 export function Hero() {
   return (
-    <section className="relative isolate overflow-hidden px-4 pb-24 pt-24 sm:px-6 sm:pt-28 lg:px-8">
-      <div className="absolute inset-0 -z-10 bg-gradient-to-br from-white via-surface to-surface-muted" />
-      <div className="absolute right-[5%] top-[15%] -z-10 h-72 w-72 rounded-full bg-primary/10 blur-[120px]" />
-
-      <div className="mx-auto grid max-w-6xl xl:max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
-        <div className="order-2 space-y-8 lg:order-1">
-          <Badge
-            variant="outline"
-            className="gap-3 rounded-full border border-white/40 bg-white/70 px-5 py-2 text-xs uppercase tracking-[0.3em] text-muted-foreground backdrop-blur"
+    <section className="relative isolate overflow-hidden">
+      <HeroImageRotator className="min-h-[82vh] sm:min-h-[88vh] lg:min-h-[94vh]">
+        <Container className="pointer-events-none relative z-10 flex h-full flex-col gap-10 py-10 sm:py-12 lg:py-14">
+          <div className="flex items-start justify-between gap-6">
+            <div className="rounded-[18px] border border-white/20 bg-black/45 p-3 backdrop-blur sm:p-4">
+              <Image
+                src="/canary-cove-logo.png"
+                alt="Canary Cove logo"
+                width={394}
+                height={351}
+                priority
+                className="h-12 w-auto sm:h-14 lg:h-16"
+              />
+            </div>
+            <Badge className="border border-white/40 bg-white/10 text-white">Private estate</Badge>
+          </div>
+          <div
+            data-testid="hero-copy"
+            className="pointer-events-auto mt-auto max-w-xl rounded-[24px] border border-white/15 bg-black/70 p-7 backdrop-blur-sm sm:p-8 flow flow-md"
           >
-            Welcome to Canary Cove!
-            <span className="h-1 w-1 rounded-full bg-primary" />
-            Ambergris Caye, Belize
-          </Badge>
-          <div>
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-[3.6rem]">
-              Your All-Inclusive Dream Vacation on Belize’s Ambergris Caye
+            <p data-testid="hero-eyebrow" className="text-[11px] uppercase tracking-[0.4em] text-white/70">
+              Ambergris Caye, Belize
+            </p>
+            <h1 data-testid="hero-headline" className="text-display text-white">
+              Private estate. Endless water.
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground sm:text-xl">
-              Canary Cove is a private, staffed beachfront estate reserved entirely for your group. Enjoy chef-prepared meals,
-              private docks and boats, an infinity pool, and a full lineup of water-sport gear—so every day runs on your schedule.
-              Our 5-acre compound is built for celebrations and slow island living, with a villa that hosts up to 10 guests.
+            <p data-testid="hero-subhead" className="text-base leading-relaxed text-white/90 sm:text-lg">
+              One group at a time with chef service, private boats, and oceanfront amenities.
             </p>
-            <p className="mt-4 text-sm text-muted-foreground">
-              Our all-inclusive model includes the estate, private-chef service, staff, and on-site amenities. Groceries and
-              beverages, boat fuel, diving/fishing/excursions, hot-tub heating, gratuities, and the 9% Belize hotel tax are
-              additional.
-            </p>
-          </div>
-
-          <SiteSearch className="max-w-2xl" />
-
-          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button
               asChild
               size="lg"
-              variant="outline"
-              className="border-primary/70 bg-white text-foreground shadow-sm shadow-primary/15 hover:bg-primary/10 hover:text-foreground focus-ring"
+              data-testid="hero-cta"
+              className="w-fit bg-white text-foreground hover:bg-white/90"
             >
-              <Link href="/book">
-                Book 🗓️ <ArrowUpRight className="h-4 w-4" />
-              </Link>
-            </Button>
-            <Button
-              asChild
-              size="lg"
-              variant="ghost"
-              className="border border-border/70 bg-white/60 text-foreground shadow-sm focus-ring"
-            >
-              <Link href="/stay">
-                Preview Villa 🏡
-              </Link>
+              <Link href="/book">Book your stay</Link>
             </Button>
           </div>
-        </div>
-
-        <div className="relative order-1 lg:order-2">
-          <HeroImageRotator />
-        </div>
-      </div>
+        </Container>
+      </HeroImageRotator>
     </section>
   )
 }

@@ -19,9 +19,7 @@ export const metadata: Metadata = {
 
 const experienceGalleryItems = [
   IMAGES.tubing,
-  IMAGES.platformFun,
-  IMAGES.familyScuba,
-  IMAGES.divingLessons,
+  IMAGES.waterSlide,
   IMAGES.divingFun,
   IMAGES.turtleDive,
   IMAGES.scubaPhoto,
@@ -34,6 +32,7 @@ const experienceGalleryItems = [
   IMAGES.mainDock,
   IMAGES.gilBoat,
   IMAGES.drinksBar,
+  IMAGES.hammock,
 ]
 const experienceSliderItems = filterHighResGalleryItems(experienceGalleryItems)
 

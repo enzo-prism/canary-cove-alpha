@@ -74,6 +74,8 @@ export function ExperiencesMiniGallery({ items }: ExperiencesMiniGalleryProps) {
                     alt={photo.alt}
                     fill
                     priority={index === 0}
+                    decoding="async"
+                    loading={index === 0 ? "eager" : "lazy"}
                     sizes="(min-width: 1024px) 1000px, 100vw"
                     className="object-cover"
                   />

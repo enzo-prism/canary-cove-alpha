@@ -25,7 +25,7 @@ const sfPro = localFont({
 export const metadata: Metadata = {
   title: "Canary Cove | Private All-Inclusive Estate in Belize",
   description:
-    "Canary Cove is a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, dock access, and on-site gear—reserved for one group at a time. Provisions and excursions are billed separately.",
+    "Canary Cove is a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, dock access, and on-site gear - reserved for one group at a time. Provisions and excursions are billed separately.",
   generator: "v0.app",
   icons: {
     icon: [
@@ -51,7 +51,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={sfPro.variable}>
-      <body className={`${sfPro.className} font-sans antialiased selection:bg-primary/10 selection:text-black`}>
+      <body className={`${sfPro.className} font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}>
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
         <Analytics />

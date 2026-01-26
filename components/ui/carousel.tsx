@@ -49,11 +49,16 @@ function Carousel({
   children,
   ...props
 }: CarouselProps) {
+  const { tabIndex, ...rest } = props
+  const keyThrottleRef = React.useRef<number>(0)
+  const resolvedOptions: CarouselOptions = {
+    draggable: true,
+    duration: 35,
+    ...opts,
+    axis: orientation === 'horizontal' ? 'x' : 'y',
+  }
   const [carouselRef, api] = useEmblaCarousel(
-    {
-      ...opts,
-      axis: orientation === 'horizontal' ? 'x' : 'y',
-    },
+    resolvedOptions,
     plugins,
   )
   const [canScrollPrev, setCanScrollPrev] = React.useState(false)
@@ -89,12 +94,16 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      const now = Date.now()
+      if (now - keyThrottleRef.current < 250) return
       if (event.key === 'ArrowLeft') {
         event.preventDefault()
         scrollPrev()
+        keyThrottleRef.current = now
       } else if (event.key === 'ArrowRight') {
         event.preventDefault()
         scrollNext()
+        keyThrottleRef.current = now
       }
     },
     [scrollPrev, scrollNext],
@@ -117,7 +126,8 @@ function Carousel({
         aria-roledescription="carousel"
         onKeyDownCapture={handleKeyDown}
         className={cn('relative', className)}
-        {...props}
+        tabIndex={tabIndex ?? 0}
+        {...rest}
       >
         {children}
       </div>
@@ -129,14 +139,93 @@ const CarouselContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { carouselRef, orientation } = useCarousel()
+  const { carouselRef, orientation, api } = useCarousel()
+  const panClass = orientation === 'horizontal' ? 'touch-pan-y' : 'touch-pan-x'
+  const viewportRef = React.useRef<HTMLDivElement | null>(null)
+  const wheelLockRef = React.useRef<number | null>(null)
+  const hoverRef = React.useRef(false)
+
+  const handleWheel = React.useCallback(
+    (event: WheelEvent) => {
+      if (!api) return
+      if (wheelLockRef.current) return
+
+      const absX = Math.abs(event.deltaX)
+      const absY = Math.abs(event.deltaY)
+      const dominance = 1.2
+      let delta = 0
+
+      if (orientation === 'horizontal') {
+        if (absX > absY * dominance) {
+          delta = event.deltaX
+        } else if (event.shiftKey && absY > 0) {
+          delta = event.deltaY
+        }
+      } else if (absY > absX * dominance) {
+        delta = event.deltaY
+      } else if (event.shiftKey && absX > 0) {
+        delta = event.deltaX
+      }
+
+      if (Math.abs(delta) < 12) return
+
+      event.preventDefault()
+      event.stopPropagation()
+      wheelLockRef.current = window.setTimeout(() => {
+        wheelLockRef.current = null
+      }, 350)
+
+      if (delta > 0) {
+        api.scrollNext()
+      } else {
+        api.scrollPrev()
+      }
+    },
+    [api, orientation],
+  )
+
+  React.useEffect(() => {
+    const node = viewportRef.current
+    if (!node) return
+    const handleWindowWheel = (event: WheelEvent) => {
+      const target = event.target as Node | null
+      if (!hoverRef.current && (!target || !node.contains(target))) return
+      handleWheel(event)
+    }
+
+    window.addEventListener('wheel', handleWindowWheel, { passive: false, capture: true })
+    return () => {
+      window.removeEventListener('wheel', handleWindowWheel, { capture: true })
+      if (wheelLockRef.current) {
+        window.clearTimeout(wheelLockRef.current)
+        wheelLockRef.current = null
+      }
+    }
+  }, [handleWheel])
 
   return (
-    <div ref={carouselRef} className="overflow-hidden">
+    <div
+      ref={(node) => {
+        viewportRef.current = node
+        carouselRef(node)
+      }}
+      className={cn(
+        'overflow-hidden overscroll-x-contain overscroll-y-contain',
+        panClass,
+        'cursor-grab select-none active:cursor-grabbing',
+      )}
+      onPointerEnter={() => {
+        hoverRef.current = true
+      }}
+      onPointerLeave={() => {
+        hoverRef.current = false
+      }}
+      data-slot="carousel-viewport"
+    >
       <div
         ref={ref}
         className={cn(
-          'flex',
+          'flex carousel-track',
           orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
           className,
         )}
@@ -159,7 +248,7 @@ const CarouselItem = React.forwardRef<
       role="group"
       aria-roledescription="slide"
       className={cn(
-        'min-w-0 shrink-0 grow-0 basis-full',
+        'min-w-0 shrink-0 grow-0 basis-full carousel-slide',
         orientation === 'horizontal' ? 'pl-4' : 'pt-4',
         className,
       )}

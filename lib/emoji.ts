@@ -1,5 +1,6 @@
 export const EMOJI = {
-  stay: "🏡",
+  home: "🏠",
+  stay: "🛌",
   villa: "🏡",
   suites: "🛏️",
   amenities: "🧴",

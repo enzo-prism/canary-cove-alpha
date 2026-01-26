@@ -1,8 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import Image from "next/image"
-import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
@@ -50,29 +48,11 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        scrolled ? "border-b border-border/40 bg-background/95 shadow-[0_12px_40px_rgba(15,23,42,0.08)]" : "bg-transparent"
+      className={`sticky top-0 z-50 transition-colors duration-300 ${
+        scrolled ? "border-b border-border/60 bg-background/95 backdrop-blur" : "bg-transparent"
       }`}
     >
-      <div className={`mx-auto flex max-w-6xl xl:max-w-7xl items-center gap-4 px-4 sm:px-6 lg:px-8 ${scrolled ? "py-3" : "py-5"}`}>
-        <Link
-          href="/"
-          className="group flex items-center gap-3 text-lg font-semibold tracking-tight text-foreground focus-ring"
-        >
-          <span className="relative flex h-12 w-12 items-center justify-center overflow-hidden rounded-[3px] bg-[#1f6f3f] transition-all duration-200 ease-out group-hover:-translate-y-0.5 group-hover:shadow-[0_12px_30px_rgba(15,23,42,0.18)] group-hover:ring-2 group-hover:ring-primary/30">
-            <span className="relative block h-10 w-10">
-              <Image
-                src="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1764690650/Canary_Cove_logo_website_suvurg.png"
-                alt="Canary Cove logo"
-                fill
-                sizes="48px"
-                className="object-contain"
-                priority
-              />
-            </span>
-          </span>
-        </Link>
-
+      <div className={`mx-auto flex max-w-[1200px] items-center px-6 sm:px-8 lg:px-12 ${scrolled ? "py-3" : "py-5"}`}>
         <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
         <div className="ml-auto flex items-center gap-2 lg:hidden">
@@ -82,7 +62,7 @@ export function Header() {
                 aria-controls={mobileSheetId}
                 variant="outline"
                 size="icon"
-                className="rounded-full border border-border/70 bg-white/70 text-foreground hover:bg-white"
+                className="border-border text-foreground hover:bg-foreground hover:text-background"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open navigation</span>
@@ -93,17 +73,17 @@ export function Header() {
               title="Navigation"
               hideClose
               id={mobileSheetId}
-              className="w-full border-none bg-surface px-6 pb-10 pt-8 sm:w-[70vw]"
+              className="w-full border-none bg-background px-6 pb-10 pt-8 sm:w-[70vw]"
             >
               <SheetHeader className="flex-row items-center justify-between gap-3 p-0">
-                <SheetTitle className="text-xs uppercase tracking-[0.35em] text-muted-foreground">
+                <SheetTitle className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
                   Navigation
                 </SheetTitle>
                 <SheetClose asChild>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="rounded-full border border-border/60 text-muted-foreground hover:text-foreground"
+                    className="border-border text-muted-foreground hover:text-foreground"
                   >
                     <X className="h-4 w-4" />
                     <span className="sr-only">Close menu</span>

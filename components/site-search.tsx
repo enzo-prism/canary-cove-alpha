@@ -28,7 +28,7 @@ type SearchSource = "input" | "chip" | "question" | null
 
 export function SiteSearch({
   className,
-  placeholder = "Search rates, dining, adventures, travel logistics…",
+  placeholder = "Search rates, dining, adventures, travel logistics...",
 }: SiteSearchProps) {
   const router = useRouter()
   const [query, setQuery] = useState("")
@@ -84,7 +84,7 @@ export function SiteSearch({
   useEffect(() => {
     if (typeof navigator === "undefined") return
     const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform)
-    setShortcutLabel(isApple ? "⌘ K" : "Ctrl K")
+    setShortcutLabel(isApple ? "Cmd K" : "Ctrl K")
   }, [])
 
   const handleOpenChange = (nextOpen: boolean) => {
@@ -118,7 +118,7 @@ export function SiteSearch({
           <Button
             type="button"
             variant="outline"
-            className="flex w-full items-center justify-between gap-3 rounded-2xl border-border/70 bg-white/90 px-4 py-3 text-base text-muted-foreground shadow-sm backdrop-blur hover:bg-white"
+            className="flex w-full items-center justify-between gap-3 rounded-full border-border bg-transparent px-4 py-3 text-base text-muted-foreground hover:bg-foreground hover:text-background"
             aria-label="Open site search"
             data-testid="search-open-button"
           >
@@ -126,7 +126,7 @@ export function SiteSearch({
               <Search className="h-5 w-5" />
               <span className="text-left">{placeholder}</span>
             </span>
-            <span className="hidden items-center gap-1 rounded-full border border-border/70 bg-white/70 px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:inline-flex">
+            <span className="hidden items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:inline-flex">
               {shortcutLabel}
             </span>
           </Button>
@@ -169,7 +169,7 @@ export function SiteSearch({
                           type="button"
                           variant="outline"
                           size="sm"
-                          className="rounded-full border-border/70 bg-white/90 text-foreground hover:bg-white"
+                          className="border-border text-foreground hover:bg-foreground hover:text-background"
                           onClick={() => handleChipClick(chip.label, chip.query)}
                           data-testid="search-chip"
                         >
@@ -189,7 +189,7 @@ export function SiteSearch({
                         key={question.question}
                         value={question.question}
                         onSelect={() => handleQuestionClick(question.question, question.query)}
-                        className="mx-1 my-1 cursor-pointer rounded-xl border border-border/70 bg-white/90 px-4 py-3 text-sm text-foreground shadow-sm shadow-black/5 aria-selected:bg-primary/10 aria-selected:text-black"
+                        className="mx-1 my-1 cursor-pointer rounded-2xl border border-border/70 bg-background px-4 py-3 text-sm text-foreground aria-selected:bg-foreground aria-selected:text-background"
                         data-testid="search-question"
                       >
                         {question.question}
@@ -202,7 +202,7 @@ export function SiteSearch({
               <CommandList className="max-h-[420px]">
                 {answer ? (
                   <div className="px-4 pb-3 pt-4" data-testid="search-answer">
-                    <Card className="rounded-2xl border border-border/70 bg-white/90 shadow-sm">
+                    <Card className="rounded-2xl border border-border/70 bg-background">
                       <CardContent className="space-y-3 p-4">
                         <div className="flex items-center justify-between text-xs uppercase tracking-[0.3em] text-muted-foreground">
                           <span>Instant answer</span>
@@ -288,7 +288,7 @@ export function SiteSearch({
                         </Button>
                       ))}
                     </div>
-                    <Card className="rounded-2xl border border-border/70 bg-white/90 shadow-sm">
+                    <Card className="rounded-2xl border border-border/70 bg-background">
                       <CardContent className="space-y-3 p-4 text-center">
                         <p className="text-sm font-semibold text-foreground">{fallbackAnswer.title}</p>
                         <p className="text-xs text-muted-foreground">{fallbackAnswer.bullets[0]}</p>

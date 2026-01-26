@@ -1,32 +1,37 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Application code lives in `app/` (Next.js App Router). `layout.tsx` defines fonts/metadata and `page.tsx` composes the landing sections.
-- Reusable UI sits in `components/` with shadcn-based primitives under `components/ui/`. Business-specific sections (`header.tsx`, `hero.tsx`, etc.) are sibling modules.
-- Shared utilities belong in `lib/` (currently `utils.ts` for the `cn` helper). Global styles load from `app/globals.css`, while `public/` holds statically served images and icons.
-- No dedicated test directory yet; prefer colocating future specs under `__tests__/` near the code they exercise.
+- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, diving film, plan-your-stay search, testimonials).
+- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
+- Shared sections live in `components/`. `components/basic-page.tsx` is the default wrapper for interior routes and includes `components/photo-carousel.tsx`.
+- UI primitives live in `components/ui/` (shadcn-style wrappers).
+- Shared data lives in `lib/`: `images.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, and `utils.ts`.
+- Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
 
 ## Build, Test, and Development Commands
-- `pnpm install` — install dependencies; always run after pulling remote changes.
-- `pnpm dev` — start the Next.js dev server with Fast Refresh at `http://localhost:3000`.
-- `pnpm build` — create a production build (`.next/`). Mirrors the Vercel pipeline, so run before opening PRs.
-- `pnpm start` — serve the production build locally for smoke testing.
-- `pnpm lint` — executes the project ESLint config (note: lint/TS errors are ignored during `next build`, so run this manually).
+- `pnpm install` — install dependencies.
+- `pnpm dev` — start the Next.js dev server at `http://localhost:3000`.
+- `pnpm build` — create a production build (`.next/`). Note: `next.config.mjs` ignores TS build errors, so run `pnpm typecheck` separately.
+- `pnpm start` — serve the production build locally.
+- `pnpm lint` — run ESLint.
+- `pnpm typecheck` — run TypeScript checks (`tsc --noEmit`).
+- `pnpm test` / `pnpm test:unit` — run Vitest.
+- `pnpm test:e2e` — run Playwright (run `npx playwright install` once if browsers are missing).
 
 ## Coding Style & Naming Conventions
-- Use TypeScript, functional React components, and the App Router paradigm. Co-locate UI logic with minimal state; prefer hooks over classes.
-- Tailwind CSS v4 powers styling. Keep class lists ordered logically (layout → color → effects) and reuse tokens declared in `app/globals.css` such as `bg-sand` or `text-accent-coral`.
+- Use TypeScript, functional React components, and the App Router paradigm.
+- Tailwind CSS v4 powers styling. Prefer tokens from `app/globals.css` (`bg-surface`, `text-muted-foreground`, `bg-primary`, etc.) and shared utilities (`frosted-panel`, `focus-ring`).
 - File names are kebab-case (`hero.tsx`), components PascalCase, and props camelCase. Import aliases (`@/components`, `@/lib`) are configured via `tsconfig.json`.
 
 ## Testing Guidelines
-- No automated tests are configured. When adding them, reach for Jest + React Testing Library or Playwright for e2e.
-- Name test files `*.test.ts(x)` and place them in `__tests__/` folders beside the modules they target.
-- Aim for coverage of critical UI interactions (navigation, CTA buttons, accessibility states) before merging substantial UI refactors.
+- Unit tests run with Vitest; current tests live in `lib/search/__tests__/`.
+- E2E tests live in `e2e/` and run with Playwright.
+- Cover critical UI interactions (navigation, CTAs, search) when adding new features.
 
 ## Commit & Pull Request Guidelines
 - Follow the existing history: short, imperative subject lines (e.g., `Add hero CTA animation`). Include a concise body when context is non-obvious.
-- Each PR should outline the change, mention affected routes/components, and link the related issue or Vercel deployment. Attach screenshots or recordings for visual updates.
-- Verify `pnpm build` and `pnpm lint` locally before requesting review, and summarize the verification steps in the PR checklist.
+- Each PR should outline the change, mention affected routes/components, and link the related issue or deployment. Attach screenshots or recordings for visual updates.
+- Verify `pnpm lint` and `pnpm typecheck` locally before requesting review, and summarize verification steps in the PR checklist.
 
 ## Git Workflow Tips
 - Sync often: `git fetch origin && git rebase origin/main` keeps your branch current without merge commits. Resolve conflicts locally, rerun `pnpm lint`, then continue the rebase (`git rebase --continue`).
@@ -35,15 +40,24 @@
 - For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
 
 ## Navigation Architecture Notes
-- The entire navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Each entry is either `{ type: "link", label, href, cta? }` or `{ type: "dropdown", label, href, items: DropdownItem[] }`. Dropdown items include `caption` strings that render above each row. Update this array whenever IA changes; no JSX edits are necessary if the structure stays the same.
-- Desktop dropdowns live in `components/navigation/desktop-nav.tsx` and use lightweight hover/click state (no Radix). Because labels map to state keys, keep them unique and avoid conditional rendering that would scramble order on hydration. Mobile nav accordions remain in `components/navigation/mobile-nav.tsx`.
-- `components/header.tsx` is intentionally thin—compose new header chrome there, but prefer touching the nav components or `NAV_ITEMS` for IA tweaks.
-- The sticky header tracks scroll (`scrolled` state) to shrink and solidify the bar; be mindful when modifying padding/height values so the shrink animation remains smooth.
-- Mobile navigation uses the shared `Sheet` component; body scroll is locked when `mobileOpen` is true. If you add additional modal layers, avoid conflicting body overflow changes.
+- Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`.
+- Emoji for nav labels come from `lib/emoji.ts`; update there when adjusting iconography.
+- Desktop nav uses Radix `NavigationMenu` in `components/navigation/desktop-nav.tsx`. Mobile nav uses `Sheet` + `components/navigation/mobile-nav.tsx`.
+- `components/header.tsx` composes the nav and manages sticky scroll state (no logo currently). Be mindful when adjusting padding/height so the shrink animation remains smooth.
 
 ## Assets, Fonts & Media
-- All SF Pro font weights live under `font/` and are registered through `next/font/local` in `app/layout.tsx`. When adjusting typography, keep the `src` array aligned with the files on disk—Next.js will fail if any entry is missing.
-- Hero visuals use a looping Cloudinary MP4 (`components/hero.tsx`). Include a high-resolution `poster` image when swapping media so the hero renders cleanly before autoplay kicks in.
-- `components/photo-carousel.tsx` wraps Embla for touch-friendly carousels. `components/basic-page.tsx` already embeds it (plus header/footer), so prefer that wrapper whenever creating a new route.
-- We keep color variables in both `app/globals.css` (App Router scope) and `styles/globals.css` (legacy styles). Update both when shifting brand palettes to avoid mismatched accents.
-- Store new imagery in `public/` and reference via absolute paths (e.g., `/my-photo.jpg`). This keeps Next.js static serving happy and avoids CORS surprises.
+- SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx`.
+- Hero imagery is defined in `components/hero-image-rotator.tsx` as Cloudinary URLs; keep these high-resolution to avoid blur.
+- The diving film section lives in `app/page.tsx` and uses a Cloudinary MP4 with a poster frame.
+- `components/photo-carousel.tsx` wraps Embla and is used by `components/basic-page.tsx` for interior pages.
+- Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
+
+## Codex CLI Map
+- Homepage layout: `app/page.tsx`
+- Hero overlay copy/CTAs: `components/hero.tsx`
+- Hero background images: `components/hero-image-rotator.tsx`
+- Testimonial copy: `lib/testimonial-spotlights.ts` and the selection in `app/page.tsx`
+- Navigation items/icons: `lib/nav-items.ts`, `lib/emoji.ts`
+- Search UI: `components/site-search.tsx`
+- Styling tokens/utilities: `app/globals.css`
+- Image registry: `lib/images.ts`

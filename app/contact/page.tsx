@@ -1,14 +1,10 @@
 import type { Metadata } from "next"
 
 import { ContactDetails } from "@/components/contact-details"
+import { ContactForm } from "@/components/contact-form"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 
 export const metadata: Metadata = {
@@ -31,46 +27,7 @@ export default function Page() {
           </div>
 
           <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
-            <Card className="rounded-2xl border border-border/70 bg-white/90 shadow-[0_12px_40px_rgba(15,23,42,0.08)]">
-              <CardContent className="p-6">
-                <form className="space-y-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Name</Label>
-                    <Input
-                      id="name"
-                      name="name"
-                      required
-                      className="h-12 rounded-2xl border-border/80 bg-white/95 px-4 shadow-inner shadow-black/5 focus-visible:ring-primary/30"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input
-                      id="email"
-                      name="email"
-                      type="email"
-                      required
-                      className="h-12 rounded-2xl border-border/80 bg-white/95 px-4 shadow-inner shadow-black/5 focus-visible:ring-primary/30"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="message">Message</Label>
-                    <Textarea
-                      id="message"
-                      name="message"
-                      rows={6}
-                      maxLength={3000}
-                      className="rounded-2xl border-border/80 bg-white/95 px-4 py-3 shadow-inner shadow-black/5 focus-visible:ring-primary/30"
-                    />
-                    <p className="text-xs text-muted-foreground">0 of 3000 max characters</p>
-                  </div>
-                  <Button type="submit" size="lg" className="w-full">
-                    Send message
-                  </Button>
-                </form>
-              </CardContent>
-            </Card>
-
+            <ContactForm />
             <ContactDetails />
           </div>
 

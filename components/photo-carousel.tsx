@@ -6,9 +6,12 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { IMAGES } from "@/lib/images"
+import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
 import {
   Dialog,
   DialogContent,
@@ -96,123 +99,140 @@ export function PhotoCarousel() {
   }, [api, onSelect])
 
   return (
-    <section className="px-4 pb-24 sm:px-6 lg:px-8">
-      <Card className="mx-auto max-w-6xl xl:max-w-7xl rounded-[40px] border border-border/70 bg-white/80 shadow-sm backdrop-blur">
-        <CardContent className="p-6 lg:p-10">
-          <div className="flex flex-col gap-8 lg:flex-row">
-            <div className="lg:flex-1">
+    <Section id="gallery" padding="tight" className="scroll-mt-24">
+      <Container className="flow flow-md">
+        <Card className="relative overflow-hidden rounded-[40px] border border-border/70 bg-surface">
+          <CardContent className="p-0">
+            <div className="relative">
               <Carousel opts={{ align: "start", loop: true }} setApi={setApi}>
                 <CarouselContent>
                   {photos.map((photo, index) => (
                     <CarouselItem key={photo.src}>
-                      <div className="relative h-[300px] overflow-hidden rounded-[28px] bg-surface-elevated min-[420px]:h-[360px] sm:h-[440px]">
-                        {!loadedSlides[index] ? (
-                          <Skeleton className="absolute inset-0" />
-                        ) : null}
+                      <div className="relative h-[360px] overflow-hidden bg-surface-elevated sm:h-[480px] lg:h-[620px]">
+                        {!loadedSlides[index] ? <Skeleton className="absolute inset-0" /> : null}
                         <Image
                           src={photo.src}
                           alt={photo.alt}
                           fill
                           priority={index === 0}
-                          className={`object-cover transition-opacity duration-700 ${loadedSlides[index] ? "opacity-100" : "opacity-0"}`}
-                          sizes="(min-width: 1024px) 800px, 100vw"
+                          decoding="async"
+                          loading={index === 0 ? "eager" : "lazy"}
+                          className={`object-cover transition-opacity duration-700 motion-reduce:transition-none ${loadedSlides[index] ? "opacity-100" : "opacity-0"}`}
+                          sizes="(min-width: 1280px) 1200px, (min-width: 1024px) 900px, 100vw"
                           onLoadingComplete={() => handleLoaded(index)}
                         />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-black/0" />
-                        <div className="absolute bottom-6 left-6 right-6">
-                          <p className="text-base text-white">{photo.caption}</p>
-                          <p className="mt-2 text-sm text-white/80">{photo.detail}</p>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/5 to-transparent" />
+                        <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
+                          <p className="text-base text-white sm:text-lg">{photo.caption}</p>
+                          <p className="mt-2 hidden text-sm text-white/80 sm:block">{photo.detail}</p>
                         </div>
                       </div>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
               </Carousel>
-              <div className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                <div className="flex flex-wrap gap-2">
-                  {photos.map((_, index) => (
-                    <button
-                      key={index}
-                      type="button"
-                      onClick={() => scrollTo(index)}
-                      className={`h-2 rounded-full transition-all motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100 ${
-                        selectedIndex === index
-                          ? "w-8 bg-foreground"
-                          : "w-2 bg-muted-foreground/40 hover:bg-foreground/60"
-                      }`}
-                      aria-label={`Go to slide ${index + 1}`}
-                    />
-                  ))}
+              <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between p-6 sm:p-8">
+                <div className="flex items-center justify-between gap-3">
+                  <Badge
+                    variant="outline"
+                    className="border-white/60 bg-white/10 text-white"
+                  >
+                    Gallery
+                  </Badge>
+                  <div className="pointer-events-auto">
+                    <Dialog>
+                      <DialogTrigger asChild aria-controls={galleryDialogId}>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          className="border-white/70 text-white hover:bg-white hover:text-foreground"
+                        >
+                          View full gallery
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent
+                        id={galleryDialogId}
+                        className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]"
+                      >
+                        <DialogHeader>
+                          <DialogTitle>Canary Cove photo gallery</DialogTitle>
+                          <DialogDescription>Browse a few highlights from the villa, beach, and docks.</DialogDescription>
+                        </DialogHeader>
+                        <div className="min-h-0 flex-1 overflow-y-auto pr-2 sm:pr-3">
+                          <div className="grid gap-4 sm:grid-cols-2">
+                            {photos.map((photo) => (
+                              <div
+                                key={photo.src}
+                                className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-surface-elevated"
+                              >
+                                <Image
+                                  src={photo.src}
+                                  alt={photo.alt}
+                                  fill
+                                  decoding="async"
+                                  loading="lazy"
+                                  className="object-cover"
+                                  sizes="(min-width: 1024px) 520px, 100vw"
+                                />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </DialogContent>
+                    </Dialog>
+                  </div>
                 </div>
-                <div className="flex gap-3">
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full border border-border/70 bg-white/70 text-foreground hover:bg-white"
-                    onClick={scrollPrev}
-                    aria-label="Previous slide"
-                  >
-                    <ChevronLeft className="h-5 w-5" />
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="rounded-full border border-border/70 bg-white/70 text-foreground hover:bg-white"
-                    onClick={scrollNext}
-                    aria-label="Next slide"
-                  >
-                    <ChevronRight className="h-5 w-5" />
-                  </Button>
+                <div className="flex items-center justify-end">
+                  <div className="pointer-events-auto flex gap-3">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="border border-white/70 bg-white/10 text-white hover:bg-white hover:text-foreground"
+                      onClick={scrollPrev}
+                      aria-label="Previous slide"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="border border-white/70 bg-white/10 text-white hover:bg-white hover:text-foreground"
+                      onClick={scrollNext}
+                      aria-label="Next slide"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </div>
-            <div className="lg:w-[340px] xl:w-[380px]">
-              <Badge
-                variant="outline"
-                className="rounded-full border-border/60 text-xs uppercase tracking-[0.4em] text-muted-foreground"
-              >
-                Canary Cove
-              </Badge>
-              <h3 className="mt-4 text-3xl font-semibold leading-tight text-foreground">Scenes from your stay ✨</h3>
-              <p className="mt-4 text-sm text-muted-foreground">
-                From sunrise dives to sunset dinners, every moment is private to your group. Tap through to see the estate,
-                boats, and the way we celebrate.
-              </p>
-              <Dialog>
-                <DialogTrigger asChild aria-controls={galleryDialogId}>
-                  <Button variant="outline" size="sm" className="mt-6 rounded-full">
-                    View full gallery
-                  </Button>
-                </DialogTrigger>
-                <DialogContent
-                  id={galleryDialogId}
-                  className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]"
-                >
-                  <DialogHeader>
-                    <DialogTitle>Canary Cove photo gallery</DialogTitle>
-                    <DialogDescription>Browse a few highlights from the villa, beach, and docks.</DialogDescription>
-                  </DialogHeader>
-                  <div className="min-h-0 flex-1 overflow-y-auto pr-2 sm:pr-3">
-                    <div className="grid gap-4 sm:grid-cols-2">
-                      {photos.map((photo) => (
-                        <div key={photo.src} className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-surface-elevated">
-                          <Image
-                            src={photo.src}
-                            alt={photo.alt}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 520px, 100vw"
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                </DialogContent>
-              </Dialog>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-    </section>
+          </CardContent>
+        </Card>
+        <div className="flex gap-4 overflow-x-auto pb-2">
+          {photos.map((photo, index) => (
+            <button
+              key={photo.src}
+              type="button"
+              onClick={() => scrollTo(index)}
+              className={cn(
+                "relative h-20 w-28 flex-none overflow-hidden rounded-2xl border border-border/60 bg-surface-elevated transition-[transform,opacity] duration-200 ease-out motion-reduce:transition-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50",
+                selectedIndex === index ? "opacity-100 ring-2 ring-foreground/40" : "opacity-60 hover:opacity-100",
+              )}
+              aria-label={`Go to slide ${index + 1}`}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                decoding="async"
+                loading="lazy"
+                sizes="112px"
+                className="object-cover"
+              />
+            </button>
+          ))}
+        </div>
+      </Container>
+    </Section>
   )
 }
