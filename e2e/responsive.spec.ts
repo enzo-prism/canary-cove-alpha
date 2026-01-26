@@ -100,3 +100,51 @@ test.describe("responsive layout coverage", () => {
     })
   }
 })
+
+test.describe("nav icon hover motion", () => {
+  test.use({ viewport: { width: 1280, height: 900 } })
+
+  test("icon animates without moving label", async ({ page }) => {
+    await page.goto("/")
+    await page.waitForLoadState("domcontentloaded")
+    await page.evaluate(() => document.fonts.ready)
+
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    const link = nav.getByRole("link", { name: /home/i })
+    const icon = link.locator(".nav-icon")
+    const label = link.locator(".nav-label")
+
+    await expect(icon).toBeVisible()
+    await expect(label).toBeVisible()
+
+    const labelBefore = await label.boundingBox()
+    const iconBefore = await icon.evaluate((el) => getComputedStyle(el).transform)
+
+    await link.hover()
+
+    const iconAfter = await icon.evaluate((el) => getComputedStyle(el).transform)
+    const labelAfter = await label.boundingBox()
+
+    expect(iconBefore).toBe("none")
+    expect(iconAfter).not.toBe("none")
+    if (labelBefore && labelAfter) {
+      expect(Math.abs(labelAfter.x - labelBefore.x)).toBeLessThanOrEqual(0.5)
+      expect(Math.abs(labelAfter.y - labelBefore.y)).toBeLessThanOrEqual(0.5)
+    }
+  })
+
+  test("reduced motion disables icon animation", async ({ page }) => {
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await page.goto("/")
+    await page.waitForLoadState("domcontentloaded")
+    await page.evaluate(() => document.fonts.ready)
+
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    const link = nav.getByRole("link", { name: /home/i })
+    const icon = link.locator(".nav-icon")
+
+    await link.hover()
+    const transform = await icon.evaluate((el) => getComputedStyle(el).transform)
+    expect(transform).toBe("none")
+  })
+})

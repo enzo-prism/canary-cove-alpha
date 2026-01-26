@@ -40,8 +40,12 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
             >
               <Link href={item.href} onClick={onNavigate}>
                 <span className="flex items-center gap-3">
-                  {Icon ? <Icon className="h-4 w-4 text-muted-foreground" /> : null}
-                  {item.label}
+                  {Icon ? (
+                    <span className="nav-icon text-muted-foreground">
+                      <Icon className="h-4 w-4" />
+                    </span>
+                  ) : null}
+                  <span className="nav-label">{item.label}</span>
                 </span>
               </Link>
             </Button>
@@ -60,8 +64,12 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
               className="w-full border-border text-foreground hover:bg-foreground hover:text-background"
             >
               <Link href={item.href} onClick={onNavigate}>
-                {Icon ? <Icon className="h-4 w-4" /> : null}
-                {item.label}
+                {Icon ? (
+                  <span className="nav-icon">
+                    <Icon className="h-4 w-4" />
+                  </span>
+                ) : null}
+                <span className="nav-label">{item.label}</span>
               </Link>
             </Button>
           )

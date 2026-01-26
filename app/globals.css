@@ -241,6 +241,25 @@
     contain: layout paint;
   }
 
+  .nav-icon {
+    transition: transform 180ms ease, color 180ms ease;
+    transform-origin: center;
+  }
+
+  .group\/nav:hover .nav-icon {
+    transform: translateY(-2px) scale(1.04);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nav-icon {
+      transition: none;
+      transform: none;
+    }
+    .group\/nav:hover .nav-icon {
+      transform: none;
+    }
+  }
+
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/25 focus-visible:ring-offset-background;
   }

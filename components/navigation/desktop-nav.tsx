@@ -40,7 +40,7 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
             const active = isActive(item.href)
             const Icon = navIcons[item.label]
             const baseClasses =
-              "group relative inline-flex items-center gap-2 px-1 py-2 text-xs font-medium uppercase tracking-[0.22em] transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+              "group/nav relative inline-flex items-center gap-2 px-1 py-2 text-xs font-medium uppercase tracking-[0.22em] transition-colors duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
             if (item.cta) {
               return (
                 <NavigationMenuItem key={item.label}>
@@ -50,9 +50,13 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
                     size="sm"
                     className={cn("border-border text-foreground hover:bg-foreground hover:text-background", active && "bg-foreground text-background")}
                   >
-                    <Link href={item.href} aria-current={active ? "page" : undefined}>
-                      {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
-                      {item.label}
+                    <Link href={item.href} aria-current={active ? "page" : undefined} className="group/nav">
+                      {Icon ? (
+                        <span className="nav-icon">
+                          <Icon className="h-3.5 w-3.5" />
+                        </span>
+                      ) : null}
+                      <span className="nav-label">{item.label}</span>
                     </Link>
                   </Button>
                 </NavigationMenuItem>
@@ -70,8 +74,12 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
                       active && "text-foreground",
                     )}
                   >
-                    {Icon ? <Icon className="h-3.5 w-3.5 text-muted-foreground transition-colors group-hover:text-foreground" /> : null}
-                    {item.label}
+                    {Icon ? (
+                      <span className="nav-icon text-muted-foreground group-hover/nav:text-foreground">
+                        <Icon className="h-3.5 w-3.5" />
+                      </span>
+                    ) : null}
+                    <span className="nav-label">{item.label}</span>
                   </Link>
                 </NavigationMenuLink>
               </NavigationMenuItem>
