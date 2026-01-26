@@ -1,72 +1,112 @@
 import { expect, test } from "@playwright/test"
 
-const parseColor = (value: string) => {
-  const rgbMatch = value.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?\)/)
-  if (rgbMatch) {
-    return {
-      mode: "rgb",
-      r: Number(rgbMatch[1]),
-      g: Number(rgbMatch[2]),
-      b: Number(rgbMatch[3]),
-      alpha: rgbMatch[4] ? Number(rgbMatch[4]) : 1,
-    }
-  }
-
-  const oklabMatch = value.match(/oklab\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/)
-  if (oklabMatch) {
-    return {
-      mode: "oklab",
-      l: Number(oklabMatch[1]),
-      a: Number(oklabMatch[2]),
-      b: Number(oklabMatch[3]),
-      alpha: oklabMatch[4] ? Number(oklabMatch[4]) : 1,
-    }
-  }
-
-  const oklchMatch = value.match(/oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/)
-  if (oklchMatch) {
-    return {
-      mode: "oklch",
-      l: Number(oklchMatch[1]),
-      c: Number(oklchMatch[2]),
-      h: Number(oklchMatch[3]),
-      alpha: oklchMatch[4] ? Number(oklchMatch[4]) : 1,
-    }
-  }
-
-  throw new Error(`Unexpected color format: ${value}`)
-}
-
-test("hero copy keeps strong contrast backing", async ({ page }) => {
+test("hero intro copy stays readable on the base background", async ({ page }) => {
   await page.goto("/")
   await page.waitForLoadState("domcontentloaded")
 
   const copy = page.getByTestId("hero-copy")
   await expect(copy).toBeVisible()
 
-  const backgroundColor = await copy.evaluate((el) => getComputedStyle(el).backgroundColor)
-  const parsed = parseColor(backgroundColor)
-  if (parsed.mode === "rgb") {
-    expect(parsed.r).toBe(0)
-    expect(parsed.g).toBe(0)
-    expect(parsed.b).toBe(0)
-    expect(parsed.alpha).toBeGreaterThan(0.45)
-  } else if (parsed.mode === "oklab") {
-    expect(parsed.l).toBeLessThanOrEqual(0.01)
-    expect(Math.abs(parsed.a)).toBeLessThanOrEqual(0.01)
-    expect(Math.abs(parsed.b)).toBeLessThanOrEqual(0.01)
-    expect(parsed.alpha).toBeGreaterThan(0.45)
-  } else {
-    expect(parsed.l).toBeLessThanOrEqual(0.01)
-    expect(parsed.c).toBeLessThanOrEqual(0.01)
-    expect(parsed.alpha).toBeGreaterThan(0.45)
-  }
+  const { headlineContrast, subheadContrast, overlayBackground } = await page.evaluate(() => {
+    const toRgb = (value: string) => {
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
+      if (!ctx) {
+        throw new Error("Canvas context unavailable")
+      }
+      ctx.fillStyle = value
+      const normalized = ctx.fillStyle
+      const rgbMatch = normalized.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/)
+      if (rgbMatch) {
+        return { r: Number(rgbMatch[1]), g: Number(rgbMatch[2]), b: Number(rgbMatch[3]) }
+      }
 
-  const headline = page.getByTestId("hero-headline")
-  const headlineColor = await headline.evaluate((el) => getComputedStyle(el).color)
-  expect(headlineColor).toBe("rgb(255, 255, 255)")
+      const labMatch = normalized.match(/lab\(\s*([\d.]+)\s+([-\d.]+)\s+([-\d.]+)(?:\s*\/\s*([\d.]+))?\s*\)/)
+      if (labMatch) {
+        const l = Number(labMatch[1])
+        const a = Number(labMatch[2])
+        const b = Number(labMatch[3])
 
-  const overlay = page.getByTestId("hero-contrast-overlay")
-  const overlayBackground = await overlay.evaluate((el) => getComputedStyle(el).backgroundImage)
+        const fy = (l + 16) / 116
+        const fx = fy + a / 500
+        const fz = fy - b / 200
+
+        const epsilon = 216 / 24389
+        const kappa = 24389 / 27
+
+        const fx3 = Math.pow(fx, 3)
+        const fz3 = Math.pow(fz, 3)
+        const xr = fx3 > epsilon ? fx3 : (116 * fx - 16) / kappa
+        const yr = l > kappa * epsilon ? Math.pow((l + 16) / 116, 3) : l / kappa
+        const zr = fz3 > epsilon ? fz3 : (116 * fz - 16) / kappa
+
+        const Xn = 96.4212
+        const Yn = 100.0
+        const Zn = 82.5188
+
+        let X = xr * Xn
+        let Y = yr * Yn
+        let Z = zr * Zn
+
+        const x = (0.9555766 * X + -0.0230393 * Y + 0.0631636 * Z) / 100
+        const y = (-0.0282895 * X + 1.0099416 * Y + 0.0210077 * Z) / 100
+        const z = (0.0122982 * X + -0.0204830 * Y + 1.3299098 * Z) / 100
+
+        const toSrgb = (channel: number) => {
+          const clamped = Math.min(Math.max(channel, 0), 1)
+          return clamped <= 0.0031308 ? 12.92 * clamped : 1.055 * Math.pow(clamped, 1 / 2.4) - 0.055
+        }
+
+        const r = Math.round(toSrgb(3.2406 * x + -1.5372 * y + -0.4986 * z) * 255)
+        const g = Math.round(toSrgb(-0.9689 * x + 1.8758 * y + 0.0415 * z) * 255)
+        const bRgb = Math.round(toSrgb(0.0557 * x + -0.2040 * y + 1.0570 * z) * 255)
+
+        return { r, g, b: bRgb }
+      }
+
+      throw new Error(`Unexpected color format: ${normalized}`)
+    }
+
+    const toLinear = (channel: number) => {
+      const value = channel / 255
+      return value <= 0.03928 ? value / 12.92 : Math.pow((value + 0.055) / 1.055, 2.4)
+    }
+
+    const luminance = ({ r, g, b }: { r: number; g: number; b: number }) => {
+      const rLin = toLinear(r)
+      const gLin = toLinear(g)
+      const bLin = toLinear(b)
+      return 0.2126 * rLin + 0.7152 * gLin + 0.0722 * bLin
+    }
+
+    const contrastRatio = (foreground: { r: number; g: number; b: number }, background: { r: number; g: number; b: number }) => {
+      const l1 = luminance(foreground)
+      const l2 = luminance(background)
+      const lighter = Math.max(l1, l2)
+      const darker = Math.min(l1, l2)
+      return (lighter + 0.05) / (darker + 0.05)
+    }
+
+    const headline = document.querySelector<HTMLElement>('[data-testid="hero-headline"]')
+    const subhead = document.querySelector<HTMLElement>('[data-testid="hero-subhead"]')
+    const overlay = document.querySelector<HTMLElement>('[data-testid="hero-contrast-overlay"]')
+    if (!headline || !subhead || !overlay) {
+      throw new Error("Required hero elements missing")
+    }
+
+    const background = toRgb(getComputedStyle(document.body).backgroundColor)
+    const headlineColor = toRgb(getComputedStyle(headline).color)
+    const subheadColor = toRgb(getComputedStyle(subhead).color)
+    const overlayBackground = getComputedStyle(overlay).backgroundImage
+
+    return {
+      headlineContrast: contrastRatio(headlineColor, background),
+      subheadContrast: contrastRatio(subheadColor, background),
+      overlayBackground,
+    }
+  })
+
+  expect(headlineContrast).toBeGreaterThanOrEqual(7)
+  expect(subheadContrast).toBeGreaterThanOrEqual(4.5)
   expect(overlayBackground).toContain("gradient")
 })

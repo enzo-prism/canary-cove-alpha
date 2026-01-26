@@ -17,21 +17,17 @@ test.describe("spacing rhythm", () => {
     await page.waitForLoadState("domcontentloaded")
     await page.evaluate(() => document.fonts.ready)
 
-    const eyebrow = page.getByTestId("hero-eyebrow")
     const headline = page.getByTestId("hero-headline")
     const subhead = page.getByTestId("hero-subhead")
     const cta = page.getByTestId("hero-cta")
 
-    await expect(eyebrow).toBeVisible()
     await expect(headline).toBeVisible()
     await expect(subhead).toBeVisible()
     await expect(cta).toBeVisible()
 
-    const gapEyebrowHeadline = await getGap(eyebrow, headline)
     const gapHeadlineSubhead = await getGap(headline, subhead)
     const gapSubheadCta = await getGap(subhead, cta)
 
-    expect(gapEyebrowHeadline).toBeGreaterThanOrEqual(12)
     expect(gapHeadlineSubhead).toBeGreaterThanOrEqual(12)
     expect(gapSubheadCta).toBeGreaterThanOrEqual(14)
   })

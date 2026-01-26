@@ -18,12 +18,27 @@ type TestimonialSliderProps = {
 }
 
 export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
-  const [viewportRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true, draggable: true, duration: 35 })
+  const [viewportRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: true,
+    draggable: true,
+    duration: 35,
+    containScroll: "trimSnaps",
+    dragFree: false,
+    skipSnaps: false,
+    slidesToScroll: 1,
+  })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const viewportNode = useRef<HTMLDivElement | null>(null)
   const wheelLockRef = useRef<number | null>(null)
   const hoverRef = useRef(false)
   const keyThrottleRef = useRef<number>(0)
+  const visibleDots =
+    testimonials.length <= 3
+      ? testimonials.map((_, index) => index)
+      : [selectedIndex - 1, selectedIndex, selectedIndex + 1].map(
+          (index) => (index + testimonials.length) % testimonials.length,
+        )
 
   const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi])
 
@@ -128,6 +143,9 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
           {testimonials.map((testimonial, index) => (
             <div
               key={`${testimonial.author ?? "guest"}-${testimonial.year}`}
+              role="group"
+              aria-roledescription="slide"
+              data-testid={`testimonial-slide-${index}`}
               className="min-w-0 flex-[0_0_100%] pr-6 carousel-slide"
             >
               <div className="relative min-h-[360px] overflow-hidden rounded-[28px] bg-surface-muted sm:min-h-[420px]">
@@ -153,18 +171,21 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
         </div>
       </div>
       <div className="flex items-center gap-2">
-        {testimonials.map((testimonial, index) => (
-          <button
-            key={`${testimonial.author ?? "guest"}-${testimonial.year}-dot`}
-            type="button"
-            onClick={() => scrollTo(index)}
-            aria-label={`Go to testimonial ${index + 1}`}
-            className={cn(
-              "h-2 w-8 rounded-full transition-colors duration-300",
-              index === selectedIndex ? "bg-foreground" : "bg-border",
-            )}
-          />
-        ))}
+        {visibleDots.map((index) => {
+          const testimonial = testimonials[index]
+          return (
+            <button
+              key={`${testimonial.author ?? "guest"}-${testimonial.year}-dot`}
+              type="button"
+              onClick={() => scrollTo(index)}
+              aria-label={`Go to testimonial ${index + 1}`}
+              className={cn(
+                "h-2 w-8 rounded-full transition-colors duration-300",
+                index === selectedIndex ? "bg-foreground" : "bg-border",
+              )}
+            />
+          )
+        })}
       </div>
     </div>
   )

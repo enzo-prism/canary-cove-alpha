@@ -38,6 +38,12 @@ export function ExperiencesMiniGallery({ items }: ExperiencesMiniGalleryProps) {
   const galleryItems = items ?? miniPhotos
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
+  const visibleDots =
+    galleryItems.length <= 3
+      ? galleryItems.map((_, index) => index)
+      : [selectedIndex - 1, selectedIndex, selectedIndex + 1].map(
+          (index) => (index + galleryItems.length) % galleryItems.length,
+        )
 
   const onSelect = useCallback((carouselApi: CarouselApi) => {
     setSelectedIndex(carouselApi.selectedScrollSnap())
@@ -98,7 +104,7 @@ export function ExperiencesMiniGallery({ items }: ExperiencesMiniGalleryProps) {
           />
         </Carousel>
         <div className="flex flex-wrap justify-center gap-2">
-          {galleryItems.map((_, index) => (
+          {visibleDots.map((index) => (
             <button
               key={index}
               type="button"

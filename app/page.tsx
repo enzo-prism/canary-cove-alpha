@@ -39,6 +39,26 @@ export default function Home() {
       <Header />
       <Hero />
       <Section padding="tight">
+        <Container size="narrow">
+          <div data-testid="hero-copy" className="flow flow-md">
+            <h1 data-testid="hero-headline" className="text-display text-foreground">
+              Private estate. Endless water.
+            </h1>
+            <p data-testid="hero-subhead" className="text-lg text-muted-foreground sm:text-xl">
+              One group at a time with chef service, private boats, and oceanfront amenities.
+            </p>
+            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+              <Button asChild size="lg" data-testid="hero-cta" className="w-fit">
+                <Link href="/book">Book your stay</Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="w-fit">
+                <Link href="/rates">See rates</Link>
+              </Button>
+            </div>
+          </div>
+        </Container>
+      </Section>
+      <Section padding="tight">
         <Container>
           <ModelCarousel models={MODEL_LINEUP} />
         </Container>

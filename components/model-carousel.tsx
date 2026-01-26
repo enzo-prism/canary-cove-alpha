@@ -24,7 +24,16 @@ type ModelCarouselProps = {
 }
 
 export function ModelCarousel({ models }: ModelCarouselProps) {
-  const [viewportRef, emblaApi] = useEmblaCarousel({ align: "start", loop: true, draggable: true, duration: 35 })
+  const [viewportRef, emblaApi] = useEmblaCarousel({
+    align: "start",
+    loop: true,
+    draggable: true,
+    duration: 35,
+    containScroll: "trimSnaps",
+    dragFree: false,
+    skipSnaps: false,
+    slidesToScroll: 1,
+  })
   const [selectedIndex, setSelectedIndex] = useState(0)
   const viewportNode = useRef<HTMLDivElement | null>(null)
   const wheelLockRef = useRef<number | null>(null)
@@ -34,6 +43,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
   const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi])
+  const visibleDots = models.map((_, index) => index)
 
   useEffect(() => {
     if (!emblaApi) return
@@ -157,11 +167,13 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
         }}
         data-testid="model-carousel-viewport"
       >
-      <div className="flex carousel-track">
+        <div className="flex carousel-track">
           {models.map((model, index) => (
             <div
               key={model.name}
               data-testid={`model-slide-${index}`}
+              role="group"
+              aria-roledescription="slide"
               className="min-w-0 flex-[0_0_100%] pr-6 xl:flex-[0_0_80%] carousel-slide"
             >
               <div className="grid gap-10 rounded-[28px] border border-border/70 bg-surface p-8 sm:p-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-12">
@@ -213,18 +225,21 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
       </div>
 
       <div className="flex items-center gap-2">
-        {models.map((model, index) => (
-          <button
-            key={model.name}
-            type="button"
-            onClick={() => scrollTo(index)}
-            aria-label={`Go to ${model.name}`}
-            className={cn(
-              "h-2 w-8 rounded-full transition-colors duration-300",
-              index === selectedIndex ? "bg-foreground" : "bg-border",
-            )}
-          />
-        ))}
+        {visibleDots.map((index) => {
+          const model = models[index]
+          return (
+            <button
+              key={model.name}
+              type="button"
+              onClick={() => scrollTo(index)}
+              aria-label={`Go to ${model.name}`}
+              className={cn(
+                "h-2 w-8 rounded-full transition-colors duration-300",
+                index === selectedIndex ? "bg-foreground" : "bg-border",
+              )}
+            />
+          )
+        })}
       </div>
     </div>
   )

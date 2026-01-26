@@ -1,11 +1,12 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, diving film, plan-your-stay search, testimonials).
-- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/`. `components/basic-page.tsx` is the default wrapper for interior routes and includes `components/photo-carousel.tsx`.
+- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, estate lineup, editorial splits, diving film, bento metrics, process steps, testimonials, specs, email capture, search).
+- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs/logo; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, BentoMetrics, ProcessSteps, SpecsAccordion, TestimonialSlider, EmailCapture).
+- Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
-- Shared data lives in `lib/`: `images.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, and `utils.ts`.
+- Shared data lives in `lib/`: `images.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
 - Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
 
 ## Build, Test, and Development Commands
@@ -26,7 +27,7 @@
 ## Testing Guidelines
 - Unit tests run with Vitest; current tests live in `lib/search/__tests__/`.
 - E2E tests live in `e2e/` and run with Playwright.
-- Cover critical UI interactions (navigation, CTAs, search) when adding new features.
+- Cover critical UI interactions (navigation, CTAs, search). Slider behavior is validated by `e2e/slider-swipe.spec.ts` for gestures + keyboard.
 
 ## Commit & Pull Request Guidelines
 - Follow the existing history: short, imperative subject lines (e.g., `Add hero CTA animation`). Include a concise body when context is non-obvious.
@@ -48,9 +49,13 @@
 ## Assets, Fonts & Media
 - SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx`.
 - Hero imagery is defined in `components/hero-image-rotator.tsx` as Cloudinary URLs; keep these high-resolution to avoid blur.
+- Image registry lives in `lib/images.ts`; remove low-resolution assets rather than letting them slip into galleries.
 - The diving film section lives in `app/page.tsx` and uses a Cloudinary MP4 with a poster frame.
 - `components/photo-carousel.tsx` wraps Embla and is used by `components/basic-page.tsx` for interior pages.
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
+
+## Forms & Integrations
+- Contact form is implemented in `components/contact-form.tsx` and posts to Formspree with a custom thank-you state (no redirect).
 
 ## Codex CLI Map
 - Homepage layout: `app/page.tsx`

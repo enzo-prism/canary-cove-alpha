@@ -54,6 +54,11 @@ function Carousel({
   const resolvedOptions: CarouselOptions = {
     draggable: true,
     duration: 35,
+    align: 'start',
+    containScroll: 'trimSnaps',
+    dragFree: false,
+    skipSnaps: false,
+    slidesToScroll: 1,
     ...opts,
     axis: orientation === 'horizontal' ? 'x' : 'y',
   }
