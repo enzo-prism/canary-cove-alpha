@@ -8,16 +8,19 @@
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
 - Shared data lives in `lib/`: `images.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
 - Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
+- Future-session docs live in `docs/`. Start with `docs/codex-playbook.md` for architecture, integrations, QA expectations, and deploy workflow. `docs/qa-success-criteria.md` is the release bar.
 
 ## Build, Test, and Development Commands
 - `pnpm install` — install dependencies.
 - `pnpm dev` — start the Next.js dev server at `http://localhost:3000`.
-- `pnpm build` — create a production build (`.next/`). Note: `next.config.mjs` ignores TS build errors, so run `pnpm typecheck` separately.
+- `pnpm build` — create a production build (`.next/`). This is part of the real release gate and fails on TypeScript errors.
 - `pnpm start` — serve the production build locally.
 - `pnpm lint` — run ESLint.
 - `pnpm typecheck` — run TypeScript checks (`tsc --noEmit`).
 - `pnpm test` / `pnpm test:unit` — run Vitest.
-- `pnpm test:e2e` — run Playwright (run `npx playwright install` once if browsers are missing).
+- `pnpm test:e2e` — run the Playwright release suite.
+- `pnpm exec playwright install firefox webkit` — install the browser runtimes if Playwright is missing browsers.
+- Prefer `pnpm` as the canonical package manager for this repo. `package-lock.json` may exist as legacy baggage; do not treat `npm` as the source of truth unless the repo is intentionally migrated.
 
 ## Coding Style & Naming Conventions
 - Use TypeScript, functional React components, and the App Router paradigm.
@@ -27,7 +30,15 @@
 ## Testing Guidelines
 - Unit tests run with Vitest; current tests live in `lib/search/__tests__/`.
 - E2E tests live in `e2e/` and run with Playwright.
-- Cover critical UI interactions (navigation, CTAs, search). Slider behavior is validated by `e2e/slider-swipe.spec.ts` for gestures + keyboard.
+- The production release gate is: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`.
+- Cross-browser Playwright coverage runs on Chromium, Firefox, and WebKit.
+- Visual baselines are intentionally maintained on Chromium only to keep snapshots stable. When a design change is intentional, update the snapshots in `e2e/design-visual.spec.ts-snapshots/` and call that out in the commit.
+- Key suites:
+  - `e2e/release-gate.spec.ts` for route health, navigation, CTA routing, footer links, search, and embeds
+  - `e2e/forms.spec.ts` for email capture, contact, and booking form success/error states
+  - `e2e/usability.spec.ts` for overflow, hit targets, resize resilience, and keyboard/touch behavior
+  - `e2e/design-visual.spec.ts` for visual regressions on hero, forms, and mini galleries
+- `e2e/helpers.ts` intentionally filters Vercel analytics debug noise and cancelled Cloudinary video requests in dev so real regressions stand out.
 
 ## Commit & Pull Request Guidelines
 - Follow the existing history: short, imperative subject lines (e.g., `Add hero CTA animation`). Include a concise body when context is non-obvious.
@@ -55,7 +66,17 @@
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
 
 ## Forms & Integrations
-- Contact form is implemented in `components/contact-form.tsx` and posts to Formspree with a custom thank-you state (no redirect).
+- Contact form and homepage email capture both post to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
+- Booking requests post to Formspree endpoint `https://formspree.io/f/xqeqllek`.
+- The booking calendar on `/book` is a Bookingmood iframe embed. Keep the iframe present even if the surrounding copy/layout changes.
+- The site uses Cloudinary-hosted images/video and Vercel Analytics.
+
+## Deployment Notes
+- Production site: `https://v0-canary-cove-navbar-structure.vercel.app`
+- Vercel project: `v0-canary-cove-navbar-structure`
+- `app/sitemap.ts` is hard-wired to the production domain. If the primary domain changes, update that file as part of the same release.
+- The typical release flow is: validate locally, commit, push `main`, then confirm the Vercel production deployment reaches `Ready`.
+- Before shipping, make sure footer legal links still resolve to `/privacy` and `/terms`.
 
 ## Codex CLI Map
 - Homepage layout: `app/page.tsx`
@@ -66,3 +87,6 @@
 - Search UI: `components/site-search.tsx`
 - Styling tokens/utilities: `app/globals.css`
 - Image registry: `lib/images.ts`
+- Shared carousel layer: `components/ui/carousel.tsx`
+- Interior page shell: `components/basic-page.tsx`
+- Booking form + Bookingmood embed: `components/booking-form.tsx`, `app/book/page.tsx`

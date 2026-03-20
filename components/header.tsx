@@ -60,9 +60,10 @@ export function Header() {
             <SheetTrigger asChild>
               <Button
                 aria-controls={mobileSheetId}
+                aria-label="Open navigation menu"
                 variant="outline"
                 size="icon"
-                className="border-border text-foreground hover:bg-foreground hover:text-background"
+                className="h-11 w-11 border-border text-foreground hover:bg-foreground hover:text-background"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open navigation</span>
@@ -81,9 +82,10 @@ export function Header() {
                 </SheetTitle>
                 <SheetClose asChild>
                   <Button
+                    aria-label="Close navigation menu"
                     variant="ghost"
                     size="icon"
-                    className="border-border text-muted-foreground hover:text-foreground"
+                    className="h-11 w-11 border-border text-muted-foreground hover:text-foreground"
                   >
                     <X className="h-4 w-4" />
                     <span className="sr-only">Close menu</span>

@@ -32,15 +32,33 @@ type BookingFormProps = {
 export function BookingForm({ className }: BookingFormProps) {
   const [alertOpen, setAlertOpen] = useState(false)
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
+  const [validationError, setValidationError] = useState<string | null>(null)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     if (status === "sending") return
 
-    setStatus("sending")
     const form = event.currentTarget
     const formData = new FormData(form)
+    const email = String(formData.get("email") ?? "").trim()
+    const confirmEmail = String(formData.get("confirmEmail") ?? "").trim()
+    const arrival = String(formData.get("arrival") ?? "").trim()
+    const departure = String(formData.get("departure") ?? "").trim()
 
+    if (email !== confirmEmail) {
+      setValidationError("Please make sure both email fields match before sending your request.")
+      form.querySelector<HTMLInputElement>("#confirmEmail")?.focus()
+      return
+    }
+
+    if (arrival && departure && departure < arrival) {
+      setValidationError("Departure date must be after your arrival date.")
+      form.querySelector<HTMLInputElement>("#departure")?.focus()
+      return
+    }
+
+    setValidationError(null)
+    setStatus("sending")
     try {
       const response = await fetch(FORM_ENDPOINT, {
         method: "POST",
@@ -80,6 +98,7 @@ export function BookingForm({ className }: BookingFormProps) {
   return (
     <AlertDialog open={alertOpen} onOpenChange={handleAlertChange}>
       <Card
+        data-testid="booking-form-card"
         className={cn(
           "frosted-panel relative space-y-6 rounded-[32px] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]",
           className,
@@ -111,7 +130,8 @@ export function BookingForm({ className }: BookingFormProps) {
                   id="firstName"
                   name="firstName"
                   required
-                  placeholder="Alexandra"
+                  autoComplete="given-name"
+                  placeholder="Alexandra…"
                   className={fieldClassName}
                 />
               </div>
@@ -121,7 +141,8 @@ export function BookingForm({ className }: BookingFormProps) {
                   id="lastName"
                   name="lastName"
                   required
-                  placeholder="Martin"
+                  autoComplete="family-name"
+                  placeholder="Martin…"
                   className={fieldClassName}
                 />
               </div>
@@ -136,7 +157,8 @@ export function BookingForm({ className }: BookingFormProps) {
                   type="tel"
                   inputMode="tel"
                   required
-                  placeholder="+1 (242) 555-0123"
+                  autoComplete="tel"
+                  placeholder="+1 (242) 555-0123…"
                   className={fieldClassName}
                 />
               </div>
@@ -147,7 +169,10 @@ export function BookingForm({ className }: BookingFormProps) {
                   name="email"
                   type="email"
                   required
-                  placeholder="Your email"
+                  autoComplete="email"
+                  spellCheck={false}
+                  inputMode="email"
+                  placeholder="alex@example.com…"
                   className={fieldClassName}
                 />
               </div>
@@ -160,7 +185,10 @@ export function BookingForm({ className }: BookingFormProps) {
                 name="confirmEmail"
                 type="email"
                 required
-                placeholder="Confirm your email"
+                autoComplete="email"
+                spellCheck={false}
+                inputMode="email"
+                placeholder="Confirm your email…"
                 className={fieldClassName}
               />
             </div>
@@ -195,7 +223,7 @@ export function BookingForm({ className }: BookingFormProps) {
                   type="number"
                   min={1}
                   inputMode="numeric"
-                  placeholder="4 adults"
+                  placeholder="4 adults…"
                   className={fieldClassName}
                 />
               </div>
@@ -204,7 +232,8 @@ export function BookingForm({ className }: BookingFormProps) {
                 <Input
                   id="childGuests"
                   name="childGuests"
-                  placeholder="2 children, ages 8 and 10"
+                  autoComplete="off"
+                  placeholder="2 children, ages 8 and 10…"
                   className={fieldClassName}
                 />
               </div>
@@ -217,7 +246,8 @@ export function BookingForm({ className }: BookingFormProps) {
                 name="requests"
                 rows={5}
                 required
-                placeholder="Please write a detailed message to us!"
+                autoComplete="off"
+                placeholder="Please share your trip details and request…"
                 className={textareaClassName}
               />
             </div>
@@ -243,12 +273,23 @@ export function BookingForm({ className }: BookingFormProps) {
 
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex w-full flex-col gap-2 sm:w-auto">
-                <Button type="submit" size="lg" className="w-full sm:w-auto focus-ring" disabled={status === "sending"}>
-                  {status === "sending" ? "Sending request..." : "Send booking request"}
+                <Button
+                  type="submit"
+                  size="lg"
+                  className="w-full sm:w-auto focus-ring"
+                  disabled={status === "sending"}
+                  data-testid="booking-submit"
+                >
+                  {status === "sending" ? "Sending request…" : "Send booking request"}
                   <Send className="h-4 w-4" />
                 </Button>
+                {validationError ? (
+                  <p className="text-xs text-destructive" role="alert" data-testid="booking-validation-error">
+                    {validationError}
+                  </p>
+                ) : null}
                 {status === "error" ? (
-                  <p className="text-xs text-destructive">
+                  <p className="text-xs text-destructive" role="alert" data-testid="booking-error">
                     Something went wrong. Please try again or email us directly.
                   </p>
                 ) : null}

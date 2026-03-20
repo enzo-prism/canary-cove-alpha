@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next"
 
 import { NAV_ITEMS } from "@/lib/nav-items"
 
-const DEFAULT_BASE_URL = "https://example.com"
+const DEFAULT_BASE_URL = "https://v0-canary-cove-navbar-structure.vercel.app"
 
 const EXTRA_PATHS = ["/rates"]
 

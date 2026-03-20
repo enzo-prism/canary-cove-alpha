@@ -118,7 +118,7 @@ export function SiteSearch({
           <Button
             type="button"
             variant="outline"
-            className="flex w-full items-center justify-between gap-3 rounded-full border-border bg-transparent px-4 py-3 text-base text-muted-foreground hover:bg-foreground hover:text-background"
+            className="flex min-h-11 w-full items-center justify-between gap-3 rounded-full border-border bg-transparent px-4 py-3 text-base text-muted-foreground hover:bg-foreground hover:text-background"
             aria-label="Open site search"
             data-testid="search-open-button"
           >

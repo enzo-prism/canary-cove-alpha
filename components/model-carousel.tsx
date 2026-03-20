@@ -27,7 +27,6 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
   const [viewportRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
-    draggable: true,
     duration: 35,
     containScroll: "trimSnaps",
     dragFree: false,
@@ -188,9 +187,9 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                     className="object-cover"
                   />
                 </div>
-                <div data-testid={`model-stack-${index}`} className="flex min-w-0 flex-col justify-between gap-8">
-                  <div data-testid={`model-text-${index}`} className="flow flow-sm">
-                    <h3 data-testid={`model-title-${index}`} className="text-section">
+                <div data-testid={`model-stack-${index}`} className="flex min-w-0 flex-col justify-between gap-8 md:gap-10">
+                  <div data-testid={`model-text-${index}`} className="flex flex-col gap-5 md:gap-6">
+                    <h3 data-testid={`model-title-${index}`} className="text-section pb-3">
                       {model.name}
                     </h3>
                     <p
@@ -204,7 +203,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                     </p>
                   </div>
 
-                  <div data-testid={`model-actions-${index}`} className="flow flow-md">
+                  <div data-testid={`model-actions-${index}`} className="flex flex-col gap-5 md:gap-6">
                     <div data-testid={`model-stats-${index}`} className="grid gap-4 sm:grid-cols-3">
                       {model.stats.map((stat) => (
                         <div key={stat.label} className="rounded-2xl border border-border/70 px-4 py-4">

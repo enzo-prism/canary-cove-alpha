@@ -68,7 +68,10 @@ export function ExperiencesMiniGallery({ items }: ExperiencesMiniGalleryProps) {
   }, [api, onSelect])
 
   return (
-    <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
+    <Card
+      className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+      data-testid="experiences-mini-gallery"
+    >
       <CardContent className="space-y-4 p-4 sm:p-6">
         <Carousel opts={{ align: "start", loop: true }} setApi={setApi}>
           <CarouselContent>

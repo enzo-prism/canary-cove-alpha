@@ -1,5 +1,5 @@
 import type React from "react"
-import type { Metadata } from "next"
+import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
@@ -44,6 +44,10 @@ export const metadata: Metadata = {
   },
 }
 
+export const viewport: Viewport = {
+  themeColor: "#faf7f0",
+}
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -54,6 +58,12 @@ export default function RootLayout({
       <body
         className={`${sfPro.className} overflow-x-hidden font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
       >
+        <a
+          href="#main-content"
+          className="sr-only fixed left-4 top-4 z-[100] rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background focus:not-sr-only focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+        >
+          Skip to content
+        </a>
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
         <Analytics />

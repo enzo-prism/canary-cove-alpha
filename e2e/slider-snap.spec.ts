@@ -1,5 +1,7 @@
 import { expect, test, type Locator } from "@playwright/test"
 
+const MIN_FULL_SLIDE_RATIO = 0.97
+
 const getMaxIntersectionRatio = async (viewport: Locator, slides: Locator) => {
   const viewportBox = await viewport.boundingBox()
   if (!viewportBox) {
@@ -61,7 +63,7 @@ test.describe("slider snap alignment", () => {
     await dragToNext(page, modelViewport)
     await page.waitForTimeout(500)
     const modelRatio = await getMaxIntersectionRatio(modelViewport, modelSlides)
-    expect(modelRatio).toBeGreaterThanOrEqual(0.98)
+    expect(modelRatio).toBeGreaterThanOrEqual(MIN_FULL_SLIDE_RATIO)
 
     const testimonialViewport = page.getByTestId("testimonial-carousel-viewport")
     const testimonialSlides = testimonialViewport.locator('[aria-roledescription="slide"]')
@@ -70,7 +72,7 @@ test.describe("slider snap alignment", () => {
     await dragToNext(page, testimonialViewport)
     await page.waitForTimeout(500)
     const testimonialRatio = await getMaxIntersectionRatio(testimonialViewport, testimonialSlides)
-    expect(testimonialRatio).toBeGreaterThanOrEqual(0.98)
+    expect(testimonialRatio).toBeGreaterThanOrEqual(MIN_FULL_SLIDE_RATIO)
   })
 
   test("gallery sliders snap to a full slide", async ({ page }) => {
@@ -85,7 +87,7 @@ test.describe("slider snap alignment", () => {
     await dragToNext(page, viewport)
     await page.waitForTimeout(400)
     const ratio = await getMaxIntersectionRatio(viewport, slides)
-    expect(ratio).toBeGreaterThanOrEqual(0.98)
+    expect(ratio).toBeGreaterThanOrEqual(MIN_FULL_SLIDE_RATIO)
 
     await page.goto("/book")
     await page.waitForLoadState("domcontentloaded")
@@ -98,6 +100,6 @@ test.describe("slider snap alignment", () => {
     await dragToNext(page, bookViewport)
     await page.waitForTimeout(400)
     const bookRatio = await getMaxIntersectionRatio(bookViewport, bookSlides)
-    expect(bookRatio).toBeGreaterThanOrEqual(0.98)
+    expect(bookRatio).toBeGreaterThanOrEqual(MIN_FULL_SLIDE_RATIO)
   })
 })

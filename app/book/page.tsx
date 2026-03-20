@@ -19,7 +19,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       <Header />
       <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-surface/80 via-white to-surface-muted/60" />
@@ -58,6 +58,7 @@ export default function Page() {
                       src="https://www.bookingmood.com/embed/939b7bb6-8e48-4256-a7af-0ec62e4a4d68"
                       style={{ width: "100%", border: "none" }}
                       loading="lazy"
+                      data-testid="booking-calendar-iframe"
                     />
                   </div>
                 </CardContent>

@@ -21,7 +21,6 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
   const [viewportRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
-    draggable: true,
     duration: 35,
     containScroll: "trimSnaps",
     dragFree: false,

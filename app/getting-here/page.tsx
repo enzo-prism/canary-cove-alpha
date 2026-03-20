@@ -46,7 +46,7 @@ export const metadata: Metadata = {
 
 export default function Page() {
   return (
-    <main className="min-h-screen">
+    <main id="main-content" className="min-h-screen">
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">

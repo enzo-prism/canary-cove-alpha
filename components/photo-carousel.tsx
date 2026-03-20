@@ -119,7 +119,7 @@ export function PhotoCarousel() {
                           loading={index === 0 ? "eager" : "lazy"}
                           className={`object-cover transition-opacity duration-700 motion-reduce:transition-none ${loadedSlides[index] ? "opacity-100" : "opacity-0"}`}
                           sizes="(min-width: 1280px) 1200px, (min-width: 1024px) 900px, 100vw"
-                          onLoadingComplete={() => handleLoaded(index)}
+                          onLoad={() => handleLoaded(index)}
                         />
                         <div className="absolute bottom-0 left-0 right-0 p-6 sm:p-8">
                           <div className="max-w-2xl rounded-2xl border border-white/20 bg-black/55 p-4 backdrop-blur-sm sm:p-5">

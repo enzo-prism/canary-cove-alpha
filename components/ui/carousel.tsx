@@ -1,15 +1,14 @@
 'use client'
 
 import * as React from 'react'
-import type { EmblaCarouselType } from 'embla-carousel'
 import useEmblaCarousel from 'embla-carousel-react'
 import { ArrowLeftIcon, ArrowRightIcon } from 'lucide-react'
 
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 
-type CarouselApi = EmblaCarouselType
 type UseCarouselParameters = Parameters<typeof useEmblaCarousel>
+type CarouselApi = NonNullable<ReturnType<typeof useEmblaCarousel>[1]>
 type CarouselOptions = UseCarouselParameters[0]
 type CarouselPlugin = UseCarouselParameters[1]
 
@@ -52,7 +51,6 @@ function Carousel({
   const { tabIndex, ...rest } = props
   const keyThrottleRef = React.useRef<number>(0)
   const resolvedOptions: CarouselOptions = {
-    draggable: true,
     duration: 35,
     align: 'start',
     containScroll: 'trimSnaps',
@@ -231,7 +229,7 @@ const CarouselContent = React.forwardRef<
         ref={ref}
         className={cn(
           'flex carousel-track',
-          orientation === 'horizontal' ? '-ml-4' : '-mt-4 flex-col',
+          orientation === 'horizontal' ? 'flex-row' : 'flex-col',
           className,
         )}
         {...props}
@@ -254,7 +252,6 @@ const CarouselItem = React.forwardRef<
       aria-roledescription="slide"
       className={cn(
         'min-w-0 shrink-0 grow-0 basis-full carousel-slide',
-        orientation === 'horizontal' ? 'pl-4' : 'pt-4',
         className,
       )}
       {...props}

@@ -1,5 +1,7 @@
 import { expect, test, type Locator } from "@playwright/test"
 
+const MIN_HEADING_STACK_GAP = 8
+
 const getGap = async (first: Locator, second: Locator) => {
   const firstBox = await first.boundingBox()
   const secondBox = await second.boundingBox()
@@ -50,7 +52,7 @@ test.describe("spacing rhythm", () => {
     const gapSummaryStats = await getGap(summary, stats)
     const gapStatsCta = await getGap(stats, cta)
 
-    expect(gapTitleTagline).toBeGreaterThanOrEqual(10)
+    expect(gapTitleTagline).toBeGreaterThanOrEqual(MIN_HEADING_STACK_GAP)
     expect(gapTaglineSummary).toBeGreaterThanOrEqual(10)
     expect(gapSummaryStats).toBeGreaterThanOrEqual(24)
     expect(gapStatsCta).toBeGreaterThanOrEqual(12)

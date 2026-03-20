@@ -46,10 +46,10 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-surface">
+    <Card className="rounded-[28px] border border-border/70 bg-surface" data-testid="contact-form-card">
       <CardContent className="p-6">
         {status === "success" ? (
-          <div className="flow flow-sm">
+          <div className="flow flow-sm" aria-live="polite" data-testid="contact-success">
             <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Message sent</p>
             <h2 className="text-section">Thanks for reaching out.</h2>
             <p className="text-body text-foreground/80">
@@ -67,6 +67,8 @@ export function ContactForm() {
                 id="name"
                 name="name"
                 required
+                autoComplete="name"
+                placeholder="Alex Martin…"
                 className="h-12 rounded-2xl border-border bg-transparent px-4"
               />
             </div>
@@ -77,6 +79,10 @@ export function ContactForm() {
                 name="email"
                 type="email"
                 required
+                autoComplete="email"
+                spellCheck={false}
+                inputMode="email"
+                placeholder="alex@example.com…"
                 className="h-12 rounded-2xl border-border bg-transparent px-4"
               />
             </div>
@@ -89,6 +95,7 @@ export function ContactForm() {
                 maxLength={MAX_MESSAGE_LENGTH}
                 value={message}
                 onChange={(event) => setMessage(event.target.value)}
+                placeholder="Tell us about your dates, questions, or plans…"
                 className="rounded-2xl border-border bg-transparent px-4 py-3"
               />
               <p className="text-xs text-muted-foreground">
@@ -96,12 +103,12 @@ export function ContactForm() {
               </p>
             </div>
             {status === "error" ? (
-              <p className="text-sm text-destructive">
+              <p className="text-sm text-destructive" role="alert" data-testid="contact-error">
                 Something went wrong. Please try again or email us directly.
               </p>
             ) : null}
-            <Button type="submit" size="lg" className="w-full" disabled={status === "sending"}>
-              {status === "sending" ? "Sending..." : "Send message"}
+            <Button type="submit" size="lg" className="w-full" disabled={status === "sending"} data-testid="contact-submit">
+              {status === "sending" ? "Sending…" : "Send message"}
             </Button>
           </form>
         )}
