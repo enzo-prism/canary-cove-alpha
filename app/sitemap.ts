@@ -1,39 +1,13 @@
 import type { MetadataRoute } from "next"
 
-import { NAV_ITEMS } from "@/lib/nav-items"
-
-const DEFAULT_BASE_URL = "https://v0-canary-cove-navbar-structure.vercel.app"
-
-const EXTRA_PATHS = ["/rates"]
-
-const stripHash = (href: string) => {
-  if (!href) return "/"
-  const [path] = href.split("#")
-  return path === "" ? "/" : path
-}
-
-const getNavPaths = () => {
-  const paths = new Set<string>(EXTRA_PATHS)
-
-  for (const item of NAV_ITEMS) {
-    if (item.type === "link") {
-      paths.add(stripHash(item.href))
-    } else {
-      item.items.forEach((child) => paths.add(stripHash(child.href)))
-    }
-  }
-
-  return Array.from(paths)
-}
+import { BUILD_LAST_MODIFIED, PUBLIC_SITE_PAGES, getCanonicalUrl } from "@/lib/site-config"
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = (process.env.NEXT_PUBLIC_SITE_URL ?? DEFAULT_BASE_URL).replace(/\/$/, "")
-  const lastModified = new Date()
-
-  return getNavPaths().map((path) => ({
-    url: `${baseUrl}${path === "/" ? "" : path}`,
-    lastModified,
-    changeFrequency: "monthly",
-    priority: path === "/" ? 1 : 0.6,
+  return PUBLIC_SITE_PAGES.map((page) => ({
+    url: getCanonicalUrl(page.path),
+    lastModified: BUILD_LAST_MODIFIED,
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
+    images: page.images,
   }))
 }

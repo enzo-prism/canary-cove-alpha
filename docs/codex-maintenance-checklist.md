@@ -13,7 +13,11 @@ When you add, remove, rename, or significantly repurpose a public route, review 
 - `components/footer.tsx` if the route belongs in footer IA
 - `lib/search/search-index.ts` if guests should be able to find it through site search
 - `e2e/helpers.ts` (`SITE_ROUTES`) if it should be part of route-health coverage
-- `app/sitemap.ts` if the route is not already represented through nav-derived paths
+- `lib/site-config.ts`
+- `app/sitemap.ts`
+- `app/robots.ts`
+- `app/llms/route.ts`
+- `app/llms-full/route.ts`
 - `next.config.mjs` if old URLs should redirect into the new path
 
 ## In-page anchors and deep links
@@ -46,6 +50,9 @@ When top-level IA changes, review:
 - `components/header.tsx`
 - `components/footer.tsx`
 - `app/sitemap.ts`
+- `app/robots.ts`
+- `app/llms/route.ts`
+- `lib/site-config.ts`
 - `e2e/release-gate.spec.ts`
 
 ## Search
@@ -159,7 +166,11 @@ pnpm test:e2e
 
 Before shipping, sanity-check these when relevant:
 
+- `lib/site-config.ts`
 - `app/sitemap.ts`
+- `app/robots.ts`
+- `/llms.txt`
+- `/llms-full.txt`
 - `/privacy` and `/terms`
 - footer links
 - route hashes landing below the sticky header

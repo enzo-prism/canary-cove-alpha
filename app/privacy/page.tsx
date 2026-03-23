@@ -1,15 +1,10 @@
-import type { Metadata } from "next"
-
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Privacy Policy | Canary Cove",
-  description:
-    "How Canary Cove handles contact details, booking requests, analytics, and embedded third-party services.",
-}
+export const metadata = PAGE_METADATA.privacy
 
 export default function PrivacyPage() {
   return (

@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { BookingForm } from "@/components/booking-form"
@@ -10,12 +8,9 @@ import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Book Canary Cove | Check Availability and Request Dates",
-  description:
-    "View the live calendar, share your trip details, and request a stay or courtesy hold for your group.",
-}
+export const metadata = PAGE_METADATA.book
 
 export default function Page() {
   return (

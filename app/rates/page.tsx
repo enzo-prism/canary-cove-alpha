@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
@@ -10,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PAGE_METADATA } from "@/lib/seo"
 
 const villaSeasons = [
   {
@@ -80,11 +79,7 @@ const mainHouseSeasons = [
   },
 ]
 
-export const metadata: Metadata = {
-  title: "Canary Cove Rates | Seasons, Villa Pricing, and Add-Ons",
-  description:
-    "Seasonal villa rates plus pricing for boats, fishing, diving, and additional services at Canary Cove.",
-}
+export const metadata = PAGE_METADATA.rates
 
 export default function Page() {
   return (

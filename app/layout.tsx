@@ -5,6 +5,9 @@ import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
+import { IMAGES } from "@/lib/images"
+import { HOME_SEO } from "@/lib/seo"
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-config"
 
 const sfPro = localFont({
   variable: "--font-sf",
@@ -24,10 +27,34 @@ const sfPro = localFont({
 })
 
 export const metadata: Metadata = {
-  title: "Canary Cove | Private All-Inclusive Estate in Belize",
-  description:
-    "Canary Cove is a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, dock access, and on-site gear - reserved for one group at a time. Provisions and excursions are billed separately.",
+  metadataBase: new URL(SITE_URL),
+  title: HOME_SEO.title,
+  description: HOME_SEO.description ?? SITE_DESCRIPTION,
   generator: "v0.app",
+  openGraph: {
+    type: "website",
+    siteName: SITE_NAME,
+    title: HOME_SEO.title,
+    description: HOME_SEO.description ?? SITE_DESCRIPTION,
+    images: [IMAGES.heroVillaSeating.src],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: HOME_SEO.title,
+    description: HOME_SEO.description ?? SITE_DESCRIPTION,
+    images: [IMAGES.heroVillaSeating.src],
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: [
       {

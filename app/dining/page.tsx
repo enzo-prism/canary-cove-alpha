@@ -1,5 +1,4 @@
 import Image from "next/image"
-import type { Metadata } from "next"
 
 import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
@@ -10,12 +9,9 @@ import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Dining at Canary Cove | Private Chef and Beach Picnics",
-  description:
-    "Daily breakfasts, chef-prepared lunches and dinners, and beach picnics tailored to your schedule and tastes.",
-}
+export const metadata = PAGE_METADATA.dining
 
 export default function Page() {
   return (

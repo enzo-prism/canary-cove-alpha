@@ -35,7 +35,7 @@ export function Hero() {
                 className="pointer-events-none absolute inset-0 bg-[linear-gradient(145deg,rgba(255,255,255,0.88)_0%,rgba(251,247,239,0.78)_45%,rgba(232,224,205,0.58)_100%)]"
               />
               <div className="flex items-center gap-4">
-                <div className="relative z-10 rounded-[20px] border border-white/45 bg-white/55 p-3 backdrop-blur">
+                <div className="relative z-10 rounded-[20px] border border-[#1f617f]/35 bg-[linear-gradient(160deg,rgba(8,62,88,0.92)_0%,rgba(18,110,145,0.82)_100%)] p-3 shadow-[0_14px_32px_rgba(8,62,88,0.18)] backdrop-blur">
                   <Image
                     src="/canary-cove-logo.png"
                     alt="Canary Cove logo"

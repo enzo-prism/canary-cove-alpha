@@ -1,17 +1,12 @@
-import type { Metadata } from "next"
-
 import { ContactDetails } from "@/components/contact-details"
 import { ContactForm } from "@/components/contact-form"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Contact Canary Cove | Call, Message, or Send a Request",
-  description:
-    "Reach our team by phone or contact form for bookings, questions, and travel planning support.",
-}
+export const metadata = PAGE_METADATA.contact
 
 export default function Page() {
   return (

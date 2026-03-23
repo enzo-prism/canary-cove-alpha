@@ -72,9 +72,9 @@
 - The site uses Cloudinary-hosted images/video and Vercel Analytics.
 
 ## Deployment Notes
-- Production site: `https://v0-canary-cove-navbar-structure.vercel.app`
+- Production site: `https://www.canarycove.com`
 - Vercel project: `v0-canary-cove-navbar-structure`
-- `app/sitemap.ts` is hard-wired to the production domain. If the primary domain changes, update that file as part of the same release.
+- `lib/site-config.ts` is the source of truth for the canonical domain plus sitemap/robots/llms metadata. If the primary domain changes, update that file as part of the same release.
 - The typical release flow is: validate locally, commit, push `main`, then confirm the Vercel production deployment reaches `Ready`.
 - Before shipping, make sure footer legal links still resolve to `/privacy` and `/terms`.
 

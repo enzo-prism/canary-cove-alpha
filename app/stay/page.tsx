@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { StayClosingCta } from "@/components/stay-closing-cta"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
@@ -10,12 +8,9 @@ import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { StayOutdoorGallery } from "@/components/stay-outdoor-gallery"
 import { StayVillaGallery } from "@/components/stay-villa-gallery"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Stay at Canary Cove | Beachfront Villa, Suites, and Docks",
-  description:
-    "Private villa estate with suites, docks, pool, hot tub, and open-air living reserved entirely for your group in Belize.",
-}
+export const metadata = PAGE_METADATA.stay
 
 export default function Page() {
   return (

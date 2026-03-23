@@ -37,6 +37,8 @@ export const installErrorCollectors = (page: Page) => {
     const location = message.location().url
     if (text.includes("Download the React DevTools")) return
     if (location.includes("https://va.vercel-scripts.com/v1/script.debug.js")) return
+    if (location.includes("https://www.googletagmanager.com/gtag/js")) return
+    if (text.includes("https://www.googletagmanager.com/gtag/js")) return
     consoleErrors.push(text)
   })
 
@@ -50,6 +52,7 @@ export const installErrorCollectors = (page: Page) => {
     const failureText = request.failure()?.errorText ?? "unknown error"
     if (resourceType === "media") return
     if (url.includes("https://va.vercel-scripts.com/v1/script.debug.js")) return
+    if (url.includes("https://www.googletagmanager.com/gtag/js")) return
     if (failureText === "cancelled" && url.includes("res.cloudinary.com") && url.endsWith(".mp4")) return
     failedRequests.push(`${resourceType}: ${url} -> ${failureText}`)
   })

@@ -57,6 +57,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/site-search.tsx`: Search module on the homepage.
 - `lib/homepage-content.ts`: Homepage data for models, editorial blocks, steps, specs, testimonials.
 - `lib/testimonial-spotlights.ts`: Testimonial copy.
+- `lib/site-config.ts`: Canonical domain, public route metadata, sitemap priorities, and llms content.
 - `components/basic-page.tsx`: Simple legacy/shared leaf-page shell; most current routes are custom route-local compositions.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
@@ -96,9 +97,9 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 ## Deployment notes
 
 - Production is hosted on Vercel project `v0-canary-cove-navbar-structure`.
-- Production URL: `https://v0-canary-cove-navbar-structure.vercel.app`
+- Production URL: `https://www.canarycove.com`
 - Pushing `main` is the normal path to a production deployment.
-- If the primary domain changes, update `app/sitemap.ts` in the same release.
+- If the primary domain changes, update `lib/site-config.ts` and the metadata routes in the same release.
 
 ## Docs for future sessions
 

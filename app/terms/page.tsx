@@ -1,15 +1,10 @@
-import type { Metadata } from "next"
-
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Terms of Use | Canary Cove",
-  description:
-    "Terms covering informational use of the Canary Cove website, inquiry submissions, and third-party booking tools.",
-}
+export const metadata = PAGE_METADATA.terms
 
 export default function TermsPage() {
   return (

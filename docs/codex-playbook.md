@@ -7,7 +7,7 @@ This document is the fastest way for a future Codex session to get productive in
 - Framework: Next.js 16 App Router with React 19 and Tailwind CSS v4.
 - Package manager: `pnpm` is canonical.
 - Hosting: Vercel project `v0-canary-cove-navbar-structure`.
-- Production URL: `https://v0-canary-cove-navbar-structure.vercel.app`
+- Production URL: `https://www.canarycove.com`
 - Primary site type: guest-facing marketing site for a luxury Belize estate.
 - Analytics: Vercel Analytics and Google Analytics 4 are both enabled.
 - Search: custom client-side search backed by a handwritten index in `lib/search/search-index.ts`.
@@ -68,7 +68,9 @@ These are mostly route-local page compositions rather than a single shared page 
 
 ### App shell and global behavior
 
-- `app/layout.tsx`: fonts, metadata, GA scripts, Vercel Analytics, skip link, global scroll reset.
+- `app/layout.tsx`: fonts, canonical metadata, GA scripts, Vercel Analytics, skip link, global scroll reset.
+- `lib/site-config.ts`: canonical domain, public route inventory, sitemap priorities, and llms helpers.
+- `app/sitemap.ts`, `app/robots.ts`, `app/llms/route.ts`, `app/llms-full/route.ts`: crawl and AI-discovery surfaces.
 - `components/header.tsx`: sticky header, nav, CTA behavior.
 - `components/footer.tsx`: footer IA and legal links.
 - `components/scroll-reset.tsx`: resets scroll on route changes when there is no hash.
@@ -129,6 +131,10 @@ Start with these files:
 - `components/navigation/mobile-nav.tsx`
 - `components/footer.tsx`
 - `app/sitemap.ts`
+- `app/robots.ts`
+- `app/llms/route.ts`
+- `app/llms-full/route.ts`
+- `lib/site-config.ts`
 - `e2e/helpers.ts` (`SITE_ROUTES`)
 
 ### If you add or rename a route
@@ -138,8 +144,10 @@ Start with these files:
 - `app/<route>/page.tsx`
 - `lib/nav-items.ts` if the route belongs in nav
 - `components/footer.tsx` if the route belongs in footer IA
+- `lib/site-config.ts`
 - `lib/search/search-index.ts` if the route should be discoverable in site search
 - `e2e/helpers.ts` if it is a public route that should be part of route-health coverage
+- `app/sitemap.ts`, `app/robots.ts`, `app/llms/route.ts`, and `app/llms-full/route.ts`
 - `next.config.mjs` if old URLs should redirect into the new location
 
 ### If you change section IDs or deep links

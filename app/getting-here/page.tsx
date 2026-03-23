@@ -1,5 +1,4 @@
 import Link from "next/link"
-import type { Metadata } from "next"
 
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
@@ -10,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PAGE_METADATA } from "@/lib/seo"
 
 const steps = [
   {
@@ -38,11 +38,7 @@ const steps = [
   },
 ]
 
-export const metadata: Metadata = {
-  title: "Getting Here | Belize Arrival Guide to Canary Cove",
-  description:
-    "Step-by-step arrival guide from Belize City to San Pedro and the boat transfer to the estate.",
-}
+export const metadata = PAGE_METADATA.gettingHere
 
 export default function Page() {
   return (

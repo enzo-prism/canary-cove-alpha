@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
@@ -10,12 +8,9 @@ import { WaysToEnjoy } from "@/components/ways-to-enjoy"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { filterHighResGalleryItems } from "@/lib/gallery-utils"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Experiences at Canary Cove | Included Gear and Add-On Trips",
-  description:
-    "Explore included water toys and on-site amenities, then add diving, fishing, or island excursions planned around your pace.",
-}
+export const metadata = PAGE_METADATA.experiences
 
 const experienceGalleryItems = [
   IMAGES.tubing,

@@ -40,6 +40,13 @@ const nextConfig = {
       { source: "/about/getting-here", destination: "/about#getting-here", permanent: true },
       { source: "/about/faq", destination: "/about#faq", permanent: true },
       { source: "/gallery", destination: "/about#gallery", permanent: true },
+      { source: "/lms.txt", destination: "/llms.txt", permanent: true },
+    ]
+  },
+  async rewrites() {
+    return [
+      { source: "/llms.txt", destination: "/llms" },
+      { source: "/llms-full.txt", destination: "/llms-full" },
     ]
   },
 }

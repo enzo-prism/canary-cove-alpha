@@ -1,4 +1,3 @@
-import type { Metadata } from "next"
 import Link from "next/link"
 
 import { Header } from "@/components/header"
@@ -26,12 +25,9 @@ import {
   HOMEPAGE_TESTIMONIALS,
 } from "@/lib/homepage-content"
 import { IMAGES } from "@/lib/images"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "Canary Cove | Private Belize Estate on Ambergris Caye",
-  description:
-    "Private, fully staffed beachfront estate on Ambergris Caye with chef service, boats, and gear. Reserved for one group at a time.",
-}
+export const metadata = PAGE_METADATA.home
 
 export default function Home() {
   return (

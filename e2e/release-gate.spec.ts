@@ -80,4 +80,35 @@ test.describe("release gate smoke coverage", () => {
       expect.soft(response.ok(), `Expected ${route} to return 2xx.`).toBeTruthy()
     }
   })
+
+  test("metadata and AI discovery routes stay canonical", async ({ request, baseURL }) => {
+    const sitemapResponse = await request.get(`${baseURL}/sitemap.xml`)
+    expect(sitemapResponse.ok()).toBeTruthy()
+    expect(sitemapResponse.headers()["content-type"]).toContain("xml")
+    const sitemapText = await sitemapResponse.text()
+    expect(sitemapText).toContain("<loc>https://www.canarycove.com/stay</loc>")
+    expect(sitemapText).toContain("xmlns:image=")
+    expect(sitemapText).not.toContain("v0-canary-cove-navbar-structure.vercel.app")
+
+    const robotsResponse = await request.get(`${baseURL}/robots.txt`)
+    expect(robotsResponse.ok()).toBeTruthy()
+    const robotsText = await robotsResponse.text()
+    expect(robotsText).toContain("User-Agent: *")
+    expect(robotsText).toContain("Allow: /")
+    expect(robotsText).toContain("Host: www.canarycove.com")
+    expect(robotsText).toContain("Sitemap: https://www.canarycove.com/sitemap.xml")
+
+    const llmsResponse = await request.get(`${baseURL}/llms.txt`)
+    expect(llmsResponse.ok()).toBeTruthy()
+    expect(llmsResponse.headers()["content-type"]).toContain("text/plain")
+    const llmsText = await llmsResponse.text()
+    expect(llmsText).toContain("# Canary Cove")
+    expect(llmsText).toContain("https://www.canarycove.com/llms-full.txt")
+
+    const llmsFullResponse = await request.get(`${baseURL}/llms-full.txt`)
+    expect(llmsFullResponse.ok()).toBeTruthy()
+    const llmsFullText = await llmsFullResponse.text()
+    expect(llmsFullText).toContain("## Source of truth")
+    expect(llmsFullText).toContain("https://www.canarycove.com/rates")
+  })
 })

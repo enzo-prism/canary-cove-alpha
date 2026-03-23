@@ -1,5 +1,3 @@
-import type { Metadata } from "next"
-
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
@@ -9,12 +7,9 @@ import { Card, CardContent } from "@/components/ui/card"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { filterHighResGalleryItems } from "@/lib/gallery-utils"
+import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata: Metadata = {
-  title: "About Canary Cove | Family Estate and On-Site Team",
-  description:
-    "Meet the family behind Canary Cove and the on-site team that hosts your stay, from dock arrivals to chef service.",
-}
+export const metadata = PAGE_METADATA.about
 
 type TestimonialEntry = {
   quote: string
