@@ -21,27 +21,27 @@ export const IMAGES = {
   },
   heroVillaSeating: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202762/canarycove-haydeelustudio-59_x8gmzo.webp",
-    alt: "Canary Cove villa seating area",
+    alt: "Pool deck with shaded loungers beside the villa",
   },
   heroVillaLounge: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202762/canarycove-haydeelustudio-48_wciu3z.webp",
-    alt: "Canary Cove villa open-air lounge",
+    alt: "Lawn view of the villa, pool, and terrace",
   },
   heroVillaDining: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202756/canarycove-haydeelustudio-55_gimbjx.webp",
-    alt: "Canary Cove villa dining table",
+    alt: "Pool terrace beside the villa exterior",
   },
   heroVillaLiving: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202751/canarycove-haydeelustudio-56_ixnmn0.webp",
-    alt: "Canary Cove villa living space",
+    alt: "Swim-up bar on the infinity pool",
   },
   heroVillaDetail: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202746/canarycove-haydeelustudio-56_1_dhk9k9.webp",
-    alt: "Canary Cove villa lounge detail",
+    alt: "Infinity pool and swim-up bar with villa view",
   },
   heroVillaInterior: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202746/canarycove-haydeelustudio-54_1_cvfho6.webp",
-    alt: "Canary Cove villa interior view",
+    alt: "Pool terrace looking toward the water",
   },
   villaBedroom: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059668/canarycove-haydeelustudio-12-1280x854_r5xlpw.webp",
@@ -61,7 +61,7 @@ export const IMAGES = {
   },
   villaInteriorWide: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059618/canarycove-haydeelustudio-36-scaled_y92qno.webp",
-    alt: "Wide view of the villa interior",
+    alt: "Wide view of the great room with kitchen and dining area",
   },
   waterSlide: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059673/IMG_2080_stdy3b.webp",
@@ -185,15 +185,15 @@ export const IMAGES = {
   },
   livingRoomAlt: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059650/40_villa_cropped_tdazsh.webp",
-    alt: "Alternate view of the villa living room",
+    alt: "Great room with lounge, kitchen, and dining area",
   },
   viewFromKitchen: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059649/canarycove-haydeelustudio-44-scaled_pmxxyx.webp",
-    alt: "View from the villa kitchen toward the water",
+    alt: "Kitchen island facing the great room",
   },
   livingRoomPhoto: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059648/canarycove-haydeelustudio-34-scaled_hemax4.webp",
-    alt: "Living room photo in the villa",
+    alt: "Main lounge with water-facing windows",
   },
   bedDetail: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059640/Towel-Attention-to-Detail-2_m0jfj3.webp",
