@@ -1,8 +1,9 @@
-import type React from "react"
+import type { ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
+import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
 
 const sfPro = localFont({
@@ -51,10 +52,13 @@ export const viewport: Viewport = {
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode
+  children: ReactNode
 }>) {
   return (
     <html lang="en" className={`${sfPro.variable} overflow-x-hidden`}>
+      <head>
+        <GoogleAnalyticsScripts />
+      </head>
       <body
         className={`${sfPro.className} overflow-x-hidden font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
       >

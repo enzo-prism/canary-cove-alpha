@@ -1,167 +1,115 @@
-import { EMOJI } from "@/lib/emoji"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 const basics = [
-  "Complimentary airport pickup and drop-off between San Pedro and Canary Cove.",
-  "Private chef-prepared and served lunches and dinners with cleanup handled by staff.",
-  "Kitchen stocked before arrival for self-serve breakfasts and snacks (food and beverages billed at cost).",
-  "Complete staff onsite daily to handle your stay on property and beyond.",
-  "On-site managers available whenever you need them.",
+  "Complimentary airport pickup and dock transfer between San Pedro and Canary Cove.",
+  "Chef-prepared lunches and dinners served daily, with cleanup handled by staff.",
+  "Kitchen stocked before arrival for self-serve breakfasts and snacks.",
+  "Complete staff onsite daily to support the stay on property and beyond.",
   "Central air conditioning with adjustable room thermostats and ceiling fans.",
-  "Non-smoking property.",
-  "Dining furniture indoors and out.",
   "Daily housekeeping with laundry service available.",
-  "Golf cart available for drives into town.",
 ]
 
 const outdoorAmenities = [
-  "Passive solar-heated infinity pool with swim-up bar.",
-  "Pool lounge setup with flat-screen TV, speakers, iPod dock, and Viking gas grill.",
-  "Water activities included: snorkeling, kayaking, Hobie catamaran, swim platform with slide, paddleboards, pool, and hot tub.",
-  "Private dock with boat and driver for reef snorkeling; you only pay for the gas.",
-  "Outdoor freshwater shower.",
-  "Land activities equipment: beach bikes, volleyball, horseshoes, corn hole, and private gardens.",
+  "Passive solar-heated infinity pool with swim-up bar and hot tub.",
+  "Pool lounge setup with flat-screen TV, speakers, and Viking gas grill.",
+  "Water toys and reef-day equipment including snorkeling gear, paddleboards, and slide platform.",
+  "Private dock with boat and driver for reef snorkeling; you only pay for gas.",
+  "Outdoor freshwater shower and shaded places to settle in all day.",
+  "Beach bikes, volleyball, horseshoes, corn hole, and private gardens.",
 ]
 
-const roomAmenities = [
-  "Flat-panel television",
-  "Blu-ray player",
-  "Coffee, tea, and espresso station",
-  "Wine chiller",
-  "Twice-daily housekeeping service",
-  "Evening ice and water delivery",
-  "Down duvets and pillows",
-  "Bedside reading lights and outlets",
-  "Blackout curtains",
-  "Alarm radio",
-  "Iron and ironing board",
-  "Hairdryer",
-  "In-room safe",
-  "Thick terry bathrobes",
-  "Double vanity sinks",
-  "Lighted make-up mirror",
-  "Premium toiletries",
-]
-
-const confidence = [
-  "Compound is walled on three sides, well-lit, and secure.",
-  "6 1/2 miles from town with limited access by road.",
-  "Double locking doors and smoke detectors throughout.",
-  "Onsite desalination and water filtration provides purified water across the compound.",
-  "High-performance generator keeps power, refrigeration, internet, and air conditioning running.",
-  "Compound can operate independently of island services if needed.",
-  "Fiber internet direct to Canary Cove for streaming and work.",
-  "Staff living onsite with access to emergency services 24/7.",
-  "Outdoor surveillance cameras discreetly placed for safety and privacy.",
-  "Motorola radio system reaches San Pedro for quick assistance.",
-  "Highly maintained equipment throughout the compound.",
-  "No incidents in the 15+ years we have lived in Belize.",
-]
-
-const extras = [
-  "Meal provisions planned and shopped in advance based on your preferences; only the food and beverage cost is extra.",
-  "Spa services in-villa, on the terrace, or on the beach under a shady palm tree.",
-  "Child care by our staff.",
-  "World-class SCUBA diving and fishing excursions with Canary Cove staff through Poseidon Belize.",
-  "SCUBA diving certification.",
-  "Power-boat activities: SCUBA, Snuba, tubing, wakeboarding, and boat rides (daily use + gas).",
-  "Water and land excursions beyond Ambergris Caye arranged for you.",
-  "Water taxi into town.",
-  "Private helipad access from Belize's international airport can be arranged by request.",
-  "Private destination events, parties, and weddings.",
+const practicalDetails = [
+  {
+    title: "Comfort and confidence",
+    items: [
+      "Fiber internet and backup generator for reliable power, cooling, and streaming.",
+      "Walled, well-lit compound with staff living onsite and access to emergency services.",
+      "Purified water across the estate from onsite desalination and filtration.",
+    ],
+  },
+  {
+    title: "In-room amenities",
+    items: [
+      "Coffee, tea, and espresso setup plus wine chiller.",
+      "Blackout curtains, bedside outlets, robes, and in-room safe.",
+      "Premium toiletries, double vanities, and hairdryers in every bath.",
+    ],
+  },
+  {
+    title: "Extras on request",
+    items: [
+      "Spa services, childcare, and provisions planned around your group.",
+      "SCUBA, fishing, tubing, and private excursions arranged in advance.",
+      "Helipad access and destination events coordinated by request.",
+    ],
+  },
 ]
 
 export function StayAmenities() {
   return (
-    <div className="space-y-5">
-      <div className="space-y-2">
-        <h2 className="text-3xl font-semibold text-foreground">
-          All-inclusive basics and amenities {EMOJI.amenities}
-        </h2>
-        <p className="text-base text-muted-foreground">
-          An all-inclusive stay with private chef and staff means more fun and relaxation. We meet you in San Pedro and welcome you
-          at the dock with tropical drinks, then handle the details so you can settle into vacation mode.
+    <div id="amenities" className="scroll-mt-24 flow flow-lg">
+      <div className="flow flow-sm">
+        <div className="flow flow-xs">
+          <p className="text-[11px] uppercase tracking-[0.36em] text-muted-foreground">Included with your stay</p>
+          <h2 className="text-section text-foreground">All-inclusive basics and amenities</h2>
+        </div>
+        <p className="max-w-3xl text-body">
+          An all-inclusive stay with private chef service and on-site staff means less logistics and more time in the water, by
+          the pool, or around the table with your group.
         </p>
       </div>
+
       <div className="grid gap-6 lg:grid-cols-2">
-        <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-          <CardHeader className="p-6 pb-4">
+        <Card className="surface-panel rounded-[32px] border-border/60 bg-surface/95">
+          <CardHeader className="p-8 pb-4">
             <CardTitle className="text-2xl font-semibold text-foreground">Included with your stay</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6 pt-0">
+          <CardContent className="space-y-5 px-8 pb-8 pt-0">
             <p className="text-sm text-muted-foreground">
-              The essentials are covered from arrival to departure so you can focus on relaxing.
+              Arrival, meals, and daily support are already folded into the rhythm of the estate.
             </p>
-            <ul className="grid gap-2 text-sm text-foreground">
+            <ul className="grid gap-3 text-sm leading-relaxed text-foreground">
               {basics.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item} className="flex gap-3">
+                  <span className="mt-1 text-[10px] text-primary">•</span>
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           </CardContent>
         </Card>
 
-        <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-          <CardHeader className="p-6 pb-4">
+        <Card className="surface-panel rounded-[32px] border-border/60 bg-surface/95">
+          <CardHeader className="p-8 pb-4">
             <CardTitle className="text-2xl font-semibold text-foreground">Outdoor amenities and activities</CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6 pt-0">
+          <CardContent className="space-y-5 px-8 pb-8 pt-0">
             <p className="text-sm text-muted-foreground">
-              The property is set up for pool days, reef time, and easy nights outdoors.
+              Pool days, dock departures, and easy evenings outdoors are all built into the property itself.
             </p>
-            <ul className="grid gap-2 text-sm text-foreground">
+            <ul className="grid gap-3 text-sm leading-relaxed text-foreground">
               {outdoorAmenities.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item} className="flex gap-3">
+                  <span className="mt-1 text-[10px] text-primary">•</span>
+                  <span>{item}</span>
+                </li>
               ))}
             </ul>
           </CardContent>
         </Card>
+      </div>
 
-        <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)] lg:col-span-2">
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="text-2xl font-semibold text-foreground">Comfort and confidence</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6 pt-0">
-            <p className="text-sm text-muted-foreground">
-              Modern infrastructure and thoughtful planning keep the estate comfortable, secure, and independent when needed.
-            </p>
-            <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-              {confidence.map((item) => (
+      <div className="surface-panel grid gap-6 rounded-[32px] border-border/60 bg-surface/92 p-6 sm:p-8 lg:grid-cols-3">
+        {practicalDetails.map((detail) => (
+          <div key={detail.title} className="flow flow-sm rounded-[24px] border border-border/50 bg-surface-elevated/70 p-5">
+            <h3 className="text-base font-semibold text-foreground">{detail.title}</h3>
+            <ul className="grid gap-3 text-sm leading-relaxed text-muted-foreground">
+              {detail.items.map((item) => (
                 <li key={item}>{item}</li>
               ))}
             </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="text-2xl font-semibold text-foreground">Basic room amenities</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6 pt-0">
-            <p className="text-sm text-muted-foreground">Comfort features are stocked in every room.</p>
-            <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-              {roomAmenities.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-
-        <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-          <CardHeader className="p-6 pb-4">
-            <CardTitle className="text-2xl font-semibold text-foreground">Extras and adventures</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4 px-6 pb-6 pt-0">
-            <p className="text-sm text-muted-foreground">
-              Add-on services and excursions are arranged in advance and billed separately. Share your tastes and interests on the
-              booking form or ask us about personal requirements.
-            </p>
-            <ul className="grid gap-2 text-sm text-foreground">
-              {extras.map((item) => (
-                <li key={item}>{item}</li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+          </div>
+        ))}
       </div>
     </div>
   )

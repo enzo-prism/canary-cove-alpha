@@ -1,4 +1,6 @@
-export type AnalyticsPayload = Record<string, string | number | boolean | null | undefined>
+import { sendGoogleAnalyticsEvent, type GoogleAnalyticsPayload } from "@/lib/google-analytics"
+
+export type AnalyticsPayload = GoogleAnalyticsPayload
 
 export function trackEvent(name: string, payload?: AnalyticsPayload) {
   if (typeof window === "undefined") return
@@ -6,4 +8,6 @@ export function trackEvent(name: string, payload?: AnalyticsPayload) {
   if (typeof va === "function") {
     va("event", { name, ...payload })
   }
+
+  sendGoogleAnalyticsEvent(name, payload)
 }

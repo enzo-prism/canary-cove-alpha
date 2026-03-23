@@ -21,6 +21,8 @@ pnpm dev
 - `pnpm test`: Run Vitest.
 - `pnpm test:e2e`: Run Playwright.
 
+Playwright uses the local dev server at `http://localhost:3000` through `playwright.config.ts`.
+
 ## Release gate
 
 Production readiness is gated by:
@@ -55,11 +57,13 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/site-search.tsx`: Search module on the homepage.
 - `lib/homepage-content.ts`: Homepage data for models, editorial blocks, steps, specs, testimonials.
 - `lib/testimonial-spotlights.ts`: Testimonial copy.
-- `components/basic-page.tsx`: Shared layout for leaf pages.
+- `components/basic-page.tsx`: Simple legacy/shared leaf-page shell; most current routes are custom route-local compositions.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
 - `components/booking-form.tsx`: Booking request form with client-side validation.
 - `components/ui/carousel.tsx`: Shared Embla wrapper used across galleries and sliders.
+- `lib/search/search-index.ts`: Handwritten search inventory and instant-answer content.
+- `lib/analytics.ts` + `lib/google-analytics.ts`: Shared analytics/event layer.
 - `app/privacy/page.tsx` and `app/terms/page.tsx`: Footer legal destinations.
 
 ## Media notes
@@ -67,6 +71,13 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - Image URLs live in `lib/images.ts` and use Cloudinary. Add new hosts to `next.config.mjs`.
 - Hero and testimonial images should be high resolution; update the arrays, not the JSX.
 - The homepage film is an inline video in `app/page.tsx`.
+
+## Integration notes
+
+- Forms post to Formspree.
+- `/book` embeds Bookingmood for live availability.
+- Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
+- Search is manual and curated, not generated automatically from routes.
 
 ## Styling notes
 
@@ -77,9 +88,10 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 - `e2e/release-gate.spec.ts` covers public route health, CTA routing, search, footer links, and the booking embed.
 - `e2e/forms.spec.ts` covers form validation plus success/error states.
+- `e2e/search.spec.ts` covers search answers, grouped results, and fallback behavior.
 - `e2e/usability.spec.ts` covers overflow, tap targets, resize behavior, and carousel resilience.
 - `e2e/design-visual.spec.ts` guards hero, forms, and mini-gallery visual baselines.
-- `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`, `e2e/hero-contrast.spec.ts`, and `e2e/spacing.spec.ts` protect interaction quality and layout rhythm.
+- `e2e/responsive.spec.ts`, `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`, `e2e/hero-contrast.spec.ts`, and `e2e/spacing.spec.ts` protect interaction quality and layout rhythm.
 
 ## Deployment notes
 
@@ -92,4 +104,5 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 - `AGENTS.md`: repo-specific operating guidance for Codex
 - `docs/codex-playbook.md`: architecture, integrations, QA expectations, and deploy workflow
+- `docs/codex-maintenance-checklist.md`: “if you change X, also review Y” checklist for routes, anchors, search, analytics, forms, and media
 - `docs/qa-success-criteria.md`: explicit production readiness bar

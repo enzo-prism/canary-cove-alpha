@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
+import { BrandMark } from "@/components/brand-mark"
 import { DesktopNav } from "@/components/navigation/desktop-nav"
 import { MobileNav } from "@/components/navigation/mobile-nav"
 import { Button } from "@/components/ui/button"
@@ -22,6 +23,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const mobileSheetId = "mobile-nav-sheet"
+  const isHomeAtTop = pathname === "/" && !scrolled
 
   const isActive = useCallback(
     (href: string) => {
@@ -48,11 +50,18 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-50 transition-colors duration-300 ${
-        scrolled ? "border-b border-border/60 bg-background/95 backdrop-blur" : "bg-transparent"
+      className={`sticky top-0 z-50 border-b transition-all duration-300 ${
+        isHomeAtTop
+          ? "border-white/10 bg-background/35 backdrop-blur-md"
+          : "border-border/60 bg-background/92 shadow-[0_16px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl"
       }`}
     >
-      <div className={`mx-auto flex max-w-[1200px] items-center px-6 sm:px-8 lg:px-12 ${scrolled ? "py-3" : "py-5"}`}>
+      <div
+        className={`mx-auto flex max-w-[1280px] items-center gap-4 px-6 sm:px-8 lg:px-12 ${
+          scrolled ? "py-3" : "py-4"
+        }`}
+      >
+        <BrandMark compact className="shrink-0" />
         <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
         <div className="ml-auto flex items-center gap-2 lg:hidden">
@@ -61,9 +70,9 @@ export function Header() {
               <Button
                 aria-controls={mobileSheetId}
                 aria-label="Open navigation menu"
-                variant="outline"
+                variant="ghost"
                 size="icon"
-                className="h-11 w-11 border-border text-foreground hover:bg-foreground hover:text-background"
+                className="h-11 w-11 rounded-full border border-border/70 bg-background/75 text-foreground hover:bg-foreground hover:text-background"
               >
                 <Menu className="h-5 w-5" />
                 <span className="sr-only">Open navigation</span>
@@ -77,9 +86,13 @@ export function Header() {
               className="w-full border-none bg-background px-6 pb-10 pt-8 sm:w-[70vw]"
             >
               <SheetHeader className="flex-row items-center justify-between gap-3 p-0">
-                <SheetTitle className="text-[10px] uppercase tracking-[0.4em] text-muted-foreground">
-                  Navigation
-                </SheetTitle>
+                <div className="space-y-2">
+                  <BrandMark />
+                  <SheetTitle className="sr-only">Navigation</SheetTitle>
+                  <p className="text-sm text-muted-foreground">
+                    Explore the estate, check rates, or send a stay request.
+                  </p>
+                </div>
                 <SheetClose asChild>
                   <Button
                     aria-label="Close navigation menu"

@@ -43,7 +43,7 @@ export function EmailCapture() {
   }
 
   return (
-    <div className="rounded-[28px] border border-border/70 bg-surface p-6 sm:p-10">
+    <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
       <div className="flow flow-sm">
         <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Updates</p>
         <h2 className="text-section">Be first to hear about open dates.</h2>
@@ -51,7 +51,11 @@ export function EmailCapture() {
           A single email when new availability or seasonal offers open up.
         </p>
       </div>
-      <form className="mt-6 flex flex-col gap-4 sm:flex-row sm:items-end" onSubmit={handleSubmit} data-testid="email-capture-form">
+      <form
+        className="surface-inset mt-6 flex flex-col gap-4 p-4 sm:flex-row sm:items-end"
+        onSubmit={handleSubmit}
+        data-testid="email-capture-form"
+      >
         <div className="flex-1">
           <Label htmlFor="updates-email" className="sr-only">
             Email address
@@ -67,11 +71,17 @@ export function EmailCapture() {
             spellCheck={false}
             inputMode="email"
             placeholder="Email address…"
-            className="h-11 flex-1 rounded-full border-border bg-transparent px-4 text-sm"
+            className="h-11 flex-1 rounded-full border-border bg-background/70 px-4 text-sm"
             data-testid="email-capture-input"
           />
         </div>
-        <Button type="submit" size="lg" className="h-11 px-6" disabled={status === "sending"} data-testid="email-capture-submit">
+        <Button
+          type="submit"
+          size="lg"
+          className="h-11 px-6"
+          disabled={status === "sending"}
+          data-testid="email-capture-submit"
+        >
           {status === "sending" ? "Joining…" : "Join the list"}
         </Button>
       </form>

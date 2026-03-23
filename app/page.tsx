@@ -38,27 +38,7 @@ export default function Home() {
     <main id="main-content" className="min-h-screen">
       <Header />
       <Hero />
-      <Section padding="tight">
-        <Container size="narrow">
-          <div data-testid="hero-copy" className="flow flow-md">
-            <h1 data-testid="hero-headline" className="text-display text-foreground">
-              Private estate. Endless water.
-            </h1>
-            <p data-testid="hero-subhead" className="text-lg text-muted-foreground sm:text-xl">
-              One group at a time with chef service, private boats, and oceanfront amenities.
-            </p>
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-              <Button asChild size="lg" data-testid="hero-cta" className="w-fit">
-                <Link href="/book">Book your stay</Link>
-              </Button>
-              <Button asChild size="lg" variant="outline" className="w-fit">
-                <Link href="/rates">See rates</Link>
-              </Button>
-            </div>
-          </div>
-        </Container>
-      </Section>
-      <Section padding="tight">
+      <Section padding="tight" className="relative z-10 -mt-10 sm:-mt-14 lg:-mt-20">
         <Container>
           <ModelCarousel models={MODEL_LINEUP} />
         </Container>
@@ -143,12 +123,18 @@ export default function Home() {
         </Container>
       </Section>
       <Section padding="tight">
-        <Container size="narrow">
-          <div className="flow flow-md">
+        <Container size="wide">
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
             <EmailCapture />
-            <div className="rounded-[24px] border border-border/70 bg-surface px-6 py-5">
+            <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
               <Badge className="bg-transparent">Plan your stay</Badge>
-              <div className="mt-4">
+              <div className="mt-5 flow flow-sm">
+                <h2 className="text-section">Get to the right answer fast.</h2>
+                <p className="text-body max-w-xl">
+                  Search rates, dining, logistics, or adventures without digging through the whole site.
+                </p>
+              </div>
+              <div className="mt-6">
                 <SiteSearch className="max-w-2xl" />
               </div>
             </div>

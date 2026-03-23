@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 
 import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Carousel,
   CarouselContent,
@@ -14,6 +13,7 @@ import {
   type CarouselApi,
 } from "@/components/ui/carousel"
 import { IMAGES } from "@/lib/images"
+import { cn } from "@/lib/utils"
 
 type GalleryItem = {
   src: string
@@ -22,10 +22,11 @@ type GalleryItem = {
 }
 
 const miniPhotos = [
-  { ...IMAGES.villaPool, caption: "Infinity pool and swim-up bar" },
-  { ...IMAGES.villaInteriorWide, caption: "Open-air villa interior" },
-  { ...IMAGES.villaMasterBedroom, caption: "Master suite retreat" },
-  { ...IMAGES.viewFromKitchen, caption: "Views toward the water" },
+  { ...IMAGES.heroVillaSeating, caption: "Pool deck with shaded loungers" },
+  { ...IMAGES.villaPool, caption: "Infinity pool and waterfront deck" },
+  { ...IMAGES.villaInteriorWide, caption: "Open-air great room and kitchen" },
+  { ...IMAGES.villaMasterBedroom, caption: "Primary suite with airy views" },
+  { ...IMAGES.mainDock, caption: "Private dock for reef departures" },
 ]
 
 type StayMiniGalleryProps = {
@@ -36,12 +37,6 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
   const galleryItems = items ?? miniPhotos
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
-  const visibleDots =
-    galleryItems.length <= 3
-      ? galleryItems.map((_, index) => index)
-      : [selectedIndex - 1, selectedIndex, selectedIndex + 1].map(
-          (index) => (index + galleryItems.length) % galleryItems.length,
-        )
 
   const onSelect = useCallback((carouselApi: CarouselApi) => {
     setSelectedIndex(carouselApi.selectedScrollSnap())
@@ -66,16 +61,19 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
   }, [api, onSelect])
 
   return (
-    <Card
-      className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+    <div
+      className="surface-panel relative overflow-hidden rounded-[38px] bg-white/95 p-3 sm:p-5"
       data-testid="stay-mini-gallery"
     >
-      <CardContent className="space-y-4 p-4 sm:p-6">
+      <div className="space-y-4">
         <Carousel opts={{ align: "start", loop: true }} setApi={setApi}>
           <CarouselContent>
             {galleryItems.map((photo, index) => (
               <CarouselItem key={photo.src}>
-                <AspectRatio ratio={16 / 9} className="relative overflow-hidden rounded-2xl bg-surface-elevated">
+                <AspectRatio
+                  ratio={21 / 9}
+                  className="relative overflow-hidden rounded-[30px] border border-border/40 bg-surface-elevated"
+                >
                   <Image
                     src={photo.src}
                     alt={photo.alt}
@@ -86,40 +84,41 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
                     sizes="(min-width: 1024px) 1000px, 100vw"
                     className="object-cover"
                   />
-                  {photo.caption ? (
-                    <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/65 via-black/25 to-transparent p-3">
-                      <p className="text-xs font-medium text-white/90">{photo.caption}</p>
-                    </div>
-                  ) : null}
                 </AspectRatio>
               </CarouselItem>
             ))}
           </CarouselContent>
           <CarouselPrevious
             variant="ghost"
-            className="left-3 h-9 w-9 border border-white/70 bg-white/80 text-foreground hover:bg-white"
+            className="-left-1 h-10 w-10 border border-border/60 bg-white/90 text-foreground shadow-[0_10px_20px_rgba(15,23,42,0.1)] hover:bg-white sm:-left-2 lg:-left-5"
           />
           <CarouselNext
             variant="ghost"
-            className="right-3 h-9 w-9 border border-white/70 bg-white/80 text-foreground hover:bg-white"
+            className="-right-1 h-10 w-10 border border-border/60 bg-white/90 text-foreground shadow-[0_10px_20px_rgba(15,23,42,0.1)] hover:bg-white sm:-right-2 lg:-right-5"
           />
         </Carousel>
-        <div className="flex flex-wrap justify-center gap-2">
-          {visibleDots.map((index) => (
-            <button
-              key={index}
-              type="button"
-              onClick={() => scrollTo(index)}
-              className={`h-2 rounded-full transition-all motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100 ${
-                selectedIndex === index
-                  ? "w-8 bg-foreground"
-                  : "w-2 bg-muted-foreground/40 hover:bg-foreground/60"
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-wrap justify-center gap-2">
+            {galleryItems.map((_, index) => (
+              <button
+                key={index}
+                type="button"
+                onClick={() => scrollTo(index)}
+                className={cn(
+                  "h-2 rounded-full transition-all motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100",
+                  selectedIndex === index ? "w-10 bg-foreground" : "w-2 bg-muted-foreground/35 hover:bg-foreground/55",
+                )}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
+          </div>
+          {galleryItems[selectedIndex]?.caption ? (
+            <p className="text-center text-xs uppercase tracking-[0.28em] text-muted-foreground">
+              {galleryItems[selectedIndex].caption}
+            </p>
+          ) : null}
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   )
 }

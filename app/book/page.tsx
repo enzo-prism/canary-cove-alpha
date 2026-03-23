@@ -27,20 +27,43 @@ export default function Page() {
         <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
 
         <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
-          <div className="grid items-start gap-8 lg:grid-cols-[1.05fr_0.95fr]">
-            <div className="space-y-8">
-              <div className="space-y-4">
-                <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-                  Availability & holds {EMOJI.book}
-                </h1>
-                <p className="text-lg text-muted-foreground sm:text-xl">
-                  Check dates in the live calendar, then share your trip details so we can confirm or place a courtesy hold.
-                </p>
+          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.96fr)]">
+            <div className="space-y-6">
+              <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
+                <Badge
+                  variant="outline"
+                  className="w-fit border-border/70 text-xs uppercase tracking-[0.3em] text-muted-foreground"
+                >
+                  Request a stay {EMOJI.book}
+                </Badge>
+                <div className="mt-5 space-y-4">
+                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
+                    Availability & holds
+                  </h1>
+                  <p className="text-lg text-muted-foreground sm:text-xl">
+                    Check dates in the live calendar, then share your trip details so we can confirm or place a
+                    courtesy hold for your group.
+                  </p>
+                </div>
+                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                  <div className="surface-inset px-4 py-4">
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Private booking</p>
+                    <p className="mt-2 text-sm font-semibold text-foreground">Only one group on property at a time</p>
+                  </div>
+                  <div className="surface-inset px-4 py-4">
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Live calendar</p>
+                    <p className="mt-2 text-sm font-semibold text-foreground">See open dates before you inquire</p>
+                  </div>
+                  <div className="surface-inset px-4 py-4">
+                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Tailored quote</p>
+                    <p className="mt-2 text-sm font-semibold text-foreground">We confirm details personally</p>
+                  </div>
+                </div>
               </div>
 
               <Card
                 id="availability-calendar"
-                className="scroll-mt-24 rounded-[28px] border border-border/80 bg-white/90 shadow-[0_18px_60px_rgba(15,23,42,0.08)]"
+                className="surface-panel scroll-mt-24 overflow-hidden"
               >
                 <CardHeader className="px-4 pb-3 pt-4">
                   <Badge
@@ -65,13 +88,13 @@ export default function Page() {
               </Card>
             </div>
 
-            <BookingForm className="order-2 lg:order-1" />
+            <BookingForm className="order-2 lg:sticky lg:top-24 lg:self-start" />
 
             <div className="order-3 space-y-6 lg:col-span-2">
               <BookingPolicies />
               <Card
                 id="comfort-confidence"
-                className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
+                className="surface-panel scroll-mt-24"
               >
                 <CardHeader className="px-5 pb-3 pt-5">
                   <Badge
@@ -85,14 +108,26 @@ export default function Page() {
                   <p>
                     Canary Cove is designed for ease and peace of mind, with modern infrastructure and attentive staff on site.
                   </p>
-                  <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-                    <li>Central air conditioning, non-smoking property, indoor/outdoor dining.</li>
-                    <li>Walled, well-lit compound with onsite staff and discreet security.</li>
-                    <li>Purified water from onsite desalination and filtration.</li>
-                    <li>Backup generator and fiber internet for reliable power and streaming.</li>
-                    <li>Double locking doors, smoke detectors, and in-room safes.</li>
-                    <li>Private helipad access from Belize's international airport by request.</li>
-                  </ul>
+                  <div className="grid gap-3 sm:grid-cols-2">
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Central air conditioning, non-smoking property, indoor/outdoor dining.
+                    </div>
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Walled, well-lit compound with onsite staff and discreet security.
+                    </div>
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Purified water from onsite desalination and filtration.
+                    </div>
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Backup generator and fiber internet for reliable power and streaming.
+                    </div>
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Double locking doors, smoke detectors, and in-room safes.
+                    </div>
+                    <div className="surface-inset px-4 py-4 text-sm text-foreground">
+                      Private helipad access from Belize&apos;s international airport by request.
+                    </div>
+                  </div>
                 </CardContent>
               </Card>
               <div className="space-y-3">

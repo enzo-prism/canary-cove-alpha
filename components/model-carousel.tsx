@@ -175,7 +175,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
               aria-roledescription="slide"
               className="min-w-0 flex-[0_0_100%] pr-6 xl:flex-[0_0_80%] carousel-slide"
             >
-              <div className="grid gap-10 rounded-[28px] border border-border/70 bg-surface p-8 sm:p-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-12">
+              <div className="surface-panel grid gap-10 p-8 sm:p-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-12">
                 <div className="relative aspect-[4/3] w-full min-w-0 overflow-hidden rounded-[22px] bg-surface-muted">
                   <Image
                     src={model.image.src}
@@ -206,7 +206,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                   <div data-testid={`model-actions-${index}`} className="flex flex-col gap-5 md:gap-6">
                     <div data-testid={`model-stats-${index}`} className="grid gap-4 sm:grid-cols-3">
                       {model.stats.map((stat) => (
-                        <div key={stat.label} className="rounded-2xl border border-border/70 px-4 py-4">
+                        <div key={stat.label} className="surface-inset px-4 py-4">
                           <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">{stat.label}</p>
                           <p className="text-base font-semibold text-foreground">{stat.value}</p>
                         </div>

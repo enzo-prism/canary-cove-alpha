@@ -1,107 +1,136 @@
 "use client"
 
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { useCallback } from "react"
+import Image from "next/image"
+import Link from "next/link"
+import { ArrowRight } from "lucide-react"
 
-type Highlight = {
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { IMAGES } from "@/lib/images"
+
+type HighlightCard = {
   id: string
   title: string
-  tabLabel: string
   description: string
-  features: string[]
+  ctaLabel: string
+  href: string
+  images: Array<{
+    src: string
+    alt: string
+  }>
 }
 
-const highlights: Highlight[] = [
+const highlightCards: HighlightCard[] = [
   {
     id: "villa",
     title: "The Villa",
-    tabLabel: "Villa",
     description:
-      "Three king suites with ensuite baths open onto an airy great room, accordion glass doors, and ocean-facing patio. The villa sleeps up to 10 guests, including up to two small children in the bunk room and a queen sleeper sofa.",
-    features: [
-      "Book the entire villa for your group.",
-      "Choose to open 1, 2, or all 3 suites.",
-      "Unused suites remain locked and aren't charged.",
-      "Gourmet kitchen + indoor dining for eight.",
+      "Three king suites, an open great room, and indoor-outdoor living make the house feel calm and expansive from the moment you arrive.",
+    ctaLabel: "Explore spaces",
+    href: "#inside-the-villa",
+    images: [
+      IMAGES.villaInteriorWide,
+      IMAGES.villaMasterBedroom,
+      IMAGES.villaBedroom,
+      IMAGES.bedroomGardenView,
+      IMAGES.diningRoom,
     ],
   },
   {
     id: "outside",
     title: "Outside, just for you",
-    tabLabel: "Outdoors",
     description:
-      "A private, solar-heated infinity pool, swim-up bar, Viking grill, gardens, hammocks, and two docks create a true \"your own resort\" feel - no shared spaces, no schedules.",
-    features: [
-      "Swim-up bar with TV, speakers, and iPod dock.",
-      "Viking gas grill for poolside dinners.",
-      "Private dock with boat and driver (gas only).",
-      "Hot tub on site (heating is a daily add-on).",
+      "A private pool deck, hot tub, palms, hammocks, and two docks create a resort-like rhythm with no shared spaces or schedules.",
+    ctaLabel: "View grounds",
+    href: "#outside-the-villa",
+    images: [
+      IMAGES.villaPool,
+      IMAGES.heroVillaSeating,
+      IMAGES.heroVillaDetail,
+      IMAGES.hotTub,
+      IMAGES.mainDock,
     ],
   },
   {
     id: "services",
     title: "All-inclusive service",
-    tabLabel: "Service",
     description:
-      "Private chef meals, full-staff support, and smooth arrivals mean your group can focus on the fun from day one.",
-    features: [
-      "Complimentary airport pickup and drop-off.",
-      "Chef-prepared lunches and dinners served daily.",
-      "Daily housekeeping with laundry available.",
-      "Fiber Wi-Fi plus backup generators on site.",
+      "Chef-prepared meals, daily staff support, and seamless arrivals keep the stay personal, easy, and fully tailored to your group.",
+    ctaLabel: "Discover services",
+    href: "/book",
+    images: [
+      IMAGES.chefCarry,
+      IMAGES.chefNatalie,
+      IMAGES.logoDrink,
+      IMAGES.diningFoodDetail,
+      IMAGES.diningSpread,
     ],
   },
 ]
 
-function HighlightCard({ highlight }: { highlight: Highlight }) {
+function HighlightCollage({ images, title }: Pick<HighlightCard, "images" | "title">) {
   return (
-    <Card
-      id={highlight.id}
-      className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
-    >
-      <CardHeader className="p-6 pb-4">
-        <CardTitle className="text-2xl font-semibold text-foreground">{highlight.title}</CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-4 px-6 pb-6 pt-0">
-        <p className="text-base text-muted-foreground">{highlight.description}</p>
-        <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-          {highlight.features.map((feature) => (
-            <li key={feature}>{feature}</li>
-          ))}
-        </ul>
-      </CardContent>
-    </Card>
+    <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-[28px] border border-border/60 bg-white p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
+      <div className="relative col-span-2 row-span-2 min-h-[9.5rem] overflow-hidden rounded-[20px] bg-surface-muted sm:min-h-[11rem] lg:min-h-[12rem]">
+        <Image src={images[0].src} alt={images[0].alt} fill className="object-cover" sizes="(min-width: 1024px) 280px, 50vw" />
+      </div>
+      {images.slice(1).map((image, index) => (
+        <div key={`${title}-${index}`} className="relative aspect-square overflow-hidden rounded-[16px] bg-surface-muted">
+          <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
+        </div>
+      ))}
+    </div>
   )
 }
 
 export function StayHighlights() {
+  const handleAnchorClick = useCallback((href: string) => {
+    const target = document.querySelector(href)
+    if (!(target instanceof HTMLElement)) return
+
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    const headerOffset = 112
+    const top = target.getBoundingClientRect().top + window.scrollY - headerOffset
+    window.scrollTo({ top, behavior: prefersReducedMotion ? "auto" : "smooth" })
+    window.history.replaceState(null, "", href)
+  }, [])
+
   return (
-    <div className="space-y-6">
-      <div className="lg:hidden">
-        <Tabs defaultValue={highlights[0]?.id ?? "villa"}>
-        <TabsList className="grid w-full grid-cols-3 rounded-full bg-surface/70 p-1 text-sm text-muted-foreground">
-            {highlights.map((highlight) => (
-              <TabsTrigger
-                key={highlight.id}
-                value={highlight.id}
-                className="rounded-full text-xs font-semibold uppercase tracking-[0.2em] data-[state=active]:text-foreground"
-              >
-                {highlight.tabLabel}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-          {highlights.map((highlight) => (
-            <TabsContent key={highlight.id} value={highlight.id} className="mt-4">
-              <HighlightCard highlight={highlight} />
-            </TabsContent>
-          ))}
-        </Tabs>
-      </div>
-      <div className="hidden gap-6 lg:grid lg:grid-cols-3">
-        {highlights.map((highlight) => (
-          <HighlightCard key={highlight.id} highlight={highlight} />
-        ))}
-      </div>
+    <div className="grid gap-6 lg:grid-cols-3">
+      {highlightCards.map((card) => (
+        <Card
+          key={card.id}
+          id={card.id}
+          className="surface-panel scroll-mt-24 overflow-hidden rounded-[34px] border-border/60 bg-surface/95"
+        >
+          <CardContent className="flow flow-md p-4 sm:p-5">
+            <HighlightCollage images={card.images} title={card.title} />
+            <div className="flow flow-sm px-1 pb-2 pt-1">
+              <h2 className="text-section text-[2rem] text-foreground">{card.title}</h2>
+              <p className="text-body">{card.description}</p>
+              {card.href.startsWith("#") ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  onClick={() => handleAnchorClick(card.href)}
+                  className="h-auto w-fit px-0 text-[11px] uppercase tracking-[0.28em] text-foreground"
+                >
+                  {card.ctaLabel}
+                  <ArrowRight className="size-3.5" />
+                </Button>
+              ) : (
+                <Button asChild variant="ghost" className="h-auto w-fit px-0 text-[11px] uppercase tracking-[0.28em] text-foreground">
+                  <Link href={card.href}>
+                    {card.ctaLabel}
+                    <ArrowRight className="size-3.5" />
+                  </Link>
+                </Button>
+              )}
+            </div>
+          </CardContent>
+        </Card>
+      ))}
     </div>
   )
 }

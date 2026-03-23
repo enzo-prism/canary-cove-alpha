@@ -185,6 +185,16 @@
     box-shadow: var(--shadow-subtle);
   }
 
+  .surface-panel {
+    @apply rounded-[32px] border border-border/70 bg-surface/95;
+    box-shadow: var(--shadow-soft);
+  }
+
+  .surface-inset {
+    @apply rounded-[24px] border border-border/60 bg-surface-elevated/80;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
   .text-display {
     @apply text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl;
     line-height: 1.04;

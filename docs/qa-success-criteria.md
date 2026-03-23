@@ -19,6 +19,7 @@ This document defines the production-readiness bar for the public marketing site
 - Site search opens from the homepage and gives guests a useful fallback state when a query has no results.
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
+- Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 
 ## Responsive & usability criteria
 
@@ -31,6 +32,7 @@ This document defines the production-readiness bar for the public marketing site
 
 - Hero contrast stays readable against the page background.
 - Critical sections maintain their spacing rhythm.
+- Galleries and carousels keep their intended framing and do not regress into clipped, low-contrast, or partial-slide states.
 - Visual-regression baselines remain stable for:
   - homepage hero copy
   - homepage model card
@@ -39,7 +41,18 @@ This document defines the production-readiness bar for the public marketing site
   - experiences mini gallery
   - stay mini gallery
 
+## Test-suite map
+
+- `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, and booking embed presence
+- `e2e/forms.spec.ts`: booking, contact, and email-capture validation plus success/failure flows
+- `e2e/search.spec.ts`: search query behavior, grouped results, instant answers, and fallback handling
+- `e2e/usability.spec.ts`: overflow, target sizing, resizing, and carousel interaction coverage
+- `e2e/responsive.spec.ts`, `e2e/spacing.spec.ts`, `e2e/hero-contrast.spec.ts`: layout rhythm and readability checks
+- `e2e/design-visual.spec.ts`: Chromium-only visual baselines
+- `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`: slider interaction quality
+
 ## Notes
 
 - The suite is intentionally biased toward guest-facing journeys and visible regressions rather than implementation details.
 - Visual baselines should be updated only when the design change is intentional and reviewed.
+- Playwright helper noise filtering lives in `e2e/helpers.ts`, including filtering for Vercel Analytics debug output and cancelled Cloudinary media requests in dev.
