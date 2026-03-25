@@ -58,6 +58,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `lib/homepage-content.ts`: Homepage data for models, editorial blocks, steps, specs, testimonials.
 - `lib/testimonial-spotlights.ts`: Testimonial copy.
 - `lib/site-config.ts`: Canonical domain, public route metadata, sitemap priorities, and llms content.
+- `lib/seo.ts`: Page-level metadata source of truth for public routes.
 - `components/basic-page.tsx`: Simple legacy/shared leaf-page shell; most current routes are custom route-local compositions.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
@@ -65,6 +66,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/ui/carousel.tsx`: Shared Embla wrapper used across galleries and sliders.
 - `lib/search/search-index.ts`: Handwritten search inventory and instant-answer content.
 - `lib/analytics.ts` + `lib/google-analytics.ts`: Shared analytics/event layer.
+- `components/analytics/tracked-link.tsx`: Preferred tracked-link wrapper for CTA and footer navigation events.
 - `app/privacy/page.tsx` and `app/terms/page.tsx`: Footer legal destinations.
 
 ## Media notes
@@ -78,6 +80,8 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - Forms post to Formspree.
 - `/book` embeds Bookingmood for live availability.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
+- Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
+- Custom-event payloads are intentionally small and should never include free-form search text or submitted form content.
 - Search is manual and curated, not generated automatically from routes.
 
 ## Styling notes
@@ -105,5 +109,6 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 - `AGENTS.md`: repo-specific operating guidance for Codex
 - `docs/codex-playbook.md`: architecture, integrations, QA expectations, and deploy workflow
+- `docs/codex-route-map.md`: page-by-page ownership map with anchors, data sources, and likely regression surfaces
 - `docs/codex-maintenance-checklist.md`: “if you change X, also review Y” checklist for routes, anchors, search, analytics, forms, and media
 - `docs/qa-success-criteria.md`: explicit production readiness bar

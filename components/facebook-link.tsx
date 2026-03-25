@@ -1,5 +1,6 @@
 "use client"
 
+import { trackSocialClick } from "@/lib/analytics"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
 export function FacebookLink() {
@@ -12,6 +13,7 @@ export function FacebookLink() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Canary Cove on Facebook"
+            onClick={() => trackSocialClick("facebook", "footer")}
             className="text-sm text-muted-foreground hover:text-foreground"
           >
             Facebook

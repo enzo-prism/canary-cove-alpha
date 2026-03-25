@@ -4,6 +4,8 @@ Use this file when making a change that looks small in the UI but may have knock
 
 The goal is not to make every change heavier. It is to keep future Codex sessions from shipping a partial fix that updates the visible page but misses search, redirects, analytics, or test coverage.
 
+For route ownership, anchors, and likely blast radius, read `docs/codex-route-map.md` alongside this checklist.
+
 ## Public routes
 
 When you add, remove, rename, or significantly repurpose a public route, review this set together:
@@ -38,6 +40,11 @@ Examples:
 - `/book` uses section IDs such as `#availability-calendar` and `#comfort-confidence`
 - search answers and results link directly into anchored sections
 
+Also note:
+
+- some public hashes land on summary cards, not the deeper section they visually describe
+- `next.config.mjs` still contains legacy marketing hash redirects for some interior pages, so audit real DOM ids before copying or extending that pattern
+
 ## Navigation and information architecture
 
 Navigation is split across multiple render layers.
@@ -54,6 +61,25 @@ When top-level IA changes, review:
 - `app/llms/route.ts`
 - `lib/site-config.ts`
 - `e2e/release-gate.spec.ts`
+
+If the active desktop-nav pill styling changes, keep the direct `Link` structure in `components/navigation/desktop-nav.tsx` unless you are intentionally redesigning the component. Adding extra menu-link wrapper styles can distort the pill.
+
+## Metadata, sitemap, and llms surfaces
+
+When public page titles, descriptions, route priority, or route purpose change, review:
+
+- `lib/seo.ts`
+- `lib/site-config.ts`
+- `app/sitemap.ts`
+- `app/robots.ts`
+- `app/llms/route.ts`
+- `app/llms-full/route.ts`
+
+Typical misses:
+
+- updating route copy but not the metadata description
+- changing page emphasis without adjusting sitemap priority or category
+- changing public meaning of a page without updating `llms.txt` summaries
 
 ## Search
 
@@ -88,6 +114,7 @@ Best practices here:
 - prefer updating alt text and captions at the data layer
 - keep hero and gallery assets high resolution
 - avoid hardcoding Cloudinary URLs inline unless the component is truly one-off
+- remember that `next.config.mjs` keeps `images.unoptimized: true`, so large hero swaps should be treated as real performance decisions
 
 ## Forms and booking flow
 
@@ -117,8 +144,11 @@ When changing analytics behavior, review:
 
 - `app/layout.tsx`
 - `components/google-analytics-scripts.tsx`
+- `components/vercel-analytics.tsx`
+- `components/analytics/tracked-link.tsx`
 - `lib/google-analytics.ts`
 - `lib/analytics.ts`
+- `lib/vercel-analytics.ts`
 - `app/privacy/page.tsx`
 
 Current behavior:
@@ -126,6 +156,10 @@ Current behavior:
 - Google Analytics 4 is loaded globally
 - Vercel Analytics is also enabled
 - `trackEvent(...)` sends to both when available
+- `components/vercel-analytics.tsx` strips query strings and hashes before Vercel sends pageviews or custom events
+- Vercel payloads are intentionally flat and limited to small, low-cardinality properties
+- Never send free-form search queries, form content, or contact details to Vercel custom events
+- Prefer `TrackedLink` for tracked CTAs before hand-rolling another click handler
 
 ## Stay page specifics
 
@@ -167,6 +201,7 @@ pnpm test:e2e
 Before shipping, sanity-check these when relevant:
 
 - `lib/site-config.ts`
+- `lib/seo.ts`
 - `app/sitemap.ts`
 - `app/robots.ts`
 - `/llms.txt`

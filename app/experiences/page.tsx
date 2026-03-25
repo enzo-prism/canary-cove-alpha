@@ -1,116 +1,135 @@
 import { Footer } from "@/components/footer"
-import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
+import { Container } from "@/components/layout/container"
 import { IMAGES } from "@/lib/images"
-import { ExperiencesMiniGallery } from "@/components/experiences-mini-gallery"
+import { ExperiencesGalleryMosaic } from "@/components/experiences-gallery-mosaic"
+import { ExperiencesGuestHighlights } from "@/components/experiences-guest-highlights"
+import { ExperiencesHero } from "@/components/experiences-hero"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { WaysToEnjoy } from "@/components/ways-to-enjoy"
-import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
-import { TestimonialsGrid } from "@/components/testimonials-grid"
-import { filterHighResGalleryItems } from "@/lib/gallery-utils"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.experiences
 
-const experienceGalleryItems = [
-  IMAGES.tubing,
-  IMAGES.waterSlide,
-  IMAGES.divingFun,
+const ACTIVITY_GALLERY_ITEMS = [
   IMAGES.turtleDive,
-  IMAGES.scubaPhoto,
-  IMAGES.romanticViews,
-  IMAGES.caveTubing,
-  IMAGES.landAdventure,
-  { ...IMAGES.zooVisit, caption: "Zoo" },
-  IMAGES.belizeSign,
-  IMAGES.adventureGroup,
-  IMAGES.mainDock,
-  IMAGES.gilBoat,
+  IMAGES.waterSlide,
+  IMAGES.zooVisit,
   IMAGES.drinksBar,
+  IMAGES.mainDock,
   IMAGES.hammock,
+  IMAGES.adventureGroup,
+  IMAGES.belizeSign,
 ]
-const experienceSliderItems = filterHighResGalleryItems(experienceGalleryItems)
+
+const FEATURED_ACTIVITY_CARDS = [
+  {
+    ...ACTIVITY_GALLERY_ITEMS[0],
+    label: "Scuba diving with sea turtles",
+    className: "col-span-2 row-span-2",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[1],
+    label: "Dockside slides into clear water",
+    className: "row-span-2",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[2],
+    label: "Mainland wildlife day trips",
+    className: "",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[3],
+    label: "Cocktails mixed to your timing",
+    className: "row-span-2",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[4],
+    label: "Boat departures from the private dock",
+    className: "",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[5],
+    label: "Hammock resets between adventures",
+    className: "",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[6],
+    label: "Long lunches on the water",
+    className: "",
+  },
+  {
+    ...ACTIVITY_GALLERY_ITEMS[7],
+    label: "Belize moments beyond the estate",
+    className: "",
+  },
+] as const
+
+const EXPERIENCE_HIGHLIGHTS = [
+  {
+    quote:
+      "In 6 days we packed enough adventure into a fabulous vacation to last a long time. The staff ensured safety first, and incredible fun was had by all.",
+    author: "G. & family",
+    year: "2017",
+  },
+  {
+    quote:
+      "It was a week of golden moments: nurse sharks, rays settling into the sand, and sliding into the perfect water. Thank you for providing a little bit of heaven.",
+    author: "C., R., & crew",
+    year: "2017",
+  },
+] as const
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen">
+    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f6f1e6_0%,#f2ecdf_26%,#f7f2e9_100%)]">
       <Header />
-      <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Experiences</h1>
-            <p className="text-lg text-muted-foreground sm:text-xl">
-              Calm mornings, adrenaline afternoons, and sunset cruises—all planned around the tides and your pace.
-            </p>
-          </div>
-          <ExperiencesMiniGallery items={experienceSliderItems} />
+      <ExperiencesHero />
+
+      <section className="relative z-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
+        <Container size="wide" className="-mt-10 flow flow-xl sm:-mt-14 lg:-mt-16">
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-              <CardHeader className="p-6 pb-4">
-                <CardTitle className="text-2xl font-semibold text-foreground">Included with your stay</CardTitle>
+            <Card className="surface-panel border-border/55 bg-white/92">
+              <CardHeader className="px-6 pb-3 pt-6 sm:px-8 sm:pt-8">
+                <CardTitle className="text-section text-[1.9rem] sm:text-[2.1rem]">Included with your stay</CardTitle>
               </CardHeader>
-              <CardContent className="px-6 pb-6 pt-0">
-                <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-                  <li>Snorkel gear for dock and reef days plus the swim platform with slide.</li>
-                  <li>Sea kayaks, paddle boards, and a Hobie catamaran.</li>
+              <CardContent className="px-6 pb-6 pt-0 sm:px-8 sm:pb-8">
+                <ul className="space-y-2.5 text-sm leading-6 text-foreground/88 sm:text-[0.95rem]">
+                  <li>Snorkel gear for reef days and the swim platform with slide.</li>
                   <li>Passive solar-heated infinity pool and on-site hot tub.</li>
-                  <li>Two private docks with a boat and driver for reef snorkel tows (gas only).</li>
                   <li>Beach bikes, volleyball, horseshoes, and corn hole.</li>
-                  <li>On-site staff to help you launch and plan.</li>
+                  <li>Sea kayaks, paddle boards, and a Hobie catamaran.</li>
+                  <li>Private docks and on-site staff to help you launch and plan.</li>
+                  <li>Shoreline lounging, hammocks, and easy access to San Pedro.</li>
                 </ul>
               </CardContent>
             </Card>
-            <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-              <CardHeader className="p-6 pb-4">
-                <CardTitle className="text-2xl font-semibold text-foreground">Add-on adventures</CardTitle>
+
+            <Card className="surface-panel border-border/55 bg-white/92">
+              <CardHeader className="px-6 pb-3 pt-6 sm:px-8 sm:pt-8">
+                <CardTitle className="text-section text-[1.9rem] sm:text-[2.1rem]">Add-on adventures</CardTitle>
               </CardHeader>
-              <CardContent className="space-y-3 px-6 pb-6 pt-0">
-                <p className="text-base text-muted-foreground">
-                  Power boating, diving, and fishing are arranged with Canary Cove staff through Poseidon Belize, and off-island
-                  excursions can be scheduled for your group.
+              <CardContent className="space-y-4 px-6 pb-6 pt-0 sm:px-8 sm:pb-8">
+                <p className="text-sm leading-7 text-muted-foreground sm:text-[0.95rem]">
+                  Power boating, diving, fishing, and mainland excursions are coordinated with Canary Cove staff so your group can
+                  move seamlessly from dock days to off-property adventures.
                 </p>
-                <ul className="grid gap-2 text-sm text-foreground">
-                  <li>Diving: $100 one-tank · $125 two-tank (+$15 Nitrox).</li>
-                  <li>Fishing: $275 half-day · $400 full-day · $600 offshore.</li>
-                  <li>Boat runs to San Pedro: $75 round-trip · private charters $100/hr + gas.</li>
-                  <li>Power-boat activities: SCUBA, Snuba, tubing, wakeboarding, and boat rides (daily use + gas).</li>
+                <ul className="space-y-2.5 text-sm leading-6 text-foreground/88 sm:text-[0.95rem]">
+                  <li>Diving: $100 one-tank or $125 two-tank trips, plus Nitrox on request.</li>
+                  <li>Fishing: $275 half-day, $400 full-day, or $600 offshore charters.</li>
+                  <li>Private boat transfers: $75 round-trip to San Pedro or $100/hour plus gas.</li>
+                  <li>Snuba, tubing, wakeboarding, spa services, and kid care can all be arranged.</li>
                 </ul>
-                <p className="text-sm text-muted-foreground">
-                  Fuel, marine park fees, hot-tub heating, and gratuities are additional.
+                <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">
+                  Fuel, marine park fees, hot-tub heating, and gratuities are additional
                 </p>
               </CardContent>
             </Card>
           </div>
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-            <CardHeader className="p-6 pb-4">
-              <CardTitle className="text-2xl font-semibold text-foreground">Extra services</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4 px-6 pb-6 pt-0">
-              <p className="text-base text-muted-foreground">
-                Let us know your preferences and we will arrange the details.
-              </p>
-              <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-                <li>Spa services in-villa or on the terrace.</li>
-                <li>Child care by our staff.</li>
-                <li>SCUBA diving certification.</li>
-                <li>Water and land excursions beyond Ambergris Caye.</li>
-                <li>Water taxi into town.</li>
-                <li>Private destination events, parties, and weddings.</li>
-              </ul>
-            </CardContent>
-          </Card>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-foreground">Adventure highlights from guests</h2>
-              <p className="text-base text-muted-foreground">
-                Stories from snorkeling, dives, fishing days, and sunset runs planned around the tides.
-              </p>
-            </div>
-            <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.experiences} />
-          </div>
-          <WaysToEnjoy />
-          <GalleryGrid items={experienceGalleryItems} />
-        </div>
+
+          <ExperiencesGalleryMosaic items={FEATURED_ACTIVITY_CARDS} />
+
+          <ExperiencesGuestHighlights highlights={EXPERIENCE_HIGHLIGHTS} />
+        </Container>
       </section>
       <Footer />
     </main>

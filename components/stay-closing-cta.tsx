@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { IMAGES } from "@/lib/images"
@@ -40,10 +40,14 @@ export function StayClosingCta() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
             <Button asChild size="lg" className="bg-white text-slate-950 hover:bg-white/90">
-              <Link href="/book">Inquire now</Link>
+              <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "stay_closing", target: "/book" }}>
+                Inquire now
+              </TrackedLink>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white/30 text-white hover:bg-white hover:text-slate-950">
-              <Link href="/rates">See rates</Link>
+              <TrackedLink href="/rates" eventName="cta_click" eventPayload={{ location: "stay_closing", target: "/rates" }}>
+                See rates
+              </TrackedLink>
             </Button>
           </div>
         </div>

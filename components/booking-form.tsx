@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react"
 
 import { CalendarRange, Send } from "lucide-react"
 
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
 import { EMOJI } from "@/lib/emoji"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -49,17 +50,20 @@ export function BookingForm({ className }: BookingFormProps) {
 
     if (email !== confirmEmail) {
       setValidationError("Please make sure both email fields match before sending your request.")
+      trackFormSubmitError("booking", "email_mismatch")
       form.querySelector<HTMLInputElement>("#confirmEmail")?.focus()
       return
     }
 
     if (arrival && departure && departure < arrival) {
       setValidationError("Departure date must be after your arrival date.")
+      trackFormSubmitError("booking", "invalid_date_range")
       form.querySelector<HTMLInputElement>("#departure")?.focus()
       return
     }
 
     setValidationError(null)
+    trackFormSubmitAttempt("booking")
     setStatus("sending")
     try {
       const response = await fetch(FORM_ENDPOINT, {
@@ -74,12 +78,15 @@ export function BookingForm({ className }: BookingFormProps) {
         form.reset()
         setStatus("success")
         setAlertOpen(true)
+        trackFormSubmitSuccess("booking")
         return
       }
 
       setStatus("error")
+      trackFormSubmitError("booking", "response")
     } catch (error) {
       setStatus("error")
+      trackFormSubmitError("booking", "network")
     }
   }
 

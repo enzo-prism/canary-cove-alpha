@@ -11,6 +11,7 @@ This document is the fastest way for a future Codex session to get productive in
 - Primary site type: guest-facing marketing site for a luxury Belize estate.
 - Analytics: Vercel Analytics and Google Analytics 4 are both enabled.
 - Search: custom client-side search backed by a handwritten index in `lib/search/search-index.ts`.
+- Images: `next.config.mjs` keeps `next/image` in `unoptimized` mode and only allows remote assets from Cloudinary.
 
 ## Quickstart
 
@@ -39,8 +40,9 @@ pnpm exec playwright install firefox webkit
 
 1. Read `AGENTS.md` first.
 2. Read this file second.
-3. Read `docs/codex-maintenance-checklist.md` before changing routes, anchors, forms, analytics, or media.
-4. Read `docs/qa-success-criteria.md` before shipping anything public-facing.
+3. Read `docs/codex-route-map.md` when you need to understand which route actually owns a page change.
+4. Read `docs/codex-maintenance-checklist.md` before changing routes, anchors, forms, analytics, or media.
+5. Read `docs/qa-success-criteria.md` before shipping anything public-facing.
 
 ## Route map
 
@@ -70,6 +72,7 @@ These are mostly route-local page compositions rather than a single shared page 
 
 - `app/layout.tsx`: fonts, canonical metadata, GA scripts, Vercel Analytics, skip link, global scroll reset.
 - `lib/site-config.ts`: canonical domain, public route inventory, sitemap priorities, and llms helpers.
+- `lib/seo.ts`: page-level metadata source of truth used by public routes.
 - `app/sitemap.ts`, `app/robots.ts`, `app/llms/route.ts`, `app/llms-full/route.ts`: crawl and AI-discovery surfaces.
 - `components/header.tsx`: sticky header, nav, CTA behavior.
 - `components/footer.tsx`: footer IA and legal links.
@@ -104,6 +107,13 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/contact-form.tsx`: contact form.
 - `components/email-capture.tsx`: homepage email capture.
 
+### Route-specific marketing modules
+
+- `app/experiences/page.tsx`: route-local composition built around `components/experiences-hero.tsx`, `components/experiences-gallery-mosaic.tsx`, and `components/experiences-guest-highlights.tsx`
+- `app/adventures/page.tsx`: route-local composition using `components/ways-to-enjoy.tsx` and `components/gallery-grid.tsx`
+- `app/contact/page.tsx`: route-local composition using `components/contact-details.tsx`, `components/contact-form.tsx`, and `components/testimonials-grid.tsx`
+- `app/dining/page.tsx`, `app/getting-here/page.tsx`, `app/rates/page.tsx`, and `app/about/page.tsx`: mostly route-local sections rather than shared page-template assembly
+
 ### Shared media and carousel layer
 
 - `components/photo-carousel.tsx`: shared gallery/carousel pattern.
@@ -119,6 +129,18 @@ These are mostly route-local page compositions rather than a single shared page 
 - `lib/search/search-index.ts`: manual search content inventory.
 - `lib/search/search.ts`: search ranking, intent detection, and instant answers.
 - `lib/testimonial-spotlights.ts`: testimonial text by route/context.
+- `components/analytics/tracked-link.tsx`: preferred wrapper for tracked internal CTAs and footer links.
+
+## Critical couplings and easy misses
+
+- Routes are custom. `components/basic-page.tsx` and `components/section-page.tsx` still exist, but most meaningful public work happens in route-local page files plus a few shared sections.
+- Metadata is split on purpose. `lib/seo.ts` owns page metadata, while `lib/site-config.ts` owns the public route inventory used by sitemap and `llms` outputs.
+- Search is curated manually. New pages, new sections, rate changes, policy changes, and logistics changes usually require edits in `lib/search/search-index.ts`.
+- Hash links are a real integration surface. `next.config.mjs`, search results, homepage CTAs, and stay-page buttons all depend on current anchor IDs.
+- Hero imagery is a behavior surface, not just content. `components/hero-image-rotator.tsx` now shuffles the homepage hero order on each load and avoids replaying the previous sequence inside the same session.
+- Desktop nav styling is intentionally plain. `components/navigation/desktop-nav.tsx` uses a direct `Link` structure for the pill treatment; reintroducing extra wrapper styling from Radix menu primitives can break the active-state shape.
+- Vercel analytics data is sanitized before send. `components/vercel-analytics.tsx` and `lib/vercel-analytics.ts` strip hashes and query strings so URL-based event cardinality stays low.
+- `next.config.mjs` still contains older hash redirects for some interior marketing pages. Treat redirect edits as audit work, not blind copy updates.
 
 ## Source-of-truth map for common edits
 
@@ -179,8 +201,11 @@ Check these files together:
 
 - `app/layout.tsx`
 - `components/google-analytics-scripts.tsx`
+- `components/vercel-analytics.tsx`
+- `components/analytics/tracked-link.tsx`
 - `lib/google-analytics.ts`
 - `lib/analytics.ts`
+- `lib/vercel-analytics.ts`
 - `app/privacy/page.tsx`
 
 ### If you change forms or booking flow
@@ -218,9 +243,26 @@ When editing the booking page, preserve the embed presence and responsive behavi
 ### Media and analytics
 
 - Images and video are served from Cloudinary.
+- `next/image` is intentionally left in `unoptimized` mode in `next.config.mjs`.
 - Vercel Analytics is enabled.
 - Google Analytics 4 is loaded globally through `GoogleAnalyticsScripts`.
 - `trackEvent(...)` in `lib/analytics.ts` fans out to both Vercel Analytics and GA when available.
+- `components/vercel-analytics.tsx` passes `beforeSend` to Vercel Analytics so pageview/custom-event URLs do not keep query strings or hashes.
+- Keep Vercel custom-event payloads flat and conservative. The site intentionally uses at most two properties per event to stay aligned with Vercel Pro limits.
+- Do not send free-form search text, message bodies, names, email addresses, phone numbers, or booking details to Vercel Analytics.
+
+Current custom-event taxonomy:
+
+- `cta_click`: major CTA buttons (`location`, `target`)
+- `nav_click`: header/footer navigation clicks (`surface`, `destination`)
+- `nav_menu_open`: mobile menu opened (`surface`)
+- `search_open`: search modal opened
+- `search_refine`: curated chip/question refinement (`source`, `topic`)
+- `search_result_click`: search result or answer link click (`group`, `destination`)
+- `form_submit_attempt`: form submit started (`form`)
+- `form_submit_success`: form submit succeeded (`form`)
+- `form_submit_error`: form failed client or network validation (`form`, `reason`)
+- `social_click`: outbound social click (`network`, `surface`)
 
 ## Search architecture
 

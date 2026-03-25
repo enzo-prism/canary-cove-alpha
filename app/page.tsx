@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Header } from "@/components/header"
 import { Hero } from "@/components/hero"
 import { Footer } from "@/components/footer"
@@ -76,10 +75,14 @@ export default function Home() {
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Button asChild size="lg" className="bg-white text-foreground hover:bg-white/90">
-                  <Link href="/book">Book your stay</Link>
+                  <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "dive_film", target: "/book" }}>
+                    Book your stay
+                  </TrackedLink>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="border-white/70 text-white hover:bg-white hover:text-foreground">
-                  <Link href="/rates">See rates</Link>
+                  <TrackedLink href="/rates" eventName="cta_click" eventPayload={{ location: "dive_film", target: "/rates" }}>
+                    See rates
+                  </TrackedLink>
                 </Button>
               </div>
             </div>
@@ -108,7 +111,13 @@ export default function Home() {
           <div className="flow flow-md">
             <TestimonialSlider testimonials={HOMEPAGE_TESTIMONIALS} />
             <Button asChild variant="outline" size="sm" className="w-fit">
-              <Link href="/about#guest-testimonials">Read more reviews</Link>
+              <TrackedLink
+                href="/about#guest-testimonials"
+                eventName="cta_click"
+                eventPayload={{ location: "homepage_testimonials", target: "/about#guest-testimonials" }}
+              >
+                Read more reviews
+              </TrackedLink>
             </Button>
           </div>
         </Container>

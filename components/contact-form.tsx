@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -19,6 +20,7 @@ export function ContactForm() {
     event.preventDefault()
     if (status === "sending") return
 
+    trackFormSubmitAttempt("contact")
     setStatus("sending")
     const form = event.currentTarget
     const formData = new FormData(form)
@@ -36,12 +38,15 @@ export function ContactForm() {
         form.reset()
         setMessage("")
         setStatus("success")
+        trackFormSubmitSuccess("contact")
         return
       }
 
       setStatus("error")
+      trackFormSubmitError("contact", "response")
     } catch (error) {
       setStatus("error")
+      trackFormSubmitError("contact", "network")
     }
   }
 

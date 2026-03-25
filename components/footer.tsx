@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { FacebookLink } from "@/components/facebook-link"
 
 export function Footer() {
@@ -17,27 +16,37 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">Call Gil: 011 501-610-5121 - Consi: 011 501-626-7534</p>
           </div>
           <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-            <Link href="/stay" className="hover:text-foreground">
+            <TrackedLink href="/stay" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/stay" }} className="hover:text-foreground">
               Stay
-            </Link>
-            <Link href="/experiences" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink
+              href="/experiences"
+              eventName="nav_click"
+              eventPayload={{ surface: "footer", destination: "/experiences" }}
+              className="hover:text-foreground"
+            >
               Experiences
-            </Link>
-            <Link href="/dining" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink href="/dining" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/dining" }} className="hover:text-foreground">
               Dining
-            </Link>
-            <Link href="/adventures" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink
+              href="/adventures"
+              eventName="nav_click"
+              eventPayload={{ surface: "footer", destination: "/adventures" }}
+              className="hover:text-foreground"
+            >
               Adventures
-            </Link>
-            <Link href="/about" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink href="/about" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/about" }} className="hover:text-foreground">
               About
-            </Link>
-            <Link href="/book" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink href="/book" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/book" }} className="hover:text-foreground">
               Book
-            </Link>
-            <Link href="/contact" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink href="/contact" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/contact" }} className="hover:text-foreground">
               Contact
-            </Link>
+            </TrackedLink>
             <FacebookLink />
           </div>
         </div>
@@ -45,12 +54,12 @@ export function Footer() {
         <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>(c) {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
           <div className="flex gap-4">
-            <Link href="/privacy" className="hover:text-foreground">
+            <TrackedLink href="/privacy" eventName="nav_click" eventPayload={{ surface: "footer_legal", destination: "/privacy" }} className="hover:text-foreground">
               Privacy
-            </Link>
-            <Link href="/terms" className="hover:text-foreground">
+            </TrackedLink>
+            <TrackedLink href="/terms" eventName="nav_click" eventPayload={{ surface: "footer_legal", destination: "/terms" }} className="hover:text-foreground">
               Terms
-            </Link>
+            </TrackedLink>
           </div>
         </div>
       </div>

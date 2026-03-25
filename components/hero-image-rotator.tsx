@@ -13,26 +13,24 @@ type HeroImage = {
 
 const HERO_IMAGES: HeroImage[] = [
   {
-    ...IMAGES.heroVillaSeating,
+    ...IMAGES.heroBackgroundEstate,
   },
   {
-    ...IMAGES.heroVillaLounge,
+    ...IMAGES.heroBackgroundPool,
   },
   {
-    ...IMAGES.heroVillaDining,
+    ...IMAGES.heroBackgroundDrink,
   },
   {
-    ...IMAGES.heroVillaLiving,
+    ...IMAGES.heroBackgroundBar,
   },
   {
-    ...IMAGES.heroVillaDetail,
-  },
-  {
-    ...IMAGES.heroVillaInterior,
+    ...IMAGES.heroBackgroundLawn,
   },
 ]
 
 const ROTATE_INTERVAL = 8000
+const HERO_ORDER_STORAGE_KEY = "canary-cove:hero-image-order"
 
 const shuffle = (items: HeroImage[]) => {
   const array = [...items]
@@ -41,6 +39,20 @@ const shuffle = (items: HeroImage[]) => {
     ;[array[index], array[swapIndex]] = [array[swapIndex], array[index]]
   }
   return array
+}
+
+const getOrderKey = (items: HeroImage[]) => items.map((item) => item.src).join("|")
+
+const getRandomizedHeroImages = (previousOrder?: string | null) => {
+  let nextOrder = shuffle(HERO_IMAGES)
+  let attempts = 0
+
+  while (previousOrder && HERO_IMAGES.length > 1 && getOrderKey(nextOrder) === previousOrder && attempts < 8) {
+    nextOrder = shuffle(HERO_IMAGES)
+    attempts += 1
+  }
+
+  return nextOrder
 }
 
 type HeroImageRotatorProps = {
@@ -57,13 +69,12 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
   }, [photos.length])
 
   useEffect(() => {
-    const shuffled = shuffle(HERO_IMAGES)
-    const currentSrc = HERO_IMAGES[0]?.src
-    const nextIndex = shuffled.findIndex((photo) => photo.src === currentSrc)
+    const previousOrder = window.sessionStorage.getItem(HERO_ORDER_STORAGE_KEY)
+    const shuffled = getRandomizedHeroImages(previousOrder)
+
     setPhotos(shuffled)
-    if (nextIndex >= 0) {
-      setActiveIndex(nextIndex)
-    }
+    setActiveIndex(0)
+    window.sessionStorage.setItem(HERO_ORDER_STORAGE_KEY, getOrderKey(shuffled))
   }, [])
 
   useEffect(() => {

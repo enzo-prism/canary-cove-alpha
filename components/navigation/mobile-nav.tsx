@@ -4,6 +4,7 @@ import Link from "next/link"
 import { BedDouble, Calendar, Compass, Home, Info, Mail, MapPin, Utensils, Waves } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
+import { trackNavClick } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 
 type MobileNavProps = {
@@ -47,7 +48,13 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
               variant="ghost"
               className="h-auto w-full justify-between rounded-2xl px-3 py-4 text-left text-sm font-medium text-foreground hover:bg-foreground/5"
             >
-              <Link href={item.href} onClick={onNavigate}>
+              <Link
+                href={item.href}
+                onClick={() => {
+                  trackNavClick("header_mobile", item.href)
+                  onNavigate?.()
+                }}
+              >
                 <span className="flex items-center gap-3">
                   {Icon ? (
                     <span className="nav-icon text-muted-foreground">
@@ -72,7 +79,13 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
               variant={item.label === "Book" ? "default" : "outline"}
               className="w-full rounded-full"
             >
-              <Link href={item.href} onClick={onNavigate}>
+              <Link
+                href={item.href}
+                onClick={() => {
+                  trackNavClick("header_mobile", item.href)
+                  onNavigate?.()
+                }}
+              >
                 {Icon ? (
                   <span className="nav-icon">
                     <Icon className="h-4 w-4" />

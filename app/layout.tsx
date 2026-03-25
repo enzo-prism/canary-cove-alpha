@@ -1,10 +1,10 @@
 import type { ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
-import { Analytics } from "@vercel/analytics/next"
 import "./globals.css"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
+import { VercelAnalytics } from "@/components/vercel-analytics"
 import { IMAGES } from "@/lib/images"
 import { HOME_SEO } from "@/lib/seo"
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-config"
@@ -97,7 +97,7 @@ export default function RootLayout({
         </a>
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
-        <Analytics />
+        <VercelAnalytics />
       </body>
     </html>
   )

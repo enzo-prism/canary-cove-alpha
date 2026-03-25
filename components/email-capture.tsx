@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react"
 
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,6 +17,7 @@ export function EmailCapture() {
     event.preventDefault()
     if (status === "sending") return
 
+    trackFormSubmitAttempt("email_capture")
     setStatus("sending")
     const formData = new FormData()
     formData.append("email", email)
@@ -33,12 +35,15 @@ export function EmailCapture() {
       if (response.ok) {
         setEmail("")
         setStatus("success")
+        trackFormSubmitSuccess("email_capture")
         return
       }
 
       setStatus("error")
+      trackFormSubmitError("email_capture", "response")
     } catch {
       setStatus("error")
+      trackFormSubmitError("email_capture", "network")
     }
   }
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation"
 import { ArrowUpRight, Search } from "lucide-react"
 
 import { cn } from "@/lib/utils"
-import { trackEvent } from "@/lib/analytics"
+import { trackSearchOpen, trackSearchRefine, trackSearchResultClick } from "@/lib/analytics"
 import { POPULAR_QUESTIONS, RECOMMENDED_CHIPS } from "@/lib/search/search-index"
 import { getAskUsAnswer, runSearch } from "@/lib/search/search"
 import { Button } from "@/components/ui/button"
@@ -16,7 +16,7 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Card, CardContent } from "@/components/ui/card"
 
 type SiteSearchProps = {
@@ -68,18 +68,9 @@ export function SiteSearch({
 
   useEffect(() => {
     if (open) {
-      trackEvent("search_open")
+      trackSearchOpen()
     }
   }, [open])
-
-  useEffect(() => {
-    if (!open) return
-    if (!query.trim()) return
-    const handle = window.setTimeout(() => {
-      trackEvent("search_query_change", { query: query.trim() })
-    }, 300)
-    return () => window.clearTimeout(handle)
-  }, [open, query])
 
   useEffect(() => {
     if (typeof navigator === "undefined") return
@@ -91,21 +82,26 @@ export function SiteSearch({
     setOpen(nextOpen)
   }
 
-  const handleChipClick = (label: string, chipQuery: string) => {
+  const handleChipClick = (_label: string, chipQuery: string) => {
     setQuery(chipQuery)
     setSearchSource("chip")
-    trackEvent("search_chip_click", { label })
+    trackSearchRefine("chip", chipQuery)
   }
 
-  const handleQuestionClick = (question: string, questionQuery: string) => {
+  const handleQuestionClick = (_question: string, questionQuery: string) => {
     setQuery(questionQuery)
     setSearchSource("question")
-    trackEvent("search_question_click", { question })
+    trackSearchRefine("question", questionQuery)
   }
 
-  const handleResultSelect = (id: string, href: string) => {
-    trackEvent("search_result_click", { id, href })
+  const handleResultSelect = (group: string, href: string) => {
+    trackSearchResultClick(group, href)
     router.push(href)
+    setOpen(false)
+  }
+
+  const handleAnswerLinkClick = (group: string, href: string) => {
+    trackSearchResultClick(group, href)
     setOpen(false)
   }
 
@@ -138,6 +134,7 @@ export function SiteSearch({
         >
           <DialogHeader className="sr-only">
             <DialogTitle>Site search</DialogTitle>
+            <DialogDescription>Search the Canary Cove site for rates, logistics, dining, and adventure details.</DialogDescription>
           </DialogHeader>
           <Command loop shouldFilter={false}>
             <CommandInput
@@ -227,7 +224,7 @@ export function SiteSearch({
                               size="sm"
                               className="rounded-full"
                             >
-                              <a href={link.href}>
+                              <a href={link.href} onClick={() => handleAnswerLinkClick("instant_answer", link.href)}>
                                 {link.label}
                                 <ArrowUpRight className="h-3 w-3" />
                               </a>
@@ -251,7 +248,7 @@ export function SiteSearch({
                           <CommandItem
                             key={item.id}
                             value={`${item.title} ${item.description ?? ""} ${item.keywords.join(" ")}`}
-                            onSelect={() => handleResultSelect(item.id, item.href)}
+                            onSelect={() => handleResultSelect(group.group, item.href)}
                             className="flex cursor-pointer flex-col gap-1 rounded-xl px-4 py-3 text-sm text-foreground outline-none aria-selected:bg-primary/10 aria-selected:text-black"
                             data-testid="search-item"
                           >
@@ -301,7 +298,7 @@ export function SiteSearch({
                               size="sm"
                               className="rounded-full"
                             >
-                              <a href={link.href}>
+                              <a href={link.href} onClick={() => handleAnswerLinkClick("fallback_answer", link.href)}>
                                 {link.label}
                                 <ArrowUpRight className="h-3 w-3" />
                               </a>

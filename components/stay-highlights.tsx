@@ -5,6 +5,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
+import { trackCtaClick } from "@/lib/analytics"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { IMAGES } from "@/lib/images"
@@ -113,7 +114,10 @@ export function StayHighlights() {
                 <Button
                   type="button"
                   variant="ghost"
-                  onClick={() => handleAnchorClick(card.href)}
+                  onClick={() => {
+                    trackCtaClick("stay_highlights", card.href)
+                    handleAnchorClick(card.href)
+                  }}
                   className="h-auto w-fit px-0 text-[11px] uppercase tracking-[0.28em] text-foreground"
                 >
                   {card.ctaLabel}
@@ -121,7 +125,7 @@ export function StayHighlights() {
                 </Button>
               ) : (
                 <Button asChild variant="ghost" className="h-auto w-fit px-0 text-[11px] uppercase tracking-[0.28em] text-foreground">
-                  <Link href={card.href}>
+                  <Link href={card.href} onClick={() => trackCtaClick("stay_highlights", card.href)}>
                     {card.ctaLabel}
                     <ArrowRight className="size-3.5" />
                   </Link>

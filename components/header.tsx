@@ -9,6 +9,7 @@ import { DesktopNav } from "@/components/navigation/desktop-nav"
 import { MobileNav } from "@/components/navigation/mobile-nav"
 import { Button } from "@/components/ui/button"
 import { Sheet, SheetClose, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import { trackEvent } from "@/lib/analytics"
 import { NAV_ITEMS } from "@/lib/nav-items"
 
 const normalizePath = (href: string) => {
@@ -23,7 +24,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const mobileSheetId = "mobile-nav-sheet"
-  const isHomeAtTop = pathname === "/" && !scrolled
+  const hasImmersiveTop = (pathname === "/" || pathname === "/experiences") && !scrolled
 
   const isActive = useCallback(
     (href: string) => {
@@ -48,10 +49,17 @@ export function Header() {
     }
   }, [mobileOpen])
 
+  const handleMobileOpenChange = (open: boolean) => {
+    if (open && !mobileOpen) {
+      trackEvent("nav_menu_open", { surface: "header_mobile" })
+    }
+    setMobileOpen(open)
+  }
+
   return (
     <header
       className={`sticky top-0 z-50 border-b transition-all duration-300 ${
-        isHomeAtTop
+        hasImmersiveTop
           ? "border-white/10 bg-background/35 backdrop-blur-md"
           : "border-border/60 bg-background/92 shadow-[0_16px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl"
       }`}
@@ -65,7 +73,7 @@ export function Header() {
         <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
         <div className="ml-auto flex items-center gap-2 lg:hidden">
-          <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+          <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
             <SheetTrigger asChild>
               <Button
                 aria-controls={mobileSheetId}

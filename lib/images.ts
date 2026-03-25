@@ -19,6 +19,26 @@ export const IMAGES = {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp",
     alt: "Villa pool and deck overlooking the water",
   },
+  heroBackgroundEstate: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059680/IMG_1835_w1onmi.webp",
+    alt: "Beach path view of the pink Canary Cove villa and pool terrace",
+  },
+  heroBackgroundPool: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/Screen-Shot-2021-02-02-at-12.26.22-PM_f7hcp3.webp",
+    alt: "Infinity pool with yellow umbrellas beside the villa",
+  },
+  heroBackgroundDrink: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/IMG_1198_d9bmki.webp",
+    alt: "Canary Cove cocktail in focus with guests relaxing by the pool",
+  },
+  heroBackgroundBar: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/63_bar_cropped-1_ujmiwg.webp",
+    alt: "Outdoor bar and grill terrace overlooking the water",
+  },
+  heroBackgroundLawn: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202762/canarycove-haydeelustudio-48_wciu3z.webp",
+    alt: "Wide lawn view of the villa, pool, and terrace",
+  },
   heroVillaSeating: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1767202762/canarycove-haydeelustudio-59_x8gmzo.webp",
     alt: "Pool deck with shaded loungers beside the villa",

@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { HeroImageRotator } from "@/components/hero-image-rotator"
 import { Container } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
@@ -66,7 +66,9 @@ export function Hero() {
                   data-testid="hero-cta"
                   className="w-fit bg-foreground text-background hover:bg-foreground/92"
                 >
-                  <Link href="/book">Book your stay</Link>
+                  <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "hero", target: "/book" }}>
+                    Book your stay
+                  </TrackedLink>
                 </Button>
                 <Button
                   asChild
@@ -74,7 +76,9 @@ export function Hero() {
                   variant="outline"
                   className="w-fit border-foreground/15 bg-white/55 text-foreground hover:bg-white hover:text-foreground"
                 >
-                  <Link href="/rates">See rates</Link>
+                  <TrackedLink href="/rates" eventName="cta_click" eventPayload={{ location: "hero", target: "/rates" }}>
+                    See rates
+                  </TrackedLink>
                 </Button>
               </div>
 
