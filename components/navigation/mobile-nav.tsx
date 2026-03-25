@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BedDouble, Calendar, Compass, Home, Info, Mail, MapPin, Utensils, Waves } from "lucide-react"
+import { BedDouble, Calendar, Compass, Home, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
 import { trackNavClick } from "@/lib/analytics"
@@ -21,7 +21,7 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
     Experience: Compass,
     Dining: Utensils,
     Adventures: Waves,
-    About: Info,
+    Reviews: MessageSquare,
     "Getting Here": MapPin,
     Book: Calendar,
     Contact: Mail,

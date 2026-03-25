@@ -154,6 +154,7 @@ export function GuestReviewsBrowser({ groups }: GuestReviewsBrowserProps) {
   )
 
   const hasFilters = query.length > 0 || selectedYear !== "All"
+  const selectedYearLabel = selectedYear === "All" ? "All years" : selectedYear
 
   useEffect(() => {
     if (archiveGroups.length === 0) {
@@ -192,70 +193,104 @@ export function GuestReviewsBrowser({ groups }: GuestReviewsBrowserProps) {
         className="scroll-mt-24 rounded-[32px] border border-border/70 bg-white/92 shadow-[0_18px_55px_rgba(15,23,42,0.08)]"
       >
         <CardContent className="space-y-8 p-5 sm:p-6 lg:p-8">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div className="space-y-3">
-              <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                Guestbook Archive
-              </Badge>
-              <div className="space-y-2">
-                <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                  Browse every guest note
-                </h2>
-                <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                  Search for a phrase, jump to a year, and open any note for the full story. The archive stays compact until
-                  you choose where to dive in.
-                </p>
-              </div>
-            </div>
-            <div className="rounded-[24px] border border-border/60 bg-background/70 px-4 py-3 text-sm text-muted-foreground">
-              {filteredCount} of {totalCount} reviews visible
-            </div>
-          </div>
-
-          <div className="grid gap-4 lg:grid-cols-[minmax(0,1.25fr)_minmax(240px,0.75fr)]">
-            <label className="relative block">
-              <Search className="pointer-events-none absolute left-4 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                value={query}
-                onChange={(event) => setQuery(event.target.value)}
-                placeholder="Search staff, scuba, snorkeling, food, family..."
-                className="h-12 rounded-[20px] border-border/70 bg-background/85 pl-11 text-sm"
-                aria-label="Search guest reviews"
-              />
-            </label>
-
+          <div className="space-y-3">
+            <Badge variant="outline" className="border-border/70 text-muted-foreground">
+              Guestbook Archive
+            </Badge>
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-[0.28em] text-muted-foreground">
-                <CalendarDays className="h-3.5 w-3.5" />
-                Browse by year
-              </div>
-              <Select value={selectedYear} onValueChange={handleYearChange}>
-                <SelectTrigger className="h-12 rounded-[20px] border-border/70 bg-background/85 px-4 text-sm">
-                  <SelectValue placeholder="Choose a year" />
-                </SelectTrigger>
-                <SelectContent>
-                  {yearOptions.map((year) => (
-                    <SelectItem key={year} value={year}>
-                      {year === "All" ? "All years" : year}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
+                Browse every guest note
+              </h2>
+              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
+                Search for a phrase, jump to a year, and open any note for the full story. The archive stays compact until
+                you choose where to dive in.
+              </p>
             </div>
           </div>
 
-          {hasFilters ? (
-            <div className="flex flex-col gap-3 rounded-[24px] border border-border/60 bg-background/65 px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
-              <p className="text-sm text-muted-foreground">
-                Focused view for {selectedYear !== "All" ? selectedYear : "all years"}
-                {query ? ` matching "${query}"` : ""}.
-              </p>
-              <Button type="button" variant="ghost" size="sm" onClick={clearFilters} className="w-fit rounded-full">
-                <X className="h-4 w-4" />
-                Clear filters
-              </Button>
+          <div className="space-y-4 rounded-[28px] border border-border/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(247,244,237,0.92)_100%)] p-4 sm:p-5">
+            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]">
+              <div className="rounded-[22px] border border-border/70 bg-white/90 px-4 py-3 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
+                  <Search className="h-3.5 w-3.5" />
+                  Search reviews
+                </div>
+                <div className="mt-3 flex items-center gap-3">
+                  <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <Input
+                    value={query}
+                    onChange={(event) => setQuery(event.target.value)}
+                    placeholder="Staff, scuba, snorkeling, food, family..."
+                    className="h-auto border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
+                    aria-label="Search guest reviews"
+                  />
+                  {query ? (
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setQuery("")}
+                      className="h-8 w-8 shrink-0 rounded-full text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
+                      aria-label="Clear search"
+                    >
+                      <X className="h-4 w-4" />
+                    </Button>
+                  ) : null}
+                </div>
+              </div>
+
+              <div className="rounded-[22px] border border-border/70 bg-white/90 px-4 py-3 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
+                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
+                  <CalendarDays className="h-3.5 w-3.5" />
+                  Browse by year
+                </div>
+                <Select value={selectedYear} onValueChange={handleYearChange}>
+                  <SelectTrigger
+                    aria-label="Filter reviews by year"
+                    className="mt-3 h-auto rounded-none border-0 bg-transparent px-0 py-0 text-left text-sm font-medium text-foreground shadow-none focus:ring-0 focus:ring-offset-0"
+                  >
+                    <SelectValue placeholder="All years" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {yearOptions.map((year) => (
+                      <SelectItem key={year} value={year}>
+                        {year === "All" ? "All years" : year}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
-          ) : null}
+
+            <div className="flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex flex-wrap items-center gap-2">
+                <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
+                  {filteredCount} of {totalCount} visible
+                </Badge>
+                {selectedYear !== "All" ? (
+                  <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
+                    Year: {selectedYearLabel}
+                  </Badge>
+                ) : null}
+                {query ? (
+                  <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
+                    Search: "{query}"
+                  </Badge>
+                ) : null}
+              </div>
+              {hasFilters ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={clearFilters}
+                  className="w-fit rounded-full text-muted-foreground hover:bg-white/80 hover:text-foreground"
+                >
+                  Reset filters
+                </Button>
+              ) : null}
+            </div>
+          </div>
 
           {archiveGroups.length > 0 ? (
             <div className="rounded-[28px] border border-border/60 bg-background/55 px-5 py-2 sm:px-6">

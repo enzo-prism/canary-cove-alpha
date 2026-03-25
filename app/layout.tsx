@@ -65,26 +65,24 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon-256.png",
-        sizes: "256x256",
-        type: "image/png",
-      },
-      {
-        url: "/icon.svg",
-        type: "image/svg+xml",
-      },
-      {
-        url: "/icon-light-32x32.png",
+        url: "/favicon-small.png",
         sizes: "32x32",
         type: "image/png",
       },
       {
-        url: "/apple-icon.png",
-        sizes: "180x180",
+        url: "/favicon-large.png",
+        sizes: "256x256",
         type: "image/png",
       },
     ],
-    apple: "/apple-icon.png",
+    shortcut: "/favicon-small.png",
+    apple: [
+      {
+        url: "/favicon-large.png",
+        sizes: "256x256",
+        type: "image/png",
+      },
+    ],
   },
 }
 

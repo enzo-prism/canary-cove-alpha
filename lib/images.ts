@@ -87,6 +87,10 @@ export const IMAGES = {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059673/IMG_2080_stdy3b.webp",
     alt: "Guest launching from the water slide into the sea",
   },
+  kidsPlatform: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059668/Platform-Kids-Activities_800x532-400x284_rpctnj.webp",
+    alt: "Guests relaxing from the floating snorkel platform with yellow umbrellas overhead",
+  },
   mainDock: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059660/Dive-Shop-Facilities_800x532_p2fr9k.webp",
     alt: "Main dock with boats ready for departure",
@@ -99,9 +103,17 @@ export const IMAGES = {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059658/SanPedroWelcome_zhaw9p.webp",
     alt: "San Pedro welcome sign",
   },
+  sanPedroSouvenirs: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059623/SanPedroSouvenirs-400x284_qlefym.webp",
+    alt: "Souvenir shopping scene in San Pedro Town",
+  },
   scubaPhoto: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059659/2B8A8650_hydrusDivers_fjym7k.webp",
     alt: "Diver photographing marine life",
+  },
+  guestSnorkelGroup: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059678/IMG_8895_Guests_SCUBA_and_Snorkel_gallery-1-400x284_w6uizz.webp",
+    alt: "Guests floating together during a snorkeling stop in clear water",
   },
   tubing: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059664/kids_tubing_nlrbc1.webp",
@@ -234,6 +246,10 @@ export const IMAGES = {
   landAdventure: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/land_qmx9ht.webp",
     alt: "Guests on a mainland Belize adventure excursion",
+  },
+  mainlandJaguar: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059675/IMG_57061_zbipzu.webp",
+    alt: "Jaguar resting during a mainland Belize wildlife excursion",
   },
   zooVisit: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/IMG_7247_vrmxgl.webp",
