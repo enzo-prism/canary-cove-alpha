@@ -72,9 +72,6 @@ export default function Home() {
               <h2 className="mt-4 text-2xl font-semibold text-white sm:text-3xl">
                 World-class diving with a giant manta ray.
               </h2>
-              <p className="mt-3 text-sm text-white/75 sm:text-base">
-                A 60-second GoPro tour of the reef and the underwater world that surrounds Canary Cove.
-              </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Button asChild size="lg" className="bg-white text-foreground hover:bg-white/90">
                   <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "dive_film", target: "/book" }}>
