@@ -10,6 +10,7 @@ import { Section } from "@/components/layout/section"
 import { ModelCarousel } from "@/components/model-carousel"
 import { EditorialSplit } from "@/components/editorial-split"
 import { ProcessSteps } from "@/components/process-steps"
+import { PageStructuredData } from "@/components/structured-data"
 import { BentoMetrics } from "@/components/bento-metrics"
 import { SpecsAccordion } from "@/components/specs-accordion"
 import { TestimonialSlider } from "@/components/testimonial-slider"
@@ -31,6 +32,7 @@ export const metadata = PAGE_METADATA.home
 export default function Home() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/" />
       <Header />
       <Hero />
       <Section padding="tight" className="relative z-10 -mt-10 sm:-mt-14 lg:-mt-20">

@@ -23,7 +23,7 @@ export function ExperiencesHero() {
         <div className="mx-auto max-w-4xl text-center text-white flow flow-md">
           <p className="text-[11px] uppercase tracking-[0.38em] text-white/72">Canary Cove experiences</p>
           <h1 className="text-5xl font-medium tracking-[-0.045em] text-balance sm:text-6xl lg:text-7xl">
-            Unforgettable Experiences
+            Belize experiences at Canary Cove
           </h1>
           <p className="mx-auto max-w-2xl text-base leading-7 text-white/84 sm:text-lg sm:leading-8">
             Calm mornings, adrenaline afternoons, and sunset cruises all planned around the tides and your pace.

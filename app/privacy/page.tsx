@@ -2,6 +2,7 @@ import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { PageStructuredData } from "@/components/structured-data"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.privacy
@@ -9,12 +10,13 @@ export const metadata = PAGE_METADATA.privacy
 export default function PrivacyPage() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/privacy" />
       <Header />
       <Section padding="tight">
         <Container size="narrow" className="flow flow-md">
           <div className="flow flow-xs">
             <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Privacy policy</p>
-            <h1 className="text-display">How your information is handled.</h1>
+            <h1 className="text-display">Privacy Policy</h1>
             <p className="text-body text-foreground/80">
               Canary Cove only requests the details needed to respond to booking inquiries, guest questions, and availability requests.
             </p>

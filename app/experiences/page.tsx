@@ -5,6 +5,7 @@ import { IMAGES } from "@/lib/images"
 import { ExperiencesGalleryMosaic } from "@/components/experiences-gallery-mosaic"
 import { ExperiencesGuestHighlights } from "@/components/experiences-guest-highlights"
 import { ExperiencesHero } from "@/components/experiences-hero"
+import { PageStructuredData } from "@/components/structured-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -82,6 +83,7 @@ const EXPERIENCE_HIGHLIGHTS = [
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f6f1e6_0%,#f2ecdf_26%,#f7f2e9_100%)]">
+      <PageStructuredData path="/experiences" />
       <Header />
       <ExperiencesHero />
 

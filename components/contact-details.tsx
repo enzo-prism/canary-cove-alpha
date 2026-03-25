@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
+import { SITE_ADDRESS_LINES, SITE_GEO_LABELS } from "@/lib/site-config"
 
 type Contact = {
   name: string
@@ -74,8 +75,8 @@ export function ContactDetails() {
           <Badge variant="outline" className="border-border/70 text-sm uppercase tracking-[0.3em] text-muted-foreground">
             Canary Cove Location
           </Badge>
-          <p className="text-sm text-muted-foreground">17′ 59.914 NORTH</p>
-          <p className="text-sm text-muted-foreground">87′ 54.901 WEST</p>
+          <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.latitude}</p>
+          <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.longitude}</p>
         </div>
 
         <Separator className="bg-border/70" />
@@ -85,11 +86,11 @@ export function ContactDetails() {
             Address
           </Badge>
           <p className="text-sm text-muted-foreground">
-            Canary Cove
+            {SITE_ADDRESS_LINES[0]}
             <br />
-            6 1/2 Miles North San Pedro Town,
+            {SITE_ADDRESS_LINES[1]}
             <br />
-            Ambergris Caye Belize
+            {SITE_ADDRESS_LINES[2]}
           </p>
         </div>
       </CardContent>

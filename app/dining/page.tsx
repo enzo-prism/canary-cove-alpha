@@ -8,6 +8,7 @@ import { IMAGES } from "@/lib/images"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { PageStructuredData } from "@/components/structured-data"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -16,11 +17,12 @@ export const metadata = PAGE_METADATA.dining
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/dining" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">
           <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Dining</h1>
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Private chef dining</h1>
             <p className="text-lg text-muted-foreground sm:text-xl">
               Sunrise espresso, beach picnics, and chef dinners under the palms—timed to your adventures.
             </p>

@@ -52,7 +52,7 @@ export function Hero() {
 
               <div className="relative z-10 flow flow-sm">
                 <h1 data-testid="hero-headline" className="text-display max-w-2xl text-foreground">
-                  Private estate. Endless water.
+                  Private Belize estate on Ambergris Caye
                 </h1>
                 <p data-testid="hero-subhead" className="max-w-2xl text-base text-foreground/80 sm:text-lg lg:text-xl">
                   One group at a time with chef service, private boats, and oceanfront amenities designed to feel fully yours.

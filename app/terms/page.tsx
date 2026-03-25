@@ -2,6 +2,7 @@ import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
+import { PageStructuredData } from "@/components/structured-data"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.terms
@@ -9,12 +10,13 @@ export const metadata = PAGE_METADATA.terms
 export default function TermsPage() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/terms" />
       <Header />
       <Section padding="tight">
         <Container size="narrow" className="flow flow-md">
           <div className="flow flow-xs">
             <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Terms of use</p>
-            <h1 className="text-display">Using the Canary Cove website.</h1>
+            <h1 className="text-display">Terms of Use</h1>
             <p className="text-body text-foreground/80">
               This website is intended to help guests explore the property, review rates, and contact the Canary Cove team for availability and planning.
             </p>

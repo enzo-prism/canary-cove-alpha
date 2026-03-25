@@ -3,6 +3,7 @@ import { ContactForm } from "@/components/contact-form"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { PageStructuredData } from "@/components/structured-data"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -11,13 +12,12 @@ export const metadata = PAGE_METADATA.contact
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/contact" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-5xl xl:max-w-6xl space-y-12">
           <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-              We’d love to hear from you!
-            </h1>
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Contact Canary Cove</h1>
             <p className="text-lg text-muted-foreground sm:text-xl">Reach out and we’ll respond within one business day.</p>
           </div>
 

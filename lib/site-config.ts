@@ -1,8 +1,4 @@
-import type { MetadataRoute } from "next"
-
 import { IMAGES } from "@/lib/images"
-
-type ChangeFrequency = NonNullable<MetadataRoute.Sitemap[number]["changeFrequency"]>
 
 export type SitePageCategory = "primary" | "supporting" | "legal"
 
@@ -10,8 +6,6 @@ export type SitePage = {
   path: string
   title: string
   description: string
-  changeFrequency: ChangeFrequency
-  priority: number
   category: SitePageCategory
   images?: string[]
 }
@@ -19,9 +13,30 @@ export type SitePage = {
 export const SITE_NAME = "Canary Cove"
 export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.canarycove.com").replace(/\/$/, "")
 export const SITE_HOST = new URL(SITE_URL).host
+export const SITE_LOCALE = "en-US"
 export const SITE_TAGLINE = "Private, fully staffed beachfront estate on Ambergris Caye, Belize."
 export const SITE_DESCRIPTION =
   "Canary Cove is a private, fully staffed beachfront estate on Ambergris Caye with private-chef service, boats, dock access, and on-site gear - reserved for one group at a time. Provisions and excursions are billed separately."
+export const SITE_LOGO_URL = `${SITE_URL}/canary-cove-logo.png`
+export const SITE_FACEBOOK_URL = "https://www.facebook.com/CanaryCove/"
+export const PRIMARY_CONTACT_PHONE = "+5016105121"
+export const BOOKING_CONTACT_PHONE = "+5016267534"
+export const SITE_ADDRESS = {
+  name: SITE_NAME,
+  streetAddress: "6 1/2 Miles North San Pedro Town",
+  addressLocality: "San Pedro",
+  addressRegion: "Ambergris Caye",
+  addressCountry: "BZ",
+} as const
+export const SITE_GEO = {
+  latitude: 17.998567,
+  longitude: -87.915017,
+} as const
+export const SITE_GEO_LABELS = {
+  latitude: "17′ 59.914 NORTH",
+  longitude: "87′ 54.901 WEST",
+} as const
+export const SITE_ADDRESS_LINES = [SITE_NAME, "6 1/2 Miles North San Pedro Town,", "Ambergris Caye Belize"] as const
 
 export const PUBLIC_SITE_PAGES: SitePage[] = [
   {
@@ -29,8 +44,6 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     title: "Home",
     description:
       "Overview of the private Belize estate, featured amenities, service style, and inquiry paths.",
-    changeFrequency: "weekly",
-    priority: 1,
     category: "primary",
     images: [IMAGES.heroVillaSeating.src, IMAGES.mainDock.src],
   },
@@ -38,9 +51,7 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     path: "/stay",
     title: "Stay",
     description:
-      "Villa interiors, outdoor grounds, amenities, all-inclusive service, and photo galleries of the estate.",
-    changeFrequency: "weekly",
-    priority: 0.95,
+      "Villa interiors, outdoor grounds, amenities, chef service, and photo galleries of the estate.",
     category: "primary",
     images: [IMAGES.villaPool.src, IMAGES.livingRoom.src, IMAGES.villaBedroom.src],
   },
@@ -49,67 +60,53 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     title: "Rates",
     description:
       "Seasonal pricing, included service, extra costs, and add-on pricing for boats and adventures.",
-    changeFrequency: "weekly",
-    priority: 0.9,
     category: "primary",
     images: [IMAGES.villaPool.src],
   },
   {
     path: "/book",
-    title: "Book",
+    title: "Check Availability & Book",
     description:
       "Live availability calendar, booking request flow, comfort details, and payment or cancellation policies.",
-    changeFrequency: "weekly",
-    priority: 0.9,
     category: "primary",
     images: [IMAGES.villaLawn.src],
   },
   {
     path: "/dining",
-    title: "Dining",
+    title: "Private Chef Dining",
     description:
       "Private chef service, provisioning, dining style, and meal moments at the estate.",
-    changeFrequency: "monthly",
-    priority: 0.82,
     category: "primary",
     images: [IMAGES.chefCarry.src, IMAGES.diningRoom.src],
   },
   {
     path: "/experiences",
-    title: "Experiences",
+    title: "Belize Experiences",
     description:
       "Included water gear plus curated boating, reef, and island experiences for guests.",
-    changeFrequency: "monthly",
-    priority: 0.8,
     category: "primary",
     images: [IMAGES.divingFun.src, IMAGES.mainDock.src],
   },
   {
     path: "/adventures",
-    title: "Adventures",
+    title: "Belize Adventures",
     description:
       "Fishing, diving, boating, and Belize day-trip options available from Canary Cove.",
-    changeFrequency: "monthly",
-    priority: 0.78,
     category: "primary",
     images: [IMAGES.scubaPhoto.src, IMAGES.fishingTrophy.src],
   },
   {
     path: "/getting-here",
-    title: "Getting Here",
+    title: "Getting to Canary Cove",
     description:
       "Travel logistics from Belize City to San Pedro and on to Canary Cove.",
-    changeFrequency: "monthly",
-    priority: 0.76,
     category: "primary",
     images: [IMAGES.sanPedroWelcome.src, IMAGES.helipad.src],
   },
   {
     path: "/contact",
-    title: "Contact",
+    title: "Contact Canary Cove",
     description: "Direct inquiry path for planning, pricing, or booking a stay.",
-    changeFrequency: "monthly",
-    priority: 0.72,
     category: "primary",
   },
   {
@@ -117,8 +114,6 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     title: "About",
     description:
       "Background on the estate, guest experience, and the overall Canary Cove hospitality approach.",
-    changeFrequency: "monthly",
-    priority: 0.68,
     category: "supporting",
     images: [IMAGES.romanticViews.src],
   },
@@ -126,23 +121,17 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     path: "/privacy",
     title: "Privacy Policy",
     description: "Privacy policy for the public Canary Cove website and inquiry experience.",
-    changeFrequency: "yearly",
-    priority: 0.3,
     category: "legal",
   },
   {
     path: "/terms",
-    title: "Terms & Conditions",
-    description: "Terms and conditions for stays and website use.",
-    changeFrequency: "yearly",
-    priority: 0.3,
+    title: "Terms of Use",
+    description: "Terms of use for the public Canary Cove website and inquiry experience.",
     category: "legal",
   },
 ] as const
 
 export const getCanonicalUrl = (path: string) => `${SITE_URL}${path === "/" ? "" : path}`
-
-export const BUILD_LAST_MODIFIED = new Date()
 
 export const buildLlmsTxt = () => {
   const sections: Array<{ heading: string; pages: SitePage[] }> = [

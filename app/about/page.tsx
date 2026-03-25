@@ -6,6 +6,7 @@ import { EMOJI } from "@/lib/emoji"
 import { Card, CardContent } from "@/components/ui/card"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PageStructuredData } from "@/components/structured-data"
 import { filterHighResGalleryItems } from "@/lib/gallery-utils"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -521,6 +522,7 @@ const aboutSliderItems = filterHighResGalleryItems(aboutGalleryItems)
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/about" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">

@@ -66,10 +66,12 @@ If the active desktop-nav pill styling changes, keep the direct `Link` structure
 
 ## Metadata, sitemap, and llms surfaces
 
-When public page titles, descriptions, route priority, or route purpose change, review:
+When public page titles, descriptions, route purpose, or business details change, review:
 
 - `lib/seo.ts`
 - `lib/site-config.ts`
+- `lib/structured-data.ts`
+- `components/structured-data.tsx`
 - `app/sitemap.ts`
 - `app/robots.ts`
 - `app/llms/route.ts`
@@ -78,7 +80,8 @@ When public page titles, descriptions, route priority, or route purpose change, 
 Typical misses:
 
 - updating route copy but not the metadata description
-- changing page emphasis without adjusting sitemap priority or category
+- changing page emphasis without updating breadcrumb or page-level JSON-LD
+- changing business contact details in the UI without updating schema constants
 - changing public meaning of a page without updating `llms.txt` summaries
 
 ## Search

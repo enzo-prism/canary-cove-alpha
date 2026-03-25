@@ -4,6 +4,7 @@ import localFont from "next/font/local"
 import "./globals.css"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
+import { SiteStructuredData } from "@/components/structured-data"
 import { VercelAnalytics } from "@/components/vercel-analytics"
 import { IMAGES } from "@/lib/images"
 import { HOME_SEO } from "@/lib/seo"
@@ -28,15 +29,21 @@ const sfPro = localFont({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
   title: HOME_SEO.title,
   description: HOME_SEO.description ?? SITE_DESCRIPTION,
-  generator: "v0.app",
   openGraph: {
     type: "website",
     siteName: SITE_NAME,
     title: HOME_SEO.title,
     description: HOME_SEO.description ?? SITE_DESCRIPTION,
-    images: [IMAGES.heroVillaSeating.src],
+    url: SITE_URL,
+    images: [
+      {
+        url: IMAGES.heroVillaSeating.src,
+        alt: IMAGES.heroVillaSeating.alt,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
@@ -58,17 +65,26 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: "/favicon%20small.png",
+        url: "/favicon-256.png",
+        sizes: "256x256",
+        type: "image/png",
+      },
+      {
+        url: "/icon.svg",
+        type: "image/svg+xml",
+      },
+      {
+        url: "/icon-light-32x32.png",
         sizes: "32x32",
         type: "image/png",
       },
       {
-        url: "/Favicon%20large.png",
-        sizes: "256x256",
+        url: "/apple-icon.png",
+        sizes: "180x180",
         type: "image/png",
       },
     ],
-    apple: "/Favicon%20large.png",
+    apple: "/apple-icon.png",
   },
 }
 
@@ -85,6 +101,7 @@ export default function RootLayout({
     <html lang="en" className={`${sfPro.variable} overflow-x-hidden`}>
       <head>
         <GoogleAnalyticsScripts />
+        <SiteStructuredData />
       </head>
       <body
         className={`${sfPro.className} overflow-x-hidden font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}

@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PageStructuredData } from "@/components/structured-data"
 import { PAGE_METADATA } from "@/lib/seo"
 
 const steps = [
@@ -43,6 +44,7 @@ export const metadata = PAGE_METADATA.gettingHere
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/getting-here" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
@@ -53,7 +55,7 @@ export default function Page() {
             >
               Travel made easy
             </Badge>
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">How to get here</h1>
+            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Getting to Canary Cove</h1>
             <p className="text-lg text-muted-foreground sm:text-xl">
               A simple, guided journey: customs, a short hop to San Pedro, and a quick boat ride to Canary Cove.
             </p>

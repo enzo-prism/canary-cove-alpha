@@ -7,6 +7,7 @@ import { StayHighlights } from "@/components/stay-highlights"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { StayOutdoorGallery } from "@/components/stay-outdoor-gallery"
 import { StayVillaGallery } from "@/components/stay-villa-gallery"
+import { PageStructuredData } from "@/components/structured-data"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -15,6 +16,7 @@ export const metadata = PAGE_METADATA.stay
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen bg-background">
+      <PageStructuredData path="/stay" />
       <Header />
       <section className="border-b border-border/40 bg-[linear-gradient(180deg,#fbf7ef_0%,#f7f3eb_100%)] px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24">
         <div className="mx-auto max-w-6xl xl:max-w-7xl">

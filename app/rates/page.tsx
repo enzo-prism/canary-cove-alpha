@@ -8,6 +8,7 @@ import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PageStructuredData } from "@/components/structured-data"
 import { PAGE_METADATA } from "@/lib/seo"
 
 const villaSeasons = [
@@ -84,6 +85,7 @@ export const metadata = PAGE_METADATA.rates
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/rates" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-12">

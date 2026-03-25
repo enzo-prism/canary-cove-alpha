@@ -70,9 +70,10 @@ These are mostly route-local page compositions rather than a single shared page 
 
 ### App shell and global behavior
 
-- `app/layout.tsx`: fonts, canonical metadata, GA scripts, Vercel Analytics, skip link, global scroll reset.
-- `lib/site-config.ts`: canonical domain, public route inventory, sitemap priorities, and llms helpers.
+- `app/layout.tsx`: fonts, canonical metadata, favicon declarations, sitewide structured data, GA scripts, Vercel Analytics, skip link, global scroll reset.
+- `lib/site-config.ts`: canonical domain, public route inventory, business identity constants, and llms helpers.
 - `lib/seo.ts`: page-level metadata source of truth used by public routes.
+- `lib/structured-data.ts` and `components/structured-data.tsx`: sitewide organization/lodging schema plus per-page `WebPage` and breadcrumb JSON-LD.
 - `app/sitemap.ts`, `app/robots.ts`, `app/llms/route.ts`, `app/llms-full/route.ts`: crawl and AI-discovery surfaces.
 - `components/header.tsx`: sticky header, nav, CTA behavior.
 - `components/footer.tsx`: footer IA and legal links.
@@ -134,7 +135,7 @@ These are mostly route-local page compositions rather than a single shared page 
 ## Critical couplings and easy misses
 
 - Routes are custom. `components/basic-page.tsx` and `components/section-page.tsx` still exist, but most meaningful public work happens in route-local page files plus a few shared sections.
-- Metadata is split on purpose. `lib/seo.ts` owns page metadata, while `lib/site-config.ts` owns the public route inventory used by sitemap and `llms` outputs.
+- Metadata is split on purpose. `lib/seo.ts` owns page metadata, while `lib/site-config.ts` owns the public route inventory used by sitemap, structured data helpers, and `llms` outputs.
 - Search is curated manually. New pages, new sections, rate changes, policy changes, and logistics changes usually require edits in `lib/search/search-index.ts`.
 - Hash links are a real integration surface. `next.config.mjs`, search results, homepage CTAs, and stay-page buttons all depend on current anchor IDs.
 - Hero imagery is a behavior surface, not just content. `components/hero-image-rotator.tsx` now shuffles the homepage hero order on each load and avoids replaying the previous sequence inside the same session.

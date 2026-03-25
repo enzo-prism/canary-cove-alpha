@@ -11,21 +11,26 @@ type HeroImage = {
   alt: string
 }
 
+// Only use large-format assets here. Full-bleed hero backgrounds need enough
+// source width to stay sharp on wide desktop screens and high-density displays.
 const HERO_IMAGES: HeroImage[] = [
   {
     ...IMAGES.heroBackgroundEstate,
   },
   {
-    ...IMAGES.heroBackgroundPool,
-  },
-  {
     ...IMAGES.heroBackgroundDrink,
   },
   {
-    ...IMAGES.heroBackgroundBar,
+    ...IMAGES.heroBackgroundLawn,
   },
   {
-    ...IMAGES.heroBackgroundLawn,
+    ...IMAGES.heroVillaSeating,
+  },
+  {
+    ...IMAGES.heroVillaDining,
+  },
+  {
+    ...IMAGES.heroVillaLiving,
   },
 ]
 
@@ -96,7 +101,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           alt={photo.alt}
           fill
           priority={index === 0}
-          sizes="(min-width: 1280px) 1200px, (min-width: 1024px) 900px, 100vw"
+          sizes="100vw"
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out motion-reduce:transition-none",
             index === activeIndex ? "opacity-100" : "opacity-0",

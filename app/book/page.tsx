@@ -8,6 +8,7 @@ import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { PageStructuredData } from "@/components/structured-data"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.book
@@ -15,6 +16,7 @@ export const metadata = PAGE_METADATA.book
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
+      <PageStructuredData path="/book" />
       <Header />
       <section className="relative overflow-hidden px-4 pb-20 pt-14 sm:px-6 sm:pb-28 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-gradient-to-b from-surface/80 via-white to-surface-muted/60" />
@@ -32,9 +34,7 @@ export default function Page() {
                   Request a stay {EMOJI.book}
                 </Badge>
                 <div className="mt-5 space-y-4">
-                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">
-                    Availability & holds
-                  </h1>
+                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Check availability & book</h1>
                   <p className="text-lg text-muted-foreground sm:text-xl">
                     Check dates in the live calendar, then share your trip details so we can confirm or place a
                     courtesy hold for your group.

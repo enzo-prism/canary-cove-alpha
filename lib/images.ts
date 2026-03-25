@@ -153,11 +153,11 @@ export const IMAGES = {
   },
   drinksBar: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059666/IMG_2393_vkftra.webp",
-    alt: "Drinks at a nearby bar",
+    alt: "Cocktails served during a San Pedro dining outing",
   },
   diningFoodDetail: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059673/Food-detail_gallery_by2pcb.webp",
-    alt: "Food detail at Canary Cove",
+    alt: "Close-up of a chef-prepared dish at Canary Cove",
   },
   diningPlatter: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059673/IMG_3845-1_ybzoab.webp",
@@ -177,11 +177,11 @@ export const IMAGES = {
   },
   diningDetailTwo: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059642/IMG_3832-1_z37xde.webp",
-    alt: "Canary Cove dining detail",
+    alt: "Chef-prepared dining detail served at Canary Cove",
   },
   diningDetailThree: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059627/IMG_3839-1-e1506956062818_worenb.webp",
-    alt: "Dining presentation detail",
+    alt: "Plated dinner presentation prepared for guests",
   },
   caramba: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059664/Caramba-1-768x768_ezqnes.webp",
@@ -233,23 +233,23 @@ export const IMAGES = {
   },
   landAdventure: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/land_qmx9ht.webp",
-    alt: "Belize land adventure",
+    alt: "Guests on a mainland Belize adventure excursion",
   },
   zooVisit: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/IMG_7247_vrmxgl.webp",
-    alt: "Zoo visit in Belize",
+    alt: "Guests exploring a Belize zoo day trip",
   },
   belizeSign: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059643/I-Love-Belize_xtimfq.webp",
-    alt: "I Love Belize sign",
+    alt: "Guests posing beside the I Love Belize sign",
   },
   adventureGroup: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059631/IMG_1127_ytzxff.webp",
-    alt: "Guests on an island outing",
+    alt: "Guests enjoying an island outing on the water",
   },
   jungleAdventure: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059628/IMG_2121_jntwjo.webp",
-    alt: "Adventure excursion in Belize",
+    alt: "Guests on a Belize jungle excursion",
   },
   villaMasterBedroom: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059661/canarycove-haydeelustudio-22-scaled_j6fxkl.webp",
