@@ -1,13 +1,8 @@
 import { Footer } from "@/components/footer"
-import { GalleryGrid } from "@/components/gallery-grid"
+import { GuestReviewsBrowser } from "@/components/guest-reviews-browser"
 import { Header } from "@/components/header"
-import { IMAGES } from "@/lib/images"
-import { EMOJI } from "@/lib/emoji"
-import { Card, CardContent } from "@/components/ui/card"
-import { StayMiniGallery } from "@/components/stay-mini-gallery"
-import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { PageStructuredData } from "@/components/structured-data"
-import { filterHighResGalleryItems } from "@/lib/gallery-utils"
+import { Badge } from "@/components/ui/badge"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.about
@@ -500,97 +495,91 @@ const TESTIMONIALS: TestimonialGroup[] = [
   },
 ]
 
-const aboutGalleryItems = [
-  IMAGES.villaPool,
-  IMAGES.livingRoom,
-  IMAGES.villaBedroom,
-  IMAGES.wedding,
-  IMAGES.romanticViews,
-  IMAGES.mainDock,
-  IMAGES.helipad,
-  IMAGES.logoDrink,
-  IMAGES.diningRoom,
-  IMAGES.villaLawn,
-  IMAGES.villaSign,
-  IMAGES.hammock,
-  IMAGES.bikes,
-  IMAGES.drinksBar,
-  IMAGES.viewFromKitchen,
-]
-const aboutSliderItems = filterHighResGalleryItems(aboutGalleryItems)
+const extractYearNumber = (label: string) => {
+  const match = label.match(/(\d{4})$/)
+  return match ? Number(match[1]) : Number.NaN
+}
+
+const totalReviews = TESTIMONIALS.reduce((count, group) => count + group.entries.length, 0)
+const archiveYears = Array.from(
+  new Set(TESTIMONIALS.map((group) => extractYearNumber(group.year)).filter((year) => Number.isFinite(year))),
+).sort((a, b) => a - b)
+
+const archiveStartYear = archiveYears[0]
+const archiveEndYear = archiveYears[archiveYears.length - 1]
+
+const featuredReviewGroup = TESTIMONIALS.find((group) => group.entries.length > 0)
+const featuredReview = featuredReviewGroup
+  ? {
+      year: featuredReviewGroup.year,
+      ...featuredReviewGroup.entries[0],
+    }
+  : null
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen">
+    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f7f2e8_0%,#f3ede2_28%,#faf7f0_100%)]">
       <PageStructuredData path="/about" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">About Canary Cove</h1>
-            <p className="text-lg text-muted-foreground sm:text-xl">
-              A private, family-owned estate with a dedicated team, quiet beaches, and dock access for effortless arrivals.
-            </p>
+          <div className="overflow-hidden rounded-[36px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(248,244,236,0.94)_100%)] shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
+            <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)] xl:items-start">
+              <div className="space-y-6">
+                <Badge variant="outline" className="border-border/70 text-muted-foreground">
+                  Guest Reviews
+                </Badge>
+                <div className="space-y-4">
+                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+                    Guest reviews from Canary Cove
+                  </h1>
+                  <p className="max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
+                    Real notes from guest books and letters, collected across years of private stays in Belize. Browse the archive
+                    to see how guests talk about the staff, food, diving, family time, and the feel of the estate.
+                  </p>
+                </div>
+
+                <div className="grid gap-3 sm:grid-cols-3">
+                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
+                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Archive span</p>
+                    <p className="mt-3 text-2xl font-semibold text-foreground">
+                      {archiveStartYear}-{archiveEndYear}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Guestbook notes across returning seasons.</p>
+                  </div>
+                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
+                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Total notes</p>
+                    <p className="mt-3 text-2xl font-semibold text-foreground">{totalReviews}</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Messages preserved from families, couples, and groups.</p>
+                  </div>
+                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
+                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Common themes</p>
+                    <p className="mt-3 text-lg font-semibold text-foreground">Staff, food, diving, family time</p>
+                    <p className="mt-2 text-sm leading-6 text-muted-foreground">The moments guests mention again and again.</p>
+                  </div>
+                </div>
+              </div>
+
+              {featuredReview ? (
+                <article className="rounded-[28px] border border-border/60 bg-background/82 p-5 shadow-[0_16px_38px_rgba(15,23,42,0.06)] sm:p-6">
+                  <div className="flex items-center justify-between gap-3">
+                    <Badge variant="outline" className="border-border/70 text-muted-foreground">
+                      {featuredReview.year}
+                    </Badge>
+                    <span className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Featured note</span>
+                  </div>
+                  <p className="mt-4 text-lg leading-8 text-foreground sm:text-xl">
+                    "{featuredReview.quote}"
+                  </p>
+                  <p className="mt-5 text-sm font-medium text-foreground/80">
+                    {featuredReview.author ?? "Guest at Canary Cove"}
+                  </p>
+                </article>
+              ) : null}
+            </div>
           </div>
-          <StayMiniGallery items={aboutSliderItems} />
-          <Card
-            id="guest-testimonials"
-            className="scroll-mt-24 rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"
-          >
-            <CardContent className="space-y-8 p-6">
-              <div className="space-y-3">
-                <h2 className="text-2xl font-semibold text-foreground">Don's Dream: Canary Cove</h2>
-                <p className="text-base text-muted-foreground">
-                  Don Listwin is one of those people who makes things happen, he shakes things up, and drives change. And he's
-                  really good at it. In 2007, he visited Belize for the purpose of building a dream he'd had in his mind for years.
-                  Don remembered visiting the beautiful Caribbean waters of Belize as a child with his dad. That trip was filled
-                  with the fun, relaxing time with his family, beauty, and adventure.
-                </p>
-                <p className="text-base text-muted-foreground">
-                  This was something that Don was ready to find again. So, he ventured back to Belize and found what he was looking
-                  for in Ambergris Caye, and so began the development of Canary Cove. Since that time, Canary Cove has been a haven
-                  for Don, his family and friends, and now he is sharing it with you.
-                </p>
-              </div>
-              <div className="space-y-3">
-                <h2 className="text-2xl font-semibold text-foreground">Canary Cove's Legacy</h2>
-                <p className="text-base text-muted-foreground">
-                  We hope that Canary Cove brings as much fun, relaxation, beauty, and adventure to you and yours as it has brought
-                  to Don over the years. Welcome to Don's dream!
-                </p>
-                <p className="text-base text-muted-foreground">
-                  Prior to creating Canary Cove, Don left a high-profile technology career to found the Canary Foundation. Canary
-                  was named after the birds coal miners once carried as early detectors of dangerous gases. It's a fitting name for
-                  the world's first non-profit dedicated solely to early cancer detection.
-                </p>
-                <p className="text-base text-muted-foreground">
-                  Just as Don has committed his life to advancing early cancer detection, he is also committed to investing in the
-                  community of his adopted second home - Ambergris Caye. Since he started living part time at Canary Cove over 10
-                  years ago, Don has made a concerted effort to partner closely with businesses on the island as well as support
-                  local marine preservation organizations and host international marine scientists to study the barrier reef. As the
-                  Canary name suggests, Canary Cove continues to advance ways to improve community health and growth through early
-                  intervention as well as protect and build the health of the marine life surrounding Ambergris Caye. We invite you
-                  to learn more about Canary Cove's community involvement.
-                </p>
-                <p className="text-base text-muted-foreground">
-                  A portion of Canary Cove's gross profits from guest visits are invested in the community through BelizeKIDS.org -
-                  a local non-profit organization whose mission is to improve the lives of kids in Belize.
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-          <Card className="rounded-3xl border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]">
-            <CardContent className="space-y-6 p-6">
-              <div className="space-y-2">
-                <h2 className="text-2xl font-semibold text-foreground">Guest Testimonials {EMOJI.reviews}</h2>
-                <p className="text-base text-muted-foreground">
-                  Notes from guest books and letters shared over the years.
-                </p>
-              </div>
-              <TestimonialsGrid groups={TESTIMONIALS} />
-            </CardContent>
-          </Card>
-          <GalleryGrid items={aboutGalleryItems} />
+
+          <GuestReviewsBrowser groups={TESTIMONIALS} />
         </div>
       </section>
       <Footer />

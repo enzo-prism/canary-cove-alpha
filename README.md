@@ -83,6 +83,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
 - Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
 - Custom-event payloads are intentionally small and should never include free-form search text or submitted form content.
+- Current Vercel/GA custom-event taxonomy includes `cta_click`, `nav_click`, `nav_menu_open`, `form_submit_attempt`, `form_submit_success`, `form_submit_error`, `search_open`, `search_refine`, `search_result_click`, `review_archive_filter`, `review_note_open`, `section_jump`, `social_click`, and `outbound_click`.
 - Search is manual and curated, not generated automatically from routes.
 
 ## Styling notes

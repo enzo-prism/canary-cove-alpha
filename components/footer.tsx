@@ -39,7 +39,7 @@ export function Footer() {
               Adventures
             </TrackedLink>
             <TrackedLink href="/about" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/about" }} className="hover:text-foreground">
-              About
+              Reviews
             </TrackedLink>
             <TrackedLink href="/book" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/book" }} className="hover:text-foreground">
               Book

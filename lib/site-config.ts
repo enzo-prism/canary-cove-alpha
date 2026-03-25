@@ -111,9 +111,9 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
   },
   {
     path: "/about",
-    title: "About",
+    title: "Guest Reviews",
     description:
-      "Background on the estate, guest experience, and the overall Canary Cove hospitality approach.",
+      "Browse notes from guest books and letters shared by Canary Cove guests across years of private stays in Belize.",
     category: "supporting",
     images: [IMAGES.romanticViews.src],
   },

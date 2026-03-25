@@ -123,9 +123,9 @@ export const PAGE_METADATA = {
     imageAlt: IMAGES.heroVillaSeating.alt,
   }),
   about: createPageMetadata({
-    title: "About the Estate & On-Site Team | Canary Cove",
+    title: "Guest Reviews & Testimonials | Canary Cove",
     description:
-      "Learn about the family behind Canary Cove and the on-site team that handles arrivals, service, and your stay in Belize.",
+      "Read guest reviews, letters, and guestbook notes from stays at Canary Cove, from family vacations to diving and dining getaways in Belize.",
     path: "/about",
     image: IMAGES.romanticViews.src,
     imageAlt: IMAGES.romanticViews.alt,

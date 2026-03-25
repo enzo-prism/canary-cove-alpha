@@ -2,10 +2,10 @@
 
 import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import Link from "next/link"
 import useEmblaCarousel from "embla-carousel-react"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -213,7 +213,13 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                       ))}
                     </div>
                     <Button asChild variant="outline" size="sm" className="w-fit" data-testid={`model-cta-${index}`}>
-                      <Link href={model.cta.href}>{model.cta.label}</Link>
+                      <TrackedLink
+                        href={model.cta.href}
+                        eventName="cta_click"
+                        eventPayload={{ location: "model_carousel", target: model.cta.href, label: model.name }}
+                      >
+                        {model.cta.label}
+                      </TrackedLink>
                     </Button>
                   </div>
                 </div>

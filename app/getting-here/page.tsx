@@ -1,5 +1,4 @@
-import Link from "next/link"
-
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
@@ -98,7 +97,13 @@ export default function Page() {
                     variant="secondary"
                     className="w-full justify-center rounded-xl border border-border/70 bg-primary/10 text-black hover:bg-primary/15"
                   >
-                    <Link href="https://ideclare.gov.bz/Belize_Digital_Forms/">Fill Belize digital forms →</Link>
+                    <TrackedLink
+                      href="https://ideclare.gov.bz/Belize_Digital_Forms/"
+                      eventName="outbound_click"
+                      eventPayload={{ location: "getting_here", target: "belize_digital_forms" }}
+                    >
+                      Fill Belize digital forms →
+                    </TrackedLink>
                   </Button>
                   <p className="text-muted-foreground">
                     Destination country: BELIZE · Staying in: SAN PEDRO · Flights: Maya Island Air or Tropic Air

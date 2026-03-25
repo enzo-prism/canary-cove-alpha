@@ -1,6 +1,6 @@
 import Image from "next/image"
-import Link from "next/link"
 
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -30,7 +30,13 @@ export function EditorialSplit({
         <h3 className="text-section">{title}</h3>
         <p className="text-body text-foreground/80">{description}</p>
         <Button asChild variant="outline" size="sm" className="w-fit">
-          <Link href={href}>{cta}</Link>
+          <TrackedLink
+            href={href}
+            eventName="cta_click"
+            eventPayload={{ location: "editorial_split", target: href, label: title }}
+          >
+            {cta}
+          </TrackedLink>
         </Button>
       </div>
       <div className={cn("relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted", reverse ? "lg:order-1" : "lg:order-2")}>

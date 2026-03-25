@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Container } from "@/components/layout/container"
+import { trackSectionJump } from "@/lib/analytics"
 
 export type SectionContent = {
   id: string
@@ -45,7 +46,9 @@ export function SectionPageContent({ eyebrow, title, intro, sections, aside }: S
             <div className="flex flex-wrap gap-3">
               {sections.map((section) => (
                 <Button key={section.id} asChild variant="outline" size="sm" className="rounded-full">
-                  <Link href={`#${section.id}`}>{section.label}</Link>
+                  <Link href={`#${section.id}`} onClick={() => trackSectionJump(title, section.id)}>
+                    {section.label}
+                  </Link>
                 </Button>
               ))}
             </div>

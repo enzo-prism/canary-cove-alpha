@@ -58,3 +58,19 @@ export function trackSearchResultClick(group: string, destination: string) {
 export function trackSocialClick(network: string, surface: string) {
   trackEvent("social_click", { network, surface })
 }
+
+export function trackReviewArchiveFilter(year: string) {
+  trackEvent("review_archive_filter", { year })
+}
+
+export function trackReviewNoteOpen(year: string, visit: string) {
+  trackEvent("review_note_open", { year, visit })
+}
+
+export function trackSectionJump(page: string, section: string) {
+  trackEvent("section_jump", { page, section })
+}
+
+export function trackOutboundClick(location: string, target: string) {
+  trackEvent("outbound_click", { location, target })
+}

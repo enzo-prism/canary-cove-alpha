@@ -163,6 +163,10 @@ Current behavior:
 - Vercel payloads are intentionally flat and limited to small, low-cardinality properties
 - Never send free-form search queries, form content, or contact details to Vercel custom events
 - Prefer `TrackedLink` for tracked CTAs before hand-rolling another click handler
+- Prefer extending the existing event names before inventing new ones:
+  `cta_click`, `nav_click`, `nav_menu_open`, `form_submit_attempt`, `form_submit_success`, `form_submit_error`,
+  `search_open`, `search_refine`, `search_result_click`, `review_archive_filter`, `review_note_open`, `section_jump`,
+  `social_click`, and `outbound_click`
 
 ## Stay page specifics
 
