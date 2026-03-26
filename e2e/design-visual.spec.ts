@@ -57,7 +57,7 @@ test.describe("design baselines", () => {
     await page.goto("/experiences")
     await waitForPageReady(page)
     await hideDevArtifactsForVisuals(page)
-    await expect(page.getByTestId("experiences-mini-gallery")).toHaveScreenshot("experiences-gallery-mobile.png")
+    await expect(page.getByTestId("experiences-gallery-mosaic")).toHaveScreenshot("experiences-gallery-mobile.png")
 
     await page.setViewportSize({ width: 1280, height: 900 })
     await page.goto("/stay")

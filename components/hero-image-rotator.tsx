@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState, type ReactNode } from "react"
+import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from "react"
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
@@ -9,28 +9,35 @@ import { IMAGES } from "@/lib/images"
 type HeroImage = {
   src: string
   alt: string
+  objectPosition?: string
 }
 
 // Only use large-format assets here. Full-bleed hero backgrounds need enough
 // source width to stay sharp on wide desktop screens and high-density displays.
 const HERO_IMAGES: HeroImage[] = [
   {
-    ...IMAGES.heroBackgroundEstate,
+    ...IMAGES.heroVillaSeating,
+    objectPosition: "60% center",
   },
   {
-    ...IMAGES.heroBackgroundDrink,
+    ...IMAGES.heroBackgroundPool,
+    objectPosition: "54% center",
   },
   {
     ...IMAGES.heroBackgroundLawn,
+    objectPosition: "58% center",
   },
   {
-    ...IMAGES.heroVillaSeating,
+    ...IMAGES.heroBackgroundEstate,
+    objectPosition: "62% center",
   },
   {
     ...IMAGES.heroVillaDining,
+    objectPosition: "56% center",
   },
   {
-    ...IMAGES.heroVillaLiving,
+    ...IMAGES.heroBackgroundBar,
+    objectPosition: "58% center",
   },
 ]
 
@@ -49,11 +56,11 @@ const shuffle = (items: HeroImage[]) => {
 const getOrderKey = (items: HeroImage[]) => items.map((item) => item.src).join("|")
 
 const getRandomizedHeroImages = (previousOrder?: string | null) => {
-  let nextOrder = shuffle(HERO_IMAGES)
+  let nextOrder = [HERO_IMAGES[0], ...shuffle(HERO_IMAGES.slice(1))]
   let attempts = 0
 
   while (previousOrder && HERO_IMAGES.length > 1 && getOrderKey(nextOrder) === previousOrder && attempts < 8) {
-    nextOrder = shuffle(HERO_IMAGES)
+    nextOrder = [HERO_IMAGES[0], ...shuffle(HERO_IMAGES.slice(1))]
     attempts += 1
   }
 
@@ -102,6 +109,11 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           fill
           priority={index === 0}
           sizes="100vw"
+          style={
+            {
+              objectPosition: photo.objectPosition ?? "center center",
+            } satisfies CSSProperties
+          }
           className={cn(
             "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out motion-reduce:transition-none",
             index === activeIndex ? "opacity-100" : "opacity-0",
@@ -110,7 +122,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
       ))}
       <div
         data-testid="hero-contrast-overlay"
-        className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/45 via-black/20 to-black/70"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.14)_0%,rgba(7,18,22,0.02)_34%,rgba(7,18,22,0.18)_64%,rgba(7,18,22,0.5)_100%)]"
       />
       {children ? <div className="relative z-10 h-full">{children}</div> : null}
     </div>

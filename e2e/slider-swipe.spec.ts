@@ -58,10 +58,10 @@ test.describe("carousel swipe gestures", () => {
   })
 
   test("experiences mini gallery responds to swipe", async ({ page }) => {
-    await page.goto("/experiences")
+    await page.goto("/stay")
     await page.waitForLoadState("domcontentloaded")
 
-    const carousel = page.locator('[aria-roledescription="carousel"]').first()
+    const carousel = page.getByTestId("stay-mini-gallery").locator('[aria-roledescription="carousel"]')
     const viewport = carousel.locator('[data-slot="carousel-viewport"]')
     await viewport.scrollIntoViewIfNeeded()
 
@@ -123,11 +123,11 @@ test.describe("desktop carousel gestures", () => {
   })
 
   test("other sliders respond to trackpad wheel", async ({ page }) => {
-    await page.goto("/experiences")
+    await page.goto("/stay")
     await page.waitForLoadState("domcontentloaded")
-    const experienceUrl = page.url()
+    const stayUrl = page.url()
 
-    const carousel = page.locator('[aria-roledescription="carousel"]').first()
+    const carousel = page.getByTestId("stay-mini-gallery").locator('[aria-roledescription="carousel"]')
     const viewport = carousel.locator('[data-slot="carousel-viewport"]')
     await viewport.scrollIntoViewIfNeeded()
 
@@ -136,7 +136,7 @@ test.describe("desktop carousel gestures", () => {
 
     await expect(dotOne).toHaveClass(/bg-foreground/)
     await wheelToNextSlide(page, viewport)
-    await expect(page).toHaveURL(experienceUrl)
+    await expect(page).toHaveURL(stayUrl)
     await expect(dotTwo).toHaveClass(/bg-foreground/)
 
     await page.goto("/book")
@@ -189,10 +189,10 @@ test.describe("keyboard slider navigation", () => {
   })
 
   test("carousel component responds to arrow keys", async ({ page }) => {
-    await page.goto("/experiences")
+    await page.goto("/stay")
     await page.waitForLoadState("domcontentloaded")
 
-    const carousel = page.locator('[aria-roledescription="carousel"]').first()
+    const carousel = page.getByTestId("stay-mini-gallery").locator('[aria-roledescription="carousel"]')
     await carousel.scrollIntoViewIfNeeded()
     await carousel.focus()
 

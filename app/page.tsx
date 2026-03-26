@@ -35,7 +35,7 @@ export default function Home() {
       <PageStructuredData path="/" />
       <Header />
       <Hero />
-      <Section padding="tight" className="relative z-10 -mt-10 sm:-mt-14 lg:-mt-20">
+      <Section padding="tight" className="relative z-10 pt-0">
         <Container>
           <ModelCarousel models={MODEL_LINEUP} />
         </Container>

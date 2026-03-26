@@ -7,7 +7,7 @@ test("hero intro copy stays readable on the base background", async ({ page }) =
   const copy = page.getByTestId("hero-copy")
   await expect(copy).toBeVisible()
 
-  const { headlineContrast, subheadContrast, overlayBackground } = await page.evaluate(() => {
+  const { headlineContrast, subheadContrast, copyBackground, overlayBackground } = await page.evaluate(() => {
     const toRgb = (value: string) => {
       const canvas = document.createElement("canvas")
       const ctx = canvas.getContext("2d")
@@ -98,26 +98,30 @@ test("hero intro copy stays readable on the base background", async ({ page }) =
       return (lighter + 0.05) / (darker + 0.05)
     }
 
+    const copy = document.querySelector<HTMLElement>('[data-testid="hero-copy"]')
     const headline = document.querySelector<HTMLElement>('[data-testid="hero-headline"]')
     const subhead = document.querySelector<HTMLElement>('[data-testid="hero-subhead"]')
     const overlay = document.querySelector<HTMLElement>('[data-testid="hero-contrast-overlay"]')
-    if (!headline || !subhead || !overlay) {
+    if (!copy || !headline || !subhead || !overlay) {
       throw new Error("Required hero elements missing")
     }
 
-    const background = toRgb(getComputedStyle(document.body).backgroundColor)
+    const background = toRgb(getComputedStyle(copy).backgroundColor)
     const headlineColor = toRgb(getComputedStyle(headline).color)
     const subheadColor = toRgb(getComputedStyle(subhead).color)
+    const copyBackground = getComputedStyle(copy).backgroundColor
     const overlayBackground = getComputedStyle(overlay).backgroundImage
 
     return {
       headlineContrast: contrastRatio(headlineColor, background),
       subheadContrast: contrastRatio(subheadColor, background),
+      copyBackground,
       overlayBackground,
     }
   })
 
   expect(headlineContrast).toBeGreaterThanOrEqual(7)
   expect(subheadContrast).toBeGreaterThanOrEqual(4.5)
+  expect(copyBackground).not.toBe("rgba(0, 0, 0, 0)")
   expect(overlayBackground).toContain("gradient")
 })

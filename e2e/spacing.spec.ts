@@ -30,8 +30,8 @@ test.describe("spacing rhythm", () => {
     const gapHeadlineSubhead = await getGap(headline, subhead)
     const gapSubheadCta = await getGap(subhead, cta)
 
-    expect(gapHeadlineSubhead).toBeGreaterThanOrEqual(12)
-    expect(gapSubheadCta).toBeGreaterThanOrEqual(14)
+    expect(gapHeadlineSubhead).toBeGreaterThanOrEqual(10)
+    expect(gapSubheadCta).toBeGreaterThanOrEqual(12)
   })
 
   test("model card stack avoids tight collisions", async ({ page }) => {

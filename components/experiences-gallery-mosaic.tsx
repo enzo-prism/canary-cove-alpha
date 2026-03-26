@@ -15,7 +15,7 @@ type ExperiencesGalleryMosaicProps = {
 
 export function ExperiencesGalleryMosaic({ items }: ExperiencesGalleryMosaicProps) {
   return (
-    <section className="flow flow-md">
+    <section className="flow flow-md" data-testid="experiences-gallery-mosaic">
       <div className="text-center flow flow-xs">
         <p className="text-[11px] uppercase tracking-[0.34em] text-muted-foreground">Curated moments</p>
         <h2 className="text-section">Activity Gallery</h2>

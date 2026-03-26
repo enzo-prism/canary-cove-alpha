@@ -76,10 +76,10 @@ test.describe("slider snap alignment", () => {
   })
 
   test("gallery sliders snap to a full slide", async ({ page }) => {
-    await page.goto("/experiences")
+    await page.goto("/stay")
     await page.waitForLoadState("domcontentloaded")
 
-    const carousel = page.locator('[aria-roledescription="carousel"]').first()
+    const carousel = page.getByTestId("stay-mini-gallery").locator('[aria-roledescription="carousel"]')
     const viewport = carousel.locator('[data-slot="carousel-viewport"]')
     const slides = carousel.locator('[aria-roledescription="slide"]')
 

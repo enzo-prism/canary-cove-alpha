@@ -97,6 +97,23 @@ test.describe("responsive layout coverage", () => {
         expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
         expect(box.width).toBeLessThanOrEqual(viewport.width * 0.94)
       })
+
+      test("hero copy leaves room for the photography", async ({ page }) => {
+        await page.goto("/")
+        await page.waitForLoadState("domcontentloaded")
+        await page.evaluate(() => document.fonts.ready)
+
+        const copy = page.getByTestId("hero-copy")
+        await expect(copy).toBeVisible()
+        const box = await copy.boundingBox()
+        expect(box).not.toBeNull()
+        if (!box) return
+
+        if (viewport.name === "mobile") {
+          expect(box.width).toBeLessThanOrEqual(viewport.width * 0.82)
+          expect(box.height).toBeLessThanOrEqual(viewport.height * 0.45)
+        }
+      })
     })
   }
 })
