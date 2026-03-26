@@ -20,8 +20,10 @@ const nextConfig = {
   },
   async redirects() {
     return [
+      { source: "/about/photo-gallery", destination: "/stay", permanent: true },
       { source: "/stay/suites", destination: "/stay#suites", permanent: true },
       { source: "/stay/villa", destination: "/stay#villa", permanent: true },
+      { source: "/stay/villa/inside", destination: "/stay#inside-the-villa", permanent: true },
       { source: "/stay/amenities", destination: "/stay#amenities", permanent: true },
       { source: "/experiences/power-boating", destination: "/experiences#power-boating", permanent: true },
       { source: "/experiences/land", destination: "/experiences#land", permanent: true },
@@ -39,7 +41,7 @@ const nextConfig = {
       { source: "/about/reviews", destination: "/about#reviews", permanent: true },
       { source: "/about/getting-here", destination: "/about#getting-here", permanent: true },
       { source: "/about/faq", destination: "/about#faq", permanent: true },
-      { source: "/gallery", destination: "/about#gallery", permanent: true },
+      { source: "/gallery", destination: "/stay", permanent: true },
       { source: "/lms.txt", destination: "/llms.txt", permanent: true },
     ]
   },
