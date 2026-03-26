@@ -35,8 +35,8 @@ test.describe("release gate smoke coverage", () => {
 
     await page.goto("/")
     await waitForPageReady(page)
-    await page.getByRole("link", { name: "See rates" }).first().click()
-    await expect(page).toHaveURL(/\/rates$/)
+    await page.getByRole("link", { name: "Reviews from guests" }).first().click()
+    await expect(page).toHaveURL(/\/about#guest-testimonials$/)
   })
 
   test("mobile navigation opens, closes, and routes correctly", async ({ page }) => {

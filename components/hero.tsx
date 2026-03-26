@@ -63,8 +63,12 @@ export function Hero() {
                   variant="outline"
                   className="h-11 px-3.5 text-[12px] border-white/28 bg-white/8 text-white hover:bg-white/16 hover:text-white sm:px-6 sm:text-sm"
                 >
-                  <TrackedLink href="/rates" eventName="cta_click" eventPayload={{ location: "hero", target: "/rates" }}>
-                    See rates
+                  <TrackedLink
+                    href="/about#guest-testimonials"
+                    eventName="cta_click"
+                    eventPayload={{ location: "hero", target: "/about#guest-testimonials" }}
+                  >
+                    Reviews from guests
                   </TrackedLink>
                 </Button>
               </div>
