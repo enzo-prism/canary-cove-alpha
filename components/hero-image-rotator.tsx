@@ -155,15 +155,18 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
                   {isActive ? (
                     <span
                       key={`${photo.src}-${activeIndex}`}
-                      className={cn(
-                        "absolute inset-0 origin-left rounded-full bg-white/82",
-                        prefersReducedMotion ? "scale-x-100 opacity-80" : "animate-hero-slide-progress scale-x-0",
-                      )}
+                      className="absolute inset-0 origin-left rounded-full bg-white/82"
                       style={
                         prefersReducedMotion
-                          ? undefined
+                          ? ({
+                              transform: "scaleX(1)",
+                              opacity: 0.8,
+                            } as CSSProperties)
                           : ({
-                              "--hero-rotate-duration": `${ROTATE_INTERVAL}ms`,
+                              animationName: "hero-slide-progress",
+                              animationDuration: `${ROTATE_INTERVAL}ms`,
+                              animationTimingFunction: "linear",
+                              animationFillMode: "forwards",
                             } as CSSProperties)
                       }
                     />

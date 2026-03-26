@@ -177,23 +177,19 @@
   }
 }
 
+@keyframes hero-slide-progress {
+  from {
+    transform: scaleX(0);
+    opacity: 0.44;
+  }
+
+  to {
+    transform: scaleX(1);
+    opacity: 1;
+  }
+}
+
 @layer utilities {
-  @keyframes hero-slide-progress {
-    from {
-      transform: scaleX(0);
-      opacity: 0.44;
-    }
-
-    to {
-      transform: scaleX(1);
-      opacity: 1;
-    }
-  }
-
-  .animate-hero-slide-progress {
-    animation: hero-slide-progress var(--hero-rotate-duration, 8000ms) linear forwards;
-  }
-
   .frosted-panel {
     background-color: color-mix(in srgb, var(--surface) 96%, transparent);
     border: 1px solid color-mix(in srgb, var(--border) 85%, transparent);
