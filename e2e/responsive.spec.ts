@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test"
 
 const viewports = [
-  { name: "mobile", width: 375, height: 812, logoRatio: 0.65 },
-  { name: "tablet", width: 768, height: 1024, logoRatio: 0.5 },
-  { name: "desktop", width: 1280, height: 900, logoRatio: 0.45 },
+  { name: "mobile", width: 375, height: 812 },
+  { name: "tablet", width: 768, height: 1024 },
+  { name: "desktop", width: 1280, height: 900 },
 ]
 
 const routes = ["/", "/book", "/experiences", "/stay"]
@@ -65,31 +65,34 @@ test.describe("responsive layout coverage", () => {
         })
       }
 
-      test("hero logo stays within viewport", async ({ page }) => {
+      test("hero remains a full-bleed visual within the viewport", async ({ page }) => {
         await page.goto("/")
         await page.waitForLoadState("domcontentloaded")
         await page.evaluate(() => document.fonts.ready)
 
-        const logo = page.getByAltText("Canary Cove logo")
-        await expect(logo).toBeVisible()
-
-        const box = await logo.boundingBox()
+        const hero = page.getByTestId("hero-visual")
+        await expect(hero).toBeVisible()
+        const box = await hero.boundingBox()
         expect(box).not.toBeNull()
         if (!box) return
 
         expect(box.x).toBeGreaterThanOrEqual(0)
         expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
-        expect(box.width).toBeLessThanOrEqual(viewport.width * viewport.logoRatio)
+        expect(box.width).toBeGreaterThanOrEqual(viewport.width - 2)
+
+        if (viewport.name === "mobile") {
+          expect(box.height).toBeGreaterThanOrEqual(viewport.height * 0.75)
+        }
       })
 
-      test("intro section stays readable within gutters", async ({ page }) => {
+      test("homepage intro stays readable within gutters", async ({ page }) => {
         await page.goto("/")
         await page.waitForLoadState("domcontentloaded")
         await page.evaluate(() => document.fonts.ready)
 
-        const copy = page.getByTestId("hero-copy")
-        await expect(copy).toBeVisible()
-        const box = await copy.boundingBox()
+        const intro = page.getByTestId("homepage-intro")
+        await expect(intro).toBeVisible()
+        const box = await intro.boundingBox()
         expect(box).not.toBeNull()
         if (!box) return
 
@@ -98,21 +101,17 @@ test.describe("responsive layout coverage", () => {
         expect(box.width).toBeLessThanOrEqual(viewport.width * 0.94)
       })
 
-      test("hero copy leaves room for the photography", async ({ page }) => {
+      test("hero stays free of homepage copy and actions", async ({ page }) => {
         await page.goto("/")
         await page.waitForLoadState("domcontentloaded")
         await page.evaluate(() => document.fonts.ready)
 
-        const copy = page.getByTestId("hero-copy")
-        await expect(copy).toBeVisible()
-        const box = await copy.boundingBox()
-        expect(box).not.toBeNull()
-        if (!box) return
+        const hero = page.getByTestId("hero-visual")
+        await expect(hero).toBeVisible()
 
-        if (viewport.name === "mobile") {
-          expect(box.width).toBeLessThanOrEqual(viewport.width * 0.82)
-          expect(box.height).toBeLessThanOrEqual(viewport.height * 0.45)
-        }
+        await expect(hero.getByRole("heading")).toHaveCount(0)
+        await expect(hero.getByRole("link")).toHaveCount(0)
+        await expect(hero.getByRole("button")).toHaveCount(0)
       })
     })
   }

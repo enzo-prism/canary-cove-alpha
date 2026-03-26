@@ -30,12 +30,12 @@ test.describe("release gate smoke coverage", () => {
 
     await page.goto("/")
     await waitForPageReady(page)
-    await page.getByTestId("hero-cta").click()
+    await page.getByTestId("homepage-primary-cta").click()
     await expect(page).toHaveURL(/\/book$/)
 
     await page.goto("/")
     await waitForPageReady(page)
-    await page.getByRole("link", { name: "Reviews from guests" }).first().click()
+    await page.getByTestId("homepage-secondary-cta").click()
     await expect(page).toHaveURL(/\/about#guest-testimonials$/)
   })
 

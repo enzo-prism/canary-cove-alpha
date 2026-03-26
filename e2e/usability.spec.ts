@@ -28,13 +28,13 @@ test.describe("usability and responsive resilience", () => {
     await waitForPageReady(page)
 
     await expectTapTarget(page.getByRole("button", { name: "Open navigation menu" }))
-    await expectTapTarget(page.getByTestId("hero-cta"))
+    await expectTapTarget(page.getByTestId("homepage-primary-cta"))
     await expectTapTarget(page.getByTestId("search-open-button"))
   })
 
   test("critical routes stay usable while resizing the viewport", async ({ page }) => {
     const checkpoints = [
-      { route: "/", locator: page.getByTestId("hero-copy") },
+      { route: "/", locator: page.getByTestId("homepage-intro") },
       { route: "/book", locator: page.getByTestId("booking-form-card") },
       { route: "/contact", locator: page.getByTestId("contact-form-card") },
     ]

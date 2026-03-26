@@ -4,7 +4,6 @@ import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } 
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
-import { IMAGES } from "@/lib/images"
 
 type HeroImage = {
   src: string
@@ -16,28 +15,29 @@ type HeroImage = {
 // source width to stay sharp on wide desktop screens and high-density displays.
 const HERO_IMAGES: HeroImage[] = [
   {
-    ...IMAGES.heroVillaSeating,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059680/IMG_1835_w1onmi.webp",
+    alt: "Beach path view of the pink Canary Cove villa and pool terrace",
     objectPosition: "60% center",
   },
   {
-    ...IMAGES.heroBackgroundPool,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp",
+    alt: "Villa pool and deck overlooking the water",
     objectPosition: "54% center",
   },
   {
-    ...IMAGES.heroBackgroundLawn,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059675/canarycove-haydeelustudio-32-scaled_forayc.webp",
+    alt: "Villa living room with airy seating and harbor views",
     objectPosition: "58% center",
   },
   {
-    ...IMAGES.heroBackgroundEstate,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059670/canarycove-haydeelustudio-521-scaled_ohjnr1.webp",
+    alt: "Canary Cove villa view opening toward the water",
     objectPosition: "62% center",
   },
   {
-    ...IMAGES.heroVillaDining,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/IMG_1198_d9bmki.webp",
+    alt: "Canary Cove cocktail in focus with guests relaxing by the pool",
     objectPosition: "56% center",
-  },
-  {
-    ...IMAGES.heroBackgroundBar,
-    objectPosition: "58% center",
   },
 ]
 
@@ -122,7 +122,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
       ))}
       <div
         data-testid="hero-contrast-overlay"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.14)_0%,rgba(7,18,22,0.02)_34%,rgba(7,18,22,0.18)_64%,rgba(7,18,22,0.5)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.06)_0%,rgba(7,18,22,0.01)_40%,rgba(7,18,22,0.05)_72%,rgba(7,18,22,0.18)_100%)]"
       />
       {children ? <div className="relative z-10 h-full">{children}</div> : null}
     </div>

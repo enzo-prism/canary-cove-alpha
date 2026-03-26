@@ -35,12 +35,58 @@ export default function Home() {
       <PageStructuredData path="/" />
       <Header />
       <Hero />
-      <Section padding="tight" className="relative z-10 pt-0">
-        <Container>
+      <Section padding="tight" className="relative z-10 pt-8 sm:pt-10 lg:pt-12">
+        <Container size="wide" className="space-y-10 sm:space-y-12">
+          <div
+            data-testid="homepage-intro"
+            className="flex flex-col gap-6 border-b border-border/70 pb-8 sm:gap-8 sm:pb-10"
+          >
+            <div className="flow flow-sm max-w-3xl">
+              <p className="text-[11px] uppercase tracking-[0.34em] text-muted-foreground">Ambergris Caye, Belize</p>
+              <h1
+                data-testid="homepage-intro-heading"
+                className="max-w-[13ch] text-4xl font-semibold leading-[0.94] tracking-tight text-pretty text-foreground sm:text-5xl sm:leading-[0.98] lg:text-6xl"
+              >
+                Private estate on Ambergris Caye
+              </h1>
+              <p data-testid="homepage-intro-subhead" className="text-body max-w-2xl">
+                One private booking at a time, with chef service and direct reef access.
+              </p>
+            </div>
+
+            <div className="flex flex-col gap-3 sm:flex-row">
+              <Button
+                asChild
+                size="lg"
+                data-testid="homepage-primary-cta"
+                className="h-12 bg-foreground text-background hover:bg-foreground/92"
+              >
+                <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "homepage_intro", target: "/book" }}>
+                  Book your stay
+                </TrackedLink>
+              </Button>
+              <Button
+                asChild
+                size="lg"
+                variant="outline"
+                data-testid="homepage-secondary-cta"
+                className="h-12 w-full sm:w-auto"
+              >
+                <TrackedLink
+                  href="/about#guest-testimonials"
+                  eventName="cta_click"
+                  eventPayload={{ location: "homepage_intro", target: "/about#guest-testimonials" }}
+                >
+                  Reviews from guests
+                </TrackedLink>
+              </Button>
+            </div>
+          </div>
+
           <ModelCarousel models={MODEL_LINEUP} />
         </Container>
       </Section>
-      <Section>
+      <Section padding="tight">
         <Container className="space-y-14">
           {EDITORIAL_SECTIONS.map((section, index) => (
             <EditorialSplit key={section.title} {...section} reverse={index % 2 === 1} />

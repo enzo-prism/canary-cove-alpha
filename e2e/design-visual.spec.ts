@@ -5,22 +5,22 @@ import { hideDevArtifactsForVisuals, waitForPageReady } from "./helpers"
 test.describe("design baselines", () => {
   test.skip(({ browserName }) => browserName !== "chromium", "Visual baselines are maintained on Chromium.")
 
-  test("homepage hero copy stays visually stable on mobile", async ({ page }) => {
+  test("homepage hero visual stays visually stable on mobile", async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await page.goto("/")
     await waitForPageReady(page)
     await hideDevArtifactsForVisuals(page)
 
-    await expect(page.getByTestId("hero-copy")).toHaveScreenshot("home-hero-copy-mobile.png")
+    await expect(page.getByTestId("hero-visual")).toHaveScreenshot("home-hero-visual-mobile.png")
   })
 
-  test("homepage hero copy stays visually stable on desktop", async ({ page }) => {
+  test("homepage hero visual stays visually stable on desktop", async ({ page }) => {
     await page.setViewportSize({ width: 1280, height: 900 })
     await page.goto("/")
     await waitForPageReady(page)
     await hideDevArtifactsForVisuals(page)
 
-    await expect(page.getByTestId("hero-copy")).toHaveScreenshot("home-hero-copy-desktop.png")
+    await expect(page.getByTestId("hero-visual")).toHaveScreenshot("home-hero-visual-desktop.png")
   })
 
   test("model feature card stays visually stable across breakpoints", async ({ page }) => {
