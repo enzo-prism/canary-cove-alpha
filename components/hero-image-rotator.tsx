@@ -75,6 +75,7 @@ type HeroImageRotatorProps = {
 export function HeroImageRotator({ className, children }: HeroImageRotatorProps) {
   const [photos, setPhotos] = useState<HeroImage[]>(HERO_IMAGES)
   const [activeIndex, setActiveIndex] = useState(0)
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
 
   const goNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % photos.length)
@@ -90,12 +91,21 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
   }, [])
 
   useEffect(() => {
-    if (photos.length < 2) return
     const media = window.matchMedia("(prefers-reduced-motion: reduce)")
-    if (media.matches) return
+    const syncPreference = () => setPrefersReducedMotion(media.matches)
+
+    syncPreference()
+    media.addEventListener("change", syncPreference)
+
+    return () => media.removeEventListener("change", syncPreference)
+  }, [])
+
+  useEffect(() => {
+    if (photos.length < 2) return
+    if (prefersReducedMotion) return
     const interval = window.setInterval(goNext, ROTATE_INTERVAL)
     return () => window.clearInterval(interval)
-  }, [goNext, photos.length])
+  }, [goNext, photos.length, prefersReducedMotion])
 
   return (
     <div
@@ -124,6 +134,46 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
         data-testid="hero-contrast-overlay"
         className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.06)_0%,rgba(7,18,22,0.01)_40%,rgba(7,18,22,0.05)_72%,rgba(7,18,22,0.18)_100%)]"
       />
+      {photos.length > 1 ? (
+        <div
+          data-testid="hero-rotate-indicator"
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center sm:bottom-7"
+        >
+          <div className="flex items-center gap-1.5 rounded-full border border-white/18 bg-black/12 px-3 py-2 shadow-[0_18px_50px_rgba(7,18,22,0.18)] backdrop-blur-xl">
+            {photos.map((photo, index) => {
+              const isActive = index === activeIndex
+
+              return (
+                <span
+                  key={photo.src}
+                  className={cn(
+                    "relative h-[2px] w-5 overflow-hidden rounded-full bg-white/16 sm:w-7",
+                    isActive && "bg-white/20",
+                  )}
+                >
+                  {isActive ? (
+                    <span
+                      key={`${photo.src}-${activeIndex}`}
+                      className={cn(
+                        "absolute inset-0 origin-left rounded-full bg-white/82",
+                        prefersReducedMotion ? "scale-x-100 opacity-80" : "animate-hero-slide-progress scale-x-0",
+                      )}
+                      style={
+                        prefersReducedMotion
+                          ? undefined
+                          : ({
+                              "--hero-rotate-duration": `${ROTATE_INTERVAL}ms`,
+                            } as CSSProperties)
+                      }
+                    />
+                  ) : null}
+                </span>
+              )
+            })}
+          </div>
+        </div>
+      ) : null}
       {children ? <div className="relative z-10 h-full">{children}</div> : null}
     </div>
   )

@@ -6,6 +6,7 @@ test("hero stays image-first with only a subtle overlay", async ({ page }) => {
 
   const hero = page.getByTestId("hero-visual")
   await expect(hero).toBeVisible()
+  await expect(page.getByTestId("hero-rotate-indicator")).toBeVisible()
 
   await expect(hero.getByRole("heading")).toHaveCount(0)
   await expect(hero.getByRole("link")).toHaveCount(0)
