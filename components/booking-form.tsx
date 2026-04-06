@@ -36,6 +36,12 @@ export function BookingForm({ className }: BookingFormProps) {
   const [alertOpen, setAlertOpen] = useState(false)
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
   const [validationError, setValidationError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<{
+    confirmEmail?: string
+    departure?: string
+  }>({})
+
+  const today = new Date().toISOString().slice(0, 10)
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
@@ -49,6 +55,9 @@ export function BookingForm({ className }: BookingFormProps) {
     const departure = String(formData.get("departure") ?? "").trim()
 
     if (email !== confirmEmail) {
+      setFieldErrors({
+        confirmEmail: "Please make sure both email fields match before sending your request.",
+      })
       setValidationError("Please make sure both email fields match before sending your request.")
       trackFormSubmitError("booking", "email_mismatch")
       form.querySelector<HTMLInputElement>("#confirmEmail")?.focus()
@@ -56,12 +65,16 @@ export function BookingForm({ className }: BookingFormProps) {
     }
 
     if (arrival && departure && departure < arrival) {
+      setFieldErrors({
+        departure: "Departure date must be after your arrival date.",
+      })
       setValidationError("Departure date must be after your arrival date.")
       trackFormSubmitError("booking", "invalid_date_range")
       form.querySelector<HTMLInputElement>("#departure")?.focus()
       return
     }
 
+    setFieldErrors({})
     setValidationError(null)
     trackFormSubmitAttempt("booking")
     setStatus("sending")
@@ -76,6 +89,8 @@ export function BookingForm({ className }: BookingFormProps) {
 
       if (response.ok) {
         form.reset()
+        setFieldErrors({})
+        setValidationError(null)
         setStatus("success")
         setAlertOpen(true)
         trackFormSubmitSuccess("booking")
@@ -91,12 +106,12 @@ export function BookingForm({ className }: BookingFormProps) {
   }
 
   const fieldClassName =
-    "h-12 rounded-2xl border-border/80 bg-background/85 px-4 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
+    "min-h-12 rounded-[20px] border-border/80 bg-background/85 px-4 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
   const textareaClassName =
-    "rounded-2xl border-border/80 bg-background/85 px-4 py-3 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
+    "min-h-[168px] rounded-[24px] border-border/80 bg-background/85 px-4 py-3 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
   const selectClassName =
-    "h-12 rounded-2xl border-border/80 bg-background/85 px-4 shadow-inner shadow-primary/5 focus:ring-primary/30"
-  const sectionClassName = "surface-inset space-y-4 p-4 sm:p-5"
+    "min-h-12 rounded-[20px] border-border/80 bg-background/85 px-4 shadow-inner shadow-primary/5 focus:ring-primary/30"
+  const sectionClassName = "form-section space-y-4"
 
   const handleAlertChange = (open: boolean) => {
     setAlertOpen(open)
@@ -110,7 +125,7 @@ export function BookingForm({ className }: BookingFormProps) {
       <Card
         data-testid="booking-form-card"
         className={cn(
-          "frosted-panel relative space-y-6 rounded-[32px] p-6 shadow-[0_24px_70px_rgba(15,23,42,0.12)]",
+          "form-shell relative space-y-6 rounded-[32px] p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)] sm:p-6",
           className,
         )}
       >
@@ -124,11 +139,15 @@ export function BookingForm({ className }: BookingFormProps) {
               Request to book {EMOJI.book}
             </Badge>
             <div className="space-y-2">
-              <CardTitle className="text-2xl font-semibold text-foreground">Tell us about your stay.</CardTitle>
-              <CardDescription className="text-sm text-muted-foreground">
+              <CardTitle className="text-2xl font-semibold text-foreground text-balance">Tell us about your stay.</CardTitle>
+              <CardDescription className="text-sm leading-6 text-muted-foreground">
                 Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.{" "}
                 {EMOJI.concierge}
               </CardDescription>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <span className="form-meta">Reply within one business day</span>
+              <span className="form-meta">One group on property</span>
             </div>
           </CardHeader>
 
@@ -142,12 +161,21 @@ export function BookingForm({ className }: BookingFormProps) {
               </AlertDescription>
             </Alert>
 
-            <section className={sectionClassName} aria-labelledby="booking-guest-details">
+            {validationError ? (
+              <Alert className="rounded-[24px] border-destructive/40 bg-destructive/5 text-destructive" data-testid="booking-validation-summary">
+                <AlertTitle>Check a couple of details</AlertTitle>
+                <AlertDescription>{validationError}</AlertDescription>
+              </Alert>
+            ) : null}
+
+            <fieldset className={sectionClassName} aria-labelledby="booking-guest-details">
+              <legend className="sr-only">Guest details</legend>
               <div className="space-y-1">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Guest details</p>
+                <p className="form-kicker">Guest details</p>
                 <h3 id="booking-guest-details" className="text-base font-semibold text-foreground">
                   Who should we coordinate with?
                 </h3>
+                <p className="form-helper">We&apos;ll use one lead contact for the quote, hold, and follow-up.</p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
@@ -212,36 +240,81 @@ export function BookingForm({ className }: BookingFormProps) {
                   name="confirmEmail"
                   type="email"
                   required
-                  autoComplete="email"
+                  autoComplete="off"
                   spellCheck={false}
                   inputMode="email"
                   placeholder="Confirm your email…"
                   className={fieldClassName}
+                  aria-invalid={fieldErrors.confirmEmail ? true : undefined}
+                  aria-describedby="confirmEmail-note confirmEmail-error"
+                  onChange={() => {
+                    if (!fieldErrors.confirmEmail) return
+                    setFieldErrors((current) => ({ ...current, confirmEmail: undefined }))
+                    setValidationError(null)
+                  }}
                 />
-                <p className="text-xs text-muted-foreground">
+                <p id="confirmEmail-note" className="form-helper">
                   We’ll use this address for the quote, availability confirmation, and follow-up.
                 </p>
+                {fieldErrors.confirmEmail ? (
+                  <p id="confirmEmail-error" className="form-error" role="alert" data-testid="booking-validation-error">
+                    {fieldErrors.confirmEmail}
+                  </p>
+                ) : null}
               </div>
-            </section>
+            </fieldset>
 
             <Separator />
 
-            <section className={sectionClassName} aria-labelledby="booking-stay-details">
+            <fieldset className={sectionClassName} aria-labelledby="booking-stay-details">
+              <legend className="sr-only">Stay details</legend>
               <div className="space-y-1">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Stay details</p>
+                <p className="form-kicker">Stay details</p>
                 <h3 id="booking-stay-details" className="text-base font-semibold text-foreground">
                   Tell us when and who is traveling.
                 </h3>
+                <p className="form-helper">If your dates are flexible, share the closest fit and explain the rest in the note below.</p>
               </div>
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
                   <Label htmlFor="arrival">Preferred Arrival Date</Label>
-                  <Input id="arrival" name="arrival" type="date" className={fieldClassName} />
+                  <Input
+                    id="arrival"
+                    name="arrival"
+                    type="date"
+                    min={today}
+                    autoComplete="off"
+                    className={fieldClassName}
+                    onChange={() => {
+                      if (!fieldErrors.departure) return
+                      setFieldErrors((current) => ({ ...current, departure: undefined }))
+                      setValidationError(null)
+                    }}
+                  />
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="departure">Preferred Departure Date</Label>
-                  <Input id="departure" name="departure" type="date" className={fieldClassName} />
+                  <Input
+                    id="departure"
+                    name="departure"
+                    type="date"
+                    min={today}
+                    autoComplete="off"
+                    className={fieldClassName}
+                    aria-invalid={fieldErrors.departure ? true : undefined}
+                    aria-describedby={fieldErrors.departure ? "departure-error" : undefined}
+                    onChange={() => {
+                      if (!fieldErrors.departure) return
+                      setFieldErrors((current) => ({ ...current, departure: undefined }))
+                      setValidationError(null)
+                    }}
+                  />
+                  {fieldErrors.departure ? (
+                    <p id="departure-error" className="form-error" role="alert" data-testid="booking-validation-error">
+                      {fieldErrors.departure}
+                    </p>
+                  ) : null}
                 </div>
               </div>
 
@@ -254,6 +327,7 @@ export function BookingForm({ className }: BookingFormProps) {
                     type="number"
                     min={1}
                     inputMode="numeric"
+                    autoComplete="off"
                     placeholder="4 adults…"
                     className={fieldClassName}
                   />
@@ -269,16 +343,18 @@ export function BookingForm({ className }: BookingFormProps) {
                   />
                 </div>
               </div>
-            </section>
+            </fieldset>
 
             <Separator />
 
-            <section className={sectionClassName} aria-labelledby="booking-trip-notes">
+            <fieldset className={sectionClassName} aria-labelledby="booking-trip-notes">
+              <legend className="sr-only">Trip notes</legend>
               <div className="space-y-1">
-                <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Trip notes</p>
+                <p className="form-kicker">Trip notes</p>
                 <h3 id="booking-trip-notes" className="text-base font-semibold text-foreground">
                   Share the stay you have in mind.
                 </h3>
+                <p className="form-helper">Tell us about the feel of the trip: celebrations, reef days, pace, food, or anything else to plan around.</p>
               </div>
 
               <div className="space-y-2">
@@ -292,6 +368,7 @@ export function BookingForm({ className }: BookingFormProps) {
                   placeholder="Celebrations, preferred pace, reef days, dietary notes, or anything else we should plan around…"
                   className={textareaClassName}
                 />
+                <p className="form-helper">The more context you share here, the more precise the hold and quote will be.</p>
               </div>
 
               <div className="space-y-2">
@@ -309,11 +386,11 @@ export function BookingForm({ className }: BookingFormProps) {
                   </SelectContent>
                 </Select>
               </div>
-            </section>
+            </fieldset>
 
             <Separator />
 
-            <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div className="form-section flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
               <div className="flex w-full flex-col gap-2 sm:w-auto">
                 <Button
                   type="submit"
@@ -325,21 +402,29 @@ export function BookingForm({ className }: BookingFormProps) {
                   {status === "sending" ? "Sending request…" : "Send booking request"}
                   <Send className="h-4 w-4" />
                 </Button>
-                {validationError ? (
-                  <p className="text-xs text-destructive" role="alert" data-testid="booking-validation-error">
-                    {validationError}
-                  </p>
-                ) : null}
                 {status === "error" ? (
-                  <p className="text-xs text-destructive" role="alert" data-testid="booking-error">
+                  <p className="form-error" role="alert" aria-live="polite" data-testid="booking-error">
                     Something went wrong. Please try again or email us directly.
                   </p>
                 ) : null}
               </div>
-              <p className="text-xs text-muted-foreground">
-                We only host one group at a time. Sending this form places a tentative hold while we confirm details.
-              </p>
+              <div className="max-w-md space-y-2">
+                <p className="text-sm font-medium text-foreground">One private group at a time.</p>
+                <p className="form-helper">
+                  Sending this form places a tentative hold while we confirm availability, pricing, and next steps with you directly.
+                </p>
+              </div>
             </div>
+            <div className="flex flex-wrap gap-2 text-left">
+              <span className="form-meta">Chef service included</span>
+              <span className="form-meta">Courtesy hold after review</span>
+              <span className="form-meta">Tailored quote</span>
+            </div>
+            {validationError && !fieldErrors.confirmEmail && !fieldErrors.departure ? (
+              <p className="form-error" role="alert" data-testid="booking-validation-error">
+                {validationError}
+              </p>
+            ) : null}
           </CardContent>
         </form>
       </Card>

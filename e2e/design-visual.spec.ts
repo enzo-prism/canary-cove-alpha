@@ -45,11 +45,26 @@ test.describe("design baselines", () => {
     await hideDevArtifactsForVisuals(page)
     await expect(page.getByTestId("booking-form-card")).toHaveScreenshot("booking-form-mobile.png")
 
+    await page.goto("/contact")
+    await waitForPageReady(page)
+    await hideDevArtifactsForVisuals(page)
+    await expect(page.getByTestId("contact-form-card")).toHaveScreenshot("contact-form-mobile.png")
+
     await page.setViewportSize({ width: 1280, height: 900 })
     await page.goto("/contact")
     await waitForPageReady(page)
     await hideDevArtifactsForVisuals(page)
     await expect(page.getByTestId("contact-form-card")).toHaveScreenshot("contact-form-desktop.png")
+  })
+
+  test("homepage email capture stays visually stable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+    await waitForPageReady(page)
+    await hideDevArtifactsForVisuals(page)
+
+    await page.getByTestId("email-capture-card").scrollIntoViewIfNeeded()
+    await expect(page.getByTestId("email-capture-card")).toHaveScreenshot("email-capture-mobile.png")
   })
 
   test("gallery cards keep their intended composition", async ({ page }) => {

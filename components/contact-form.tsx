@@ -51,70 +51,102 @@ export function ContactForm() {
   }
 
   return (
-    <Card className="rounded-[28px] border border-border/70 bg-surface" data-testid="contact-form-card">
-      <CardContent className="p-6">
+    <Card className="form-shell h-fit rounded-[32px]" data-testid="contact-form-card">
+      <CardContent className="p-6 sm:p-7">
         {status === "success" ? (
           <div className="flow flow-sm" aria-live="polite" data-testid="contact-success">
-            <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Message sent</p>
-            <h2 className="text-section">Thanks for reaching out.</h2>
+            <p className="form-kicker">Message sent</p>
+            <h2 className="text-section text-balance">Thanks for reaching out.</h2>
             <p className="text-body text-foreground/80">
               Your note is in. We respond within one business day with next steps and availability.
             </p>
+            <div className="flex flex-wrap gap-2">
+              <span className="form-meta">Response within one business day</span>
+              <span className="form-meta">Availability help available</span>
+            </div>
             <Button type="button" variant="outline" className="w-fit" onClick={() => setStatus("idle")}>
               Send another message
             </Button>
           </div>
         ) : (
           <form className="flow flow-md" onSubmit={handleSubmit}>
-            <div className="flow flow-xs">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                name="name"
-                required
-                autoComplete="name"
-                placeholder="Alex Martin…"
-                className="h-12 rounded-2xl border-border bg-transparent px-4"
-              />
+            <div className="space-y-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+                <div className="flow flow-sm">
+                  <p className="form-kicker">General inquiries</p>
+                  <h2 className="text-section text-balance">Ask about dates, logistics, or the stay itself.</h2>
+                  <p className="text-body max-w-xl text-foreground/80">
+                    If you already know your travel window, include it below and we&apos;ll point you to the fastest next step.
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <span className="form-meta">Thoughtful replies</span>
+                  <span className="form-meta">No call required</span>
+                </div>
+              </div>
             </div>
-            <div className="flow flow-xs">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                name="email"
-                type="email"
-                required
-                autoComplete="email"
-                spellCheck={false}
-                inputMode="email"
-                placeholder="alex@example.com…"
-                className="h-12 rounded-2xl border-border bg-transparent px-4"
-              />
+
+            <div className="form-section grid gap-4 md:grid-cols-2">
+              <div className="flow flow-xs">
+                <Label htmlFor="name">Name</Label>
+                <Input
+                  id="name"
+                  name="name"
+                  required
+                  autoComplete="name"
+                  placeholder="Alex Martin…"
+                  className="min-h-12 rounded-[20px] border-border/80 bg-background/80 px-4"
+                />
+              </div>
+              <div className="flow flow-xs">
+                <Label htmlFor="email">Email</Label>
+                <Input
+                  id="email"
+                  name="email"
+                  type="email"
+                  required
+                  autoComplete="email"
+                  spellCheck={false}
+                  inputMode="email"
+                  placeholder="alex@example.com…"
+                  className="min-h-12 rounded-[20px] border-border/80 bg-background/80 px-4"
+                />
+              </div>
+              <div className="flow flow-xs md:col-span-2">
+                <Label htmlFor="message">Message</Label>
+                <Textarea
+                  id="message"
+                  name="message"
+                  rows={6}
+                  maxLength={MAX_MESSAGE_LENGTH}
+                  value={message}
+                  onChange={(event) => setMessage(event.target.value)}
+                  autoComplete="off"
+                  placeholder="Tell us about your dates, questions, or plans…"
+                  className="min-h-[180px] rounded-[24px] border-border/80 bg-background/80 px-4 py-3"
+                />
+                <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="form-helper">Helpful context: travel dates, group size, or the pace you have in mind.</p>
+                  <p className="form-helper tabular-nums">
+                    {message.length} of {MAX_MESSAGE_LENGTH} max characters
+                  </p>
+                </div>
+              </div>
             </div>
-            <div className="flow flow-xs">
-              <Label htmlFor="message">Message</Label>
-              <Textarea
-                id="message"
-                name="message"
-                rows={6}
-                maxLength={MAX_MESSAGE_LENGTH}
-                value={message}
-                onChange={(event) => setMessage(event.target.value)}
-                placeholder="Tell us about your dates, questions, or plans…"
-                className="rounded-2xl border-border bg-transparent px-4 py-3"
-              />
-              <p className="text-xs text-muted-foreground">
-                {message.length} of {MAX_MESSAGE_LENGTH} max characters
-              </p>
-            </div>
+
             {status === "error" ? (
-              <p className="text-sm text-destructive" role="alert" data-testid="contact-error">
+              <p className="form-error" role="alert" aria-live="polite" data-testid="contact-error">
                 Something went wrong. Please try again or email us directly.
               </p>
             ) : null}
-            <Button type="submit" size="lg" className="w-full" disabled={status === "sending"} data-testid="contact-submit">
-              {status === "sending" ? "Sending…" : "Send message"}
-            </Button>
+            <div className="flex flex-col gap-3 border-t border-border/60 pt-2 sm:flex-row sm:items-center sm:justify-between">
+              <p className="form-helper max-w-md">
+                We read every note directly. If you&apos;re already ready to book, the booking page will get you to a quote faster.
+              </p>
+              <Button type="submit" size="lg" className="w-full sm:w-auto" disabled={status === "sending"} data-testid="contact-submit">
+                {status === "sending" ? "Sending…" : "Send Message"}
+              </Button>
+            </div>
           </form>
         )}
       </CardContent>

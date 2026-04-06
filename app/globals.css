@@ -207,6 +207,33 @@
     box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
   }
 
+  .form-shell {
+    @apply rounded-[32px] border border-border/70 bg-surface/95;
+    box-shadow: var(--shadow-soft);
+    background-image: linear-gradient(180deg, rgba(255, 255, 255, 0.84) 0%, rgba(250, 246, 238, 0.94) 100%);
+  }
+
+  .form-section {
+    @apply rounded-[26px] border border-border/60 bg-surface-elevated/82 p-4 sm:p-5;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+  }
+
+  .form-kicker {
+    @apply text-[10px] font-semibold uppercase tracking-[0.32em] text-muted-foreground;
+  }
+
+  .form-meta {
+    @apply inline-flex items-center rounded-full border border-border/70 bg-white/80 px-3 py-1 text-[11px] font-medium uppercase tracking-[0.2em] text-foreground/72;
+  }
+
+  .form-helper {
+    @apply text-xs leading-5 text-muted-foreground;
+  }
+
+  .form-error {
+    @apply text-xs leading-5 text-destructive;
+  }
+
   .text-display {
     @apply text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl;
     line-height: 1.04;

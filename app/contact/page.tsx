@@ -21,7 +21,7 @@ export default function Page() {
             <p className="text-lg text-muted-foreground sm:text-xl">Reach out and we’ll respond within one business day.</p>
           </div>
 
-          <div className="grid gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="grid items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
             <ContactForm />
             <ContactDetails />
           </div>

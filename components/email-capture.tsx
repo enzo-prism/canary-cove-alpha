@@ -48,21 +48,27 @@ export function EmailCapture() {
   }
 
   return (
-    <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
-      <div className="flow flow-sm">
-        <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Updates</p>
-        <h2 className="text-section">Be first to hear about open dates.</h2>
-        <p className="text-body text-foreground/80">
-          A single email when new availability or seasonal offers open up.
-        </p>
+    <div className="form-shell px-6 py-6 sm:px-8 sm:py-8" data-testid="email-capture-card">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+        <div className="flow flow-sm">
+          <p className="form-kicker">Updates</p>
+          <h2 className="text-section text-balance">Be first to hear about open dates.</h2>
+          <p className="text-body max-w-xl text-foreground/80">
+            A single email when availability shifts, seasonal offers open up, or a better-fit date window appears.
+          </p>
+        </div>
+        <div className="flex flex-wrap gap-2">
+          <span className="form-meta">Low-volume</span>
+          <span className="form-meta">Availability only</span>
+        </div>
       </div>
       <form
-        className="surface-inset mt-6 flex flex-col gap-4 p-4 sm:flex-row sm:items-end"
+        className="form-section mt-6 flex flex-col gap-4 sm:flex-row sm:items-end"
         onSubmit={handleSubmit}
         data-testid="email-capture-form"
       >
         <div className="flex-1">
-          <Label htmlFor="updates-email" className="sr-only">
+          <Label htmlFor="updates-email" className="text-sm font-medium text-foreground">
             Email address
           </Label>
           <Input
@@ -76,14 +82,18 @@ export function EmailCapture() {
             spellCheck={false}
             inputMode="email"
             placeholder="Email address…"
-            className="h-11 flex-1 rounded-full border-border bg-background/70 px-4 text-sm"
+            aria-describedby="updates-email-note email-capture-status"
+            className="mt-2 min-h-12 flex-1 rounded-[20px] border-border/80 bg-background/80 px-4"
             data-testid="email-capture-input"
           />
+          <p id="updates-email-note" className="form-helper mt-2">
+            We only email when there is something worth acting on.
+          </p>
         </div>
         <Button
           type="submit"
           size="lg"
-          className="h-11 px-6"
+          className="min-h-12 px-6 sm:self-end"
           disabled={status === "sending"}
           data-testid="email-capture-submit"
         >
