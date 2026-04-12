@@ -74,6 +74,15 @@ test.describe("release gate smoke coverage", () => {
     await expect(page).toHaveURL(/\/terms$/)
   })
 
+  test("sitewide guest concierge widget renders from the shared layout", async ({ page }) => {
+    for (const route of ["/", "/book"]) {
+      await page.goto(route)
+      await waitForPageReady(page)
+
+      await expect(page.getByTestId("elevenlabs-convai-widget")).toBeVisible()
+    }
+  })
+
   test("all public routes return a successful status", async ({ request, baseURL }) => {
     for (const route of SITE_ROUTES) {
       const response = await request.get(`${baseURL}${route}`)

@@ -16,6 +16,7 @@ This document defines the production-readiness bar for the public marketing site
 - Every public route returns `2xx` and renders a visible `h1`.
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
 - The Bookingmood availability embed is present on `/book`.
+- The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the homepage and gives guests a useful fallback state when a query has no results.
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.

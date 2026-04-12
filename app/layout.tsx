@@ -2,6 +2,7 @@ import type { ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import "./globals.css"
+import { ElevenLabsConvaiWidget } from "@/components/elevenlabs-convai-widget"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
 import { SiteStructuredData } from "@/components/structured-data"
@@ -112,6 +113,7 @@ export default function RootLayout({
         </a>
         <ScrollReset />
         <div className="min-h-screen">{children}</div>
+        <ElevenLabsConvaiWidget />
         <VercelAnalytics />
       </body>
     </html>
