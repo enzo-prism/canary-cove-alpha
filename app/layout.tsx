@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import "./globals.css"
 import { ElevenLabsConvaiWidget } from "@/components/elevenlabs-convai-widget"
+import { GoogleAnalyticsPageviews } from "@/components/google-analytics-pageviews"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { ScrollReset } from "@/components/scroll-reset"
 import { SiteStructuredData } from "@/components/structured-data"
@@ -112,6 +113,7 @@ export default function RootLayout({
           Skip to content
         </a>
         <ScrollReset />
+        <GoogleAnalyticsPageviews />
         <div className="min-h-screen">{children}</div>
         <ElevenLabsConvaiWidget />
         <VercelAnalytics />

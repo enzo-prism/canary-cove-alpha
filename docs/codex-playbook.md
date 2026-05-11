@@ -107,6 +107,7 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/booking-policies.tsx`: payment/cancellation/policies content.
 - `components/contact-form.tsx`: contact form.
 - `components/email-capture.tsx`: homepage email capture.
+- `app/api/forms/route.ts`: first-party form proxy. It validates `booking`, `contact`, or `email_capture`, appends ops metadata, forwards to Formspree, and records the Vercel `lead_submit` conversion only after Formspree accepts the lead.
 
 ### Route-specific marketing modules
 
@@ -224,9 +225,8 @@ Check these files together:
 
 ### Forms
 
-- Contact form endpoint: `https://formspree.io/f/xvzarybk`
-- Homepage email capture endpoint: `https://formspree.io/f/xvzarybk`
-- Booking request endpoint: `https://formspree.io/f/xqeqllek`
+- Contact and email-capture forms submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xvzarybk`.
+- Booking requests submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xqeqllek`.
 
 All public forms are expected to expose:
 
@@ -247,7 +247,9 @@ When editing the booking page, preserve the embed presence and responsive behavi
 - `next/image` is intentionally left in `unoptimized` mode in `next.config.mjs`.
 - Vercel Analytics is enabled.
 - Google Analytics 4 is loaded globally through `GoogleAnalyticsScripts`.
-- `trackEvent(...)` in `lib/analytics.ts` fans out to both Vercel Analytics and GA when available.
+- `GoogleAnalyticsPageviews` sends manual GA4 `page_view` events because the global GA config uses `send_page_view: false`.
+- `trackEvent(...)` in `lib/analytics.ts` fans out ordinary funnel events to both Vercel Analytics and GA when available.
+- Successful lead forms are conversion-tracked as GA4 `generate_lead` on the client and Vercel `lead_submit` from `/api/forms` after Formspree accepts the submission.
 - `components/vercel-analytics.tsx` passes `beforeSend` to Vercel Analytics so pageview/custom-event URLs do not keep query strings or hashes.
 - Keep Vercel custom-event payloads flat and conservative. The site intentionally uses at most two properties per event to stay aligned with Vercel Pro limits.
 - Do not send free-form search text, message bodies, names, email addresses, phone numbers, or booking details to Vercel Analytics.
@@ -263,6 +265,9 @@ Current custom-event taxonomy:
 - `form_submit_attempt`: form submit started (`form`)
 - `form_submit_success`: form submit succeeded (`form`)
 - `form_submit_error`: form failed client or network validation (`form`, `reason`)
+- `lead_intent`: non-conversion book/contact intent (`intent`, `surface`)
+- `lead_submit`: Vercel conversion event after Formspree accepts a lead (`form`, `surface`)
+- GA4 `generate_lead`: GA conversion/key-event candidate after a successful lead form (`form_name`, `lead_source`)
 - `social_click`: outbound social click (`network`, `surface`)
 
 ## Search architecture

@@ -38,7 +38,9 @@ export const installErrorCollectors = (page: Page) => {
     if (text.includes("Download the React DevTools")) return
     if (location.includes("https://va.vercel-scripts.com/v1/script.debug.js")) return
     if (location.includes("https://www.googletagmanager.com/gtag/js")) return
+    if (location.includes("https://www.google-analytics.com/g/collect")) return
     if (text.includes("https://www.googletagmanager.com/gtag/js")) return
+    if (text.includes("https://www.google-analytics.com/g/collect")) return
     consoleErrors.push(text)
   })
 
@@ -53,6 +55,7 @@ export const installErrorCollectors = (page: Page) => {
     if (resourceType === "media") return
     if (url.includes("https://va.vercel-scripts.com/v1/script.debug.js")) return
     if (url.includes("https://www.googletagmanager.com/gtag/js")) return
+    if (url.includes("https://www.google-analytics.com/g/collect")) return
     if (failureText === "cancelled" && url.includes("res.cloudinary.com") && url.endsWith(".mp4")) return
     failedRequests.push(`${resourceType}: ${url} -> ${failureText}`)
   })

@@ -2,12 +2,15 @@
 
 import { useState, type FormEvent } from "react"
 
-import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
+import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
+import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
-const FORM_ENDPOINT = "https://formspree.io/f/xvzarybk"
+const FORM_ENDPOINT = "/api/forms"
+const FORM_KEY = "email_capture"
 
 export function EmailCapture() {
   const [email, setEmail] = useState("")
@@ -17,11 +20,12 @@ export function EmailCapture() {
     event.preventDefault()
     if (status === "sending") return
 
-    trackFormSubmitAttempt("email_capture")
+    trackFormSubmitAttempt(FORM_KEY)
     setStatus("sending")
     const formData = new FormData()
     formData.append("email", email)
     formData.append("source", "Homepage updates signup")
+    appendFormspreeOpsMetadata(formData, FORM_KEY)
 
     try {
       const response = await fetch(FORM_ENDPOINT, {
@@ -35,15 +39,16 @@ export function EmailCapture() {
       if (response.ok) {
         setEmail("")
         setStatus("success")
-        trackFormSubmitSuccess("email_capture")
+        trackFormSubmitSuccess(FORM_KEY)
+        trackLeadConversion(FORM_KEY, LEAD_FORM_CONFIG[FORM_KEY].surface, { sendVercel: false })
         return
       }
 
       setStatus("error")
-      trackFormSubmitError("email_capture", "response")
+      trackFormSubmitError(FORM_KEY, "response")
     } catch {
       setStatus("error")
-      trackFormSubmitError("email_capture", "network")
+      trackFormSubmitError(FORM_KEY, "network")
     }
   }
 

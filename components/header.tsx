@@ -44,8 +44,15 @@ export function Header() {
 
   useEffect(() => {
     document.body.style.overflow = mobileOpen ? "hidden" : ""
+    if (mobileOpen) {
+      document.body.dataset.mobileNavOpen = "true"
+    } else {
+      delete document.body.dataset.mobileNavOpen
+    }
+
     return () => {
       document.body.style.overflow = ""
+      delete document.body.dataset.mobileNavOpen
     }
   }, [mobileOpen])
 

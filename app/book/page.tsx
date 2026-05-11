@@ -1,3 +1,4 @@
+import { AvailabilityCalendarIntentTracker } from "@/components/analytics/availability-calendar-intent-tracker"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { BookingForm } from "@/components/booking-form"
@@ -58,8 +59,9 @@ export default function Page() {
 
               <Card
                 id="availability-calendar"
-                className="surface-panel scroll-mt-24 overflow-hidden"
+                className="surface-panel relative scroll-mt-24 overflow-hidden"
               >
+                <AvailabilityCalendarIntentTracker />
                 <CardHeader className="px-4 pb-3 pt-4">
                   <Badge
                     variant="outline"

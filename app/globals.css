@@ -3,6 +3,10 @@
 
 @custom-variant dark (&:is(.dark *));
 
+body[data-mobile-nav-open="true"] elevenlabs-convai {
+  display: none !important;
+}
+
 :root {
   --background: oklch(0.985 0.008 95);
   --foreground: oklch(0.22 0.01 95);

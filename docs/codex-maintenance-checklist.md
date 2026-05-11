@@ -146,19 +146,24 @@ Analytics is dual-wired.
 When changing analytics behavior, review:
 
 - `app/layout.tsx`
+- `app/api/forms/route.ts`
 - `components/google-analytics-scripts.tsx`
+- `components/google-analytics-pageviews.tsx`
 - `components/vercel-analytics.tsx`
 - `components/analytics/tracked-link.tsx`
 - `lib/google-analytics.ts`
 - `lib/analytics.ts`
 - `lib/vercel-analytics.ts`
+- `lib/lead-forms.ts`
 - `app/privacy/page.tsx`
 
 Current behavior:
 
 - Google Analytics 4 is loaded globally
+- GA4 pageviews are sent manually by `GoogleAnalyticsPageviews` because the tag config disables automatic pageviews
 - Vercel Analytics is also enabled
-- `trackEvent(...)` sends to both when available
+- `trackEvent(...)` sends ordinary funnel events to both when available
+- Successful form conversions are split deliberately: GA4 receives client-side `generate_lead`; Vercel receives server-side `lead_submit` only after Formspree accepts the form
 - `components/vercel-analytics.tsx` strips query strings and hashes before Vercel sends pageviews or custom events
 - Vercel payloads are intentionally flat and limited to small, low-cardinality properties
 - Never send free-form search queries, form content, or contact details to Vercel custom events

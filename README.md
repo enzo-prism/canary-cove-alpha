@@ -64,6 +64,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
 - `components/booking-form.tsx`: Booking request form with client-side validation.
+- `app/api/forms/route.ts`: First-party form proxy that forwards accepted lead forms to Formspree and records server-side Vercel lead conversions.
 - `components/ui/carousel.tsx`: Shared Embla wrapper used across galleries and sliders.
 - `lib/search/search-index.ts`: Handwritten search inventory and instant-answer content.
 - `lib/analytics.ts` + `lib/google-analytics.ts`: Shared analytics/event layer.
@@ -78,12 +79,13 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Integration notes
 
-- Forms post to Formspree.
+- Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
 - `/book` embeds Bookingmood for live availability.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
 - Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
+- GA4 pageviews are manually emitted because automatic pageviews are disabled in the global tag config.
 - Custom-event payloads are intentionally small and should never include free-form search text or submitted form content.
-- Current Vercel/GA custom-event taxonomy includes `cta_click`, `nav_click`, `nav_menu_open`, `form_submit_attempt`, `form_submit_success`, `form_submit_error`, `search_open`, `search_refine`, `search_result_click`, `review_archive_filter`, `review_note_open`, `section_jump`, `social_click`, and `outbound_click`.
+- Current Vercel/GA custom-event taxonomy includes `cta_click`, `nav_click`, `nav_menu_open`, `form_submit_attempt`, `form_submit_success`, `form_submit_error`, `lead_intent`, `lead_submit`, GA4 `generate_lead`, `search_open`, `search_refine`, `search_result_click`, `review_archive_filter`, `review_note_open`, `section_jump`, `social_click`, and `outbound_click`.
 - Search is manual and curated, not generated automatically from routes.
 
 ## Styling notes

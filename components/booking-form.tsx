@@ -4,7 +4,9 @@ import { useState, type FormEvent } from "react"
 
 import { CalendarRange, Send } from "lucide-react"
 
-import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
+import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
+import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
 import { EMOJI } from "@/lib/emoji"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -26,7 +28,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
 
-const FORM_ENDPOINT = "https://formspree.io/f/xqeqllek"
+const FORM_ENDPOINT = "/api/forms"
+const FORM_KEY = "booking"
 
 type BookingFormProps = {
   className?: string
@@ -49,6 +52,7 @@ export function BookingForm({ className }: BookingFormProps) {
 
     const form = event.currentTarget
     const formData = new FormData(form)
+    appendFormspreeOpsMetadata(formData, FORM_KEY)
     const email = String(formData.get("email") ?? "").trim()
     const confirmEmail = String(formData.get("confirmEmail") ?? "").trim()
     const arrival = String(formData.get("arrival") ?? "").trim()
@@ -59,7 +63,7 @@ export function BookingForm({ className }: BookingFormProps) {
         confirmEmail: "Please make sure both email fields match before sending your request.",
       })
       setValidationError("Please make sure both email fields match before sending your request.")
-      trackFormSubmitError("booking", "email_mismatch")
+      trackFormSubmitError(FORM_KEY, "email_mismatch")
       form.querySelector<HTMLInputElement>("#confirmEmail")?.focus()
       return
     }
@@ -69,14 +73,14 @@ export function BookingForm({ className }: BookingFormProps) {
         departure: "Departure date must be after your arrival date.",
       })
       setValidationError("Departure date must be after your arrival date.")
-      trackFormSubmitError("booking", "invalid_date_range")
+      trackFormSubmitError(FORM_KEY, "invalid_date_range")
       form.querySelector<HTMLInputElement>("#departure")?.focus()
       return
     }
 
     setFieldErrors({})
     setValidationError(null)
-    trackFormSubmitAttempt("booking")
+    trackFormSubmitAttempt(FORM_KEY)
     setStatus("sending")
     try {
       const response = await fetch(FORM_ENDPOINT, {
@@ -93,15 +97,16 @@ export function BookingForm({ className }: BookingFormProps) {
         setValidationError(null)
         setStatus("success")
         setAlertOpen(true)
-        trackFormSubmitSuccess("booking")
+        trackFormSubmitSuccess(FORM_KEY)
+        trackLeadConversion(FORM_KEY, LEAD_FORM_CONFIG[FORM_KEY].surface, { sendVercel: false })
         return
       }
 
       setStatus("error")
-      trackFormSubmitError("booking", "response")
+      trackFormSubmitError(FORM_KEY, "response")
     } catch (error) {
       setStatus("error")
-      trackFormSubmitError("booking", "network")
+      trackFormSubmitError(FORM_KEY, "network")
     }
   }
 

@@ -2,14 +2,17 @@
 
 import { useState, type FormEvent } from "react"
 
-import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess } from "@/lib/analytics"
+import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
+import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
+import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 
-const FORM_ENDPOINT = "https://formspree.io/f/xvzarybk"
+const FORM_ENDPOINT = "/api/forms"
+const FORM_KEY = "contact"
 const MAX_MESSAGE_LENGTH = 3000
 
 export function ContactForm() {
@@ -24,6 +27,7 @@ export function ContactForm() {
     setStatus("sending")
     const form = event.currentTarget
     const formData = new FormData(form)
+    appendFormspreeOpsMetadata(formData, FORM_KEY)
 
     try {
       const response = await fetch(FORM_ENDPOINT, {
@@ -38,15 +42,16 @@ export function ContactForm() {
         form.reset()
         setMessage("")
         setStatus("success")
-        trackFormSubmitSuccess("contact")
+        trackFormSubmitSuccess(FORM_KEY)
+        trackLeadConversion(FORM_KEY, LEAD_FORM_CONFIG[FORM_KEY].surface, { sendVercel: false })
         return
       }
 
       setStatus("error")
-      trackFormSubmitError("contact", "response")
+      trackFormSubmitError(FORM_KEY, "response")
     } catch (error) {
       setStatus("error")
-      trackFormSubmitError("contact", "network")
+      trackFormSubmitError(FORM_KEY, "network")
     }
   }
 
