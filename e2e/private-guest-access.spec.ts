@@ -120,6 +120,15 @@ test.describe("private guest area", () => {
     await page.evaluate(() => window.history.pushState({}, "", "/guest"))
     await expect.poll(() => new URL(page.url()).pathname).toBe("/guest")
 
+    const blockedAnalyticsStatus = await page.evaluate(async () => {
+      try {
+        return (await window.fetch("https://www.google-analytics.com/g/collect?privacy-probe=1")).status
+      } catch {
+        return -1
+      }
+    })
+    expect(blockedAnalyticsStatus).toBe(204)
+
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0)
     await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(0)
     await expect(page.locator('script[src*="/_vercel/insights"]')).toHaveCount(0)
