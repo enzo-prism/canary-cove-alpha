@@ -10,19 +10,14 @@ import {
 } from "@/lib/guest-access-config"
 import { verifyGuestPassword } from "@/lib/guest-password"
 import { createAccessToken } from "@/lib/private-access"
+import { isSameOriginRequest } from "@/lib/same-origin"
 
 const safeNext = (value: FormDataEntryValue | null) => {
   const candidate = typeof value === "string" ? value : "/guest"
   return candidate.startsWith("/guest") && !candidate.startsWith("//") ? candidate : "/guest"
 }
 
-const isSameOrigin = async () => {
-  const requestHeaders = await headers()
-  const origin = requestHeaders.get("origin")
-  const host = requestHeaders.get("x-forwarded-host") ?? requestHeaders.get("host")
-  const protocol = (requestHeaders.get("x-forwarded-proto") ?? "https").split(",")[0].trim()
-  return Boolean(origin && host && origin === `${protocol}://${host}`)
-}
+const isSameOrigin = async () => isSameOriginRequest(await headers())
 
 export const loginGuest = async (formData: FormData) => {
   const next = safeNext(formData.get("next"))
