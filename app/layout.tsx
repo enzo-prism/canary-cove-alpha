@@ -2,12 +2,9 @@ import type { ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
 import "./globals.css"
-import { ElevenLabsConvaiWidget } from "@/components/elevenlabs-convai-widget"
-import { GoogleAnalyticsPageviews } from "@/components/google-analytics-pageviews"
-import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
+import PublicRuntimeServices from "@/components/public-runtime-services"
 import { ScrollReset } from "@/components/scroll-reset"
 import { SiteStructuredData } from "@/components/structured-data"
-import { VercelAnalytics } from "@/components/vercel-analytics"
 import { IMAGES } from "@/lib/images"
 import { HOME_SEO } from "@/lib/seo"
 import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "@/lib/site-config"
@@ -100,7 +97,6 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${sfPro.variable} overflow-x-hidden`}>
       <head>
-        <GoogleAnalyticsScripts />
         <SiteStructuredData />
       </head>
       <body
@@ -113,10 +109,8 @@ export default function RootLayout({
           Skip to content
         </a>
         <ScrollReset />
-        <GoogleAnalyticsPageviews />
         <div className="min-h-screen">{children}</div>
-        <ElevenLabsConvaiWidget />
-        <VercelAnalytics />
+        <PublicRuntimeServices />
       </body>
     </html>
   )

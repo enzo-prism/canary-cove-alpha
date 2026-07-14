@@ -18,6 +18,21 @@ const nextConfig = {
     // Fix Turbopack root detection when multiple lockfiles exist in parent dirs
     root: __dirname,
   },
+  async headers() {
+    return [
+      {
+        source: "/guest/:path*",
+        headers: [
+          { key: "Cache-Control", value: "private, no-store, max-age=0, must-revalidate" },
+          { key: "Pragma", value: "no-cache" },
+          { key: "X-Robots-Tag", value: "noindex, nofollow, noarchive, nosnippet, noimageindex" },
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "no-referrer" },
+          { key: "Content-Security-Policy", value: "frame-ancestors 'none'; base-uri 'self'; form-action 'self'" },
+        ],
+      },
+    ]
+  },
   async redirects() {
     return [
       { source: "/about/photo-gallery", destination: "/stay", permanent: true },
