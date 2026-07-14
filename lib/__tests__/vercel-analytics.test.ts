@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { sanitizeAnalyticsUrl, sanitizeVercelAnalyticsPayload } from "@/lib/vercel-analytics"
+import {
+  sanitizeAnalyticsUrl,
+  sanitizeVercelAnalyticsEvent,
+  sanitizeVercelAnalyticsPayload,
+} from "@/lib/vercel-analytics"
 
 describe("sanitizeAnalyticsUrl", () => {
   it("removes query strings and hashes from absolute urls", () => {
@@ -15,6 +19,29 @@ describe("sanitizeAnalyticsUrl", () => {
 
   it("returns clean urls unchanged", () => {
     expect(sanitizeAnalyticsUrl("/stay")).toBe("/stay")
+  })
+})
+
+describe("sanitizeVercelAnalyticsEvent", () => {
+  it("drops private guest paths instead of sending them to analytics", () => {
+    expect(
+      sanitizeVercelAnalyticsEvent({
+        type: "pageview",
+        url: "https://www.canarycove.com/guest?next=%2Fguest",
+      }),
+    ).toBeNull()
+  })
+
+  it("keeps public pageviews while stripping query strings and hashes", () => {
+    expect(
+      sanitizeVercelAnalyticsEvent({
+        type: "pageview",
+        url: "https://www.canarycove.com/book?utm_source=google#form",
+      }),
+    ).toEqual({
+      type: "pageview",
+      url: "https://www.canarycove.com/book",
+    })
   })
 })
 

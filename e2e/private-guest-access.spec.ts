@@ -90,6 +90,38 @@ test.describe("private guest area", () => {
     await expect(page.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toHaveCount(0)
   })
 
+  test("removes public tracker runtimes when browser history enters the private namespace", async ({ page }) => {
+    const privateNavigationRequests: string[] = []
+    let privateNavigationStarted = false
+
+    page.on("request", (request) => {
+      if (!privateNavigationStarted) return
+      const url = request.url()
+      if (
+        url.includes("googletagmanager.com") ||
+        url.includes("google-analytics.com") ||
+        url.includes("/_vercel/insights") ||
+        url.includes("elevenlabs")
+      ) {
+        privateNavigationRequests.push(url)
+      }
+    })
+
+    await page.goto("/", { waitUntil: "domcontentloaded" })
+    await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(1)
+    await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(1)
+
+    privateNavigationStarted = true
+    await page.evaluate(() => window.history.pushState({}, "", "/guest"))
+    await expect.poll(() => new URL(page.url()).pathname).toBe("/guest")
+
+    await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0)
+    await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(0)
+    await expect(page.locator('script[src*="/_vercel/insights"]')).toHaveCount(0)
+    await page.waitForTimeout(1_000)
+    expect(privateNavigationRequests).toEqual([])
+  })
+
   test("keeps the private guest area out of public discovery files", async ({ request, baseURL }) => {
     const robots = await (await request.get(`${baseURL}/robots.txt`)).text()
     expect(robots).toContain("Disallow: /guest")
