@@ -18,7 +18,20 @@ test.describe("private guest area", () => {
     await expect(page.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toHaveCount(0)
   })
 
-  test("rejects a wrong password and grants a scoped session for the correct password", async ({ page, context }) => {
+  test("rejects a wrong password, isolates trackers, and grants a scoped session", async ({ page, context }) => {
+    const thirdPartyRequests: string[] = []
+    page.on("request", (request) => {
+      const hostname = new URL(request.url()).hostname
+      if (
+        hostname.includes("google-analytics.com") ||
+        hostname.includes("googletagmanager.com") ||
+        hostname.includes("elevenlabs") ||
+        hostname.includes("vercel-insights.com")
+      ) {
+        thirdPartyRequests.push(request.url())
+      }
+    })
+
     await page.goto("/guest/access?next=%2Fguest")
     await page.getByLabel("Access password").fill("wrong-password")
     await page.getByRole("button", { name: "Open guest guide" }).click()
@@ -32,6 +45,8 @@ test.describe("private guest area", () => {
     await expect(page.getByText("Don's guest details will appear here after the final sketch is approved.")).toBeVisible()
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0)
     await expect(page.getByTestId("elevenlabs-convai-widget")).toHaveCount(0)
+    await page.waitForLoadState("networkidle")
+    expect(thirdPartyRequests).toEqual([])
 
     const accessCookie = (await context.cookies()).find((cookie) => cookie.name === "__Host-canary_guest_session")
     expect(accessCookie?.httpOnly).toBe(true)
@@ -41,6 +56,24 @@ test.describe("private guest area", () => {
 
     await page.getByRole("button", { name: "Sign out" }).click()
     await expect(page).toHaveURL(/\/guest\/access/)
+  })
+
+  test("does not bleed authenticated guest content into an anonymous client", async ({ browser, baseURL }) => {
+    const authenticatedContext = await browser.newContext({ baseURL })
+    const authenticatedPage = await authenticatedContext.newPage()
+    await authenticatedPage.goto("/guest/access?next=%2Fguest")
+    await authenticatedPage.getByLabel("Access password").fill("test-guest-password")
+    await authenticatedPage.getByRole("button", { name: "Open guest guide" }).click()
+    await expect(authenticatedPage.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toBeVisible()
+
+    const anonymousContext = await browser.newContext({ baseURL })
+    const anonymousPage = await anonymousContext.newPage()
+    await anonymousPage.goto("/guest")
+    await expect(anonymousPage).toHaveURL(/\/guest\/access/)
+    await expect(anonymousPage.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toHaveCount(0)
+
+    await authenticatedContext.close()
+    await anonymousContext.close()
   })
 
   test("rejects a tampered session cookie", async ({ page, context }) => {
