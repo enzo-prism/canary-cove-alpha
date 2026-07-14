@@ -35,9 +35,13 @@ export function sanitizeVercelAnalyticsPayload(payload?: Record<string, unknown>
   return entries.length > 0 ? Object.fromEntries(entries) : undefined
 }
 
-export function sanitizeVercelAnalyticsEvent(event: BeforeSendEvent): BeforeSendEvent {
+export function sanitizeVercelAnalyticsEvent(event: BeforeSendEvent): BeforeSendEvent | null {
+  const sanitizedUrl = sanitizeAnalyticsUrl(event.url)
+  const pathname = new URL(sanitizedUrl, "https://www.canarycove.com").pathname
+  if (pathname === "/guest" || pathname.startsWith("/guest/")) return null
+
   return {
     ...event,
-    url: sanitizeAnalyticsUrl(event.url),
+    url: sanitizedUrl,
   }
 }
