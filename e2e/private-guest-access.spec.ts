@@ -111,6 +111,11 @@ test.describe("private guest area", () => {
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(1)
     await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(1)
 
+    await page.evaluate(() => window.dispatchEvent(new Event("beforeunload")))
+    await expect
+      .poll(() => page.evaluate(() => Boolean((window as unknown as Record<string, unknown>)["ga-disable-G-JD6CV2CFYS"])))
+      .toBe(true)
+
     privateNavigationStarted = true
     await page.evaluate(() => window.history.pushState({}, "", "/guest"))
     await expect.poll(() => new URL(page.url()).pathname).toBe("/guest")
