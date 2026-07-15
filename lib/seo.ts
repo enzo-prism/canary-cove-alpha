@@ -101,7 +101,7 @@ export const PAGE_METADATA = {
   adventures: createPageMetadata({
     title: "Belize Adventures: Diving, Fishing & Sandbars | Canary Cove",
     description:
-      "Plan reef dives, fishing charters, tubing, and sandbar days from your private dock with local crews arranged by Canary Cove.",
+      "Watch real manta ray and lionfish dive footage, then plan reef dives, fishing charters, tubing, and sandbar days from Canary Cove's private dock.",
     path: "/adventures",
     image: IMAGES.scubaPhoto.src,
     imageAlt: IMAGES.scubaPhoto.alt,

@@ -49,6 +49,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/specs-accordion.tsx`: Tech/spec sections.
 - `components/testimonial-slider.tsx`: Testimonial slider.
 - `components/email-capture.tsx`: Email capture block.
+- `components/reef-encounters.tsx`: Responsive native-video gallery on `/adventures`.
 - `components/layout/container.tsx` + `components/layout/section.tsx`: Layout primitives for gutters + vertical rhythm.
 - `components/navigation/desktop-nav.tsx`: Desktop nav UI and dropdown structure.
 - `components/navigation/mobile-nav.tsx`: Mobile nav UI.
@@ -57,6 +58,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/site-search.tsx`: Search module on the homepage.
 - `lib/homepage-content.ts`: Homepage data for models, editorial blocks, steps, specs, testimonials.
 - `lib/testimonial-spotlights.ts`: Testimonial copy.
+- `lib/videos.ts`: Reef-film titles, descriptions, durations, source paths, and poster registry.
 - `lib/site-config.ts`: Canonical domain, public route metadata, business identity constants, and llms content.
 - `lib/seo.ts`: Page-level metadata source of truth for public routes.
 - `lib/structured-data.ts` and `components/structured-data.tsx`: Sitewide organization/lodging schema and per-page breadcrumb/page JSON-LD.
@@ -73,9 +75,10 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Media notes
 
-- Image URLs live in `lib/images.ts` and use Cloudinary. Add new hosts to `next.config.mjs`.
+- Cloudinary remains the source for remote imagery and the homepage film. Add new image hosts to `next.config.mjs`.
 - Hero and testimonial images should be high resolution; update the arrays, not the JSX.
-- The homepage film is an inline video in `app/page.tsx`.
+- Optimized Adventures films and posters live in `public/videos/reef-encounters/`; their public metadata lives in `lib/videos.ts`.
+- Reef films use native controls and `playsInline` without autoplay or looping; only the featured film preloads metadata, while supporting films wait for interaction.
 
 ## Integration notes
 
@@ -95,7 +98,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Testing notes
 
-- `e2e/release-gate.spec.ts` covers public route health, CTA routing, search, footer links, and the booking embed.
+- `e2e/release-gate.spec.ts` covers public route health, CTA routing, footer links, the booking embed, and responsive reef-film behavior.
 - `e2e/forms.spec.ts` covers form validation plus success/error states.
 - `e2e/search.spec.ts` covers search answers, grouped results, and fallback behavior.
 - `e2e/usability.spec.ts` covers overflow, tap targets, resize behavior, and carousel resilience.

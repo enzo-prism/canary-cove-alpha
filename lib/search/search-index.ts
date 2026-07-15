@@ -271,6 +271,16 @@ export const SEARCH_ITEMS: SearchItem[] = [
     type: "section",
   },
   {
+    id: "reef-encounters",
+    title: "Reef encounters on film",
+    description: "Watch real manta ray, remora, and lionfish dive footage from Canary Cove.",
+    href: "/adventures#reef-encounters",
+    group: "Adventures, boats & add-ons",
+    keywords: ["reef videos", "manta ray", "remoras", "lionfish", "dive footage", "underwater video"],
+    intent: "adventures",
+    type: "section",
+  },
+  {
     id: "experiences-overview",
     title: "Included gear & add-on adventures",
     description: "Included gear plus add-on boating, diving, and fishing.",

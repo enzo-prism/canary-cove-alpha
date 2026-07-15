@@ -79,7 +79,75 @@ test.describe("release gate smoke coverage", () => {
       await page.goto(route)
       await waitForPageReady(page)
 
-      await expect(page.getByTestId("elevenlabs-convai-widget")).toBeVisible()
+      const conciergeWidget = page.getByTestId("elevenlabs-convai-widget")
+      await expect(conciergeWidget).toBeVisible()
+      await expect(conciergeWidget).toHaveAttribute("variant", "tiny")
+    }
+  })
+
+  test("reef encounter films are accessible and load on demand", async ({ page }) => {
+    await page.goto("/adventures#reef-encounters")
+    await waitForPageReady(page)
+
+    await expect(page.locator("#reef-encounters")).toBeVisible()
+    await expect(page.getByRole("heading", { name: "See what waits beyond the dock" })).toBeVisible()
+
+    const videos = page.locator("#reef-encounters video")
+    await expect(videos).toHaveCount(3)
+
+    for (let index = 0; index < 3; index += 1) {
+      const video = videos.nth(index)
+      await expect(video).toHaveAttribute("controls", "")
+      await expect(video).toHaveAttribute("playsinline", "")
+      await expect(video).toHaveAttribute("preload", index === 0 ? "metadata" : "none")
+      await expect(video).toHaveAttribute("tabindex", "0")
+      await expect(video).toHaveAttribute("aria-describedby", /-description$/)
+      await expect(video).not.toHaveAttribute("autoplay", "")
+      await expect(video).toHaveAttribute("poster", /reef-encounters\/.*-poster\.jpg$/)
+      await expect(video.locator("source")).toHaveAttribute("src", /reef-encounters\/.*\.mp4$/)
+    }
+
+    for (const viewport of [
+      { width: 320, height: 700 },
+      { width: 375, height: 812 },
+      { width: 768, height: 1024 },
+      { width: 1024, height: 900 },
+      { width: 1440, height: 1000 },
+      { width: 1728, height: 1000 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.reload()
+      await waitForPageReady(page)
+
+      const layout = await page.locator("#reef-encounters").evaluate((section) => {
+        const cards = Array.from(section.querySelectorAll<HTMLElement>("[data-testid^='reef-video-card-']"))
+        const media = Array.from(section.querySelectorAll<HTMLVideoElement>("video"))
+
+        return {
+          viewportWidth: document.documentElement.clientWidth,
+          pageScrollWidth: document.documentElement.scrollWidth,
+          cards: cards.map((card) => {
+            const rect = card.getBoundingClientRect()
+            return { left: rect.left, right: rect.right, width: rect.width }
+          }),
+          mediaRatios: media.map((video) => {
+            const rect = video.getBoundingClientRect()
+            return rect.width / rect.height
+          }),
+        }
+      })
+
+      expect(layout.pageScrollWidth).toBeLessThanOrEqual(layout.viewportWidth)
+      expect(layout.cards).toHaveLength(3)
+      for (const card of layout.cards) {
+        expect(card.left).toBeGreaterThanOrEqual(0)
+        expect(card.right).toBeLessThanOrEqual(layout.viewportWidth)
+        expect(card.width).toBeGreaterThan(0)
+      }
+      for (const ratio of layout.mediaRatios) {
+        expect(ratio).toBeGreaterThan(1.76)
+        expect(ratio).toBeLessThan(1.79)
+      }
     }
   })
 

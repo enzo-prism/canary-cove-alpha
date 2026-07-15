@@ -9,6 +9,7 @@ export function ElevenLabsConvaiWidget() {
       <elevenlabs-convai
         agent-id={ELEVENLABS_AGENT_ID}
         data-testid="elevenlabs-convai-widget"
+        variant="tiny"
         dismissible="true"
       />
       <Script

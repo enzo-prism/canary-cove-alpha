@@ -33,7 +33,8 @@ describe("private access tokens", () => {
       expiresAt: 2_000,
       now: 1_000,
     })
-    const tampered = `${token.slice(0, -1)}${token.endsWith("a") ? "b" : "a"}`
+    const signatureStart = token.indexOf(".") + 1
+    const tampered = `${token.slice(0, signatureStart)}${token[signatureStart] === "a" ? "b" : "a"}${token.slice(signatureStart + 1)}`
 
     await expect(verifyAccessToken(tampered, { secret, scope: "canary-cove-guest", now: 1_000 })).resolves.toBe(false)
     await expect(verifyAccessToken(token, { secret, scope: "other", now: 1_000 })).resolves.toBe(false)

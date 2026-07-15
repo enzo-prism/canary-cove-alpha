@@ -5,6 +5,7 @@ import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
+import { ReefEncounters } from "@/components/reef-encounters"
 import { PageStructuredData } from "@/components/structured-data"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
@@ -221,6 +222,8 @@ export default function Page() {
           </div>
         </Container>
       </section>
+
+      <ReefEncounters />
 
       <section className="px-4 pb-16 pt-6 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <Container size="wide" className="flow flow-xl">

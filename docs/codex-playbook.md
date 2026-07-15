@@ -112,7 +112,7 @@ These are mostly route-local page compositions rather than a single shared page 
 ### Route-specific marketing modules
 
 - `app/experiences/page.tsx`: route-local composition built around `components/experiences-hero.tsx`, `components/experiences-gallery-mosaic.tsx`, and `components/experiences-guest-highlights.tsx`
-- `app/adventures/page.tsx`: route-local composition using `components/ways-to-enjoy.tsx` and `components/gallery-grid.tsx`
+- `app/adventures/page.tsx`: route-local adventure composition with the `ReefEncounters` film gallery
 - `app/contact/page.tsx`: route-local composition using `components/contact-details.tsx`, `components/contact-form.tsx`, and `components/testimonials-grid.tsx`
 - `app/dining/page.tsx`, `app/getting-here/page.tsx`, `app/rates/page.tsx`, and `app/about/page.tsx`: mostly route-local sections rather than shared page-template assembly
 
@@ -121,8 +121,11 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/photo-carousel.tsx`: shared gallery/carousel pattern.
 - `components/ui/carousel.tsx`: shared Embla wrapper. Changes here have wide blast radius.
 - `components/gallery-grid.tsx`: image-grid gallery treatment.
+- `components/reef-encounters.tsx`: responsive reef-film presentation and playback behavior.
 - `lib/images.ts`: image registry and alt-text source of truth.
+- `lib/videos.ts`: source of truth for reef-film copy, durations, MP4 paths, and posters.
 - `lib/gallery-utils.ts`: image filtering helpers.
+- `public/videos/reef-encounters/`: optimized public MP4 and poster assets.
 
 ### Navigation, search, and content sources
 
@@ -243,7 +246,10 @@ When editing the booking page, preserve the embed presence and responsive behavi
 
 ### Media and analytics
 
-- Images and video are served from Cloudinary.
+- Remote imagery and the homepage film are served from Cloudinary.
+- Reef-encounter films are optimized local static assets under `public/videos/reef-encounters/`.
+- Publish web-ready H.264/AAC MP4s with fast-start metadata and matching poster images; do not commit camera originals.
+- Preserve native controls, `playsInline`, keyboard focus, and no autoplay or looping. Preload metadata only for the featured film; supporting films use `preload="none"`.
 - `next/image` is intentionally left in `unoptimized` mode in `next.config.mjs`.
 - Vercel Analytics is enabled.
 - Google Analytics 4 is loaded globally through `GoogleAnalyticsScripts`.
@@ -305,6 +311,7 @@ pnpm test:e2e
   - homepage CTAs
   - footer links
   - booking embed presence
+  - reef-film anchor, three-video inventory, posters, sources, playback controls, responsive framing, and no autoplay
 - `e2e/forms.spec.ts`
   - email capture success/failure
   - contact form validation/success/failure

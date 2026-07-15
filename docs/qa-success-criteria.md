@@ -21,6 +21,8 @@ This document defines the production-readiness bar for the public marketing site
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
+- `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.
+- Reef films use native controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
 
 ## Responsive & usability criteria
 
@@ -28,6 +30,7 @@ This document defines the production-readiness bar for the public marketing site
 - Primary mobile actions remain at least `44x44` pixels for touch.
 - Key content blocks remain visible and within the viewport after resize changes.
 - Carousels support touch, wheel, keyboard, and snap cleanly to full slides.
+- Reef-film cards stack cleanly on smaller screens, preserve 16:9 media framing, and introduce no horizontal overflow.
 
 ## Design criteria
 
@@ -44,7 +47,7 @@ This document defines the production-readiness bar for the public marketing site
 
 ## Test-suite map
 
-- `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, and booking embed presence
+- `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, booking embed presence, and reef-film anchor/playback configuration
 - `e2e/forms.spec.ts`: booking, contact, and email-capture validation plus success/failure flows
 - `e2e/search.spec.ts`: search query behavior, grouped results, instant answers, and fallback handling
 - `e2e/usability.spec.ts`: overflow, target sizing, resizing, and carousel interaction coverage

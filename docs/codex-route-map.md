@@ -79,11 +79,11 @@ Use this file when you need to answer "where is this page actually built?" witho
 ### `/adventures`
 
 - Page: `app/adventures/page.tsx`
-- Primary components: `GalleryGrid`, `WaysToEnjoy`, `TestimonialsGrid`
-- Data/config: `lib/images.ts`, `lib/testimonial-spotlights.ts`, `lib/seo.ts` (`PAGE_METADATA.adventures`)
-- Important anchors: none currently exposed in the page markup beyond `#main-content`
-- High-risk couplings: `next.config.mjs` still contains older `/adventures#...` redirect destinations, so confirm real DOM ids before adding or renaming anchors
-- Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/search.spec.ts`
+- Primary components: `ReefEncounters` plus route-local adventure cards and guest-story tiles
+- Data/config: `lib/images.ts`, `lib/videos.ts`, `lib/testimonial-spotlights.ts`, `lib/seo.ts` (`PAGE_METADATA.adventures`), `lib/search/search-index.ts`
+- Important anchors: `#reef-encounters`
+- High-risk couplings: the public reef-film anchor is indexed by site search; film metadata and asset paths must stay aligned between `lib/videos.ts` and `public/videos/reef-encounters/`
+- Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/search.spec.ts`, `e2e/usability.spec.ts`
 
 ### `/getting-here`
 

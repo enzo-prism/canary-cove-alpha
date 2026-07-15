@@ -6,6 +6,7 @@ declare module "react" {
       "elevenlabs-convai": DetailedHTMLProps<HTMLAttributes<HTMLElement>, HTMLElement> & {
         "agent-id": string
         "data-testid"?: string
+        variant?: "tiny" | "compact" | "expanded"
         dismissible?: "true" | "false"
       }
     }

@@ -101,7 +101,7 @@ Typical misses:
 - renaming a section heading or anchor without updating the linked search result
 - changing policy copy without updating the instant-answer bullets
 
-## Media, galleries, and imagery
+## Media, video, galleries, and imagery
 
 The image registry is the main source of truth for remote assets and alt text.
 
@@ -118,6 +118,19 @@ Best practices here:
 - keep hero and gallery assets high resolution
 - avoid hardcoding Cloudinary URLs inline unless the component is truly one-off
 - remember that `next.config.mjs` keeps `images.unoptimized: true`, so large hero swaps should be treated as real performance decisions
+
+For reef-film changes, review together:
+
+- `lib/videos.ts`
+- `components/reef-encounters.tsx`
+- `public/videos/reef-encounters/`
+- `lib/search/search-index.ts`
+- `lib/seo.ts`
+- `e2e/release-gate.spec.ts`
+
+Keep committed video web-ready rather than camera-original quality. Every film needs a poster, accessible label, keyboard focus,
+native controls, inline playback, and no autoplay or looping. Preload metadata only for the featured film; supporting films should
+wait for interaction.
 
 ## Forms and booking flow
 
