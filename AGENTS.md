@@ -3,10 +3,10 @@
 ## Project Structure & Module Organization
 - Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, estate lineup, editorial splits, diving film, bento metrics, process steps, testimonials, specs, email capture, search).
 - Hero UI: `components/hero.tsx` owns the overlay copy/CTAs/logo; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/` (ModelCarousel, EditorialSplit, BentoMetrics, ProcessSteps, SpecsAccordion, TestimonialSlider, EmailCapture).
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, BentoMetrics, ProcessSteps, SpecsAccordion, TestimonialSlider, EmailCapture, ReefEncounters).
 - Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
-- Shared data lives in `lib/`: `images.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
+- Shared data lives in `lib/`: `images.ts`, `videos.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
 - Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
 - Future-session docs live in `docs/`. Start with `docs/codex-playbook.md` for architecture, integrations, QA expectations, and deploy workflow. `docs/qa-success-criteria.md` is the release bar.
 
@@ -28,13 +28,13 @@
 - File names are kebab-case (`hero.tsx`), components PascalCase, and props camelCase. Import aliases (`@/components`, `@/lib`) are configured via `tsconfig.json`.
 
 ## Testing Guidelines
-- Unit tests run with Vitest; current tests live in `lib/search/__tests__/`.
+- Unit tests run with Vitest; current tests live beside their modules under `lib/**/__tests__/`.
 - E2E tests live in `e2e/` and run with Playwright.
 - The production release gate is: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`.
 - Cross-browser Playwright coverage runs on Chromium, Firefox, and WebKit.
 - Visual baselines are intentionally maintained on Chromium only to keep snapshots stable. When a design change is intentional, update the snapshots in `e2e/design-visual.spec.ts-snapshots/` and call that out in the commit.
 - Key suites:
-  - `e2e/release-gate.spec.ts` for route health, navigation, CTA routing, footer links, search, and embeds
+  - `e2e/release-gate.spec.ts` for route health, navigation, CTA routing, footer links, embeds, and reef-film playback configuration
   - `e2e/forms.spec.ts` for email capture, contact, and booking form success/error states
   - `e2e/usability.spec.ts` for overflow, hit targets, resize resilience, and keyboard/touch behavior
   - `e2e/design-visual.spec.ts` for visual regressions on hero, forms, and mini galleries
@@ -62,6 +62,7 @@
 - Hero imagery is defined in `components/hero-image-rotator.tsx` as Cloudinary URLs; keep these high-resolution to avoid blur.
 - Image registry lives in `lib/images.ts`; remove low-resolution assets rather than letting them slip into galleries.
 - The diving film section lives in `app/page.tsx` and uses a Cloudinary MP4 with a poster frame.
+- The Adventures reef-film gallery lives in `components/reef-encounters.tsx`; its copy and asset paths live in `lib/videos.ts`, with optimized MP4s and posters under `public/videos/reef-encounters/`.
 - `components/photo-carousel.tsx` wraps Embla and is used by `components/basic-page.tsx` for interior pages.
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
 
@@ -90,3 +91,4 @@
 - Shared carousel layer: `components/ui/carousel.tsx`
 - Interior page shell: `components/basic-page.tsx`
 - Booking form + Bookingmood embed: `components/booking-form.tsx`, `app/book/page.tsx`
+- Adventures reef films: `app/adventures/page.tsx`, `components/reef-encounters.tsx`, `lib/videos.ts`

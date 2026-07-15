@@ -119,3 +119,4 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `docs/codex-route-map.md`: page-by-page ownership map with anchors, data sources, and likely regression surfaces
 - `docs/codex-maintenance-checklist.md`: “if you change X, also review Y” checklist for routes, anchors, search, analytics, forms, and media
 - `docs/qa-success-criteria.md`: explicit production readiness bar
+- `docs/release-log.md`: production release history with commit and verification evidence

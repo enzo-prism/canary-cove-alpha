@@ -236,3 +236,6 @@ Before shipping, sanity-check these when relevant:
 - route hashes landing below the sticky header
 - Bookingmood embed still present on `/book`
 - form success/error states still working
+- Vercel reports the production deployment as `Ready` for the exact `origin/main` commit
+- both `canarycove.com` and `www.canarycove.com` resolve to that production deployment
+- changed local videos return `video/mp4` and a byte-range request returns `206`

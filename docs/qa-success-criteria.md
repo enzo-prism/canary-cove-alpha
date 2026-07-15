@@ -10,6 +10,7 @@ This document defines the production-readiness bar for the public marketing site
 - `pnpm build` passes.
 - `pnpm test:e2e` passes.
 - Cross-browser Playwright coverage passes on Chromium, Firefox, and WebKit.
+- The Vercel production deployment is `Ready`, reports the same commit SHA as `origin/main`, and owns both production domain aliases.
 
 ## Functional criteria
 
@@ -23,6 +24,7 @@ This document defines the production-readiness bar for the public marketing site
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 - `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.
 - Reef films use native controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
+- Production reef-film MP4s return `video/mp4` and support byte-range responses (`206`).
 
 ## Responsive & usability criteria
 

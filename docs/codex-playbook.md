@@ -194,9 +194,13 @@ The stay page is the clearest example: in-page buttons scroll to hash targets, a
 Check these files together:
 
 - `lib/images.ts`
-- route-local gallery components
+- `lib/videos.ts`
+- route-local gallery components, including `components/reef-encounters.tsx`
+- local media assets under `public/videos/reef-encounters/`
+- `lib/search/search-index.ts` and `lib/seo.ts` when public media copy or anchors change
 - `next.config.mjs` (`images.remotePatterns`) if a new host appears
 - `e2e/design-visual.spec.ts` if the change is visually significant
+- `e2e/release-gate.spec.ts` for video inventory, playback configuration, accessibility, and responsive framing
 
 Prefer updating alt text and captions at the image/data layer rather than burying copy inside JSX when possible.
 
@@ -354,8 +358,9 @@ Typical production release:
 1. Run the release gate locally.
 2. Commit the validated changes.
 3. Push `main`.
-4. Confirm the Vercel production deployment reaches `Ready`.
-5. Spot-check the production route you changed.
+4. Confirm the Vercel production deployment reaches `Ready` and its Git commit SHA matches `origin/main`.
+5. Confirm `canarycove.com` and `www.canarycove.com` are attached to that deployment.
+6. Spot-check the production route you changed and record the release in `docs/release-log.md`.
 
 Useful production-sensitive checks:
 
@@ -364,6 +369,7 @@ Useful production-sensitive checks:
 - form success/error states still work after any form or endpoint change.
 - carousels still snap correctly on small screens and Safari/WebKit.
 - hash links still land cleanly below the sticky header after layout changes.
+- local video assets return the expected content type and support byte-range requests (`206`) so playback can seek and stream efficiently.
 
 ## Codex operating advice
 
