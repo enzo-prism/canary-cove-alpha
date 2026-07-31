@@ -118,9 +118,9 @@ export function SiteSearch({
             aria-label="Open site search"
             data-testid="search-open-button"
           >
-            <span className="flex items-center gap-3">
-              <Search className="h-5 w-5" />
-              <span className="text-left">{placeholder}</span>
+            <span className="flex min-w-0 items-center gap-3">
+              <Search className="h-5 w-5 shrink-0" />
+              <span className="truncate text-left">{placeholder}</span>
             </span>
             <span className="hidden items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:inline-flex">
               {shortcutLabel}

@@ -331,10 +331,10 @@ export default function Page() {
 
       <section className="px-4 pb-18 pt-8 sm:px-6 sm:pb-20 sm:pt-10 lg:px-8 lg:pb-24">
         <Container size="wide">
-          <div className="grid gap-8 xl:grid-cols-[minmax(0,1.16fr)_minmax(380px,0.84fr)] xl:items-start">
+          <div className="grid grid-cols-1 gap-8 xl:grid-cols-[minmax(0,1.16fr)_minmax(380px,0.84fr)] xl:items-start">
             <div className="flow flow-xl">
               <Card className="surface-panel overflow-hidden rounded-[34px] border-border/60 bg-white/95 shadow-[0_26px_75px_rgba(15,23,42,0.1)]">
-                <div className="grid gap-8 px-6 py-7 sm:px-8 sm:py-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(290px,0.75fr)] lg:gap-10 lg:px-10 lg:py-10">
+                <div className="grid grid-cols-1 gap-8 px-6 py-7 sm:px-8 sm:py-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(290px,0.75fr)] lg:gap-10 lg:px-10 lg:py-10">
                   <div id="included-costs" className="flow flow-md">
                     <div className="flow-xs">
                       <Badge className="w-fit bg-transparent text-muted-foreground">A note from us</Badge>
@@ -437,7 +437,7 @@ export default function Page() {
               </Card>
 
               <Card className="surface-panel overflow-hidden rounded-[32px] border-border/60 bg-white/94 shadow-[0_22px_65px_rgba(15,23,42,0.08)]">
-                <div className="grid gap-0 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
+                <div className="grid grid-cols-1 gap-0 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)]">
                   <div className="relative min-h-[240px] border-b border-border/50 lg:min-h-full lg:border-b-0 lg:border-r">
                     <Image
                       src={IMAGES.diningRoom.src}

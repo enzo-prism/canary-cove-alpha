@@ -60,7 +60,7 @@ export default function Page() {
             </p>
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="grid grid-cols-1 gap-8 lg:grid-cols-[1.15fr_0.85fr]">
             <Card
               id="arrival-steps"
               className="scroll-mt-24 rounded-[20px] border border-border/70 bg-white/90 shadow-[0_16px_55px_rgba(15,23,42,0.08)]"

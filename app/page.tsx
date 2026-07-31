@@ -174,7 +174,7 @@ export default function Home() {
       </Section>
       <Section padding="tight">
         <Container size="wide">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
+          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
             <EmailCapture />
             <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
               <Badge className="bg-transparent">Plan your stay</Badge>

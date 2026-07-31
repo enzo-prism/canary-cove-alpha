@@ -15,7 +15,7 @@ export function ElevenLabsConvaiWidget() {
       <Script
         id="elevenlabs-convai-widget-embed"
         src={ELEVENLABS_WIDGET_EMBED_SRC}
-        strategy="afterInteractive"
+        strategy="lazyOnload"
       />
     </>
   )

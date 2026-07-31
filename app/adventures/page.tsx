@@ -138,7 +138,9 @@ function StoryTile({ tile }: { tile: (typeof STORY_TILES)[number] }) {
 
     return (
       <Card className={`group relative overflow-hidden rounded-[26px] border-border/60 bg-white/90 ${isWide ? "sm:col-span-2" : ""}`}>
-        <div className={`relative min-h-[220px] sm:min-h-[248px] ${isWide ? "aspect-[1.85]" : "aspect-[1.05]"}`}>
+        {/* max-w-full stops aspect-ratio from transferring min-height into a
+            min-width wider than the card on narrow viewports (clips captions) */}
+        <div className={`relative max-w-full min-h-[220px] sm:min-h-[248px] ${isWide ? "aspect-[1.85]" : "aspect-[1.05]"}`}>
           <Image
             src={tile.image.src}
             alt={tile.image.alt}
@@ -227,7 +229,7 @@ export default function Page() {
 
       <section className="px-4 pb-16 pt-6 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <Container size="wide" className="flow flow-xl">
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] xl:items-start">
+          <div className="grid grid-cols-1 gap-6 xl:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] xl:items-start">
             <div className="flow flow-md">
               <div className="flow-xs">
                 <Badge className="w-fit bg-transparent text-muted-foreground">Featured adventure</Badge>
