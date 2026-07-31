@@ -103,7 +103,7 @@ export default function Home() {
                 loop
                 muted
                 playsInline
-                preload="auto"
+                preload="metadata"
                 poster="https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp"
               >
                 <source

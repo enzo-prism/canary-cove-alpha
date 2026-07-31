@@ -3,7 +3,6 @@
 import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 
-import { AspectRatio } from "@/components/ui/aspect-ratio"
 import {
   Carousel,
   CarouselContent,
@@ -70,10 +69,7 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
           <CarouselContent>
             {galleryItems.map((photo, index) => (
               <CarouselItem key={photo.src}>
-                <AspectRatio
-                  ratio={21 / 9}
-                  className="relative overflow-hidden rounded-[30px] border border-border/40 bg-surface-elevated"
-                >
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[30px] border border-border/40 bg-surface-elevated sm:aspect-[21/9]">
                   <Image
                     src={photo.src}
                     alt={photo.alt}
@@ -84,7 +80,7 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
                     sizes="(min-width: 1024px) 1000px, 100vw"
                     className="object-cover"
                   />
-                </AspectRatio>
+                </div>
               </CarouselItem>
             ))}
           </CarouselContent>
@@ -105,10 +101,11 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
                 type="button"
                 onClick={() => scrollTo(index)}
                 className={cn(
-                  "h-2 rounded-full transition-all motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100",
+                  "relative h-2 rounded-full transition-all after:absolute after:-inset-2 after:content-[''] motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100",
                   selectedIndex === index ? "w-10 bg-foreground" : "w-2 bg-muted-foreground/35 hover:bg-foreground/55",
                 )}
                 aria-label={`Go to slide ${index + 1}`}
+                aria-current={selectedIndex === index ? "true" : undefined}
               />
             ))}
           </div>

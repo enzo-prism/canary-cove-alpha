@@ -1,0 +1,108 @@
+import { expect, test, type Locator, type Page } from "@playwright/test"
+
+const dragToNextSlide = async (page: Page, viewport: Locator) => {
+  const box = await viewport.boundingBox()
+  if (!box) {
+    throw new Error("Unable to read lightbox bounding box.")
+  }
+
+  const startX = box.x + box.width * 0.8
+  const endX = box.x + box.width * 0.2
+  const y = box.y + box.height * 0.5
+
+  await page.mouse.move(startX, y)
+  await page.mouse.down()
+  await page.mouse.move(endX, y, { steps: 12 })
+  await page.mouse.up()
+}
+
+const openStayGalleryLightbox = async (page: Page) => {
+  await page.goto("/stay")
+  await page.waitForLoadState("domcontentloaded")
+
+  const gallery = page.locator("#inside-the-villa")
+  await gallery.scrollIntoViewIfNeeded()
+  await gallery.getByRole("button", { name: "View photo:", exact: false }).first().click()
+
+  const lightbox = page.getByTestId("photo-lightbox")
+  await expect(lightbox).toBeVisible()
+  return lightbox
+}
+
+test.describe("photo lightbox on touch devices", () => {
+  test.use({ viewport: { width: 390, height: 844 }, hasTouch: true })
+
+  test("opens from the stay gallery, swipes, and closes", async ({ page }) => {
+    const lightbox = await openStayGalleryLightbox(page)
+
+    await expect(lightbox).toContainText("1 / 9")
+
+    await dragToNextSlide(page, lightbox)
+    await expect(lightbox).toContainText("2 / 9")
+
+    await lightbox.getByRole("button", { name: "Close gallery" }).click()
+    await expect(lightbox).not.toBeVisible()
+  })
+
+  test("opens at the tapped photo", async ({ page }) => {
+    await page.goto("/stay")
+    await page.waitForLoadState("domcontentloaded")
+
+    const gallery = page.locator("#inside-the-villa")
+    await gallery.scrollIntoViewIfNeeded()
+    await gallery.getByRole("button", { name: "View photo:", exact: false }).nth(4).click()
+
+    const lightbox = page.getByTestId("photo-lightbox")
+    await expect(lightbox).toBeVisible()
+    await expect(lightbox).toContainText("5 / 9")
+  })
+
+  test("tapping the photo does not close the viewer", async ({ page }) => {
+    const lightbox = await openStayGalleryLightbox(page)
+
+    await expect(lightbox).toContainText("1 / 9")
+
+    // The photo fills the screen on mobile; a center tap (e.g. expecting
+    // zoom) must not dismiss the viewer.
+    await lightbox.tap()
+    await expect(lightbox).toBeVisible()
+    await expect(lightbox).toContainText("1 / 9")
+  })
+
+  test("hides the concierge widget while the viewer is open", async ({ page }) => {
+    const widget = page.getByTestId("elevenlabs-convai-widget")
+    await page.goto("/stay")
+    await page.waitForLoadState("domcontentloaded")
+    await expect(widget).toBeAttached()
+
+    const lightbox = await openStayGalleryLightbox(page)
+
+    // Radix locks body scroll while the dialog is open; globals.css hides the
+    // widget on that hook so it cannot float over the photo or dismiss the
+    // viewer via pointerdown-outside.
+    await expect(page.locator("body")).toHaveAttribute("data-scroll-locked")
+    await expect(widget).toHaveCSS("display", "none")
+
+    await lightbox.getByRole("button", { name: "Close gallery" }).click()
+    await expect(widget).not.toHaveCSS("display", "none")
+  })
+})
+
+test.describe("photo lightbox on desktop", () => {
+  test.use({ viewport: { width: 1280, height: 900 }, hasTouch: false })
+
+  test("navigates with arrow keys and closes with Escape", async ({ page }) => {
+    const lightbox = await openStayGalleryLightbox(page)
+
+    await expect(lightbox).toContainText("1 / 9")
+
+    await page.keyboard.press("ArrowRight")
+    await expect(lightbox).toContainText("2 / 9")
+
+    await page.keyboard.press("ArrowLeft")
+    await expect(lightbox).toContainText("1 / 9")
+
+    await page.keyboard.press("Escape")
+    await expect(lightbox).not.toBeVisible()
+  })
+})

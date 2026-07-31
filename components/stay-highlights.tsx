@@ -1,13 +1,15 @@
 "use client"
 
-import { useCallback } from "react"
+import { useCallback, useState } from "react"
 import Image from "next/image"
 import Link from "next/link"
 import { ArrowRight } from "lucide-react"
 
 import { trackCtaClick } from "@/lib/analytics"
+import { PhotoLightbox } from "@/components/photo-lightbox"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
+import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
 import { IMAGES } from "@/lib/images"
 
 type HighlightCard = {
@@ -71,16 +73,47 @@ const highlightCards: HighlightCard[] = [
 ]
 
 function HighlightCollage({ images, title }: Pick<HighlightCard, "images" | "title">) {
+  // One lightbox per collage, covering exactly the 5 images shown in it.
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
   return (
     <div className="grid grid-cols-4 grid-rows-2 gap-2 rounded-[28px] border border-border/60 bg-white p-2 shadow-[inset_0_1px_0_rgba(255,255,255,0.6)]">
-      <div className="relative col-span-2 row-span-2 min-h-[9.5rem] overflow-hidden rounded-[20px] bg-surface-muted sm:min-h-[11rem] lg:min-h-[12rem]">
-        <Image src={images[0].src} alt={images[0].alt} fill className="object-cover" sizes="(min-width: 1024px) 280px, 50vw" />
-      </div>
+      <button
+        type="button"
+        onClick={() => setOpenIndex(0)}
+        aria-label={`View photo: ${images[0].alt}`}
+        className="relative col-span-2 row-span-2 min-h-[9.5rem] cursor-zoom-in overflow-hidden rounded-[20px] bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:min-h-[11rem] lg:min-h-[12rem]"
+      >
+        <Image
+          src={images[0].src}
+          alt={images[0].alt}
+          fill
+          className="object-cover"
+          sizes="(min-width: 1024px) 280px, 50vw"
+          placeholder={cloudinaryBlurDataUrl(images[0].src) ? "blur" : "empty"}
+          blurDataURL={cloudinaryBlurDataUrl(images[0].src)}
+        />
+      </button>
       {images.slice(1).map((image, index) => (
-        <div key={`${title}-${index}`} className="relative aspect-square overflow-hidden rounded-[16px] bg-surface-muted">
-          <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(min-width: 1024px) 120px, 25vw" />
-        </div>
+        <button
+          key={`${title}-${index}`}
+          type="button"
+          onClick={() => setOpenIndex(index + 1)}
+          aria-label={`View photo: ${image.alt}`}
+          className="relative aspect-square cursor-zoom-in overflow-hidden rounded-[16px] bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+        >
+          <Image
+            src={image.src}
+            alt={image.alt}
+            fill
+            className="object-cover"
+            sizes="(min-width: 1024px) 120px, 25vw"
+            placeholder={cloudinaryBlurDataUrl(image.src) ? "blur" : "empty"}
+            blurDataURL={cloudinaryBlurDataUrl(image.src)}
+          />
+        </button>
       ))}
+      <PhotoLightbox images={images} openIndex={openIndex} onClose={() => setOpenIndex(null)} />
     </div>
   )
 }

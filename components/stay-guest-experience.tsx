@@ -46,7 +46,7 @@ export function StayGuestExperience({ testimonials }: StayGuestExperienceProps) 
             className="overflow-hidden rounded-[28px] border border-border/60 bg-[#0f2030] text-white shadow-[0_18px_45px_rgba(15,23,42,0.14)]"
           >
             <div className="relative aspect-[4/5] overflow-hidden">
-              <Image src={card.image.src} alt={card.image.alt} fill className="object-cover" sizes="(min-width: 1280px) 280px, 50vw" />
+              <Image src={card.image.src} alt={card.image.alt} fill className="object-cover" sizes="(min-width: 1280px) 280px, 100vw" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#06111b] via-[#06111b]/40 to-transparent" />
             </div>
             <CardContent className="flow flow-xs p-5">
