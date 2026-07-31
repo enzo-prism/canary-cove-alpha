@@ -115,11 +115,11 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
   }, [])
 
   useEffect(() => {
-    if (photos.length < 2) return
+    if (photos.length < 2 || !showAllSlides) return
     if (prefersReducedMotion) return
     const interval = window.setInterval(goNext, ROTATE_INTERVAL)
     return () => window.clearInterval(interval)
-  }, [goNext, photos.length, prefersReducedMotion])
+  }, [goNext, photos.length, prefersReducedMotion, showAllSlides])
 
   return (
     <div
