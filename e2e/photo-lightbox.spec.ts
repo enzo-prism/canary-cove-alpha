@@ -43,6 +43,31 @@ test.describe("photo lightbox on touch devices", () => {
     await lightbox.getByRole("button", { name: "Close gallery" }).click()
     await expect(lightbox).not.toBeVisible()
   })
+
+  test("opens at the tapped photo", async ({ page }) => {
+    await page.goto("/stay")
+    await page.waitForLoadState("domcontentloaded")
+
+    const gallery = page.locator("#inside-the-villa")
+    await gallery.scrollIntoViewIfNeeded()
+    await gallery.getByRole("button", { name: "View photo:", exact: false }).nth(4).click()
+
+    const lightbox = page.getByTestId("photo-lightbox")
+    await expect(lightbox).toBeVisible()
+    await expect(lightbox).toContainText("5 / 9")
+  })
+
+  test("tapping the photo does not close the viewer", async ({ page }) => {
+    const lightbox = await openStayGalleryLightbox(page)
+
+    await expect(lightbox).toContainText("1 / 9")
+
+    // The photo fills the screen on mobile; a center tap (e.g. expecting
+    // zoom) must not dismiss the viewer.
+    await lightbox.tap()
+    await expect(lightbox).toBeVisible()
+    await expect(lightbox).toContainText("1 / 9")
+  })
 })
 
 test.describe("photo lightbox on desktop", () => {

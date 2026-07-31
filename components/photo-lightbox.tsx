@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useRef, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import useEmblaCarousel from "embla-carousel-react"
@@ -24,7 +24,9 @@ type PhotoLightboxProps = {
 /**
  * Fullscreen, swipeable photo viewer. Controlled: the parent owns `openIndex`
  * (null = closed) and is notified through `onClose`. Opens at `openIndex`,
- * closes on the X button, backdrop click, or Escape; arrows/swipe navigate.
+ * closes on the X button or Escape; arrows/swipe navigate. Tapping the photo
+ * itself never closes the viewer — on mobile the photo fills the screen, so a
+ * tap expecting zoom would otherwise dismiss it.
  */
 export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps) {
   const open = openIndex !== null
@@ -73,21 +75,6 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
 
   const currentImage = images[selectedIndex]
 
-  // The content fills the screen, so "backdrop" clicks land on the carousel
-  // viewport; close unless the click was the tail of a swipe drag.
-  const pointerStart = useRef<{ x: number; y: number } | null>(null)
-  const handleViewportPointerDown = useCallback((event: React.PointerEvent) => {
-    pointerStart.current = { x: event.clientX, y: event.clientY }
-  }, [])
-  const handleViewportClick = useCallback(
-    (event: React.MouseEvent) => {
-      const start = pointerStart.current
-      if (start && Math.hypot(event.clientX - start.x, event.clientY - start.y) > 8) return
-      onClose()
-    },
-    [onClose],
-  )
-
   return (
     <Dialog
       open={open}
@@ -122,8 +109,6 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
           <div
             ref={emblaRef}
             className="min-h-0 flex-1 overflow-hidden"
-            onPointerDown={handleViewportPointerDown}
-            onClick={handleViewportClick}
           >
             <div className="flex h-full">
               {images.map((image, index) => {

@@ -53,7 +53,6 @@ export function PhotoCarousel() {
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({})
   const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
-  const galleryDialogId = "photo-carousel-gallery"
 
   const onSelect = useCallback(
     (carouselApi: CarouselApi) => {
@@ -141,7 +140,6 @@ export function PhotoCarousel() {
                       variant="ghost"
                       size="sm"
                       onClick={() => setLightboxIndex(0)}
-                      aria-controls={galleryDialogId}
                       className="rounded-full border border-white/30 bg-black/30 px-4 text-xs uppercase tracking-[0.24em] text-white/80 backdrop-blur-sm hover:bg-white hover:text-foreground"
                     >
                       View full gallery
