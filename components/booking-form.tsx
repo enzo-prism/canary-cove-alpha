@@ -68,7 +68,8 @@ export function BookingForm({ className }: BookingFormProps) {
       return
     }
 
-    if (arrival && departure && departure < arrival) {
+    // Same-day arrival/departure is zero nights and is not a valid estate stay.
+    if (arrival && departure && departure <= arrival) {
       setFieldErrors({
         departure: "Departure date must be after your arrival date.",
       })

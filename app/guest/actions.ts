@@ -10,17 +10,13 @@ import {
 } from "@/lib/guest-access-config"
 import { verifyGuestPassword } from "@/lib/guest-password"
 import { createAccessToken } from "@/lib/private-access"
+import { safeGuestPath } from "@/lib/safe-guest-path"
 import { isSameOriginRequest } from "@/lib/same-origin"
-
-const safeNext = (value: FormDataEntryValue | null) => {
-  const candidate = typeof value === "string" ? value : "/guest"
-  return candidate.startsWith("/guest") && !candidate.startsWith("//") ? candidate : "/guest"
-}
 
 const isSameOrigin = async () => isSameOriginRequest(await headers())
 
 export const loginGuest = async (formData: FormData) => {
-  const next = safeNext(formData.get("next"))
+  const next = safeGuestPath(formData.get("next"))
   if (!(await isSameOrigin())) redirect(`/guest/access?next=${encodeURIComponent(next)}&error=verify`)
 
   const passwordHash = process.env.CANARY_GUEST_PASSWORD_HASH ?? ""
