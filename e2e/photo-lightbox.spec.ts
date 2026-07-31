@@ -68,6 +68,24 @@ test.describe("photo lightbox on touch devices", () => {
     await expect(lightbox).toBeVisible()
     await expect(lightbox).toContainText("1 / 9")
   })
+
+  test("hides the concierge widget while the viewer is open", async ({ page }) => {
+    const widget = page.getByTestId("elevenlabs-convai-widget")
+    await page.goto("/stay")
+    await page.waitForLoadState("domcontentloaded")
+    await expect(widget).toBeAttached()
+
+    const lightbox = await openStayGalleryLightbox(page)
+
+    // Radix locks body scroll while the dialog is open; globals.css hides the
+    // widget on that hook so it cannot float over the photo or dismiss the
+    // viewer via pointerdown-outside.
+    await expect(page.locator("body")).toHaveAttribute("data-scroll-locked")
+    await expect(widget).toHaveCSS("display", "none")
+
+    await lightbox.getByRole("button", { name: "Close gallery" }).click()
+    await expect(widget).not.toHaveCSS("display", "none")
+  })
 })
 
 test.describe("photo lightbox on desktop", () => {

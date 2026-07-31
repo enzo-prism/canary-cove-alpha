@@ -7,6 +7,13 @@ body[data-mobile-nav-open="true"] elevenlabs-convai {
   display: none !important;
 }
 
+/* Radix dialogs (e.g. the photo lightbox) set data-scroll-locked on <body>;
+   hide the concierge widget so it neither floats over fullscreen content nor
+   dismisses the dialog (a tap on it is a pointerdown outside DialogContent). */
+body[data-scroll-locked] elevenlabs-convai {
+  display: none !important;
+}
+
 :root {
   --background: oklch(0.985 0.008 95);
   --foreground: oklch(0.22 0.01 95);
