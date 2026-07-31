@@ -5,6 +5,7 @@ import Image from "next/image"
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { PhotoLightbox } from "@/components/photo-lightbox"
 import { IMAGES } from "@/lib/images"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
@@ -12,14 +13,6 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
 import { Container } from "@/components/layout/container"
 import { Section } from "@/components/layout/section"
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 
 const photos = [
@@ -59,6 +52,7 @@ export function PhotoCarousel() {
   const [api, setApi] = useState<CarouselApi | null>(null)
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [loadedSlides, setLoadedSlides] = useState<Record<number, boolean>>({})
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null)
   const galleryDialogId = "photo-carousel-gallery"
 
   const onSelect = useCallback(
@@ -108,7 +102,12 @@ export function PhotoCarousel() {
                 <CarouselContent>
                   {photos.map((photo, index) => (
                     <CarouselItem key={photo.src}>
-                      <div className="relative h-[360px] overflow-hidden bg-surface-elevated sm:h-[480px] lg:h-[620px]">
+                      <button
+                        type="button"
+                        onClick={() => setLightboxIndex(index)}
+                        aria-label={`View photo: ${photo.alt}`}
+                        className="relative block h-[360px] w-full cursor-zoom-in overflow-hidden bg-surface-elevated text-left focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:h-[480px] lg:h-[620px]"
+                      >
                         {!loadedSlides[index] ? <Skeleton className="absolute inset-0" /> : null}
                         <Image
                           src={photo.src}
@@ -127,7 +126,7 @@ export function PhotoCarousel() {
                             <p className="mt-2 hidden text-sm text-white/80 sm:block">{photo.detail}</p>
                           </div>
                         </div>
-                      </div>
+                      </button>
                     </CarouselItem>
                   ))}
                 </CarouselContent>
@@ -138,46 +137,15 @@ export function PhotoCarousel() {
                     Gallery
                   </span>
                   <div className="pointer-events-auto">
-                    <Dialog>
-                      <DialogTrigger asChild aria-controls={galleryDialogId}>
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          className="rounded-full border border-white/30 bg-black/30 px-4 text-xs uppercase tracking-[0.24em] text-white/80 backdrop-blur-sm hover:bg-white hover:text-foreground"
-                        >
-                          View full gallery
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent
-                        id={galleryDialogId}
-                        className="flex max-w-5xl flex-col gap-4 overflow-hidden max-h-[85vh]"
-                      >
-                        <DialogHeader>
-                          <DialogTitle>Canary Cove photo gallery</DialogTitle>
-                          <DialogDescription>Browse a few highlights from the villa, beach, and docks.</DialogDescription>
-                        </DialogHeader>
-                        <div className="min-h-0 flex-1 overflow-y-auto pr-2 sm:pr-3">
-                          <div className="grid gap-4 sm:grid-cols-2">
-                            {photos.map((photo) => (
-                              <div
-                                key={photo.src}
-                                className="relative aspect-[4/3] overflow-hidden rounded-[22px] bg-surface-elevated"
-                              >
-                                <Image
-                                  src={photo.src}
-                                  alt={photo.alt}
-                                  fill
-                                  decoding="async"
-                                  loading="lazy"
-                                  className="object-cover"
-                                  sizes="(min-width: 1024px) 520px, 100vw"
-                                />
-                              </div>
-                            ))}
-                          </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => setLightboxIndex(0)}
+                      aria-controls={galleryDialogId}
+                      className="rounded-full border border-white/30 bg-black/30 px-4 text-xs uppercase tracking-[0.24em] text-white/80 backdrop-blur-sm hover:bg-white hover:text-foreground"
+                    >
+                      View full gallery
+                    </Button>
                   </div>
                 </div>
                 <div className="flex items-center justify-end">
@@ -230,6 +198,7 @@ export function PhotoCarousel() {
             </button>
           ))}
         </div>
+        <PhotoLightbox images={photos} openIndex={lightboxIndex} onClose={() => setLightboxIndex(null)} />
       </Container>
     </Section>
   )

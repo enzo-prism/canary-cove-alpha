@@ -238,8 +238,9 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
               type="button"
               onClick={() => scrollTo(index)}
               aria-label={`Go to ${model.name}`}
+              aria-current={index === selectedIndex ? "true" : undefined}
               className={cn(
-                "h-2 w-8 rounded-full transition-colors duration-300",
+                "relative h-2 w-8 rounded-full transition-colors duration-300 after:absolute after:-inset-2 after:content-['']",
                 index === selectedIndex ? "bg-foreground" : "bg-border",
               )}
             />
