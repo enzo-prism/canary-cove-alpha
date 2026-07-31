@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { loginGuest } from "@/app/guest/actions"
+import { safeGuestPath } from "@/lib/safe-guest-path"
 
 export const dynamic = "force-dynamic"
 
@@ -19,7 +20,9 @@ type AccessPageProps = {
 }
 
 export default async function GuestAccessPage({ searchParams }: AccessPageProps) {
-  const { next = "/guest", error } = await searchParams
+  const params = await searchParams
+  const next = safeGuestPath(params.next)
+  const error = params.error
   const message = error === "unavailable"
     ? "Private guest access is temporarily unavailable. Please contact the Canary Cove team."
     : error
@@ -37,7 +40,7 @@ export default async function GuestAccessPage({ searchParams }: AccessPageProps)
         {message ? <p role="alert" className="mt-5 border-l-4 border-[#a33b2b] pl-4 text-sm text-[#7a2d23]">{message}</p> : null}
         {error !== "unavailable" ? (
           <form action={loginGuest} className="mt-7 space-y-4">
-            <input type="hidden" name="next" value={next.startsWith("/guest") && !next.startsWith("//") ? next : "/guest"} />
+            <input type="hidden" name="next" value={next} />
             <div>
               <label htmlFor="guest-password" className="block text-sm font-semibold">Access password</label>
               <input id="guest-password" name="password" type="password" required autoComplete="current-password" autoFocus className="mt-2 w-full rounded-xl border border-black/20 bg-white px-4 py-3 outline-none ring-[#2d6651]/20 transition focus:border-[#2d6651] focus:ring-4" />

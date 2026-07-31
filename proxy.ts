@@ -6,6 +6,7 @@ import {
   GUEST_SESSION_SCOPE,
 } from "@/lib/guest-access-config"
 import { verifyAccessToken } from "@/lib/private-access"
+import { safeGuestPath } from "@/lib/safe-guest-path"
 
 const applyPrivateHeaders = (response: NextResponse) => {
   response.headers.set("Cache-Control", "private, no-store, max-age=0, must-revalidate")
@@ -30,7 +31,7 @@ export async function proxy(request: NextRequest) {
 
   if (!valid) {
     const login = new URL("/guest/access", request.url)
-    login.searchParams.set("next", `${pathname}${search}`)
+    login.searchParams.set("next", safeGuestPath(`${pathname}${search}`))
     return applyPrivateHeaders(NextResponse.redirect(login))
   }
 
