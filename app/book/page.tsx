@@ -25,7 +25,7 @@ export default function Page() {
         <div className="absolute right-[8%] bottom-[18%] -z-10 h-72 w-72 rounded-full bg-primary/5 blur-[140px]" />
 
         <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
-          <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.96fr)]">
+          <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.96fr)]">
             <div className="space-y-6">
               <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
                 <Badge

@@ -76,6 +76,10 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
   const [photos, setPhotos] = useState<HeroImage[]>(HERO_IMAGES)
   const [activeIndex, setActiveIndex] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+  // Only the first slide is rendered on the server / first paint so the
+  // remaining slides never compete with LCP; they mount (and start fetching)
+  // right after hydration, well before the first 8s rotation.
+  const [showAllSlides, setShowAllSlides] = useState(false)
 
   const goNext = useCallback(() => {
     setActiveIndex((prev) => (prev + 1) % photos.length)
@@ -88,6 +92,16 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
     setPhotos(shuffled)
     setActiveIndex(0)
     window.sessionStorage.setItem(HERO_ORDER_STORAGE_KEY, getOrderKey(shuffled))
+
+    const idle =
+      typeof window.requestIdleCallback === "function"
+        ? window.requestIdleCallback
+        : (cb: () => void) => window.setTimeout(cb, 200)
+    const cancelIdle =
+      typeof window.cancelIdleCallback === "function" ? window.cancelIdleCallback : window.clearTimeout
+    const idleHandle = idle(() => setShowAllSlides(true))
+
+    return () => cancelIdle(idleHandle as number)
   }, [])
 
   useEffect(() => {
@@ -111,7 +125,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
     <div
       className={cn("relative min-h-[60vh] w-full overflow-hidden bg-surface-elevated", className)}
     >
-      {photos.map((photo, index) => (
+      {(showAllSlides ? photos : photos.slice(0, 1)).map((photo, index) => (
         <Image
           key={photo.src}
           src={photo.src}

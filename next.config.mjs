@@ -6,7 +6,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url))
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    unoptimized: true,
+    // Cloudinary does the resizing (see lib/cloudinary-loader.ts), so no
+    // Vercel image-optimization invocations are consumed. Do not switch back
+    // to `unoptimized: true` — that serves multi-MB original uploads with no
+    // srcset at all.
+    loader: "custom",
+    loaderFile: "./lib/cloudinary-loader.ts",
     remotePatterns: [
       {
         protocol: "https",

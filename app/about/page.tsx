@@ -524,7 +524,7 @@ export default function Page() {
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">
           <div className="overflow-hidden rounded-[36px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(248,244,236,0.94)_100%)] shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
-            <div className="grid gap-8 px-6 py-8 sm:px-8 sm:py-10 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)] xl:items-start">
+            <div className="grid grid-cols-1 gap-8 px-6 py-8 sm:px-8 sm:py-10 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)] xl:items-start">
               <div className="space-y-6">
                 <Badge variant="outline" className="border-border/70 text-muted-foreground">
                   Guest Reviews
