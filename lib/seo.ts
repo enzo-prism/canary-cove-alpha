@@ -122,6 +122,14 @@ export const PAGE_METADATA = {
     image: IMAGES.heroVillaSeating.src,
     imageAlt: IMAGES.heroVillaSeating.alt,
   }),
+  gallery: createPageMetadata({
+    title: "Photo Gallery | Canary Cove Belize Estate",
+    description:
+      "Browse and search every photo of Canary Cove: suites and bedrooms, living spaces, the pool and terrace, chef dining, the dock, and Belize adventures.",
+    path: "/gallery",
+    image: IMAGES.villaPool.src,
+    imageAlt: IMAGES.villaPool.alt,
+  }),
   about: createPageMetadata({
     title: "Guest Reviews & Testimonials | Canary Cove",
     description:

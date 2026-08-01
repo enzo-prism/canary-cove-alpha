@@ -110,6 +110,14 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     category: "primary",
   },
   {
+    path: "/gallery",
+    title: "Photo Gallery",
+    description:
+      "Searchable gallery of every Canary Cove photograph: suites, living spaces, pool and grounds, chef dining, dock, and Belize adventures.",
+    category: "supporting",
+    images: [IMAGES.villaPool.src, IMAGES.villaBedroom.src, IMAGES.livingRoom.src],
+  },
+  {
     path: "/about",
     title: "Guest Reviews",
     description:
