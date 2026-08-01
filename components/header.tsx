@@ -123,12 +123,9 @@ export function Header() {
               className="w-full border-none bg-background px-6 pb-10 pt-8 sm:w-[70vw]"
             >
               <SheetHeader className="flex-row items-center justify-between gap-3 p-0">
-                <div className="space-y-2">
+                <div>
                   <BrandMark />
                   <SheetTitle className="sr-only">Navigation</SheetTitle>
-                  <p className="text-sm text-muted-foreground">
-                    Explore the estate, check rates, or send a stay request.
-                  </p>
                 </div>
                 <SheetClose asChild>
                   <Button

@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BedDouble, Calendar, Compass, Home, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
+import { BedDouble, Calendar, Compass, Home, Images, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
 import { trackNavClick } from "@/lib/analytics"
@@ -13,11 +13,16 @@ type MobileNavProps = {
 }
 
 export function MobileNav({ items, onNavigate }: MobileNavProps) {
-  const primary = items.filter((item) => item.type === "link" && !item.cta) as Extract<NavItem, { type: "link" }>[]
+  // "Home" is omitted: the brand mark in the sheet header already links home.
+  const primary = items.filter((item) => item.type === "link" && !item.cta && item.href !== "/") as Extract<
+    NavItem,
+    { type: "link" }
+  >[]
   const ctas = items.filter((item) => item.type === "link" && item.cta) as Extract<NavItem, { type: "link" }>[]
   const navIcons: Record<string, typeof Home> = {
     Home,
     Stay: BedDouble,
+    Gallery: Images,
     Experience: Compass,
     Dining: Utensils,
     Adventures: Waves,
@@ -28,16 +33,7 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
   }
 
   return (
-    <div className="mt-8 flex flex-col gap-6">
-      <div className="surface-inset px-5 py-5">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-          Private Belize estate
-        </p>
-        <p className="mt-3 text-sm text-foreground">
-          One group at a time with chef service, private docks, and oceanfront living throughout the stay.
-        </p>
-      </div>
-
+    <div className="mt-6 flex flex-col gap-6">
       <div className="surface-panel flex flex-col px-4 py-2">
         {primary.map((item) => {
           const Icon = navIcons[item.label]
