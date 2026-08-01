@@ -19,7 +19,7 @@ const closingCards = [
   {
     title: "All-inclusive service",
     description: "Chef-prepared meals and staff support without the resort bustle.",
-    image: IMAGES.chefCarry,
+    image: IMAGES.chefMarvinPlates,
   },
 ]
 

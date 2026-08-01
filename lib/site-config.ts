@@ -77,7 +77,7 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     description:
       "Private chef service, provisioning, dining style, and meal moments at the estate.",
     category: "primary",
-    images: [IMAGES.chefCarry.src, IMAGES.diningRoom.src],
+    images: [IMAGES.chefMarvinPlates.src, IMAGES.diningRoom.src],
   },
   {
     path: "/experiences",

@@ -63,8 +63,8 @@ const highlightCards: HighlightCard[] = [
     ctaLabel: "Discover services",
     href: "/book",
     images: [
-      IMAGES.chefCarry,
-      IMAGES.chefNatalie,
+      IMAGES.chefMarvinPlates,
+      IMAGES.chefMarvinKitchen,
       IMAGES.logoDrink,
       IMAGES.diningFoodDetail,
       IMAGES.diningSpread,

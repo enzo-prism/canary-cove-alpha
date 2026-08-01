@@ -135,17 +135,19 @@ export const IMAGES = {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059676/Facilities-Shot_dyshzq.webp",
     alt: "Hammock and palms by the water",
   },
-  chefNatalie: {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059676/Chef-Services-Natalie_gallery_e7gom9.webp",
-    alt: "Chef Natalie smiling in the kitchen",
+  // Chef Marvin is the estate's current chef. These replaced the former chef's
+  // photos across the site; do not reintroduce the old Nathalie/Natalie assets.
+  chefMarvinKitchen: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546988/canarycove-gil2026-eb3ab337.jpg",
+    alt: "Chef Marvin searing at the kitchen range",
   },
-  chefNataliePortrait: {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059648/Nathalie_gallery_amz7n1.webp",
-    alt: "Chef Natalie in the kitchen",
+  chefMarvinPortrait: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546988/canarycove-gil2026-f07c60e2.jpg",
+    alt: "Chef Marvin presenting a plated dish in the villa kitchen",
   },
-  chefCarry: {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059666/Canary-Cove-Nathalie_Eat_xjcxmt.webp",
-    alt: "Chef carrying plated dishes with a smile",
+  chefMarvinPlates: {
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546987/canarycove-gil2026-cfb8d7ac.jpg",
+    alt: "Chef Marvin carrying plated dishes with a smile",
   },
   bathroomAlt: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059660/canarycove-haydeelustudio-10-scaled_bp10wc.webp",

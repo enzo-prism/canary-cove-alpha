@@ -74,7 +74,7 @@ export const MODEL_LINEUP = [
     name: "Chef Service",
     tagline: "Meals that match the view.",
     summary: "Private chef lunches and dinners served daily so the schedule stays yours.",
-    image: IMAGES.chefCarry,
+    image: IMAGES.chefMarvinPlates,
     finishes: [
       { name: "Porcelain", color: "#f1ece3" },
       { name: "Coconut", color: "#d9cfc1" },
@@ -218,7 +218,7 @@ export const HOMEPAGE_TESTIMONIALS = [
   },
   {
     ...TESTIMONIAL_SPOTLIGHTS.home[1],
-    image: IMAGES.chefNatalie,
+    image: IMAGES.chefMarvinKitchen,
   },
   {
     ...TESTIMONIAL_SPOTLIGHTS.home[2],

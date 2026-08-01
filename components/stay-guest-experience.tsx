@@ -13,7 +13,7 @@ const experienceCards = [
   {
     title: "Chef-led dining",
     detail: "Private lunches and dinners are served at the estate so your group never has to work around a restaurant schedule.",
-    image: IMAGES.chefNataliePortrait,
+    image: IMAGES.chefMarvinPortrait,
   },
   {
     title: "Quiet private suites",
