@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BedDouble, Calendar, Compass, Home, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
+import { BedDouble, Calendar, Compass, Home, Images, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
 import { trackNavClick } from "@/lib/analytics"
@@ -19,6 +19,7 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
   const navIcons: Record<string, typeof Home> = {
     Home,
     Stay: BedDouble,
+    Gallery: Images,
     Experience: Compass,
     Dining: Utensils,
     Adventures: Waves,
@@ -66,6 +67,7 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
         {ctas.map((item) => {
           const active = isActive(item.href)
           const isPrimaryCta = item.label === "Book"
+          const Icon = navIcons[item.label]
 
           return (
             <Button
@@ -80,7 +82,12 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
               )}
             >
               <Link href={item.href} aria-current={active ? "page" : undefined} onClick={() => trackNavClick("header_desktop", item.href)}>
-                {item.label}
+                {Icon ? (
+                  <span className="nav-icon">
+                    <Icon className="h-3.5 w-3.5" />
+                  </span>
+                ) : null}
+                <span className="nav-label">{item.label}</span>
               </Link>
             </Button>
           )
