@@ -95,12 +95,14 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <html lang="en" className={`${sfPro.variable} overflow-x-hidden`}>
+    // overflow-x-clip, not -hidden: see the note in app/globals.css. `hidden`
+    // makes html/body scroll containers and breaks every `position: sticky`.
+    <html lang="en" className={`${sfPro.variable} overflow-x-clip`}>
       <head>
         <SiteStructuredData />
       </head>
       <body
-        className={`${sfPro.className} overflow-x-hidden font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
+        className={`${sfPro.className} overflow-x-clip font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
       >
         <a
           href="#main-content"

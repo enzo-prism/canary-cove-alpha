@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
@@ -23,6 +23,7 @@ export function Header() {
   const pathname = normalizePath(usePathname() ?? "/")
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const headerRef = useRef<HTMLElement | null>(null)
   const mobileSheetId = "mobile-nav-sheet"
   const hasImmersiveTop = (pathname === "/" || pathname === "/experiences") && !scrolled
 
@@ -40,6 +41,26 @@ export function Header() {
     onScroll()
     window.addEventListener("scroll", onScroll)
     return () => window.removeEventListener("scroll", onScroll)
+  }, [])
+
+  // The header shrinks on scroll and is a different height on mobile, so
+  // anything that pins itself below it has to track the live measurement
+  // rather than hardcode an offset. Published as --site-header-height.
+  useEffect(() => {
+    const element = headerRef.current
+    if (!element || typeof ResizeObserver === "undefined") return
+
+    const publish = () => {
+      document.documentElement.style.setProperty(
+        "--site-header-height",
+        `${Math.round(element.getBoundingClientRect().height)}px`,
+      )
+    }
+    publish()
+
+    const observer = new ResizeObserver(publish)
+    observer.observe(element)
+    return () => observer.disconnect()
   }, [])
 
   useEffect(() => {
@@ -65,6 +86,7 @@ export function Header() {
 
   return (
     <header
+      ref={headerRef}
       className={`sticky top-0 z-50 border-b transition-all duration-300 ${
         hasImmersiveTop
           ? "border-white/10 bg-background/35 backdrop-blur-md"

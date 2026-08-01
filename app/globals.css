@@ -62,6 +62,10 @@ body[data-scroll-locked] elevenlabs-convai {
   --sidebar-ring: var(--ring);
 
   --radius: 1rem;
+  /* Live height of the sticky site header, republished by components/header.tsx
+     on every resize. This value is the pre-hydration fallback, so anything
+     pinned below the header never overlaps it on the first paint. */
+  --site-header-height: 77px;
   --shadow-soft: 0 24px 70px rgba(15, 23, 42, 0.08);
   --shadow-subtle: 0 12px 30px rgba(15, 23, 42, 0.06);
 
@@ -173,14 +177,19 @@ body[data-scroll-locked] elevenlabs-convai {
     @apply border-border;
   }
 
+  /* `overflow-x: clip`, never `hidden`. Both contain horizontal overflow, but
+     `hidden` forces `overflow-y` to `auto`, which turns html/body into scroll
+     containers and silently kills `position: sticky` for every descendant -
+     the site header and the gallery filter bar included. `clip` creates no
+     scrollport, so sticky keeps resolving against the viewport. */
   body {
     @apply bg-background text-foreground antialiased;
     font-feature-settings: "liga" on, "cv11" on, "ss01" on;
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   html {
-    overflow-x: hidden;
+    overflow-x: clip;
   }
 
   main {

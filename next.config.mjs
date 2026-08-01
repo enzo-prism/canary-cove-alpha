@@ -40,7 +40,9 @@ const nextConfig = {
   },
   async redirects() {
     return [
-      { source: "/about/photo-gallery", destination: "/stay", permanent: true },
+      // Legacy photo-gallery URL from the old site. It pointed at /stay while
+      // there was no gallery to send it to; /gallery is now that page.
+      { source: "/about/photo-gallery", destination: "/gallery", permanent: true },
       { source: "/stay/suites", destination: "/stay#suites", permanent: true },
       { source: "/stay/villa", destination: "/stay#villa", permanent: true },
       { source: "/stay/villa/inside", destination: "/stay#inside-the-villa", permanent: true },
@@ -61,7 +63,6 @@ const nextConfig = {
       { source: "/about/reviews", destination: "/about#reviews", permanent: true },
       { source: "/about/getting-here", destination: "/about#getting-here", permanent: true },
       { source: "/about/faq", destination: "/about#faq", permanent: true },
-      { source: "/gallery", destination: "/stay", permanent: true },
       { source: "/lms.txt", destination: "/llms.txt", permanent: true },
     ]
   },
