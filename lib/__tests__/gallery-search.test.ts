@@ -162,6 +162,21 @@ describe("gallery data", () => {
       ).toBeGreaterThan(0)
     }
   })
+
+  it("finds the staff the property is known by name", () => {
+    // The vision captions only ever said "chef", so the Chef Marvin pack was
+    // invisible to the one search a guest or Gil would actually type.
+    const marvin = filterGalleryPhotos(GALLERY_PHOTOS, { query: "marvin", category: "all" })
+    expect(marvin.length).toBeGreaterThan(0)
+    expect(marvin.every((entry) => entry.source === "gil-2026-07")).toBe(true)
+  })
+
+  it("still reaches the open-fire cooking shots through chef vocabulary", () => {
+    // That photo carries no "chef" tag of its own; "outdoor-cooking" has to
+    // resolve through the chef/cook synonym group.
+    const chef = filterGalleryPhotos(GALLERY_PHOTOS, { query: "chef", category: "all" })
+    expect(chef.some((entry) => entry.tags.includes("outdoor-cooking"))).toBe(true)
+  })
 })
 
 describe("getGalleryCategoryLabel", () => {
