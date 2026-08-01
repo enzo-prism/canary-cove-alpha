@@ -136,6 +136,26 @@ test.describe("private guest area", () => {
     expect(privateNavigationRequests).toEqual([])
   })
 
+  test("explains an edge-rate-limited login instead of crashing the page", async ({ page }) => {
+    // The Vercel WAF rate limits POST /guest/access (5 per 600s per IP) and
+    // denies with a 429 before the request reaches the server action, so the
+    // form cannot render this as an inline error. Simulate that denial.
+    await page.route("**/guest/access**", async (route) => {
+      if (route.request().method() !== "POST") return route.fallback()
+      await route.fulfill({ status: 429, contentType: "text/plain", body: "Too Many Requests" })
+    })
+
+    await page.goto("/guest/access?next=%2Fguest")
+    await page.getByLabel("Access password").fill("test-guest-password")
+    await page.getByRole("button", { name: "Open guest guide" }).click()
+
+    await expect(page.getByRole("heading", { name: "We could not complete that request", level: 1 })).toBeVisible()
+    await expect(page.getByText("pauses new attempts for about ten minutes")).toBeVisible()
+    await expect(page.getByRole("button", { name: "Try again" })).toBeVisible()
+    await expect(page.getByText("Application error")).toHaveCount(0)
+    await expect(page.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toHaveCount(0)
+  })
+
   test("keeps the private guest area out of public discovery files", async ({ request, baseURL }) => {
     const robots = await (await request.get(`${baseURL}/robots.txt`)).text()
     expect(robots).toContain("Disallow: /guest")
