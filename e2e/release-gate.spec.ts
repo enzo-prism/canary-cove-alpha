@@ -3,6 +3,22 @@ import { expect, test } from "@playwright/test"
 import { SITE_ROUTES, installErrorCollectors, waitForPageReady } from "./helpers"
 
 test.describe("release gate smoke coverage", () => {
+  test("publishes the complete repeat-guest Main House terms", async ({ page }) => {
+    await page.goto("/rates#main-house-accommodations")
+    const mainHouse = page.locator("#main-house-accommodations")
+
+    await expect(mainHouse).toContainText("Repeat guests only")
+    await expect(mainHouse).toContainText("5-suite Main House")
+    await expect(mainHouse).toContainText("$2,500")
+    await expect(mainHouse).toContainText("$3,000")
+    await expect(mainHouse).toContainText("$3,600")
+    await expect(mainHouse).toContainText("$10,000 damage deposit")
+    await expect(mainHouse.getByRole("link", { name: "Request the Main House" })).toHaveAttribute(
+      "href",
+      "/book?accommodation=main-house",
+    )
+  })
+
   for (const route of SITE_ROUTES) {
     test(`route ${route} loads cleanly`, async ({ page }) => {
       const issues = installErrorCollectors(page)
