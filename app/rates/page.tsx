@@ -434,6 +434,24 @@ export default function Page() {
                     <SeasonCard key={season.name} season={season} />
                   ))}
                 </div>
+                <div className="mt-6 flex flex-col gap-4 rounded-[24px] border border-primary/20 bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="max-w-2xl flow-xs">
+                    <p className="text-sm font-semibold text-foreground">Main House booking requirements</p>
+                    <p className="text-sm leading-6 text-muted-foreground">
+                      Available only to returning Canary Cove guests. A separate $10,000 damage deposit applies to every Main House stay.
+                    </p>
+                  </div>
+                  <Button asChild size="lg" className="shrink-0">
+                    <TrackedLink
+                      href="/book?accommodation=main-house"
+                      eventName="cta_click"
+                      eventPayload={{ location: "rates_main_house", target: "/book" }}
+                    >
+                      Request the Main House
+                      <ArrowUpRight className="size-4" />
+                    </TrackedLink>
+                  </Button>
+                </div>
               </Card>
 
               <Card className="surface-panel overflow-hidden rounded-[32px] border-border/60 bg-white/94 shadow-[0_22px_65px_rgba(15,23,42,0.08)]">

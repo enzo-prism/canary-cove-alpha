@@ -125,6 +125,8 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel(/^Confirm Email Address$/).fill("mismatch@example.com")
     await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
     await page.getByLabel("Preferred Departure Date").fill("2026-06-08")
+    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
+    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
     await page.getByLabel("Message").fill("Would love to celebrate a birthday week with diving and boat days.")
     await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
 
@@ -156,6 +158,8 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
     await page.getByLabel("Preferred Departure Date").fill("2026-06-15")
     await page.getByLabel("Number of Adult Guests").fill("4")
+    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
+    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
     await page.getByLabel("Message").fill("Looking for a five-night stay with chef dinners and one fishing day.")
     await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
     await page.getByTestId("booking-submit").click()
@@ -181,11 +185,37 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
     await page.getByLabel("Preferred Departure Date").fill("2026-06-15")
     await page.getByLabel("Number of Adult Guests").fill("4")
+    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
+    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
     await page.getByLabel("Message").fill("Trying again to verify the error state is visible.")
     await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
     await page.getByTestId("booking-submit").click()
 
     await expect(page.getByTestId("booking-error")).toContainText("Something went wrong")
     expect(await getGenerateLeadEvents(page)).toEqual([])
+  })
+
+  test("qualifies Main House requests as returning-guest only", async ({ page }) => {
+    let formRequests = 0
+    await page.route(FORM_API_ROUTE, async (route) => {
+      formRequests += 1
+      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) })
+    })
+
+    await page.goto("/book?accommodation=main-house")
+    await waitForPageReady(page)
+    await page.getByLabel("First Name").fill("Alex")
+    await page.getByLabel("Last Name").fill("Martin")
+    await page.getByLabel("Phone Number").fill("+1 555 123 1234")
+    await page.getByLabel(/^Email Address$/).fill("alex@example.com")
+    await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
+    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
+    await page.getByLabel("Message").fill("I am interested in bringing a larger family group.")
+    await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
+    await page.getByTestId("booking-submit").click()
+
+    await expect(page.getByTestId("booking-validation-summary")).toContainText("available only to returning Canary Cove guests")
+    await expect(page.getByText("separate $10,000 damage deposit")).toBeVisible()
+    expect(formRequests).toBe(0)
   })
 })

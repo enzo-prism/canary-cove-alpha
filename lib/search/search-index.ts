@@ -103,6 +103,16 @@ export const SEARCH_ITEMS: SearchItem[] = [
     type: "section",
   },
   {
+    id: "main-house-repeat-guests",
+    title: "Main House for returning guests",
+    description: "Five-suite seasonal pricing for repeat guests, with a separate $10,000 damage deposit.",
+    href: "/rates#main-house-accommodations",
+    group: "Pricing & availability",
+    keywords: ["main house", "repeat guest", "returning guest", "5 suites", "family reunion", "damage deposit", "$10,000"],
+    intent: "pricing",
+    type: "section",
+  },
+  {
     id: "availability-calendar",
     title: "Availability calendar & holds",
     description:

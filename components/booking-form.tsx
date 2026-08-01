@@ -33,11 +33,14 @@ const FORM_KEY = "booking"
 
 type BookingFormProps = {
   className?: string
+  defaultAccommodation?: "villa" | "main-house"
+  defaultReturningGuest?: "yes" | "no"
 }
 
-export function BookingForm({ className }: BookingFormProps) {
+export function BookingForm({ className, defaultAccommodation, defaultReturningGuest }: BookingFormProps) {
   const [alertOpen, setAlertOpen] = useState(false)
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
+  const [accommodation, setAccommodation] = useState(defaultAccommodation ?? "")
   const [validationError, setValidationError] = useState<string | null>(null)
   const [fieldErrors, setFieldErrors] = useState<{
     confirmEmail?: string
@@ -57,6 +60,8 @@ export function BookingForm({ className }: BookingFormProps) {
     const confirmEmail = String(formData.get("confirmEmail") ?? "").trim()
     const arrival = String(formData.get("arrival") ?? "").trim()
     const departure = String(formData.get("departure") ?? "").trim()
+    const requestedAccommodation = String(formData.get("accommodation") ?? "").trim()
+    const returningGuest = String(formData.get("returningGuest") ?? "").trim()
 
     if (email !== confirmEmail) {
       setFieldErrors({
@@ -76,6 +81,13 @@ export function BookingForm({ className }: BookingFormProps) {
       setValidationError("Departure date must be after your arrival date.")
       trackFormSubmitError(FORM_KEY, "invalid_date_range")
       form.querySelector<HTMLInputElement>("#departure")?.focus()
+      return
+    }
+
+    if (requestedAccommodation === "main-house" && returningGuest !== "yes") {
+      setValidationError("The 5-suite Main House is available only to returning Canary Cove guests. Please choose the Villa for a first stay.")
+      trackFormSubmitError(FORM_KEY, "main_house_eligibility")
+      form.querySelector<HTMLButtonElement>("#returningGuest")?.focus()
       return
     }
 
@@ -284,6 +296,47 @@ export function BookingForm({ className }: BookingFormProps) {
 
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
+                  <Label htmlFor="accommodation">Accommodation requested</Label>
+                  <Select
+                    name="accommodation"
+                    required
+                    defaultValue={defaultAccommodation}
+                    onValueChange={setAccommodation}
+                  >
+                    <SelectTrigger id="accommodation" className={selectClassName}>
+                      <SelectValue placeholder="Choose an accommodation" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="villa">Villa (1–3 suites)</SelectItem>
+                      <SelectItem value="main-house">Main House (5 suites)</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="returningGuest">Have you stayed at Canary Cove before?</Label>
+                  <Select name="returningGuest" required defaultValue={defaultReturningGuest}>
+                    <SelectTrigger id="returningGuest" className={selectClassName}>
+                      <SelectValue placeholder="Choose yes or no" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="yes">Yes, I am a returning guest</SelectItem>
+                      <SelectItem value="no">No, this would be my first stay</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+
+              {accommodation === "main-house" ? (
+                <Alert className="rounded-[24px] border-primary/25 bg-primary/5">
+                  <AlertTitle>Main House eligibility</AlertTitle>
+                  <AlertDescription>
+                    The full 5-suite Main House is reserved for returning guests and carries a separate $10,000 damage deposit.
+                  </AlertDescription>
+                </Alert>
+              ) : null}
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div className="space-y-2">
                   <Label htmlFor="arrival">Preferred Arrival Date</Label>
                   <Input
                     id="arrival"
@@ -384,6 +437,7 @@ export function BookingForm({ className }: BookingFormProps) {
                     <SelectValue placeholder="How did you hear about Canary Cove?" />
                   </SelectTrigger>
                   <SelectContent>
+                    <SelectItem value="returning-guest">Previous stay / returning guest</SelectItem>
                     <SelectItem value="google">Google</SelectItem>
                     <SelectItem value="other-search">Other search engine</SelectItem>
                     <SelectItem value="facebook">Facebook</SelectItem>

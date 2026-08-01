@@ -14,7 +14,15 @@ import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.book
 
-export default function Page() {
+type BookPageProps = {
+  searchParams: Promise<{ accommodation?: string; returning?: string }>
+}
+
+export default async function Page({ searchParams }: BookPageProps) {
+  const params = await searchParams
+  const defaultAccommodation = params.accommodation === "main-house" ? "main-house" : undefined
+  const defaultReturningGuest = params.returning === "yes" ? "yes" : undefined
+
   return (
     <main id="main-content" className="min-h-screen">
       <PageStructuredData path="/book" />
@@ -85,7 +93,11 @@ export default function Page() {
               </Card>
             </div>
 
-            <BookingForm className="order-2 lg:sticky lg:top-24 lg:self-start" />
+            <BookingForm
+              className="order-2 lg:sticky lg:top-24 lg:self-start"
+              defaultAccommodation={defaultAccommodation}
+              defaultReturningGuest={defaultReturningGuest}
+            />
 
             <div className="order-3 space-y-6 lg:col-span-2">
               <BookingPolicies />
