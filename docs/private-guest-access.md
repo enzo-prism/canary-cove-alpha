@@ -13,6 +13,15 @@ The `/guest` route is a server-rendered, fail-closed scaffold for future guest i
 - Google Analytics, Vercel Analytics, and the ElevenLabs widget are disabled for `/guest` through `components/public-runtime-services.tsx`.
 - `/guest` is disallowed in `robots.txt` and remains absent from navigation, search, sitemap, and llms files. Those are discovery controls only, not authentication.
 
+## Login rate limit
+
+A Vercel WAF rule on the project (`Rate limit guest login`, id `rule_rate_limit_guest_login_HxFvlR`) denies `POST /guest/access` beyond **5 requests per 600s per IP**, in a fixed window. The denial happens at the edge and returns `429` with `x-vercel-mitigated: deny`, so the request never reaches `loginGuest()` and the form cannot render it as an inline error. `app/guest/error.tsx` catches the resulting client error and explains the wait.
+
+Two consequences worth knowing before debugging a login report:
+
+- Everyone behind one public IP shares the budget. Automated verification of the login flow will lock out a human on the same network for the rest of the window, and each further attempt refills a fixed window rather than draining it.
+- Scripted checks of this flow should stay under five POSTs per ten minutes, or expect a `429` that looks like an application failure rather than a rate limit.
+
 ## Content rules
 
 - Never place guest documents or private details in `public/`, client components, browser bundles, source maps, query strings, analytics, or logs.
