@@ -43,6 +43,10 @@ const nextConfig = {
       // Legacy photo-gallery URL from the old site. It pointed at /stay while
       // there was no gallery to send it to; /gallery is now that page.
       { source: "/about/photo-gallery", destination: "/gallery", permanent: true },
+      // Don has circulated /stay/main-house to repeat guests since May 2025;
+      // the Main House page now lives on its own subdomain. Temporary redirect
+      // on purpose: the destination may move behind the /guest gate later.
+      { source: "/stay/main-house", destination: "https://mainhouse.canarycove.com", permanent: false },
       { source: "/stay/suites", destination: "/stay#suites", permanent: true },
       { source: "/stay/villa", destination: "/stay#villa", permanent: true },
       { source: "/stay/villa/inside", destination: "/stay#inside-the-villa", permanent: true },
