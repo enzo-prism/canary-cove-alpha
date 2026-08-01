@@ -60,35 +60,21 @@ export function ContactForm() {
       <CardContent className="p-6 sm:p-7">
         {status === "success" ? (
           <div className="flow flow-sm" aria-live="polite" data-testid="contact-success">
-            <p className="form-kicker">Message sent</p>
             <h2 className="text-section text-balance">Thanks for reaching out.</h2>
             <p className="text-body text-foreground/80">
               Your note is in. We respond within one business day with next steps and availability.
             </p>
-            <div className="flex flex-wrap gap-2">
-              <span className="form-meta">Response within one business day</span>
-              <span className="form-meta">Availability help available</span>
-            </div>
             <Button type="button" variant="outline" className="w-fit" onClick={() => setStatus("idle")}>
               Send another message
             </Button>
           </div>
         ) : (
           <form className="flow flow-md" onSubmit={handleSubmit}>
-            <div className="space-y-4">
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-                <div className="flow flow-sm">
-                  <p className="form-kicker">General inquiries</p>
-                  <h2 className="text-section text-balance">Ask about dates, logistics, or the stay itself.</h2>
-                  <p className="text-body max-w-xl text-foreground/80">
-                    If you already know your travel window, include it below and we&apos;ll point you to the fastest next step.
-                  </p>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <span className="form-meta">Thoughtful replies</span>
-                  <span className="form-meta">No call required</span>
-                </div>
-              </div>
+            <div className="flow flow-sm">
+              <h2 className="text-section text-balance">Ask about dates, logistics, or the stay itself.</h2>
+              <p className="text-body max-w-xl text-foreground/80">
+                If you already know your travel window, include it below and we&apos;ll point you to the fastest next step.
+              </p>
             </div>
 
             <div className="form-section grid gap-4 md:grid-cols-2">

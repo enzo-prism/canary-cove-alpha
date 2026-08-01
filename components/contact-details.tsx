@@ -1,6 +1,5 @@
 "use client"
 
-import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -58,9 +57,7 @@ export function ContactDetails() {
     <Card className="rounded-2xl border border-border/70 bg-white/90 shadow-[0_12px_40px_rgba(15,23,42,0.08)]">
       <CardContent className="space-y-6 p-6">
         <div className="space-y-4">
-          <Badge variant="outline" className="border-border/70 text-sm uppercase tracking-[0.3em] text-muted-foreground">
-            Other Ways to Get in Touch
-          </Badge>
+          <p className="form-kicker">Other Ways to Get in Touch</p>
           {contacts.map((contact, index) => (
             <div key={contact.name} className="space-y-6">
               <ContactPerson contact={contact} />
@@ -72,9 +69,7 @@ export function ContactDetails() {
         <Separator className="bg-border/70" />
 
         <div className="space-y-2">
-          <Badge variant="outline" className="border-border/70 text-sm uppercase tracking-[0.3em] text-muted-foreground">
-            Canary Cove Location
-          </Badge>
+          <p className="form-kicker">Canary Cove Location</p>
           <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.latitude}</p>
           <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.longitude}</p>
         </div>
@@ -82,9 +77,7 @@ export function ContactDetails() {
         <Separator className="bg-border/70" />
 
         <div className="space-y-2">
-          <Badge variant="outline" className="border-border/70 text-sm uppercase tracking-[0.3em] text-muted-foreground">
-            Address
-          </Badge>
+          <p className="form-kicker">Address</p>
           <p className="text-sm text-muted-foreground">
             {SITE_ADDRESS_LINES[0]}
             <br />
