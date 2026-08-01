@@ -31,11 +31,13 @@ export default function Page() {
             <CardContent className="p-0">
               <AspectRatio ratio={16 / 9} className="relative">
                 <Image
-                  src={IMAGES.chefCarry.src}
-                  alt={IMAGES.chefCarry.alt}
+                  src={IMAGES.chefMarvinPlates.src}
+                  alt={IMAGES.chefMarvinPlates.alt}
                   fill
                   sizes="(min-width: 1024px) 1000px, 100vw"
-                  className="object-cover"
+                  // Portrait source in a 16:9 frame: a centre crop lands on the
+                  // apron and cuts the chef's head off, so bias the crop upward.
+                  className="object-cover object-[50%_22%]"
                   priority
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">
@@ -83,9 +85,9 @@ export default function Page() {
               IMAGES.diningTable,
               IMAGES.chipsAndDrinks,
               IMAGES.logoDrink,
-              IMAGES.chefNatalie,
-              { ...IMAGES.chefNataliePortrait, caption: "Chef Natalie" },
-              IMAGES.chefCarry,
+              IMAGES.chefMarvinKitchen,
+              { ...IMAGES.chefMarvinPortrait, caption: "Chef Marvin" },
+              IMAGES.chefMarvinPlates,
               IMAGES.dinnerPlated,
               IMAGES.dinnerAlt,
               IMAGES.shrimpDinner,

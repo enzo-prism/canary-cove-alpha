@@ -27,7 +27,7 @@ const photos = [
     detail: "Sea turtles, bright reefs, and gentle currents for all levels.",
   },
   {
-    ...IMAGES.chefNatalie,
+    ...IMAGES.chefMarvinKitchen,
     caption: "🍽️ Private-chef dinners without leaving the villa.",
     detail: "Seasonal menus, local catch, and candlelit tables on the deck.",
   },

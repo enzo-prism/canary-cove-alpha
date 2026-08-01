@@ -163,6 +163,18 @@ describe("gallery data", () => {
     }
   })
 
+  it("carries no photographs of the former chef anywhere in the data", () => {
+    // She left Canary Cove years ago and the client asked for her photos to be
+    // removed. Only one of the three named her in its caption; the other two
+    // were identifiable by filename, so match on the URL as well as the text.
+    for (const entry of GALLERY_PHOTOS) {
+      expect(entry.src.toLowerCase(), entry.id).not.toMatch(/nathalie|natalie/)
+      expect(entry.alt.toLowerCase(), entry.id).not.toContain("natalie")
+      expect(entry.id, entry.id).not.toMatch(/natalie/i)
+      expect(entry.tags.join(" ").toLowerCase(), entry.id).not.toContain("natalie")
+    }
+  })
+
   it("finds the staff the property is known by name", () => {
     // The vision captions only ever said "chef", so the Chef Marvin pack was
     // invisible to the one search a guest or Gil would actually type.

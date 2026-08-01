@@ -87,8 +87,11 @@ export const PAGE_METADATA = {
     description:
       "See how dining works at Canary Cove, from stocked breakfasts to chef-prepared lunches, dinners, and beach picnics.",
     path: "/dining",
-    image: IMAGES.chefCarry.src,
-    imageAlt: IMAGES.chefCarry.alt,
+    // The chef photos that replaced the former chef's are all portrait, and a
+    // portrait share card crops badly, so this one stays on a landscape food
+    // shot rather than following the rest of the swap.
+    image: IMAGES.diningSpread.src,
+    imageAlt: IMAGES.diningSpread.alt,
   }),
   experiences: createPageMetadata({
     title: "Belize Experiences & Included Amenities | Canary Cove",

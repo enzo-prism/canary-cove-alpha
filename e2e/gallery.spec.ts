@@ -1,5 +1,11 @@
 import { expect, test, type Page } from "@playwright/test"
 
+import { GALLERY_PHOTOS } from "@/lib/gallery-photos"
+
+/** Read from the data file rather than hardcoded, so a photo drop is a pure
+ * data change here too and these assertions cannot silently rot. */
+const TOTAL = GALLERY_PHOTOS.length
+
 const MOBILE = { width: 390, height: 844 }
 
 async function openGallery(page: Page) {
@@ -44,7 +50,7 @@ test.describe("gallery page", () => {
 
     await expect(page).toHaveURL(/\/gallery$/)
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Every photo of Canary Cove")
-    await expect(page.getByTestId("gallery-result-count")).toContainText("225 of 225 photos")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
     expect(await photoCount(page)).toBeGreaterThan(0)
   })
 
@@ -66,7 +72,7 @@ test.describe("gallery page", () => {
     const before = await photoCount(page)
 
     await page.getByTestId("gallery-search-input").fill("ceviche")
-    await expect(page.getByTestId("gallery-result-count")).not.toContainText("225 of 225")
+    await expect(page.getByTestId("gallery-result-count")).not.toContainText(`${TOTAL} of ${TOTAL}`)
 
     const after = await photoCount(page)
     expect(after).toBeLessThan(before)
@@ -86,21 +92,31 @@ test.describe("gallery page", () => {
 
     await page.getByTestId("gallery-search-input").fill("snowstorm")
     await expect(page.getByTestId("gallery-empty")).toBeVisible()
-    await expect(page.getByTestId("gallery-result-count")).toContainText("0 of 225")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`0 of ${TOTAL}`)
 
     await page.getByTestId("gallery-empty").getByRole("button", { name: "Reset filters" }).click()
-    await expect(page.getByTestId("gallery-result-count")).toContainText("225 of 225")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL}`)
   })
 
   test("filters by category chip and reports the count on the chip itself", async ({ page }) => {
     await openGallery(page)
 
+    const diningCount = GALLERY_PHOTOS.filter((photo) => photo.category === "dining-food").length
     const chip = page.getByTestId("gallery-filter-dining-food")
-    await expect(chip).toContainText("40")
+    await expect(chip).toContainText(String(diningCount))
     await chip.click()
 
     await expect(chip).toHaveAttribute("aria-pressed", "true")
-    await expect(page.getByTestId("gallery-result-count")).toContainText("40 of 225 photos")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${diningCount} of ${TOTAL} photos`)
+  })
+
+  test("carries no photographs of former staff", async ({ page }) => {
+    // Chef Natalie left the property years ago and the client asked for her
+    // photos to come off the site. Two of the three were only identifiable by
+    // filename, so this guards the URLs rather than the captions.
+    await openGallery(page)
+    await page.getByTestId("gallery-search-input").fill("natalie")
+    await expect(page.getByTestId("gallery-empty")).toBeVisible()
   })
 
   test("combines a category with a search", async ({ page }) => {
@@ -120,12 +136,12 @@ test.describe("gallery page", () => {
     expect(first).toBe(36)
 
     await expect.poll(() => scrollToBottomAndCount(page), { timeout: 15_000 }).toBeGreaterThan(first)
-    await expect(page.getByTestId("gallery-result-count")).toContainText("225 of 225 photos")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
   })
 
   test("reaches the end of the library by scrolling", async ({ page }) => {
     await openGallery(page)
-    await expect.poll(() => scrollToBottomAndCount(page), { timeout: 30_000 }).toBe(225)
+    await expect.poll(() => scrollToBottomAndCount(page), { timeout: 30_000 }).toBe(TOTAL)
     await expect(page.getByTestId("gallery-end")).toBeVisible()
   })
 
