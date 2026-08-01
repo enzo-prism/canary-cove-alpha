@@ -1,5 +1,7 @@
 import { expect, test } from "@playwright/test"
 
+import { NAV_ITEMS } from "@/lib/nav-items"
+
 const viewports = [
   { name: "mobile", width: 375, height: 812 },
   { name: "tablet", width: 768, height: 1024 },
@@ -119,6 +121,21 @@ test.describe("responsive layout coverage", () => {
 
 test.describe("nav icon hover motion", () => {
   test.use({ viewport: { width: 1280, height: 900 } })
+
+  test("every desktop navigation item has a visible icon", async ({ page }) => {
+    await page.goto("/")
+    await page.waitForLoadState("domcontentloaded")
+    await page.evaluate(() => document.fonts.ready)
+
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    for (const item of NAV_ITEMS) {
+      if (item.type !== "link") continue
+      const label = item.label
+      const icon = nav.getByRole("link", { name: label, exact: true }).locator(".nav-icon")
+      await expect(icon, `${label} should have a desktop navigation icon`).toBeVisible()
+      await expect(icon.locator("svg")).toHaveCount(1)
+    }
+  })
 
   test("icon animates without moving label", async ({ page }) => {
     await page.goto("/")
