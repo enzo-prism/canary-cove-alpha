@@ -23,6 +23,21 @@ async function scrollToBottomAndCount(page: Page) {
   return photoCount(page)
 }
 
+/**
+ * Scroll far enough down that the sticky filter bar has actually reached its
+ * pinned position. Polled because the grid lazy-loads: right after navigation
+ * the document can still be shorter than the target, so a single scrollTo
+ * silently clamps and leaves the bar sitting in normal flow.
+ */
+async function scrollPast(page: Page, target: number) {
+  await expect
+    .poll(async () => {
+      await page.evaluate((value) => window.scrollTo(0, value), target)
+      return page.evaluate(() => window.scrollY)
+    })
+    .toBeGreaterThanOrEqual(target)
+}
+
 test.describe("gallery page", () => {
   test("renders the searchable library at /gallery", async ({ page }) => {
     await openGallery(page)
@@ -162,8 +177,7 @@ test.describe("gallery page on a phone", () => {
 
   test("keeps search and filters reachable while scrolling the grid", async ({ page }) => {
     await openGallery(page)
-    await page.evaluate(() => window.scrollTo(0, 1400))
-    await page.waitForTimeout(300)
+    await scrollPast(page, 1400)
 
     const search = page.getByTestId("gallery-search-input")
     await expect(search).toBeInViewport()
@@ -182,8 +196,7 @@ test.describe("gallery page on a phone", () => {
     page,
   }) => {
     await openGallery(page)
-    await page.evaluate(() => window.scrollTo(0, 1400))
-    await page.waitForTimeout(300)
+    await scrollPast(page, 1400)
 
     // The header shrinks on scroll; a hardcoded offset drifts and leaks a strip
     // of moving photo between the two bars. Polled because the offset is
