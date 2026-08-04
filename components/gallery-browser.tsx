@@ -11,11 +11,16 @@ import { Input } from "@/components/ui/input"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
 import { GALLERY_PHOTOS, type GalleryCategory } from "@/lib/gallery-photos"
 import {
+  ACTIVE_GALLERY_AMENITIES,
   ACTIVE_GALLERY_CATEGORIES,
+  ACTIVE_GALLERY_SUITES,
+  countGalleryPhotosByAmenity,
   countGalleryPhotosByCategory,
+  countGalleryPhotosBySuite,
   filterGalleryPhotos,
   orderGalleryPhotos,
 } from "@/lib/gallery-search"
+import type { GalleryAmenity, GallerySuite } from "@/lib/gallery-photos"
 
 /** Browse order is a pure function of the manifest, so it is computed once. */
 const ORDERED_PHOTOS = orderGalleryPhotos(GALLERY_PHOTOS)
@@ -31,6 +36,8 @@ const LOAD_MORE_STEP = 36
 export function GalleryBrowser() {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<GalleryCategory | "all">("all")
+  const [suite, setSuite] = useState<GallerySuite | "all">("all")
+  const [amenity, setAmenity] = useState<GalleryAmenity | "all">("all")
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   // True once an IntersectionObserver is watching the end of the grid. While it
@@ -43,11 +50,19 @@ export function GalleryBrowser() {
   const deferredQuery = useDeferredValue(query)
 
   const filtered = useMemo(
-    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category }),
-    [category, deferredQuery],
+    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category, suite, amenity }),
+    [amenity, category, deferredQuery, suite],
   )
   const categoryCounts = useMemo(
     () => countGalleryPhotosByCategory(ORDERED_PHOTOS, deferredQuery),
+    [deferredQuery],
+  )
+  const suiteCounts = useMemo(
+    () => countGalleryPhotosBySuite(ORDERED_PHOTOS, deferredQuery),
+    [deferredQuery],
+  )
+  const amenityCounts = useMemo(
+    () => countGalleryPhotosByAmenity(ORDERED_PHOTOS, deferredQuery),
     [deferredQuery],
   )
 
@@ -56,7 +71,12 @@ export function GalleryBrowser() {
   // not scrolled.
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE)
-  }, [category, deferredQuery])
+  }, [amenity, category, deferredQuery, suite])
+
+  useEffect(() => {
+    if (category !== "suites-bedrooms") setSuite("all")
+    if (category !== "pool") setAmenity("all")
+  }, [category])
 
   const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
   const hasMore = visible.length < filtered.length
@@ -83,10 +103,12 @@ export function GalleryBrowser() {
     return () => observer.disconnect()
   }, [hasMore, loadMore, visible.length])
 
-  const hasFilters = query.trim().length > 0 || category !== "all"
+  const hasFilters = query.trim().length > 0 || category !== "all" || suite !== "all" || amenity !== "all"
   const resetFilters = () => {
     setQuery("")
     setCategory("all")
+    setSuite("all")
+    setAmenity("all")
   }
 
   // The lightbox only ever receives the photos already on screen, so swiping
@@ -130,7 +152,7 @@ export function GalleryBrowser() {
         </div>
 
         <div
-          className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
+          className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 pr-14 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pr-14"
           role="group"
           aria-label="Filter photos by category"
           data-testid="gallery-category-filters"
@@ -153,13 +175,81 @@ export function GalleryBrowser() {
                 }`}
               >
                 {entry.label}
-                <span className={`ml-2 tabular-nums ${isActive ? "text-background/70" : "text-muted-foreground/70"}`}>
+                <span className={`ml-2 tabular-nums ${isActive ? "text-background/80" : "text-muted-foreground"}`}>
                   {count}
                 </span>
               </button>
             )
           })}
         </div>
+
+        {category === "suites-bedrooms" && ACTIVE_GALLERY_SUITES.length > 0 ? (
+          <div
+            className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 pr-14 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pr-14"
+            role="group"
+            aria-label="Filter by suite"
+            data-testid="gallery-suite-filters"
+          >
+            {[{ id: "all" as const, label: "All suites" }, ...ACTIVE_GALLERY_SUITES].map((entry) => {
+              const count = suiteCounts.get(entry.id) ?? 0
+              const isActive = suite === entry.id
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() => setSuite(entry.id)}
+                  disabled={count === 0 && !isActive}
+                  aria-pressed={isActive}
+                  data-testid={`gallery-suite-filter-${entry.id}`}
+                  className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 ${
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border/60 bg-white/70 text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                  }`}
+                >
+                  {entry.label}
+                  <span className={`ml-1.5 tabular-nums ${isActive ? "text-background/80" : "text-muted-foreground"}`}>
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
+
+        {category === "pool" && ACTIVE_GALLERY_AMENITIES.length > 0 ? (
+          <div
+            className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 pr-14 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pr-14"
+            role="group"
+            aria-label="Filter by pool amenity"
+            data-testid="gallery-amenity-filters"
+          >
+            {[{ id: "all" as const, label: "All pool & terrace" }, ...ACTIVE_GALLERY_AMENITIES].map((entry) => {
+              const count = amenityCounts.get(entry.id) ?? 0
+              const isActive = amenity === entry.id
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() => setAmenity(entry.id)}
+                  disabled={count === 0 && !isActive}
+                  aria-pressed={isActive}
+                  data-testid={`gallery-amenity-filter-${entry.id}`}
+                  className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 ${
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border/60 bg-white/70 text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                  }`}
+                >
+                  {entry.label}
+                  <span className={`ml-1.5 tabular-nums ${isActive ? "text-background/80" : "text-muted-foreground"}`}>
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
 
       </div>
 

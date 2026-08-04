@@ -19,6 +19,10 @@ export type GalleryCategory =
 
 export type GallerySource = "site" | "gil-2026-07" | "album-2021"
 
+export type GallerySuite = "suite-1" | "suite-2" | "suite-3" | "bunk-room"
+
+export type GalleryAmenity = "pool" | "infinity-edge" | "pool-bar" | "hot-tub"
+
 export type GalleryPhoto = {
   id: string
   src: string
@@ -30,12 +34,21 @@ export type GalleryPhoto = {
   source: GallerySource
   /** Site pages/components this photo already appears on. Empty for archive photos. */
   usedIn: string[]
+  /** Suite assignment for suites-bedrooms photos. Undefined until confirmed by Don/Gil. */
+  suite?: GallerySuite
+  /**
+   * Amenity sub-groups for pool photos. Every assignment is backed by the
+   * photo's own caption/tags — nothing here is inferred from what a pool
+   * "probably" is. A photo can belong to several sub-groups (an infinity pool
+   * with a swim-up bar is both).
+   */
+  amenities?: GalleryAmenity[]
 }
 
 export const GALLERY_CATEGORIES: { id: GalleryCategory; label: string }[] = [
   { id: "suites-bedrooms", label: "Suites & bedrooms" },
-  { id: "living-spaces", label: "Living spaces" },
   { id: "pool", label: "Pool & terrace" },
+  { id: "living-spaces", label: "Living spaces" },
   { id: "villa-exterior", label: "Grounds & exterior" },
   { id: "beach-dock", label: "Beach & dock" },
   { id: "dining-food", label: "Dining & food" },
@@ -80,6 +93,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 974,
     source: "site",
     usedIn: [],
+    amenities: ["infinity-edge"],
   },
   {
     id: "bikes",
@@ -212,6 +226,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 2403,
     source: "site",
     usedIn: ["components/stay-highlights.tsx", "components/stay-outdoor-gallery.tsx"],
+    amenities: ["infinity-edge", "pool-bar"],
   },
   {
     id: "hammock",
@@ -322,6 +337,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 4806,
     source: "site",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "helipad",
@@ -421,6 +437,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 2403,
     source: "site",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "heroBackgroundEstate",
@@ -509,6 +526,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 4806,
     source: "site",
     usedIn: [],
+    amenities: ["infinity-edge", "pool-bar"],
   },
   {
     id: "heroBackgroundLawn",
@@ -597,6 +615,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 4806,
     source: "site",
     usedIn: ["app/layout.tsx", "components/stay-closing-cta.tsx", "components/stay-highlights.tsx", "components/stay-mini-gallery.tsx", "components/stay-outdoor-gallery.tsx", "lib/homepage-content.ts", "lib/seo.ts", "lib/site-config.ts", "lib/structured-data.ts"],
+    amenities: ["pool"],
   },
   {
     id: "villaLawn",
@@ -685,6 +704,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 735,
     source: "site",
     usedIn: ["components/stay-highlights.tsx", "components/stay-outdoor-gallery.tsx"],
+    amenities: ["hot-tub"],
   },
   {
     id: "villaSign",
@@ -773,6 +793,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1080,
     source: "site",
     usedIn: ["app/rates/page.tsx", "components/photo-carousel.tsx", "components/stay-highlights.tsx", "components/stay-mini-gallery.tsx", "components/stay-outdoor-gallery.tsx", "lib/homepage-content.ts", "lib/seo.ts", "lib/site-config.ts", "lib/structured-data.ts"],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-046",
@@ -861,6 +882,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 932,
     source: "album-2021",
     usedIn: [],
+    amenities: ["infinity-edge"],
   },
   {
     id: "canarycove-album2021-057",
@@ -949,6 +971,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1800,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-059",
@@ -1026,6 +1049,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-102",
@@ -1081,6 +1105,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-124",
@@ -1136,6 +1161,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["infinity-edge"],
   },
   {
     id: "canarycove-album2021-127",
@@ -1191,6 +1217,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "logoDrink",
@@ -1235,6 +1262,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 3200,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "saladAlt",
@@ -1279,6 +1307,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1800,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "shrimpDinner",
@@ -1323,6 +1352,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "tacosAlt",
@@ -1367,6 +1397,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-04e30881",
@@ -1411,6 +1442,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-2d0b8df1",
@@ -1455,6 +1487,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-3f001159",
@@ -1499,6 +1532,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-53651821",
@@ -1543,6 +1577,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1800,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-649f5ea2",
@@ -1587,6 +1622,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 3200,
     source: "album-2021",
     usedIn: [],
+    amenities: ["hot-tub"],
   },
   {
     id: "canarycove-gil2026-6dd283a9",
@@ -1631,6 +1667,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["hot-tub"],
   },
   {
     id: "canarycove-gil2026-7c1399ca",
@@ -1675,6 +1712,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["infinity-edge"],
   },
   {
     id: "canarycove-gil2026-8cb0308b",
@@ -1719,6 +1757,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-97921790",
@@ -1763,6 +1802,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-cea38c0a",
@@ -1807,6 +1847,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 978,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-e8782492",
@@ -1851,6 +1892,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["infinity-edge", "pool-bar"],
   },
   {
     id: "canarycove-gil2026-f9564a98",
@@ -1895,6 +1937,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1800,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-gil2026-fa418c8c",
@@ -1939,6 +1982,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1603,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-022",
@@ -1983,6 +2027,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    amenities: ["pool"],
   },
   {
     id: "canarycove-album2021-027",
@@ -2269,6 +2314,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1602,
     source: "album-2021",
     usedIn: [],
+    suite: "bunk-room",
   },
   {
     id: "canarycove-album2021-095",
