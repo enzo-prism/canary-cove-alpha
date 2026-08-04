@@ -19,8 +19,6 @@ export type GalleryCategory =
 
 export type GallerySource = "site" | "gil-2026-07" | "album-2021"
 
-export type GallerySuite = "suite-1" | "suite-2" | "suite-3" | "bunk-room"
-
 export type GalleryAmenity = "pool" | "infinity-edge" | "pool-bar" | "hot-tub"
 
 export type GalleryPhoto = {
@@ -34,8 +32,6 @@ export type GalleryPhoto = {
   source: GallerySource
   /** Site pages/components this photo already appears on. Empty for archive photos. */
   usedIn: string[]
-  /** Suite assignment for suites-bedrooms photos. Undefined until confirmed by Don/Gil. */
-  suite?: GallerySuite
   /**
    * Amenity sub-groups for pool photos. Every assignment is backed by the
    * photo's own caption/tags — nothing here is inferred from what a pool
@@ -2307,14 +2303,13 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
   {
     id: "canarycove-album2021-093",
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785547011/canarycove-album2021-093.jpg",
-    alt: "Children's bunk bedroom with blue bedding featuring decorative shell and hibiscus accents.",
+    alt: "Guest bedroom with blue floral bedding, dark wood bed frame, and terrace access.",
     category: "suites-bedrooms",
-    tags: ["children's room", "bunk beds", "family-friendly", "tropical"],
+    tags: ["guest bedroom", "blue bedding", "dark wood", "terrace"],
     width: 2400,
     height: 1602,
     source: "album-2021",
     usedIn: [],
-    suite: "bunk-room",
   },
   {
     id: "canarycove-album2021-095",

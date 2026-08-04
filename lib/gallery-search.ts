@@ -4,31 +4,21 @@ import {
   type GalleryAmenity,
   type GalleryCategory,
   type GalleryPhoto,
-  type GallerySuite,
 } from "@/lib/gallery-photos"
 
 export type GalleryFilter = {
   query: string
   category: GalleryCategory | "all"
-  suite?: GallerySuite | "all"
   amenity?: GalleryAmenity | "all"
 }
 
 export const DEFAULT_GALLERY_FILTER: GalleryFilter = {
   query: "",
   category: "all",
-  suite: "all",
   amenity: "all",
 }
 
 const CATEGORY_LABELS = new Map(GALLERY_CATEGORIES.map((entry) => [entry.id, entry.label]))
-
-export const GALLERY_SUITE_LABELS: { id: GallerySuite; label: string }[] = [
-  { id: "suite-1", label: "Suite 1" },
-  { id: "suite-2", label: "Suite 2" },
-  { id: "suite-3", label: "Suite 3" },
-  { id: "bunk-room", label: "Bunk Room" },
-]
 
 /**
  * Amenity sub-groups inside the Pool & terrace category, in the order the
@@ -222,7 +212,6 @@ export function filterGalleryPhotos(
   const queryTokens = tokenize(filter.query)
   return photos.filter((photo) => {
     if (filter.category !== "all" && photo.category !== filter.category) return false
-    if (filter.suite && filter.suite !== "all" && photo.suite !== filter.suite) return false
     if (filter.amenity && filter.amenity !== "all") {
       // Amenity sub-groups only exist inside the pool category, so an amenity
       // filter never surfaces a bedroom or dining photo even if one carried a
@@ -258,23 +247,6 @@ export function getGalleryCategoryLabel(category: GalleryCategory | "all") {
   return CATEGORY_LABELS.get(category) ?? category
 }
 
-export function countGalleryPhotosBySuite(photos: GalleryPhoto[], query: string) {
-  const queryTokens = tokenize(query)
-  const counts = new Map<GallerySuite | "all", number>()
-  counts.set("all", 0)
-
-  for (const photo of photos) {
-    if (photo.category !== "suites-bedrooms") continue
-    if (!matchesQuery(photo, queryTokens)) continue
-    counts.set("all", (counts.get("all") ?? 0) + 1)
-    if (photo.suite) {
-      counts.set(photo.suite, (counts.get(photo.suite) ?? 0) + 1)
-    }
-  }
-
-  return counts
-}
-
 /**
  * Photo counts per pool amenity sub-group for the current text query. A photo
  * in several sub-groups (an infinity pool with a swim-up bar) is counted once
@@ -300,11 +272,6 @@ export function countGalleryPhotosByAmenity(photos: GalleryPhoto[], query: strin
 /** Categories that actually have photos, in the canonical display order. */
 export const ACTIVE_GALLERY_CATEGORIES = GALLERY_CATEGORIES.filter((category) =>
   GALLERY_PHOTOS.some((photo) => photo.category === category.id),
-)
-
-/** Suite sub-groups that have at least one assigned photo. */
-export const ACTIVE_GALLERY_SUITES = GALLERY_SUITE_LABELS.filter((suite) =>
-  GALLERY_PHOTOS.some((photo) => photo.suite === suite.id),
 )
 
 /** Pool amenity sub-groups that have at least one assigned photo. */

@@ -13,14 +13,12 @@ import { GALLERY_PHOTOS, type GalleryCategory } from "@/lib/gallery-photos"
 import {
   ACTIVE_GALLERY_AMENITIES,
   ACTIVE_GALLERY_CATEGORIES,
-  ACTIVE_GALLERY_SUITES,
   countGalleryPhotosByAmenity,
   countGalleryPhotosByCategory,
-  countGalleryPhotosBySuite,
   filterGalleryPhotos,
   orderGalleryPhotos,
 } from "@/lib/gallery-search"
-import type { GalleryAmenity, GallerySuite } from "@/lib/gallery-photos"
+import type { GalleryAmenity } from "@/lib/gallery-photos"
 
 /** Browse order is a pure function of the manifest, so it is computed once. */
 const ORDERED_PHOTOS = orderGalleryPhotos(GALLERY_PHOTOS)
@@ -36,7 +34,6 @@ const LOAD_MORE_STEP = 36
 export function GalleryBrowser() {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<GalleryCategory | "all">("all")
-  const [suite, setSuite] = useState<GallerySuite | "all">("all")
   const [amenity, setAmenity] = useState<GalleryAmenity | "all">("all")
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
@@ -50,15 +47,11 @@ export function GalleryBrowser() {
   const deferredQuery = useDeferredValue(query)
 
   const filtered = useMemo(
-    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category, suite, amenity }),
-    [amenity, category, deferredQuery, suite],
+    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category, amenity }),
+    [amenity, category, deferredQuery],
   )
   const categoryCounts = useMemo(
     () => countGalleryPhotosByCategory(ORDERED_PHOTOS, deferredQuery),
-    [deferredQuery],
-  )
-  const suiteCounts = useMemo(
-    () => countGalleryPhotosBySuite(ORDERED_PHOTOS, deferredQuery),
     [deferredQuery],
   )
   const amenityCounts = useMemo(
@@ -71,10 +64,9 @@ export function GalleryBrowser() {
   // not scrolled.
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE)
-  }, [amenity, category, deferredQuery, suite])
+  }, [amenity, category, deferredQuery])
 
   useEffect(() => {
-    if (category !== "suites-bedrooms") setSuite("all")
     if (category !== "pool") setAmenity("all")
   }, [category])
 
@@ -103,11 +95,10 @@ export function GalleryBrowser() {
     return () => observer.disconnect()
   }, [hasMore, loadMore, visible.length])
 
-  const hasFilters = query.trim().length > 0 || category !== "all" || suite !== "all" || amenity !== "all"
+  const hasFilters = query.trim().length > 0 || category !== "all" || amenity !== "all"
   const resetFilters = () => {
     setQuery("")
     setCategory("all")
-    setSuite("all")
     setAmenity("all")
   }
 
@@ -182,40 +173,6 @@ export function GalleryBrowser() {
             )
           })}
         </div>
-
-        {category === "suites-bedrooms" && ACTIVE_GALLERY_SUITES.length > 0 ? (
-          <div
-            className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 pr-14 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pr-14"
-            role="group"
-            aria-label="Filter by suite"
-            data-testid="gallery-suite-filters"
-          >
-            {[{ id: "all" as const, label: "All suites" }, ...ACTIVE_GALLERY_SUITES].map((entry) => {
-              const count = suiteCounts.get(entry.id) ?? 0
-              const isActive = suite === entry.id
-              return (
-                <button
-                  key={entry.id}
-                  type="button"
-                  onClick={() => setSuite(entry.id)}
-                  disabled={count === 0 && !isActive}
-                  aria-pressed={isActive}
-                  data-testid={`gallery-suite-filter-${entry.id}`}
-                  className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 ${
-                    isActive
-                      ? "border-foreground bg-foreground text-background"
-                      : "border-border/60 bg-white/70 text-muted-foreground hover:border-foreground/20 hover:text-foreground"
-                  }`}
-                >
-                  {entry.label}
-                  <span className={`ml-1.5 tabular-nums ${isActive ? "text-background/80" : "text-muted-foreground"}`}>
-                    {count}
-                  </span>
-                </button>
-              )
-            })}
-          </div>
-        ) : null}
 
         {category === "pool" && ACTIVE_GALLERY_AMENITIES.length > 0 ? (
           <div

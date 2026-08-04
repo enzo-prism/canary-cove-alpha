@@ -4,10 +4,8 @@ import { GALLERY_CATEGORIES, GALLERY_PHOTOS, type GalleryPhoto } from "@/lib/gal
 import {
   ACTIVE_GALLERY_AMENITIES,
   ACTIVE_GALLERY_CATEGORIES,
-  ACTIVE_GALLERY_SUITES,
   countGalleryPhotosByAmenity,
   countGalleryPhotosByCategory,
-  countGalleryPhotosBySuite,
   filterGalleryPhotos,
   getGalleryCategoryLabel,
   normalizeGalleryText,
@@ -117,67 +115,6 @@ describe("countGalleryPhotosByCategory", () => {
     expect(counts.get("all")).toBe(1)
     expect(counts.get("dining-food")).toBe(1)
     expect(counts.get("pool")).toBeUndefined()
-  })
-})
-
-describe("suite sub-group filtering", () => {
-  const photos = [
-    photo({ id: "bunk", category: "suites-bedrooms", alt: "Children's bunk bedroom", suite: "bunk-room" }),
-    photo({ id: "king", category: "suites-bedrooms", alt: "King bedroom", suite: "suite-1" }),
-    photo({ id: "unmapped", category: "suites-bedrooms", alt: "A bathroom" }),
-    photo({ id: "poolshot", category: "pool", alt: "Infinity pool", suite: "suite-1" }),
-  ]
-
-  it("returns every suites photo when the suite filter is all", () => {
-    const result = filterGalleryPhotos(photos, { query: "", category: "suites-bedrooms", suite: "all" })
-    expect(result.map((entry) => entry.id)).toEqual(["bunk", "king", "unmapped"])
-  })
-
-  it("narrows to one suite", () => {
-    const result = filterGalleryPhotos(photos, { query: "", category: "suites-bedrooms", suite: "suite-1" })
-    expect(result.map((entry) => entry.id)).toEqual(["king"])
-  })
-
-  it("keeps unmapped photos out of every named suite", () => {
-    for (const suite of ["suite-1", "suite-2", "suite-3", "bunk-room"] as const) {
-      const result = filterGalleryPhotos(photos, { query: "", category: "suites-bedrooms", suite })
-      expect(result.map((entry) => entry.id), suite).not.toContain("unmapped")
-    }
-  })
-
-  it("combines a suite with a text query", () => {
-    const result = filterGalleryPhotos(photos, { query: "bunk", category: "suites-bedrooms", suite: "bunk-room" })
-    expect(result.map((entry) => entry.id)).toEqual(["bunk"])
-    expect(filterGalleryPhotos(photos, { query: "king", category: "suites-bedrooms", suite: "bunk-room" })).toHaveLength(0)
-  })
-})
-
-describe("countGalleryPhotosBySuite", () => {
-  const photos = [
-    photo({ id: "bunk", category: "suites-bedrooms", alt: "Children's bunk bedroom", suite: "bunk-room" }),
-    photo({ id: "king", category: "suites-bedrooms", alt: "King bedroom", suite: "suite-1" }),
-    photo({ id: "unmapped", category: "suites-bedrooms", alt: "A bathroom" }),
-    photo({ id: "poolshot", category: "pool", alt: "Infinity pool" }),
-  ]
-
-  it("counts all suites photos plus each named suite", () => {
-    const counts = countGalleryPhotosBySuite(photos, "")
-    expect(counts.get("all")).toBe(3)
-    expect(counts.get("bunk-room")).toBe(1)
-    expect(counts.get("suite-1")).toBe(1)
-    expect(counts.get("suite-2")).toBeUndefined()
-  })
-
-  it("ignores photos outside the suites category", () => {
-    const counts = countGalleryPhotosBySuite(photos, "")
-    expect(counts.get("all")).toBe(3)
-  })
-
-  it("counts only photos matching the current query", () => {
-    const counts = countGalleryPhotosBySuite(photos, "bunk")
-    expect(counts.get("all")).toBe(1)
-    expect(counts.get("bunk-room")).toBe(1)
-    expect(counts.get("suite-1")).toBeUndefined()
   })
 })
 
@@ -333,35 +270,20 @@ describe("gallery data", () => {
     }
   })
 
-  it("only uses known suite and amenity ids", () => {
-    const suites = new Set(["suite-1", "suite-2", "suite-3", "bunk-room"])
+  it("only uses known amenity ids", () => {
     const amenities = new Set(["pool", "infinity-edge", "pool-bar", "hot-tub"])
     for (const entry of GALLERY_PHOTOS) {
-      if (entry.suite) expect(suites.has(entry.suite), `${entry.id} -> ${entry.suite}`).toBe(true)
       for (const amenity of entry.amenities ?? []) {
         expect(amenities.has(amenity), `${entry.id} -> ${amenity}`).toBe(true)
       }
     }
   })
 
-  it("keeps Suite 1/2/3 unmapped until Don or Gil supplies authoritative labels", () => {
-    // The bedroom/bathroom files carry no authoritative suite mapping, so we
-    // must not guess which bathroom belongs to which suite. Only the bunk room
-    // is supported by an existing approved photo today.
-    for (const entry of GALLERY_PHOTOS) {
-      expect(entry.suite, `${entry.id} is assigned to ${entry.suite}`).not.toBe("suite-1")
-      expect(entry.suite, `${entry.id} is assigned to ${entry.suite}`).not.toBe("suite-2")
-      expect(entry.suite, `${entry.id} is assigned to ${entry.suite}`).not.toBe("suite-3")
-    }
-  })
-
-  it("includes the approved bunk-bed photo in the bunk-room sub-group", () => {
-    const bunk = GALLERY_PHOTOS.filter((entry) => entry.suite === "bunk-room")
-    expect(bunk.length).toBeGreaterThan(0)
-    expect(
-      bunk.some((entry) => /bunk/.test(entry.alt.toLowerCase())),
-      "no bunk-bed caption found in the bunk-room group",
-    ).toBe(true)
+  it("does not mislabel the standard guest bedroom as a bunk room", () => {
+    const bedroom = GALLERY_PHOTOS.find((entry) => entry.id === "canarycove-album2021-093")
+    expect(bedroom, "expected the guest-bedroom photo in the gallery").toBeDefined()
+    expect(bedroom?.alt.toLowerCase()).not.toContain("bunk")
+    expect(bedroom?.tags.join(" ").toLowerCase()).not.toContain("bunk")
   })
 
   it("backs every amenity assignment with the photo's own caption or tags", () => {
@@ -408,9 +330,6 @@ describe("gallery data", () => {
     expect(covered.size).toBe(poolTotal)
   })
 
-  it("exposes the bunk room as the only active suite sub-group for now", () => {
-    expect(ACTIVE_GALLERY_SUITES.map((entry) => entry.id)).toEqual(["bunk-room"])
-  })
 })
 
 describe("getGalleryCategoryLabel", () => {

@@ -178,36 +178,6 @@ test.describe("gallery page", () => {
     await expect(page.getByTestId("photo-lightbox")).toContainText("1 / 3")
   })
 
-  test("offers suite sub-groups only inside the suites category", async ({ page }) => {
-    await openGallery(page)
-
-    // No suite row until the suites category is active.
-    await expect(page.getByTestId("gallery-suite-filters")).toHaveCount(0)
-
-    await page.getByTestId("gallery-filter-suites-bedrooms").click()
-    await expect(page.getByTestId("gallery-suite-filters")).toBeVisible()
-
-    // The bunk room is the only suite with an authoritative photo today, so it
-    // is the only named suite chip on offer.
-    await expect(page.getByTestId("gallery-suite-filter-bunk-room")).toBeVisible()
-    await expect(page.getByTestId("gallery-suite-filter-suite-1")).toHaveCount(0)
-
-    // Leaving the category hides the suite row again.
-    await page.getByTestId("gallery-filter-pool").click()
-    await expect(page.getByTestId("gallery-suite-filters")).toHaveCount(0)
-  })
-
-  test("narrows to the bunk room through the suite sub-group", async ({ page }) => {
-    await openGallery(page)
-
-    const bunkCount = GALLERY_PHOTOS.filter((photo) => photo.suite === "bunk-room").length
-    await page.getByTestId("gallery-filter-suites-bedrooms").click()
-    await page.getByTestId("gallery-suite-filter-bunk-room").click()
-
-    await expect(page.getByTestId("gallery-suite-filter-bunk-room")).toHaveAttribute("aria-pressed", "true")
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${bunkCount} of ${TOTAL} photos`)
-  })
-
   test("offers the four pool amenity sub-groups inside the pool category", async ({ page }) => {
     await openGallery(page)
 
