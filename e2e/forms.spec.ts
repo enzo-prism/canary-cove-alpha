@@ -4,6 +4,16 @@ import { selectRadixOption, waitForPageReady } from "./helpers"
 
 const FORM_API_ROUTE = "**/api/forms"
 
+const futureIsoDate = (daysFromToday: number) => {
+  const date = new Date()
+  date.setUTCDate(date.getUTCDate() + daysFromToday)
+  return date.toISOString().slice(0, 10)
+}
+
+const ARRIVAL_DATE = futureIsoDate(30)
+const DEPARTURE_BEFORE_ARRIVAL = futureIsoDate(29)
+const DEPARTURE_AFTER_ARRIVAL = futureIsoDate(35)
+
 const installAnalyticsRecorder = async (page: Page) => {
   await page.addInitScript(() => {
     const win = window as Window & { __gaEvents?: unknown[][] }
@@ -123,8 +133,8 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel("Phone Number").fill("+1 555 123 1234")
     await page.getByLabel(/^Email Address$/).fill("alex@example.com")
     await page.getByLabel(/^Confirm Email Address$/).fill("mismatch@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
-    await page.getByLabel("Preferred Departure Date").fill("2026-06-08")
+    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
+    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_BEFORE_ARRIVAL)
     await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
     await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
     await page.getByLabel("Message").fill("Would love to celebrate a birthday week with diving and boat days.")
@@ -155,8 +165,8 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel("Phone Number").fill("+1 555 123 1234")
     await page.getByLabel(/^Email Address$/).fill("alex@example.com")
     await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
-    await page.getByLabel("Preferred Departure Date").fill("2026-06-15")
+    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
+    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_AFTER_ARRIVAL)
     await page.getByLabel("Number of Adult Guests").fill("4")
     await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
     await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
@@ -182,8 +192,8 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByLabel("Phone Number").fill("+1 555 123 1234")
     await page.getByLabel(/^Email Address$/).fill("alex@example.com")
     await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill("2026-06-10")
-    await page.getByLabel("Preferred Departure Date").fill("2026-06-15")
+    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
+    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_AFTER_ARRIVAL)
     await page.getByLabel("Number of Adult Guests").fill("4")
     await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
     await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")

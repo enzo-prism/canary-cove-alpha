@@ -18,7 +18,8 @@ test.describe("private guest area", () => {
     await expect(page.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toHaveCount(0)
   })
 
-  test("rejects a wrong password, isolates trackers, and grants a scoped session", async ({ page, context }) => {
+  test("rejects a wrong password, isolates trackers, and grants a scoped session", async ({ page, context, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit rejects Secure __Host cookies on the HTTP localhost test server.")
     const thirdPartyRequests: string[] = []
     page.on("request", (request) => {
       const hostname = new URL(request.url()).hostname
@@ -76,7 +77,8 @@ test.describe("private guest area", () => {
     await anonymousContext.close()
   })
 
-  test("rejects a tampered session cookie", async ({ page, context }) => {
+  test("rejects a tampered session cookie", async ({ page, context, browserName }) => {
+    test.skip(browserName === "webkit", "WebKit rejects Secure __Host cookies on the HTTP localhost test server.")
     await page.goto("/guest/access?next=%2Fguest")
     await page.getByLabel("Access password").fill("test-guest-password")
     await page.getByRole("button", { name: "Open guest guide" }).click()
@@ -110,6 +112,10 @@ test.describe("private guest area", () => {
     await page.goto("/", { waitUntil: "domcontentloaded" })
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(1)
     await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(1)
+    // Let public scripts finish their initial requests before measuring the
+    // private navigation boundary. Otherwise a slow ElevenLabs download that
+    // started on `/` can be misattributed to `/guest` after pushState.
+    await page.waitForLoadState("networkidle")
 
     await page.evaluate(() => window.dispatchEvent(new Event("beforeunload")))
     await expect
