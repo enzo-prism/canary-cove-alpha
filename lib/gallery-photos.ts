@@ -21,6 +21,8 @@ export type GallerySource = "site" | "gil-2026-07" | "album-2021"
 
 export type GalleryAmenity = "pool" | "infinity-edge" | "pool-bar" | "hot-tub"
 
+export type GalleryRoom = "suite-1" | "suite-2" | "suite-3" | "bunk-room"
+
 export type GalleryPhoto = {
   id: string
   src: string
@@ -39,6 +41,14 @@ export type GalleryPhoto = {
    * with a swim-up bar is both).
    */
   amenities?: GalleryAmenity[]
+  /**
+   * Which sleeping room a suites-bedrooms photo belongs to. Only set where the
+   * owner named the room for that exact photo — the three suite bathrooms are
+   * near-identical in the photography, so a visual match is not evidence. An
+   * unassigned bathroom stays out of every room sub-group rather than being
+   * guessed into the wrong suite.
+   */
+  room?: GalleryRoom
 }
 
 export const GALLERY_CATEGORIES: { id: GalleryCategory; label: string }[] = [
@@ -67,6 +77,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1922,
     source: "site",
     usedIn: ["app/page.tsx", "components/stay-villa-gallery.tsx"],
+    room: "suite-1",
   },
   {
     id: "livingRoom",
@@ -311,6 +322,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1922,
     source: "site",
     usedIn: ["components/stay-highlights.tsx", "components/stay-villa-gallery.tsx"],
+    room: "suite-3",
   },
   {
     id: "livingRoomPhoto",
@@ -411,6 +423,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 854,
     source: "site",
     usedIn: ["components/stay-highlights.tsx", "components/stay-villa-gallery.tsx", "lib/homepage-content.ts", "lib/site-config.ts"],
+    room: "suite-2",
   },
   {
     id: "viewFromKitchen",
@@ -500,6 +513,7 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     height: 1922,
     source: "site",
     usedIn: ["components/stay-guest-experience.tsx", "components/stay-highlights.tsx", "components/stay-mini-gallery.tsx", "components/stay-villa-gallery.tsx"],
+    room: "suite-1",
   },
   {
     id: "villaInteriorWide",
@@ -2529,6 +2543,167 @@ export const GALLERY_PHOTOS: GalleryPhoto[] = [
     width: 2400,
     height: 1800,
     source: "album-2021",
+    usedIn: [],
+  },
+  // Rooms the owner named photo by photo (August 2026). The suite and bunk-room
+  // assignments below come from that list, never from matching tile or bedding
+  // between frames.
+  {
+    id: "suite1BedroomSecondAngle",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059606/canarycove-haydeelustudio-23-scaled_lajux4.webp",
+    alt: "Suite 1 bedroom with tropical bedding, ceiling fan, and doors onto the pool terrace",
+    category: "suites-bedrooms",
+    tags: ["bedroom", "suite", "terrace", "ceiling fan"],
+    width: 2880,
+    height: 1923,
+    source: "site",
+    usedIn: [],
+    room: "suite-1",
+  },
+  {
+    id: "suite1BathroomVanity",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059633/canarycove-haydeelustudio-26-400x284_k7beer.webp",
+    alt: "Suite 1 bathroom with corner double vanity and mirrored blue-tile wall",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "vanity", "suite"],
+    width: 400,
+    height: 284,
+    source: "site",
+    usedIn: [],
+    room: "suite-1",
+  },
+  {
+    id: "bunkRoomLadder",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059561/canarycove-haydeelustudio-45-scaled_r9webl.webp",
+    alt: "Bunk room with hardwood bunk beds and a ladder to the upper bunk",
+    category: "suites-bedrooms",
+    tags: ["bunk beds", "bunk room", "bedroom", "kids"],
+    width: 2880,
+    height: 1923,
+    source: "site",
+    usedIn: [],
+    room: "bunk-room",
+  },
+  {
+    id: "bunkRoomMadeUp",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059618/canarycove-haydeelustudio-46-scaled_znslac.webp",
+    alt: "Bunk room bunks made up with fresh linens and turndown flowers",
+    category: "suites-bedrooms",
+    tags: ["bunk beds", "bunk room", "bedroom", "kids"],
+    width: 2880,
+    height: 1922,
+    source: "site",
+    usedIn: [],
+    room: "bunk-room",
+  },
+  {
+    id: "suiteBathroomDoubleVanity",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059577/canarycove-haydeelustudio-17-scaled_iq4tfl.webp",
+    alt: "Suite bathroom with corner double vanity, sconces, and blue-tile mirror surround",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "vanity"],
+    width: 2880,
+    height: 1923,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "suiteBathroomGlassShower",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059617/canarycove-haydeelustudio-18-scaled_n5ikpo.webp",
+    alt: "Suite bathroom with walk-in glass shower beside a wide mirrored vanity",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "shower"],
+    width: 2880,
+    height: 1923,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "suiteBathroomToiletRoom",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059575/canarycove-haydeelustudio-20-scaled_cs3ng8.webp",
+    alt: "Suite bathroom with vanity and a separate private toilet room",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "vanity"],
+    width: 2880,
+    height: 1923,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "suiteBathroomTiledShower",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059581/canarycove-haydeelustudio-28-400x284_wkztim.webp",
+    alt: "Suite bathroom vanity with the tiled shower and dressing area beyond",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "shower"],
+    width: 400,
+    height: 284,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "villaMasterBathroom",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059560/51_villa_mstr_bath_vmvkxw.webp",
+    alt: "Villa master bathroom with twin sinks and a mirrored blue-tile surround",
+    category: "suites-bedrooms",
+    tags: ["bathroom", "en-suite", "master", "vanity"],
+    width: 800,
+    height: 512,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "livingRoomLounge",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059562/canarycove-haydeelustudio-35-scaled_qbgcui.webp",
+    alt: "Living room with sofa, woven armchair, and media wall opening to the terrace",
+    category: "living-spaces",
+    tags: ["living room", "lounge", "seating", "indoor"],
+    width: 2880,
+    height: 1922,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "villaKitchenIsland",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059578/canarycove-haydeelustudio-39-scaled_neuxea.webp",
+    alt: "Villa kitchen with a wide cooking island, hardwood cabinetry, and garden windows",
+    category: "living-spaces",
+    tags: ["kitchen", "island", "cooking", "indoor"],
+    width: 2880,
+    height: 1922,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "livingRoomSofaBed",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059591/IMG_5157-scaled_jxdf8r.webp",
+    alt: "Living room sofa opened into a made-up fold-out bed beside the kitchen",
+    category: "living-spaces",
+    tags: ["living room", "sofa bed", "fold-out bed", "extra sleeping"],
+    width: 2880,
+    height: 2160,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "livingRoomBathroom",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059601/IMG_5161-1-scaled_jomdxm.webp",
+    alt: "Living room bathroom with a mosaic-tile feature wall and oval mirror",
+    category: "living-spaces",
+    tags: ["bathroom", "living room", "powder room", "mosaic tile"],
+    width: 2880,
+    height: 2160,
+    source: "site",
+    usedIn: [],
+  },
+  {
+    id: "livingRoomBathroomVanity",
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059599/fullsizeoutput_56c6_qpa4ad.webp",
+    alt: "Living room bathroom vanity with a round mirror and candle sconces",
+    category: "living-spaces",
+    tags: ["bathroom", "living room", "powder room", "vanity"],
+    width: 5184,
+    height: 3456,
+    source: "site",
     usedIn: [],
   },
 ]

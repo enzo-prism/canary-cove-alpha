@@ -4,18 +4,21 @@ import {
   type GalleryAmenity,
   type GalleryCategory,
   type GalleryPhoto,
+  type GalleryRoom,
 } from "@/lib/gallery-photos"
 
 export type GalleryFilter = {
   query: string
   category: GalleryCategory | "all"
   amenity?: GalleryAmenity | "all"
+  room?: GalleryRoom | "all"
 }
 
 export const DEFAULT_GALLERY_FILTER: GalleryFilter = {
   query: "",
   category: "all",
   amenity: "all",
+  room: "all",
 }
 
 const CATEGORY_LABELS = new Map(GALLERY_CATEGORIES.map((entry) => [entry.id, entry.label]))
@@ -30,6 +33,20 @@ export const GALLERY_AMENITY_LABELS: { id: GalleryAmenity; label: string }[] = [
   { id: "infinity-edge", label: "Infinity Edge" },
   { id: "pool-bar", label: "Pool Bar" },
   { id: "hot-tub", label: "Hot Tub" },
+]
+
+/**
+ * Room sub-groups inside the Suites & bedrooms category, in the order the
+ * client asked for them: each suite with its own bedroom and bathroom, then
+ * the bunk room. Only photos the owner named by room carry an assignment, so
+ * the chips are always narrower than the category — an unnamed bathroom stays
+ * reachable under "All suites & bedrooms" rather than being filed on a guess.
+ */
+export const GALLERY_ROOM_LABELS: { id: GalleryRoom; label: string }[] = [
+  { id: "suite-1", label: "Suite 1" },
+  { id: "suite-2", label: "Suite 2" },
+  { id: "suite-3", label: "Suite 3" },
+  { id: "bunk-room", label: "Bunk Room" },
 ]
 
 /**
@@ -219,6 +236,12 @@ export function filterGalleryPhotos(
       if (photo.category !== "pool") return false
       if (!(photo.amenities ?? []).includes(filter.amenity)) return false
     }
+    if (filter.room && filter.room !== "all") {
+      // Same containment rule as amenities: room sub-groups only exist inside
+      // the suites-bedrooms category.
+      if (photo.category !== "suites-bedrooms") return false
+      if (photo.room !== filter.room) return false
+    }
     return matchesQuery(photo, queryTokens)
   })
 }
@@ -277,4 +300,29 @@ export const ACTIVE_GALLERY_CATEGORIES = GALLERY_CATEGORIES.filter((category) =>
 /** Pool amenity sub-groups that have at least one assigned photo. */
 export const ACTIVE_GALLERY_AMENITIES = GALLERY_AMENITY_LABELS.filter((amenity) =>
   GALLERY_PHOTOS.some((photo) => (photo.amenities ?? []).includes(amenity.id)),
+)
+
+/**
+ * Photo counts per room sub-group for the current text query. "all" counts the
+ * whole suites-bedrooms category, including the photos with no room yet, so the
+ * chip row never implies photos have gone missing.
+ */
+export function countGalleryPhotosByRoom(photos: GalleryPhoto[], query: string) {
+  const queryTokens = tokenize(query)
+  const counts = new Map<GalleryRoom | "all", number>()
+  counts.set("all", 0)
+
+  for (const photo of photos) {
+    if (photo.category !== "suites-bedrooms") continue
+    if (!matchesQuery(photo, queryTokens)) continue
+    counts.set("all", (counts.get("all") ?? 0) + 1)
+    if (photo.room) counts.set(photo.room, (counts.get(photo.room) ?? 0) + 1)
+  }
+
+  return counts
+}
+
+/** Room sub-groups that have at least one assigned photo. */
+export const ACTIVE_GALLERY_ROOMS = GALLERY_ROOM_LABELS.filter((room) =>
+  GALLERY_PHOTOS.some((photo) => photo.room === room.id),
 )

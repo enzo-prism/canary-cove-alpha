@@ -13,12 +13,14 @@ import { GALLERY_PHOTOS, type GalleryCategory } from "@/lib/gallery-photos"
 import {
   ACTIVE_GALLERY_AMENITIES,
   ACTIVE_GALLERY_CATEGORIES,
+  ACTIVE_GALLERY_ROOMS,
   countGalleryPhotosByAmenity,
   countGalleryPhotosByCategory,
+  countGalleryPhotosByRoom,
   filterGalleryPhotos,
   orderGalleryPhotos,
 } from "@/lib/gallery-search"
-import type { GalleryAmenity } from "@/lib/gallery-photos"
+import type { GalleryAmenity, GalleryRoom } from "@/lib/gallery-photos"
 
 /** Browse order is a pure function of the manifest, so it is computed once. */
 const ORDERED_PHOTOS = orderGalleryPhotos(GALLERY_PHOTOS)
@@ -35,6 +37,7 @@ export function GalleryBrowser() {
   const [query, setQuery] = useState("")
   const [category, setCategory] = useState<GalleryCategory | "all">("all")
   const [amenity, setAmenity] = useState<GalleryAmenity | "all">("all")
+  const [room, setRoom] = useState<GalleryRoom | "all">("all")
   const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   // True once an IntersectionObserver is watching the end of the grid. While it
@@ -47,8 +50,8 @@ export function GalleryBrowser() {
   const deferredQuery = useDeferredValue(query)
 
   const filtered = useMemo(
-    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category, amenity }),
-    [amenity, category, deferredQuery],
+    () => filterGalleryPhotos(ORDERED_PHOTOS, { query: deferredQuery, category, amenity, room }),
+    [amenity, category, deferredQuery, room],
   )
   const categoryCounts = useMemo(
     () => countGalleryPhotosByCategory(ORDERED_PHOTOS, deferredQuery),
@@ -58,16 +61,21 @@ export function GalleryBrowser() {
     () => countGalleryPhotosByAmenity(ORDERED_PHOTOS, deferredQuery),
     [deferredQuery],
   )
+  const roomCounts = useMemo(
+    () => countGalleryPhotosByRoom(ORDERED_PHOTOS, deferredQuery),
+    [deferredQuery],
+  )
 
   // Any change to the filter puts the grid back at the top of a fresh result
   // set; keeping a grown count would dump the user deep into a list they have
   // not scrolled.
   useEffect(() => {
     setVisibleCount(INITIAL_VISIBLE)
-  }, [amenity, category, deferredQuery])
+  }, [amenity, category, deferredQuery, room])
 
   useEffect(() => {
     if (category !== "pool") setAmenity("all")
+    if (category !== "suites-bedrooms") setRoom("all")
   }, [category])
 
   const visible = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
@@ -95,11 +103,13 @@ export function GalleryBrowser() {
     return () => observer.disconnect()
   }, [hasMore, loadMore, visible.length])
 
-  const hasFilters = query.trim().length > 0 || category !== "all" || amenity !== "all"
+  const hasFilters =
+    query.trim().length > 0 || category !== "all" || amenity !== "all" || room !== "all"
   const resetFilters = () => {
     setQuery("")
     setCategory("all")
     setAmenity("all")
+    setRoom("all")
   }
 
   // The lightbox only ever receives the photos already on screen, so swiping
@@ -192,6 +202,40 @@ export function GalleryBrowser() {
                   disabled={count === 0 && !isActive}
                   aria-pressed={isActive}
                   data-testid={`gallery-amenity-filter-${entry.id}`}
+                  className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 ${
+                    isActive
+                      ? "border-foreground bg-foreground text-background"
+                      : "border-border/60 bg-white/70 text-muted-foreground hover:border-foreground/20 hover:text-foreground"
+                  }`}
+                >
+                  {entry.label}
+                  <span className={`ml-1.5 tabular-nums ${isActive ? "text-background/80" : "text-muted-foreground"}`}>
+                    {count}
+                  </span>
+                </button>
+              )
+            })}
+          </div>
+        ) : null}
+
+        {category === "suites-bedrooms" && ACTIVE_GALLERY_ROOMS.length > 0 ? (
+          <div
+            className="-mx-4 flex snap-x gap-2 overflow-x-auto px-4 pb-1 pr-14 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0 sm:pr-14"
+            role="group"
+            aria-label="Filter by room"
+            data-testid="gallery-room-filters"
+          >
+            {[{ id: "all" as const, label: "All suites & bedrooms" }, ...ACTIVE_GALLERY_ROOMS].map((entry) => {
+              const count = roomCounts.get(entry.id) ?? 0
+              const isActive = room === entry.id
+              return (
+                <button
+                  key={entry.id}
+                  type="button"
+                  onClick={() => setRoom(entry.id)}
+                  disabled={count === 0 && !isActive}
+                  aria-pressed={isActive}
+                  data-testid={`gallery-room-filter-${entry.id}`}
                   className={`shrink-0 snap-start rounded-full border px-3 py-1.5 text-xs font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:opacity-40 ${
                     isActive
                       ? "border-foreground bg-foreground text-background"
