@@ -29,9 +29,10 @@ const FEATURED_ACTIVITY_CARDS = [
     className: "col-span-2 row-span-2",
   },
   {
+    // Wide landscape: a tall row-span-2 cell would crop away half the frame.
     ...ACTIVITY_GALLERY_ITEMS[1],
     label: "Dockside slides into clear water",
-    className: "row-span-2",
+    className: "col-span-2",
   },
   {
     ...ACTIVITY_GALLERY_ITEMS[2],
@@ -39,14 +40,15 @@ const FEATURED_ACTIVITY_CARDS = [
     className: "",
   },
   {
-    ...ACTIVITY_GALLERY_ITEMS[3],
-    label: "Cocktails mixed to your timing",
-    className: "row-span-2",
-  },
-  {
     ...ACTIVITY_GALLERY_ITEMS[4],
     label: "Boat departures from the private dock",
     className: "",
+  },
+  {
+    // Wide landscape: a tall row-span-2 cell would crop away half the frame.
+    ...ACTIVITY_GALLERY_ITEMS[3],
+    label: "Cocktails mixed to your timing",
+    className: "col-span-2",
   },
   {
     ...ACTIVITY_GALLERY_ITEMS[5],

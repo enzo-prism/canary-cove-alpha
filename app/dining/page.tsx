@@ -4,7 +4,7 @@ import { EMOJI } from "@/lib/emoji"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
-import { IMAGES } from "@/lib/images"
+import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -35,9 +35,10 @@ export default function Page() {
                   alt={IMAGES.chefMarvinPlates.alt}
                   fill
                   sizes="(min-width: 1024px) 1000px, 100vw"
-                  // Portrait source in a 16:9 frame: a centre crop lands on the
-                  // apron and cuts the chef's head off, so bias the crop upward.
-                  className="object-cover object-[50%_22%]"
+                  // Portrait source in a 16:9 frame: the record-level focal
+                  // point keeps the chef's face above the crop.
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinPlates) }}
                   priority
                 />
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent p-4">

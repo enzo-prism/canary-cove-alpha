@@ -7,11 +7,13 @@ import { PhotoLightbox } from "@/components/photo-lightbox"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent } from "@/components/ui/card"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
+import { imageObjectPosition, type ImageFocal } from "@/lib/images"
 
 type GalleryItem = {
   src: string
   alt: string
   caption?: string
+  focal?: ImageFocal
 }
 
 type GalleryGridProps = {
@@ -45,6 +47,7 @@ export function GalleryGrid({ items }: GalleryGridProps) {
                       fill
                       sizes="(min-width: 1280px) 25vw, (min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
                       className="object-cover"
+                      style={{ objectPosition: imageObjectPosition(item) }}
                       loading="lazy"
                       placeholder={blurDataURL ? "blur" : "empty"}
                       blurDataURL={blurDataURL}

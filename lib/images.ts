@@ -1,4 +1,24 @@
-export const IMAGES = {
+/**
+ * The photo's subject position, in percent (0–100) from the left/top edge.
+ * Cropped slots (`object-cover`) use it as the default `object-position` so
+ * the subject survives the crop instead of the frame's center band.
+ */
+export type ImageFocal = {
+  x: number
+  y: number
+}
+
+export type ImageRecord = {
+  src: string
+  alt: string
+  focal?: ImageFocal
+}
+
+/** Default `object-position` for a cropped slot; undefined means centered. */
+export const imageObjectPosition = (image: ImageRecord): string | undefined =>
+  image.focal ? `${image.focal.x}% ${image.focal.y}%` : undefined
+
+export const IMAGES: Record<string, ImageRecord> = {
   logoDrink: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/IMG_1198_d9bmki.webp",
     alt: "Canary Cove logo on a drink at the poolside",
@@ -140,14 +160,20 @@ export const IMAGES = {
   chefMarvinKitchen: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546988/canarycove-gil2026-eb3ab337.jpg",
     alt: "Chef Marvin searing at the kitchen range",
+    // Face sits at 3–17% from the top of this portrait.
+    focal: { x: 50, y: 10 },
   },
   chefMarvinPortrait: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546988/canarycove-gil2026-f07c60e2.jpg",
     alt: "Chef Marvin presenting a plated dish in the villa kitchen",
+    // Face sits at 5–21% from the top of this portrait.
+    focal: { x: 50, y: 13 },
   },
   chefMarvinPlates: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1785546987/canarycove-gil2026-cfb8d7ac.jpg",
     alt: "Chef Marvin carrying plated dishes with a smile",
+    // Face sits at 10–24% from the top of this portrait.
+    focal: { x: 50, y: 17 },
   },
   bathroomAlt: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059660/canarycove-haydeelustudio-10-scaled_bp10wc.webp",
@@ -176,6 +202,9 @@ export const IMAGES = {
   diningPlatter: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059673/IMG_3845-1_ybzoab.webp",
     alt: "Chef-prepared platter at Canary Cove",
+    // Full-frame plate shot; a slight upward bias keeps all three food
+    // elements in wide crops instead of the empty plate rim.
+    focal: { x: 50, y: 45 },
   },
   shrimpDinner: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059672/Shrimp-Dinner_s3xcug.webp",
@@ -183,7 +212,7 @@ export const IMAGES = {
   },
   diningTable: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059655/f9564a98-afc6-48db-905e-bb539e521a84_xtz7v1.webp",
-    alt: "Dining table setting",
+    alt: "Mini cheesecakes topped with fresh berries",
   },
   diningSpread: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059648/fullsizeoutput_56b3_ijpj4e.webp",
@@ -252,6 +281,8 @@ export const IMAGES = {
   mainlandJaguar: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059675/IMG_57061_zbipzu.webp",
     alt: "Jaguar resting during a mainland Belize wildlife excursion",
+    // Ears and crown sit around 21% from the top of this portrait.
+    focal: { x: 50, y: 21 },
   },
   zooVisit: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/IMG_7247_vrmxgl.webp",

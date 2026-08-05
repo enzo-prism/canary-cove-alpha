@@ -4,13 +4,14 @@ import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import useEmblaCarousel from "embla-carousel-react"
 
+import { imageObjectPosition, type ImageRecord } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
 type Testimonial = {
   quote: string
   author?: string
   year: string
-  image: { src: string; alt: string }
+  image: ImageRecord
 }
 
 type TestimonialSliderProps = {
@@ -156,6 +157,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
                   loading={index === 0 ? "eager" : "lazy"}
                   sizes="(min-width: 1024px) 80vw, 100vw"
                   className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(testimonial.image) }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent" />
                 <div className="relative z-10 max-w-xl space-y-4 p-6 sm:p-10">

@@ -5,6 +5,7 @@ import Image from "next/image"
 
 import { PhotoLightbox } from "@/components/photo-lightbox"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
+import { imageObjectPosition, type ImageFocal } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
 type ExperienceGalleryItem = {
@@ -12,6 +13,7 @@ type ExperienceGalleryItem = {
   alt: string
   label: string
   className?: string
+  focal?: ImageFocal
 }
 
 type ExperiencesGalleryMosaicProps = {
@@ -45,6 +47,7 @@ export function ExperiencesGalleryMosaic({ items }: ExperiencesGalleryMosaicProp
                 fill
                 sizes="(min-width: 1024px) 24vw, (min-width: 768px) 25vw, 50vw"
                 className="object-cover transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                style={{ objectPosition: imageObjectPosition(item) }}
                 placeholder={blurDataURL ? "blur" : "empty"}
                 blurDataURL={blurDataURL}
               />

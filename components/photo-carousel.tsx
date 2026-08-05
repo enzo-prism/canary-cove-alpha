@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { PhotoLightbox } from "@/components/photo-lightbox"
-import { IMAGES } from "@/lib/images"
+import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { cn } from "@/lib/utils"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
@@ -116,6 +116,7 @@ export function PhotoCarousel() {
                           decoding="async"
                           loading={index === 0 ? "eager" : "lazy"}
                           className={`object-cover transition-opacity duration-700 motion-reduce:transition-none ${loadedSlides[index] ? "opacity-100" : "opacity-0"}`}
+                          style={{ objectPosition: imageObjectPosition(photo) }}
                           sizes="(min-width: 1280px) 1200px, (min-width: 1024px) 900px, 100vw"
                           onLoad={() => handleLoaded(index)}
                         />
@@ -192,6 +193,7 @@ export function PhotoCarousel() {
                 loading="lazy"
                 sizes="112px"
                 className="object-cover"
+                style={{ objectPosition: imageObjectPosition(photo) }}
               />
             </button>
           ))}

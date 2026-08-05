@@ -7,11 +7,13 @@ import { PhotoLightbox } from "@/components/photo-lightbox"
 import { AspectRatio } from "@/components/ui/aspect-ratio"
 import { Card, CardContent } from "@/components/ui/card"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
+import { imageObjectPosition, type ImageFocal } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
 type GalleryImage = {
   src: string
   alt: string
+  focal?: ImageFocal
 }
 
 export type StayGalleryFeature = {
@@ -77,6 +79,7 @@ export function StayGallerySection({
                       alt={item.image.alt}
                       fill
                       className="object-cover"
+                      style={{ objectPosition: imageObjectPosition(item.image) }}
                       sizes="(min-width: 1280px) 420px, (min-width: 1024px) 33vw, 100vw"
                       placeholder={blurDataURL ? "blur" : "empty"}
                       blurDataURL={blurDataURL}
@@ -111,6 +114,7 @@ export function StayGallerySection({
                       alt={item.image.alt}
                       fill
                       className="object-cover"
+                      style={{ objectPosition: imageObjectPosition(item.image) }}
                       sizes="(min-width: 1280px) 360px, (min-width: 768px) 50vw, 100vw"
                       placeholder={blurDataURL ? "blur" : "empty"}
                       blurDataURL={blurDataURL}

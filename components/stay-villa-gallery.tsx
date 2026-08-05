@@ -13,13 +13,15 @@ const primaryGalleryItems: StayGalleryFeature[] = [
     image: IMAGES.villaMasterBedroom,
     title: "Primary suite",
     detail: "A king room with light, privacy, and easy access back to the pool deck.",
-    ratio: 4 / 5,
+    // Landscape interior: a portrait frame would crop away half the room.
+    ratio: 3 / 2,
   },
   {
     image: IMAGES.diningRoom,
     title: "Dinner indoors",
     detail: "A warm dining room for slower evenings when the group gathers inside.",
-    ratio: 4 / 5,
+    // Landscape interior: a portrait frame would crop away half the room.
+    ratio: 3 / 2,
   },
 ]
 

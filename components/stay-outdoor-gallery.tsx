@@ -13,13 +13,15 @@ const primaryGalleryItems: StayGalleryFeature[] = [
     image: IMAGES.mainDock,
     title: "Private dock access",
     detail: "Your reef days begin right at the property, with boats ready and no transfer across a public marina.",
-    ratio: 4 / 5,
+    // Landscape shot: a portrait frame would crop the boats at the edges.
+    ratio: 3 / 2,
   },
   {
     image: IMAGES.villaLawn,
     title: "Waterfront lawn",
     detail: "The estate opens out toward the water with room to spread out, reset, and catch the breeze.",
-    ratio: 4 / 5,
+    // Landscape shot: a portrait frame would crop away half the view.
+    ratio: 3 / 2,
   },
 ]
 

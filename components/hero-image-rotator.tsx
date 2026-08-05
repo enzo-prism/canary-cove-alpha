@@ -4,40 +4,39 @@ import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } 
 import Image from "next/image"
 
 import { cn } from "@/lib/utils"
+import { IMAGES, type ImageFocal } from "@/lib/images"
 
 type HeroImage = {
   src: string
   alt: string
-  objectPosition?: string
+  focal?: ImageFocal
+  /** Horizontal crop bias, percent from the left edge (defaults to center). */
+  focusX?: number
 }
 
 // Only use large-format assets here. Full-bleed hero backgrounds need enough
 // source width to stay sharp on wide desktop screens and high-density displays.
 const HERO_IMAGES: HeroImage[] = [
   {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059680/IMG_1835_w1onmi.webp",
-    alt: "Beach path view of the pink Canary Cove villa and pool terrace",
-    objectPosition: "60% center",
+    ...IMAGES.heroBackgroundEstate,
+    focusX: 60,
   },
   {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp",
-    alt: "Villa pool and deck overlooking the water",
-    objectPosition: "54% center",
+    ...IMAGES.villaPool,
+    focusX: 54,
   },
   {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059675/canarycove-haydeelustudio-32-scaled_forayc.webp",
-    alt: "Villa living room with airy seating and harbor views",
-    objectPosition: "58% center",
+    ...IMAGES.livingRoom,
+    focusX: 58,
   },
   {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059670/canarycove-haydeelustudio-521-scaled_ohjnr1.webp",
     alt: "Canary Cove villa view opening toward the water",
-    objectPosition: "62% center",
+    focusX: 62,
   },
   {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059679/IMG_1198_d9bmki.webp",
-    alt: "Canary Cove cocktail in focus with guests relaxing by the pool",
-    objectPosition: "56% center",
+    ...IMAGES.heroBackgroundDrink,
+    focusX: 56,
   },
 ]
 
@@ -135,7 +134,9 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           sizes="100vw"
           style={
             {
-              objectPosition: photo.objectPosition ?? "center center",
+              // The per-image horizontal bias wins on x; a record-level focal
+              // point supplies y (and x when no bias is set).
+              objectPosition: `${photo.focusX ?? photo.focal?.x ?? 50}% ${photo.focal?.y ?? 50}%`,
             } satisfies CSSProperties
           }
           className={cn(

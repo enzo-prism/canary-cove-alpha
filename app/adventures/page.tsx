@@ -10,7 +10,7 @@ import { PageStructuredData } from "@/components/structured-data"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
-import { IMAGES } from "@/lib/images"
+import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 
@@ -107,7 +107,14 @@ function AdventureZoneCard({
   return (
     <Card className="surface-panel overflow-hidden rounded-[30px] border-border/60 bg-white/94 shadow-[0_24px_70px_rgba(15,23,42,0.12)]">
       <div className="relative aspect-[1.65] overflow-hidden border-b border-border/55 bg-surface-muted">
-        <Image src={image.src} alt={image.alt} fill className="object-cover" sizes="(min-width: 1024px) 30vw, 100vw" />
+        <Image
+          src={image.src}
+          alt={image.alt}
+          fill
+          className="object-cover"
+          style={{ objectPosition: imageObjectPosition(image) }}
+          sizes="(min-width: 1024px) 30vw, 100vw"
+        />
       </div>
       <div className="flow px-6 pb-6 pt-5 sm:px-7 sm:pb-7">
         <div className="flow-xs">

@@ -10,7 +10,7 @@ import { PhotoLightbox } from "@/components/photo-lightbox"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
-import { IMAGES } from "@/lib/images"
+import { IMAGES, imageObjectPosition, type ImageFocal } from "@/lib/images"
 
 type HighlightCard = {
   id: string
@@ -21,6 +21,7 @@ type HighlightCard = {
   images: Array<{
     src: string
     alt: string
+    focal?: ImageFocal
   }>
 }
 
@@ -89,6 +90,7 @@ function HighlightCollage({ images, title }: Pick<HighlightCard, "images" | "tit
           alt={images[0].alt}
           fill
           className="object-cover"
+          style={{ objectPosition: imageObjectPosition(images[0]) }}
           sizes="(min-width: 1024px) 280px, 50vw"
           placeholder={cloudinaryBlurDataUrl(images[0].src) ? "blur" : "empty"}
           blurDataURL={cloudinaryBlurDataUrl(images[0].src)}
@@ -107,6 +109,7 @@ function HighlightCollage({ images, title }: Pick<HighlightCard, "images" | "tit
             alt={image.alt}
             fill
             className="object-cover"
+            style={{ objectPosition: imageObjectPosition(image) }}
             sizes="(min-width: 1024px) 120px, 25vw"
             placeholder={cloudinaryBlurDataUrl(image.src) ? "blur" : "empty"}
             blurDataURL={cloudinaryBlurDataUrl(image.src)}

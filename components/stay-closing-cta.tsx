@@ -3,7 +3,7 @@ import Image from "next/image"
 import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { IMAGES } from "@/lib/images"
+import { IMAGES, imageObjectPosition } from "@/lib/images"
 
 const closingCards = [
   {
@@ -27,7 +27,14 @@ export function StayClosingCta() {
   return (
     <Card className="relative overflow-hidden rounded-[36px] border border-border/50 bg-[#0d1f2f] text-white shadow-[0_30px_80px_rgba(15,23,42,0.18)]">
       <div className="absolute inset-0">
-        <Image src={IMAGES.villaLawn.src} alt={IMAGES.villaLawn.alt} fill className="object-cover" sizes="100vw" />
+        <Image
+          src={IMAGES.villaLawn.src}
+          alt={IMAGES.villaLawn.alt}
+          fill
+          className="object-cover"
+          style={{ objectPosition: imageObjectPosition(IMAGES.villaLawn) }}
+          sizes="100vw"
+        />
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(11,23,36,0.4),rgba(11,23,36,0.88)_55%,rgba(11,23,36,0.96)_100%)]" />
       </div>
       <CardContent className="relative z-10 flow flow-lg px-6 py-16 sm:px-10 lg:px-14 lg:py-20">
@@ -59,7 +66,14 @@ export function StayClosingCta() {
               className="rounded-[24px] border border-white/12 bg-white/10 p-3 backdrop-blur-md"
             >
               <div className="relative aspect-[16/10] overflow-hidden rounded-[18px]">
-                <Image src={card.image.src} alt={card.image.alt} fill className="object-cover" sizes="(min-width: 1024px) 320px, 100vw" />
+                <Image
+                  src={card.image.src}
+                  alt={card.image.alt}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(card.image) }}
+                  sizes="(min-width: 1024px) 320px, 100vw"
+                />
               </div>
               <div className="flow flow-xs px-1 pb-1 pt-4">
                 <h3 className="text-sm font-semibold uppercase tracking-[0.22em] text-white/92">{card.title}</h3>

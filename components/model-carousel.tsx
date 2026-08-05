@@ -7,13 +7,14 @@ import { ChevronLeft, ChevronRight } from "lucide-react"
 
 import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Button } from "@/components/ui/button"
+import { imageObjectPosition, type ImageRecord } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
 type Model = {
   name: string
   tagline: string
   summary: string
-  image: { src: string; alt: string }
+  image: ImageRecord
   finishes: readonly { name: string; color: string }[]
   stats: readonly { label: string; value: string }[]
   cta: { label: string; href: string }
@@ -185,6 +186,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                     loading={index === 0 ? "eager" : "lazy"}
                     sizes="(min-width: 1280px) 720px, (min-width: 768px) 70vw, 100vw"
                     className="object-cover"
+                    style={{ objectPosition: imageObjectPosition(model.image) }}
                   />
                 </div>
                 <div data-testid={`model-stack-${index}`} className="flex min-w-0 flex-col justify-between gap-8 md:gap-10">
