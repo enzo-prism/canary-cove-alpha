@@ -217,6 +217,48 @@ test.describe("gallery page", () => {
     await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
     await expect(page.getByTestId("gallery-amenity-filters")).toHaveCount(0)
   })
+
+  test("offers Suite 1, Suite 2, Suite 3, and the bunk room inside suites & bedrooms", async ({ page }) => {
+    await openGallery(page)
+
+    await expect(page.getByTestId("gallery-room-filters")).toHaveCount(0)
+    await page.getByTestId("gallery-filter-suites-bedrooms").click()
+    await expect(page.getByTestId("gallery-room-filters")).toBeVisible()
+
+    for (const room of ["suite-1", "suite-2", "suite-3", "bunk-room"] as const) {
+      const chip = page.getByTestId(`gallery-room-filter-${room}`)
+      await expect(chip).toBeVisible()
+      const count = GALLERY_PHOTOS.filter((photo) => photo.room === room).length
+      await expect(chip).toContainText(String(count))
+    }
+
+    // The default chip still counts the whole category, including the photos
+    // that have no room yet, so nothing looks lost behind the sub-groups.
+    const categoryTotal = GALLERY_PHOTOS.filter((photo) => photo.category === "suites-bedrooms").length
+    await expect(page.getByTestId("gallery-room-filter-all")).toContainText(String(categoryTotal))
+  })
+
+  test("narrows suites & bedrooms to one room", async ({ page }) => {
+    await openGallery(page)
+
+    const bunkCount = GALLERY_PHOTOS.filter((photo) => photo.room === "bunk-room").length
+    await page.getByTestId("gallery-filter-suites-bedrooms").click()
+    await page.getByTestId("gallery-room-filter-bunk-room").click()
+
+    await expect(page.getByTestId("gallery-room-filter-bunk-room")).toHaveAttribute("aria-pressed", "true")
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${bunkCount} of ${TOTAL} photos`)
+  })
+
+  test("reset clears an active room sub-group", async ({ page }) => {
+    await openGallery(page)
+
+    await page.getByTestId("gallery-filter-suites-bedrooms").click()
+    await page.getByTestId("gallery-room-filter-suite-1").click()
+    await page.getByTestId("gallery-reset").click()
+
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-room-filters")).toHaveCount(0)
+  })
 })
 
 test.describe("gallery page on a phone", () => {

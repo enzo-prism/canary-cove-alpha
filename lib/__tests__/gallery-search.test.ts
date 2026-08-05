@@ -4,8 +4,10 @@ import { GALLERY_CATEGORIES, GALLERY_PHOTOS, type GalleryPhoto } from "@/lib/gal
 import {
   ACTIVE_GALLERY_AMENITIES,
   ACTIVE_GALLERY_CATEGORIES,
+  ACTIVE_GALLERY_ROOMS,
   countGalleryPhotosByAmenity,
   countGalleryPhotosByCategory,
+  countGalleryPhotosByRoom,
   filterGalleryPhotos,
   getGalleryCategoryLabel,
   normalizeGalleryText,
@@ -268,6 +270,70 @@ describe("gallery data", () => {
     for (const entry of GALLERY_PHOTOS.filter((photo) => photo.category === "pool")) {
       expect(entry.amenities?.length ?? 0, entry.id).toBeGreaterThan(0)
     }
+  })
+
+  it("offers a chip for each room the owner named, and only those", () => {
+    // Don asked for Suite 1, Suite 2, Suite 3, and the bunk room. All four have
+    // photos he named, so all four chips must be live.
+    expect(ACTIVE_GALLERY_ROOMS.map((entry) => entry.id)).toEqual([
+      "suite-1",
+      "suite-2",
+      "suite-3",
+      "bunk-room",
+    ])
+  })
+
+  it("puts a bedroom and a bathroom in Suite 1, and the bunk beds in the bunk room", () => {
+    const suite1 = filterGalleryPhotos(GALLERY_PHOTOS, {
+      query: "",
+      category: "suites-bedrooms",
+      room: "suite-1",
+    })
+    expect(suite1.some((entry) => entry.tags.includes("bedroom"))).toBe(true)
+    expect(suite1.some((entry) => entry.tags.includes("bathroom"))).toBe(true)
+
+    const bunk = filterGalleryPhotos(GALLERY_PHOTOS, {
+      query: "",
+      category: "suites-bedrooms",
+      room: "bunk-room",
+    })
+    expect(bunk.length).toBeGreaterThan(0)
+    expect(bunk.every((entry) => entry.tags.includes("bunk beds"))).toBe(true)
+  })
+
+  it("assigns a room only where the owner named one", () => {
+    // The three suite bathrooms are near-identical in the photography, so an
+    // unnamed one must stay unassigned instead of being matched by eye. This
+    // test fails the moment someone fills the gaps in by inference.
+    const assigned = GALLERY_PHOTOS.filter((entry) => entry.room)
+    const unassignedBaths = GALLERY_PHOTOS.filter(
+      (entry) => entry.category === "suites-bedrooms" && !entry.room && entry.tags.includes("bathroom"),
+    )
+    expect(assigned.length).toBeLessThan(
+      GALLERY_PHOTOS.filter((entry) => entry.category === "suites-bedrooms").length,
+    )
+    expect(unassignedBaths.length).toBeGreaterThan(0)
+    expect(GALLERY_PHOTOS.every((entry) => !entry.room || entry.category === "suites-bedrooms")).toBe(true)
+  })
+
+  it("never hides a suites-bedrooms photo behind the room chips", () => {
+    // Most bedroom photos have no room yet. The default "all" chip has to keep
+    // counting them, or the category looks like it lost photos.
+    const counts = countGalleryPhotosByRoom(GALLERY_PHOTOS, "")
+    const categoryTotal = GALLERY_PHOTOS.filter((entry) => entry.category === "suites-bedrooms").length
+    expect(counts.get("all")).toBe(categoryTotal)
+
+    const roomTotal = ACTIVE_GALLERY_ROOMS.reduce((total, entry) => total + (counts.get(entry.id) ?? 0), 0)
+    expect(roomTotal).toBeLessThan(categoryTotal)
+  })
+
+  it("keeps room filters inside their own category", () => {
+    const poolWithRoom = filterGalleryPhotos(GALLERY_PHOTOS, {
+      query: "",
+      category: "pool",
+      room: "suite-1",
+    })
+    expect(poolWithRoom).toHaveLength(0)
   })
 
   it("only uses known amenity ids", () => {
