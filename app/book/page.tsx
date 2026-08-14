@@ -3,7 +3,6 @@ import { Header } from "@/components/header"
 import { BookingForm } from "@/components/booking-form"
 import { BookingPolicies } from "@/components/booking-policies"
 import { PhotoCarousel } from "@/components/photo-carousel"
-import { EMOJI } from "@/lib/emoji"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
@@ -33,13 +32,13 @@ export default async function Page({ searchParams }: BookPageProps) {
 
         <div className="mx-auto flex max-w-6xl xl:max-w-7xl flex-col gap-10">
           <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[minmax(0,1.04fr)_minmax(360px,0.96fr)]">
-            <div className="space-y-6">
+            <div className="order-2 space-y-6 lg:order-1">
               <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
                 <Badge
                   variant="outline"
                   className="w-fit border-border/70 text-xs uppercase tracking-[0.3em] text-muted-foreground"
                 >
-                  Request a stay {EMOJI.book}
+                  Request a stay
                 </Badge>
                 <div className="mt-5 space-y-4">
                   <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Check availability & book</h1>
@@ -62,7 +61,7 @@ export default async function Page({ searchParams }: BookPageProps) {
             </div>
 
             <BookingForm
-              className="order-2 lg:sticky lg:top-24 lg:self-start"
+              className="order-1 lg:order-2 lg:sticky lg:top-24 lg:self-start"
               defaultAccommodation={defaultAccommodation}
               defaultReturningGuest={defaultReturningGuest}
             />

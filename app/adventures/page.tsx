@@ -182,7 +182,7 @@ function StoryTile({ tile }: { tile: (typeof STORY_TILES)[number] }) {
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f7f2e9_0%,#f1eadf_22%,#f7f2e8_100%)]">
+    <main id="main-content" className="page-wash min-h-screen">
       <PageStructuredData path="/adventures" />
       <Header />
 
@@ -210,7 +210,7 @@ export default function Page() {
               <span>Ambergris Caye and beyond</span>
             </div>
             <div className="flow-xs">
-              <h1 className="font-serif text-[3rem] font-medium tracking-tight text-white sm:text-[4.2rem] lg:text-[4.9rem]">
+              <h1 className="text-[3rem] font-semibold tracking-tight text-white sm:text-[4.2rem] lg:text-[4.9rem]">
                 Belize Adventures
               </h1>
               <p className="mx-auto max-w-2xl text-base leading-7 text-white/84 sm:text-lg sm:leading-8">
@@ -266,7 +266,7 @@ export default function Page() {
                         <Badge className="border-white/20 bg-white/12 text-white backdrop-blur-sm">Staff-coordinated</Badge>
                       </div>
                       <div className="flow-xs">
-                        <h3 className="font-serif text-[2rem] font-medium tracking-tight sm:text-[2.35rem]">
+                        <h3 className="text-[2rem] font-semibold tracking-tight sm:text-[2.35rem]">
                           Reef, snorkel, and scuba days without the logistics headache
                         </h3>
                         <p className="max-w-2xl text-sm leading-7 text-white/82 sm:text-base">

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation"
 import { Menu, X } from "lucide-react"
 
 import { BrandMark } from "@/components/brand-mark"
+import { HeaderSearch } from "@/components/header-search"
 import { DesktopNav } from "@/components/navigation/desktop-nav"
 import { MobileNav } from "@/components/navigation/mobile-nav"
 import { Button } from "@/components/ui/button"
@@ -101,7 +102,9 @@ export function Header() {
         <BrandMark compact className="shrink-0" />
         <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
-        <div className="ml-auto flex items-center gap-2 lg:hidden">
+        <div className="ml-auto flex items-center gap-2">
+          <HeaderSearch />
+        <div className="flex items-center gap-2 lg:hidden">
           <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
             <SheetTrigger asChild>
               <Button
@@ -142,6 +145,7 @@ export function Header() {
               <MobileNav items={NAV_ITEMS} onNavigate={() => setMobileOpen(false)} />
             </SheetContent>
           </Sheet>
+        </div>
         </div>
       </div>
     </header>

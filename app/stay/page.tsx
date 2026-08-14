@@ -15,10 +15,10 @@ export const metadata = PAGE_METADATA.stay
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen bg-background">
+    <main id="main-content" className="page-wash min-h-screen">
       <PageStructuredData path="/stay" />
       <Header />
-      <section className="border-b border-border/40 bg-[linear-gradient(180deg,#fbf7ef_0%,#f7f3eb_100%)] px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24">
+      <section className="border-b border-border/40 px-4 pb-16 pt-12 sm:px-6 sm:pb-20 sm:pt-16 lg:px-8 lg:pb-24">
         <div className="mx-auto max-w-6xl xl:max-w-7xl">
           <div className="flow flow-lg">
             <div className="text-center">
@@ -49,7 +49,7 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="border-y border-border/30 bg-[linear-gradient(180deg,#faf8f2_0%,#f5f0e7_100%)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="border-y border-border/30 bg-surface-muted/40 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl">
           <StayAmenities />
         </div>
@@ -61,13 +61,13 @@ export default function Page() {
         </div>
       </section>
 
-      <section className="border-t border-border/30 bg-[linear-gradient(180deg,#f7f3eb_0%,#f3ede2_100%)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="border-t border-border/30 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl">
           <StayVillaGallery />
         </div>
       </section>
 
-      <section className="border-t border-border/30 bg-[linear-gradient(180deg,#faf8f2_0%,#f4efe5_100%)] px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
+      <section className="border-t border-border/30 bg-surface-muted/40 px-4 py-16 sm:px-6 sm:py-20 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl">
           <StayOutdoorGallery />
         </div>

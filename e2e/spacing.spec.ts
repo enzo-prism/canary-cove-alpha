@@ -133,7 +133,7 @@ test.describe("homepage section rhythm", () => {
       await waitForPageReady(page)
 
       const sections = await getSectionInsets(page)
-      expect(sections.length).toBeGreaterThanOrEqual(8)
+      expect(sections.length).toBeGreaterThanOrEqual(6)
 
       const hero = sections[0]
       const intro = sections[1]

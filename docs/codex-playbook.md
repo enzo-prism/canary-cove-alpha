@@ -83,9 +83,9 @@ These are mostly route-local page compositions rather than a single shared page 
 ### Homepage
 
 - `app/page.tsx`: section order and homepage composition.
-- `components/hero.tsx`: first-screen message and CTAs.
+- `components/hero.tsx`: first-screen message, rates/book CTAs, and overlay.
 - `components/hero-image-rotator.tsx`: rotating hero imagery.
-- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/bento-metrics.tsx`, `components/process-steps.tsx`, `components/specs-accordion.tsx`, `components/testimonial-slider.tsx`, `components/email-capture.tsx`, `components/site-search.tsx`
+- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/process-steps.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/email-capture.tsx`, `components/header-search.tsx`
 - `lib/homepage-content.ts`: homepage structured content.
 
 ### Stay page

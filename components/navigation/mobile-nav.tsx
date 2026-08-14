@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { BedDouble, Calendar, Compass, Home, Images, Mail, MapPin, MessageSquare, Utensils, Waves } from "lucide-react"
+import { BedDouble, Calendar, Compass, Images, Mail, MapPin, MessageSquare, Tag, Utensils, Waves } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
 import { trackNavClick } from "@/lib/analytics"
@@ -12,25 +12,28 @@ type MobileNavProps = {
   onNavigate?: () => void
 }
 
+const navIcons: Record<string, typeof BedDouble> = {
+  Stay: BedDouble,
+  Rates: Tag,
+  Experiences: Compass,
+  Dining: Utensils,
+  Adventures: Waves,
+  Gallery: Images,
+  Reviews: MessageSquare,
+  "Getting Here": MapPin,
+  Book: Calendar,
+  Contact: Mail,
+}
+
 export function MobileNav({ items, onNavigate }: MobileNavProps) {
-  // "Home" is omitted: the brand mark in the sheet header already links home.
-  const primary = items.filter((item) => item.type === "link" && !item.cta && item.href !== "/") as Extract<
-    NavItem,
-    { type: "link" }
-  >[]
-  const ctas = items.filter((item) => item.type === "link" && item.cta) as Extract<NavItem, { type: "link" }>[]
-  const navIcons: Record<string, typeof Home> = {
-    Home,
-    Stay: BedDouble,
-    Gallery: Images,
-    Experience: Compass,
-    Dining: Utensils,
-    Adventures: Waves,
-    Reviews: MessageSquare,
-    "Getting Here": MapPin,
-    Book: Calendar,
-    Contact: Mail,
-  }
+  const primary = items.flatMap((item) => {
+    if (item.type === "dropdown") {
+      return item.items.map((child) => ({ label: child.label, href: child.href }))
+    }
+    if (item.cta) return []
+    return [{ label: item.label, href: item.href }]
+  })
+  const ctas = items.filter((item) => item.type === "link" && item.cta)
 
   return (
     <div className="mt-6 flex flex-col gap-6">
@@ -84,7 +87,7 @@ export function MobileNav({ items, onNavigate }: MobileNavProps) {
               >
                 {Icon ? (
                   <span className="nav-icon">
-                    <Icon className="h-4 w-4" />
+                    <Icon className="h-3.5 w-3.5" />
                   </span>
                 ) : null}
                 <span className="nav-label">{item.label}</span>

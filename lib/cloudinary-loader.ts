@@ -22,6 +22,9 @@ export default function cloudinaryLoader({
   if (!src.startsWith("https://res.cloudinary.com/") || !src.includes(CLOUDINARY_UPLOAD_SEGMENT)) {
     return src
   }
-  const transform = `f_auto,q_${quality ?? "auto"},w_${width},c_limit`
+  // Full-bleed heroes use sizes="100vw", which can request 3840px on dense
+  // displays. Cap the Cloudinary width so LCP images stay under ~500 KB.
+  const boundedWidth = Math.min(Math.max(1, Math.round(width)), 2560)
+  const transform = `f_auto,q_${quality ?? "auto"},w_${boundedWidth},c_limit`
   return src.replace(CLOUDINARY_UPLOAD_SEGMENT, `${CLOUDINARY_UPLOAD_SEGMENT}${transform}/`)
 }

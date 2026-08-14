@@ -19,12 +19,19 @@ export type NavItem =
     }
 
 export const NAV_ITEMS: NavItem[] = [
-  { type: "link", label: "Home", href: "/" },
   { type: "link", label: "Stay", href: "/stay" },
-  { type: "link", label: "Gallery", href: "/gallery" },
-  { type: "link", label: "Experience", href: "/experiences" },
-  { type: "link", label: "Dining", href: "/dining" },
-  { type: "link", label: "Adventures", href: "/adventures" },
+  { type: "link", label: "Rates", href: "/rates" },
+  {
+    type: "dropdown",
+    label: "Explore",
+    href: "/experiences",
+    items: [
+      { label: "Experiences", href: "/experiences", caption: "Water, land, and dock days" },
+      { label: "Dining", href: "/dining", caption: "Private chef service" },
+      { label: "Adventures", href: "/adventures", caption: "Reef, fishing, and day trips" },
+      { label: "Gallery", href: "/gallery", caption: "Every photograph of the estate" },
+    ],
+  },
   { type: "link", label: "Reviews", href: "/about" },
   { type: "link", label: "Getting Here", href: "/getting-here" },
   { type: "link", label: "Book", href: "/book", cta: true },

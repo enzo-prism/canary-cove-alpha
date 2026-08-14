@@ -22,6 +22,10 @@ import { Card, CardContent } from "@/components/ui/card"
 type SiteSearchProps = {
   className?: string
   placeholder?: string
+  variant?: "default" | "header"
+  hideTrigger?: boolean
+  open?: boolean
+  onOpenChange?: (open: boolean) => void
 }
 
 type SearchSource = "input" | "chip" | "question" | null
@@ -29,10 +33,16 @@ type SearchSource = "input" | "chip" | "question" | null
 export function SiteSearch({
   className,
   placeholder = "Search rates, dining, adventures, travel logistics...",
+  variant = "default",
+  hideTrigger = false,
+  open: openProp,
+  onOpenChange,
 }: SiteSearchProps) {
   const router = useRouter()
   const [query, setQuery] = useState("")
-  const [open, setOpen] = useState(false)
+  const [uncontrolledOpen, setUncontrolledOpen] = useState(false)
+  const open = openProp ?? uncontrolledOpen
+  const setOpen = onOpenChange ?? setUncontrolledOpen
   const dialogId = "site-search-dialog"
   const [shortcutLabel, setShortcutLabel] = useState("Ctrl K")
   const [searchSource, setSearchSource] = useState<SearchSource>(null)
@@ -48,6 +58,7 @@ export function SiteSearch({
   const { answer, groups } = searchOutput
 
   useEffect(() => {
+    if (hideTrigger) return
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
@@ -57,7 +68,7 @@ export function SiteSearch({
 
     document.addEventListener("keydown", handleKeyDown)
     return () => document.removeEventListener("keydown", handleKeyDown)
-  }, [])
+  }, [hideTrigger, setOpen])
 
   useEffect(() => {
     if (!open) {
@@ -108,8 +119,9 @@ export function SiteSearch({
   const fallbackAnswer = getAskUsAnswer()
 
   return (
-    <div className={cn("w-full max-w-xl", className)}>
+    <div className={cn(variant === "header" ? "contents" : "w-full max-w-xl", className)}>
       <Dialog open={open} onOpenChange={handleOpenChange}>
+        {hideTrigger ? null : (
         <DialogTrigger asChild aria-controls={dialogId}>
           <Button
             type="button"
@@ -127,6 +139,7 @@ export function SiteSearch({
             </span>
           </Button>
         </DialogTrigger>
+        )}
         <DialogContent
           id={dialogId}
           className="max-w-2xl gap-0 overflow-hidden p-0"
@@ -249,7 +262,7 @@ export function SiteSearch({
                             key={item.id}
                             value={`${item.title} ${item.description ?? ""} ${item.keywords.join(" ")}`}
                             onSelect={() => handleResultSelect(group.group, item.href)}
-                            className="flex cursor-pointer flex-col gap-1 rounded-xl px-4 py-3 text-sm text-foreground outline-none aria-selected:bg-primary/10 aria-selected:text-black"
+                            className="flex cursor-pointer flex-col gap-1 rounded-xl px-4 py-3 text-sm text-foreground outline-none aria-selected:bg-primary/10 aria-selected:text-foreground"
                             data-testid="search-item"
                           >
                             <span className="font-medium">{item.title}</span>

@@ -44,9 +44,9 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/hero-image-rotator.tsx`: Rotating hero background images (high-res only).
 - `components/model-carousel.tsx`: Estate lineup slider.
 - `components/editorial-split.tsx`: Two-column editorial blocks.
-- `components/bento-metrics.tsx`: Bento grid with metrics + accordion details.
+- `components/header-search.tsx`: Site-wide search trigger in the header.
 - `components/process-steps.tsx`: Step-by-step flow.
-- `components/specs-accordion.tsx`: Tech/spec sections.
+- `components/property-film.tsx`: Poster-first homepage diving film.
 - `components/testimonial-slider.tsx`: Testimonial slider.
 - `components/email-capture.tsx`: Email capture block.
 - `components/reef-encounters.tsx`: Responsive native-video gallery on `/adventures`.
@@ -62,7 +62,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `lib/site-config.ts`: Canonical domain, public route metadata, business identity constants, and llms content.
 - `lib/seo.ts`: Page-level metadata source of truth for public routes.
 - `lib/structured-data.ts` and `components/structured-data.tsx`: Sitewide organization/lodging schema and per-page breadcrumb/page JSON-LD.
-- `components/basic-page.tsx`: Simple legacy/shared leaf-page shell; most current routes are custom route-local compositions.
+- `components/layout/page-shell.tsx`: Shared header/footer/structured-data shell for interior routes.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
 - `components/booking-form.tsx`: Booking request form with client-side validation.

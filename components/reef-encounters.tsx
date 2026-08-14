@@ -34,7 +34,7 @@ function ReefEncounterCard({ video, featured = false }: { video: ReefEncounterVi
             <span>{video.eyebrow}</span>
             <span>{video.duration}</span>
           </div>
-          <h3 className={`font-serif font-medium tracking-tight text-foreground ${featured ? "text-[1.9rem] sm:text-[2.2rem]" : "text-[1.55rem]"}`}>
+          <h3 className={`font-semibold tracking-tight text-foreground ${featured ? "text-[1.9rem] sm:text-[2.2rem]" : "text-[1.55rem]"}`}>
             {video.title}
           </h3>
           <p id={`${video.slug}-description`} className="text-sm leading-7 text-muted-foreground">

@@ -18,7 +18,6 @@ const sfPro = localFont({
   variable: "--font-sf",
   display: "swap",
   src: [
-    { path: "../font/subset/SF-Pro-Display-Light.subset.woff2", weight: "300", style: "normal" },
     { path: "../font/subset/SF-Pro-Display-Regular.subset.woff2", weight: "400", style: "normal" },
     { path: "../font/subset/SF-Pro-Display-Medium.subset.woff2", weight: "500", style: "normal" },
     { path: "../font/subset/SF-Pro-Display-Semibold.subset.woff2", weight: "600", style: "normal" },

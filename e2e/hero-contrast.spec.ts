@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test"
 
-test("hero stays image-first with only a subtle overlay", async ({ page }) => {
+test("hero keeps readable overlay copy and a rotating background", async ({ page }) => {
   await page.goto("/")
   await page.waitForLoadState("domcontentloaded")
 
@@ -9,9 +9,9 @@ test("hero stays image-first with only a subtle overlay", async ({ page }) => {
   const rotateIndicator = page.getByTestId("hero-rotate-indicator")
   await expect(rotateIndicator).toBeVisible()
 
-  await expect(hero.getByRole("heading")).toHaveCount(0)
-  await expect(hero.getByRole("link")).toHaveCount(0)
-  await expect(hero.getByRole("button")).toHaveCount(0)
+  await expect(hero.getByRole("heading", { level: 1 })).toHaveText("Private estate on Ambergris Caye")
+  await expect(hero.getByTestId("homepage-primary-cta")).toBeVisible()
+  await expect(hero.getByTestId("homepage-secondary-cta")).toBeVisible()
 
   const {
     overlayBackground,

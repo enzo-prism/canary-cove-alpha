@@ -1,6 +1,19 @@
 import { TrackedLink } from "@/components/analytics/tracked-link"
 import { FacebookLink } from "@/components/facebook-link"
 
+const FOOTER_LINKS = [
+  { href: "/stay", label: "Stay" },
+  { href: "/rates", label: "Rates" },
+  { href: "/gallery", label: "Gallery" },
+  { href: "/experiences", label: "Experiences" },
+  { href: "/dining", label: "Dining" },
+  { href: "/adventures", label: "Adventures" },
+  { href: "/about", label: "Reviews" },
+  { href: "/getting-here", label: "Getting Here" },
+  { href: "/book", label: "Book" },
+  { href: "/contact", label: "Contact" },
+] as const
+
 export function Footer() {
   return (
     <footer className="border-t border-border/60 bg-background px-6 py-16 sm:px-8 lg:px-12">
@@ -12,41 +25,21 @@ export function Footer() {
             <p className="text-sm text-muted-foreground">
               Fully staffed beachfront stay on Ambergris Caye. One booking at a time.
             </p>
-            <p className="text-sm text-muted-foreground">17' 59.914 NORTH - 87' 54.901 WEST</p>
+            <p className="text-sm text-muted-foreground">17&apos; 59.914 NORTH - 87&apos; 54.901 WEST</p>
             <p className="text-sm text-muted-foreground">Call Gil: 011 501-610-5121 - Consi: 011 501-626-7534</p>
           </div>
           <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
-            <TrackedLink href="/stay" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/stay" }} className="hover:text-foreground">
-              Stay
-            </TrackedLink>
-            <TrackedLink
-              href="/experiences"
-              eventName="nav_click"
-              eventPayload={{ surface: "footer", destination: "/experiences" }}
-              className="hover:text-foreground"
-            >
-              Experiences
-            </TrackedLink>
-            <TrackedLink href="/dining" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/dining" }} className="hover:text-foreground">
-              Dining
-            </TrackedLink>
-            <TrackedLink
-              href="/adventures"
-              eventName="nav_click"
-              eventPayload={{ surface: "footer", destination: "/adventures" }}
-              className="hover:text-foreground"
-            >
-              Adventures
-            </TrackedLink>
-            <TrackedLink href="/about" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/about" }} className="hover:text-foreground">
-              Reviews
-            </TrackedLink>
-            <TrackedLink href="/book" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/book" }} className="hover:text-foreground">
-              Book
-            </TrackedLink>
-            <TrackedLink href="/contact" eventName="nav_click" eventPayload={{ surface: "footer", destination: "/contact" }} className="hover:text-foreground">
-              Contact
-            </TrackedLink>
+            {FOOTER_LINKS.map((link) => (
+              <TrackedLink
+                key={link.href}
+                href={link.href}
+                eventName="nav_click"
+                eventPayload={{ surface: "footer", destination: link.href }}
+                className="hover:text-foreground"
+              >
+                {link.label}
+              </TrackedLink>
+            ))}
             <FacebookLink />
           </div>
         </div>

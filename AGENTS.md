@@ -2,8 +2,8 @@
 
 ## Project Structure & Module Organization
 - Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, estate lineup, editorial splits, diving film, bento metrics, process steps, testimonials, specs, email capture, search).
-- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs/logo; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/` (ModelCarousel, EditorialSplit, BentoMetrics, ProcessSteps, SpecsAccordion, TestimonialSlider, EmailCapture, ReefEncounters).
+- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, TestimonialSlider, EmailCapture, ReefEncounters).
 - Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
 - Shared data lives in `lib/`: `images.ts`, `videos.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
@@ -89,6 +89,6 @@
 - Styling tokens/utilities: `app/globals.css`
 - Image registry: `lib/images.ts`
 - Shared carousel layer: `components/ui/carousel.tsx`
-- Interior page shell: `components/basic-page.tsx`
+- Interior page shell: `components/layout/page-shell.tsx`
 - Booking form: `components/booking-form.tsx`, `app/book/page.tsx`
 - Adventures reef films: `app/adventures/page.tsx`, `components/reef-encounters.tsx`, `lib/videos.ts`

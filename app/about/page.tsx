@@ -518,7 +518,7 @@ const featuredReview = featuredReviewGroup
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f7f2e8_0%,#f3ede2_28%,#faf7f0_100%)]">
+    <main id="main-content" className="page-wash min-h-screen">
       <PageStructuredData path="/about" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">

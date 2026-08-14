@@ -1,9 +1,7 @@
 import { ContactDetails } from "@/components/contact-details"
 import { ContactForm } from "@/components/contact-form"
-import { Footer } from "@/components/footer"
-import { Header } from "@/components/header"
+import { PageShell } from "@/components/layout/page-shell"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
-import { PageStructuredData } from "@/components/structured-data"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -11,9 +9,7 @@ export const metadata = PAGE_METADATA.contact
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen">
-      <PageStructuredData path="/contact" />
-      <Header />
+    <PageShell path="/contact" wash>
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-5xl xl:max-w-6xl space-y-12">
           <div className="space-y-3">
@@ -37,7 +33,6 @@ export default function Page() {
           </div>
         </div>
       </section>
-      <Footer />
-    </main>
+    </PageShell>
   )
 }

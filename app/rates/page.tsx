@@ -286,7 +286,7 @@ export default function Page() {
   const [firstPerspective, secondPerspective] = RATE_PERSPECTIVES
 
   return (
-    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f8f3ea_0%,#f2ebdf_24%,#f8f3e8_100%)]">
+    <main id="main-content" className="page-wash min-h-screen">
       <PageStructuredData path="/rates" />
       <Header />
 
@@ -377,7 +377,7 @@ export default function Page() {
                       <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
                         <div className="max-w-xs flow flow-xs text-white">
                           <Badge className="w-fit border-white/18 bg-white/12 text-white backdrop-blur-sm">One group at a time</Badge>
-                          <p className="font-serif text-[1.7rem] font-medium leading-tight tracking-tight sm:text-[1.9rem]">
+                          <p className="text-[1.7rem] font-semibold leading-tight tracking-tight sm:text-[1.9rem]">
                             Private estate pricing, not a resort menu
                           </p>
                         </div>

@@ -84,7 +84,7 @@ const EXPERIENCE_HIGHLIGHTS = [
 
 export default function Page() {
   return (
-    <main id="main-content" className="min-h-screen bg-[linear-gradient(180deg,#f6f1e6_0%,#f2ecdf_26%,#f7f2e9_100%)]">
+    <main id="main-content" className="page-wash min-h-screen">
       <PageStructuredData path="/experiences" />
       <Header />
       <ExperiencesHero />

@@ -254,6 +254,10 @@ body[data-scroll-locked] elevenlabs-convai {
     @apply text-xs leading-5 text-destructive;
   }
 
+  .page-wash {
+    background-image: linear-gradient(180deg, var(--surface) 0%, var(--surface-muted) 42%, var(--surface) 100%);
+  }
+
   .text-display {
     @apply text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl;
     line-height: 1.04;

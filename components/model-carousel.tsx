@@ -15,7 +15,6 @@ type Model = {
   tagline: string
   summary: string
   image: ImageRecord
-  finishes: readonly { name: string; color: string }[]
   stats: readonly { label: string; value: string }[]
   cta: { label: string; href: string }
 }
@@ -109,9 +108,9 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
       }
     }
 
-    window.addEventListener("wheel", handleWheel, { passive: false, capture: true })
+    node.addEventListener("wheel", handleWheel, { passive: false })
     return () => {
-      window.removeEventListener("wheel", handleWheel, { capture: true })
+      node.removeEventListener("wheel", handleWheel)
       if (wheelLockRef.current) {
         window.clearTimeout(wheelLockRef.current)
         wheelLockRef.current = null
@@ -123,7 +122,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div className="flow flow-xs">
-          <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">Estate lineup</p>
+          <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">The estate</p>
           <h2 className="text-section">Spaces that scale with your stay.</h2>
         </div>
         <div className="hidden items-center gap-2 sm:flex">
@@ -132,7 +131,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
             variant="outline"
             size="icon"
             onClick={scrollPrev}
-            aria-label="Previous model"
+            aria-label="Previous space"
             className="border-border text-foreground hover:bg-foreground hover:text-background"
           >
             <ChevronLeft className="h-4 w-4" />
@@ -142,7 +141,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
             variant="outline"
             size="icon"
             onClick={scrollNext}
-            aria-label="Next model"
+            aria-label="Next space"
             className="border-border text-foreground hover:bg-foreground hover:text-background"
           >
             <ChevronRight className="h-4 w-4" />
@@ -157,7 +156,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
           viewportRef(node)
         }}
         tabIndex={0}
-        aria-label="Estate lineup slider"
+        aria-label="Estate spaces slider"
         onKeyDown={handleKeyDown}
         onPointerEnter={() => {
           hoverRef.current = true
@@ -183,7 +182,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                     alt={model.image.alt}
                     fill
                     decoding="async"
-                    loading={index === 0 ? "eager" : "lazy"}
+                    loading="lazy"
                     sizes="(min-width: 1280px) 720px, (min-width: 768px) 70vw, 100vw"
                     className="object-cover"
                     style={{ objectPosition: imageObjectPosition(model.image) }}

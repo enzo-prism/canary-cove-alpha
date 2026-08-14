@@ -7,7 +7,6 @@ import { CalendarRange, Send } from "lucide-react"
 import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
 import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
 import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
-import { EMOJI } from "@/lib/emoji"
 import { cn } from "@/lib/utils"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Badge } from "@/components/ui/badge"
@@ -154,13 +153,12 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               className="w-fit gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-black"
             >
               <Send className="h-4 w-4" />
-              Request to book {EMOJI.book}
+              Request to book
             </Badge>
             <div className="space-y-2">
               <CardTitle className="text-2xl font-semibold text-foreground text-balance">Tell us about your stay.</CardTitle>
               <CardDescription className="text-sm leading-6 text-muted-foreground">
-                Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.{" "}
-                {EMOJI.concierge}
+                Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.
               </CardDescription>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -417,12 +415,11 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="requests">Message</Label>
+                <Label htmlFor="requests">Message <span className="text-muted-foreground">(optional)</span></Label>
                 <Textarea
                   id="requests"
                   name="requests"
                   rows={5}
-                  required
                   autoComplete="off"
                   placeholder="Celebrations, preferred pace, reef days, dietary notes, or anything else we should plan around…"
                   className={textareaClassName}
@@ -431,8 +428,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="referral">How did you hear about Canary Cove?</Label>
-                <Select name="referral" required>
+                <Label htmlFor="referral">How did you hear about Canary Cove? <span className="text-muted-foreground">(optional)</span></Label>
+                <Select name="referral">
                   <SelectTrigger id="referral" className={selectClassName}>
                     <SelectValue placeholder="How did you hear about Canary Cove?" />
                   </SelectTrigger>

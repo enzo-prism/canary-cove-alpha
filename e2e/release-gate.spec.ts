@@ -62,7 +62,7 @@ test.describe("release gate smoke coverage", () => {
     await page.goto("/")
     await waitForPageReady(page)
     await page.getByTestId("homepage-secondary-cta").click()
-    await expect(page).toHaveURL(/\/about#guest-testimonials$/)
+    await expect(page).toHaveURL(/\/rates$/)
   })
 
   test("mobile navigation opens, closes, and routes correctly", async ({ page }) => {
@@ -73,7 +73,7 @@ test.describe("release gate smoke coverage", () => {
     await page.getByRole("button", { name: "Open navigation menu" }).click()
     await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeVisible()
 
-    await page.getByRole("link", { name: "Experience" }).click()
+    await page.getByRole("link", { name: "Experiences" }).click()
     await expect(page).toHaveURL(/\/experiences$/)
 
     await page.goto("/")

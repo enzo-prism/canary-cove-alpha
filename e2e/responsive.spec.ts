@@ -103,17 +103,21 @@ test.describe("responsive layout coverage", () => {
         expect(box.width).toBeLessThanOrEqual(viewport.width * 0.94)
       })
 
-      test("hero stays free of homepage copy and actions", async ({ page }) => {
+      test("hero overlay copy stays readable and inside the viewport", async ({ page }) => {
         await page.goto("/")
         await page.waitForLoadState("domcontentloaded")
         await page.evaluate(() => document.fonts.ready)
 
         const hero = page.getByTestId("hero-visual")
         await expect(hero).toBeVisible()
+        await expect(hero.getByRole("heading", { level: 1 })).toBeVisible()
+        await expect(hero.getByTestId("homepage-primary-cta")).toBeVisible()
 
-        await expect(hero.getByRole("heading")).toHaveCount(0)
-        await expect(hero.getByRole("link")).toHaveCount(0)
-        await expect(hero.getByRole("button")).toHaveCount(0)
+        const box = await hero.getByTestId("homepage-intro").boundingBox()
+        expect(box).not.toBeNull()
+        if (!box) return
+        expect(box.x).toBeGreaterThanOrEqual(0)
+        expect(box.x + box.width).toBeLessThanOrEqual(viewport.width)
       })
     })
   }

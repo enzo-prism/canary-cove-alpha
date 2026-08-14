@@ -106,9 +106,9 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
       }
     }
 
-    window.addEventListener("wheel", handleWheel, { passive: false, capture: true })
+    node.addEventListener("wheel", handleWheel, { passive: false })
     return () => {
-      window.removeEventListener("wheel", handleWheel, { capture: true })
+      node.removeEventListener("wheel", handleWheel)
       if (wheelLockRef.current) {
         window.clearTimeout(wheelLockRef.current)
         wheelLockRef.current = null
@@ -154,7 +154,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
                   alt={testimonial.image.alt}
                   fill
                   decoding="async"
-                  loading={index === 0 ? "eager" : "lazy"}
+                  loading="lazy"
                   sizes="(min-width: 1024px) 80vw, 100vw"
                   className="object-cover"
                   style={{ objectPosition: imageObjectPosition(testimonial.image) }}

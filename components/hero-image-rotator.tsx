@@ -131,7 +131,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           alt={photo.alt}
           fill
           priority={index === 0}
-          sizes="100vw"
+          sizes="(min-width: 2560px) 2560px, 100vw"
           style={
             {
               // The per-image horizontal bias wins on x; a record-level focal
@@ -147,7 +147,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
       ))}
       <div
         data-testid="hero-contrast-overlay"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.06)_0%,rgba(7,18,22,0.01)_40%,rgba(7,18,22,0.05)_72%,rgba(7,18,22,0.18)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.28)_0%,rgba(7,18,22,0.08)_36%,rgba(7,18,22,0.22)_62%,rgba(7,18,22,0.62)_100%)]"
       />
       {photos.length > 1 ? (
         <div
@@ -192,7 +192,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           </div>
         </div>
       ) : null}
-      {children ? <div className="relative z-10 h-full">{children}</div> : null}
+      {children ? <div className="absolute inset-0 z-10">{children}</div> : null}
     </div>
   )
 }
