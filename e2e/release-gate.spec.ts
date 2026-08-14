@@ -19,6 +19,16 @@ test.describe("release gate smoke coverage", () => {
     )
   })
 
+  test("stay page links to the Main House microsite", async ({ page }) => {
+    await page.goto("/stay")
+    await waitForPageReady(page)
+
+    await expect(page.getByRole("link", { name: "Main House (5 suites)" })).toHaveAttribute(
+      "href",
+      "https://mainhouse.canarycove.com",
+    )
+  })
+
   for (const route of SITE_ROUTES) {
     test(`route ${route} loads cleanly`, async ({ page }) => {
       const issues = installErrorCollectors(page)

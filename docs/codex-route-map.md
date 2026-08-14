@@ -45,8 +45,8 @@ Use this file when you need to answer "where is this page actually built?" witho
 - Page: `app/book/page.tsx`
 - Primary components: `PhotoCarousel`, `BookingForm`, `BookingPolicies`, `TestimonialsGrid`
 - Data/config: `lib/testimonial-spotlights.ts`, `lib/analytics.ts`, `lib/seo.ts` (`PAGE_METADATA.book`)
-- Important anchors: `#availability-calendar`, `#comfort-confidence`, `#payment-terms`, `#cancellation-policy`
-- High-risk couplings: the Bookingmood iframe is part of the release gate; `BookingForm` posts to Formspree and is privacy-policy sensitive
+- Important anchors: `#comfort-confidence`, `#payment-terms`, `#cancellation-policy`
+- High-risk couplings: `BookingForm` posts to Formspree and is privacy-policy sensitive. Bookingmood was removed because the subscription was cancelled.
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/forms.spec.ts`, `e2e/design-visual.spec.ts`
 
 ### `/contact`
@@ -109,7 +109,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 - Primary components: route-local prose with `Header`, `Footer`, `Container`, and `Section`
 - Data/config: `lib/seo.ts`, `lib/site-config.ts`
 - Important anchors: none beyond the standard main content container
-- High-risk couplings: these pages are the public record for Formspree, Bookingmood, Cloudinary, GA, and Vercel Analytics usage
+- High-risk couplings: these pages are the public record for Formspree, Cloudinary, GA, and Vercel Analytics usage
 - Tests most likely to fail: `e2e/release-gate.spec.ts`
 
 ## Hidden-coupling checklist

@@ -1,4 +1,3 @@
-import { AvailabilityCalendarIntentTracker } from "@/components/analytics/availability-calendar-intent-tracker"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { BookingForm } from "@/components/booking-form"
@@ -45,18 +44,14 @@ export default async function Page({ searchParams }: BookPageProps) {
                 <div className="mt-5 space-y-4">
                   <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Check availability & book</h1>
                   <p className="text-lg text-muted-foreground sm:text-xl">
-                    Check dates in the live calendar, then share your trip details so we can confirm or place a
-                    courtesy hold for your group.
+                    Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored
+                    quote.
                   </p>
                 </div>
-                <div className="mt-6 grid gap-3 sm:grid-cols-3">
+                <div className="mt-6 grid gap-3 sm:grid-cols-2">
                   <div className="surface-inset px-4 py-4">
                     <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Private booking</p>
                     <p className="mt-2 text-sm font-semibold text-foreground">Only one group on property at a time</p>
-                  </div>
-                  <div className="surface-inset px-4 py-4">
-                    <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Live calendar</p>
-                    <p className="mt-2 text-sm font-semibold text-foreground">See open dates before you inquire</p>
                   </div>
                   <div className="surface-inset px-4 py-4">
                     <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Tailored quote</p>
@@ -64,33 +59,6 @@ export default async function Page({ searchParams }: BookPageProps) {
                   </div>
                 </div>
               </div>
-
-              <Card
-                id="availability-calendar"
-                className="surface-panel relative scroll-mt-24 overflow-hidden"
-              >
-                <AvailabilityCalendarIntentTracker />
-                <CardHeader className="px-4 pb-3 pt-4">
-                  <Badge
-                    variant="outline"
-                    className="w-fit border-border/70 text-xs uppercase tracking-[0.3em] text-muted-foreground"
-                  >
-                    Live availability {EMOJI.book}
-                  </Badge>
-                </CardHeader>
-                <CardContent className="px-4 pb-4 pt-0">
-                  <div className="overflow-hidden rounded-2xl border border-border/70 bg-white">
-                    <iframe
-                      height="280"
-                      title="Bookingmood widget"
-                      src="https://www.bookingmood.com/embed/939b7bb6-8e48-4256-a7af-0ec62e4a4d68"
-                      style={{ width: "100%", border: "none" }}
-                      loading="lazy"
-                      data-testid="booking-calendar-iframe"
-                    />
-                  </div>
-                </CardContent>
-              </Card>
             </div>
 
             <BookingForm

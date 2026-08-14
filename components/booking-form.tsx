@@ -174,8 +174,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               <CalendarRange className="h-4 w-4" />
               <AlertTitle>We confirm every stay personally.</AlertTitle>
               <AlertDescription>
-                Send your preferred dates and our team will check the live calendar, place a courtesy hold, and follow
-                up with next steps shortly after.
+                Sending this form places a tentative hold while we confirm availability, pricing, and next steps with you
+                directly.
               </AlertDescription>
             </Alert>
 

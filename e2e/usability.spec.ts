@@ -3,13 +3,13 @@ import { expect, test } from "@playwright/test"
 import { CORE_VIEWPORTS, expectTapTarget, waitForPageReady } from "./helpers"
 
 test.describe("usability and responsive resilience", () => {
-  test("booking page exposes a live availability embed", async ({ page }) => {
+  test("booking page keeps the request-to-book form and has no live calendar embed", async ({ page }) => {
     await page.goto("/book")
     await waitForPageReady(page)
 
-    const iframe = page.getByTestId("booking-calendar-iframe")
-    await expect(iframe).toBeVisible()
-    await expect(iframe).toHaveAttribute("src", /bookingmood/)
+    await expect(page.getByTestId("booking-form-card")).toBeVisible()
+    await expect(page.getByTestId("booking-calendar-iframe")).toHaveCount(0)
+    await expect(page.locator("iframe[src*='bookingmood']")).toHaveCount(0)
   })
 
   test("homepage search no-results state still offers a recovery path", async ({ page }) => {

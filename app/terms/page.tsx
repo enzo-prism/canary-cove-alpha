@@ -39,7 +39,7 @@ export default function TermsPage() {
           <section className="flow flow-sm">
             <h2 className="text-section">Third-party tools</h2>
             <p className="text-body text-foreground/80">
-              This site links to or embeds third-party services such as Bookingmood, Formspree, Facebook, and Cloudinary. Canary Cove is not responsible for outages, policy changes, or content hosted by those external services.
+              This site links to or embeds third-party services such as Formspree, Facebook, and Cloudinary. Canary Cove is not responsible for outages, policy changes, or content hosted by those external services.
             </p>
           </section>
 
