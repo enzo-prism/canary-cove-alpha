@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-08-14 — Performance, UX, and design pass
+
+- Commit: `4418f69f0f5547b1ddbcd04653de2be6c338a952`
+- Production: `https://www.canarycove.com`
+- Vercel: GitHub status `Deployment has completed` for `v0-canary-cove-navbar-structure` (`BQpouuL6zii46HA1kkzawnSGFBqs`)
+- PR: https://github.com/enzo-prism/canary-cove-alpha/pull/21
+- Hero now shows “Private estate on Ambergris Caye” with Book → `/book` and See rates → `/rates`.
+- Rates is first-class in nav/footer; Explore groups Experiences, Dining, Adventures, and Gallery; search opens from the header.
+- Homepage film is poster-first; Cloudinary loader caps width at 2560; unused Light font and dead page templates were removed.
+- Project docs (AGENTS, README, playbook, route map, maintenance checklist, QA criteria) match the shipped architecture.
+- Verified production `/`, `/rates`, `/book`, `/privacy`, and `/terms` return `200`; apex `https://canarycove.com` 307-redirects to www; live HTML includes the new hero heading and CTAs.
+
 ## 2026-07-15 — Reef encounters on film
 
 - Commit: `840e81715f1bbb12d32d953ac573c8f4fdcaaa96`
