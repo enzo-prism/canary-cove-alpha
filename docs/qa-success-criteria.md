@@ -18,9 +18,10 @@ This document defines the production-readiness bar for the public marketing site
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
 - The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
 - The ElevenLabs concierge widget is present on public pages where the shared layout renders.
-- Site search opens from the homepage and gives guests a useful fallback state when a query has no results.
+- Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
+- The homepage diving film is poster-first and starts only after a guest click; do not ship the raw autoplay MP4.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 - `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.
 - Reef films use native controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
@@ -36,7 +37,7 @@ This document defines the production-readiness bar for the public marketing site
 
 ## Design criteria
 
-- Hero contrast stays readable against the page background.
+- Hero overlay copy stays readable against the rotating photography (contrast gradient plus overlay).
 - Critical sections maintain their spacing rhythm.
 - Galleries and carousels keep their intended framing and do not regress into clipped, low-contrast, or partial-slide states.
 - Visual-regression baselines remain stable for:

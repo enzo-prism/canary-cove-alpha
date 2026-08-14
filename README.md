@@ -35,14 +35,14 @@ pnpm build
 pnpm test:e2e
 ```
 
-Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshots are intentionally maintained on Chromium only.
+Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshots are intentionally maintained on Chromium only. Linux and Darwin snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`; update the OS you actually ran.
 
 ## Project map
 
-- `app/page.tsx`: Homepage composition and section order (hero, estate lineup, editorial splits, film, bento, steps, testimonials, specs, email capture, search).
-- `components/hero.tsx`: Hero copy, CTAs, and logo overlay.
+- `app/page.tsx`: Homepage composition and section order (hero overlay, proof row, estate spaces, editorial splits, poster-first film, testimonials, process steps, email capture).
+- `components/hero.tsx`: Hero overlay copy and Book / See rates CTAs.
 - `components/hero-image-rotator.tsx`: Rotating hero background images (high-res only).
-- `components/model-carousel.tsx`: Estate lineup slider.
+- `components/model-carousel.tsx`: Estate spaces slider.
 - `components/editorial-split.tsx`: Two-column editorial blocks.
 - `components/header-search.tsx`: Site-wide search trigger in the header.
 - `components/process-steps.tsx`: Step-by-step flow.
@@ -55,8 +55,9 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/navigation/mobile-nav.tsx`: Mobile nav UI.
 - `lib/nav-items.ts`: Navigation data source.
 - `lib/emoji.ts`: Emoji map used in nav items.
-- `components/site-search.tsx`: Search module on the homepage.
-- `lib/homepage-content.ts`: Homepage data for models, editorial blocks, steps, specs, testimonials.
+- `components/site-search.tsx`: Search dialog opened from the header (or Cmd/Ctrl+K), not embedded on the homepage.
+- `lib/homepage-content.ts`: Homepage data for estate spaces, editorial blocks, proof points, and process steps.
+- `lib/cloudinary-loader.ts`: Custom `next/image` loader that resizes Cloudinary assets and caps width at 2560.
 - `lib/testimonial-spotlights.ts`: Testimonial copy.
 - `lib/videos.ts`: Reef-film titles, descriptions, durations, source paths, and poster registry.
 - `lib/site-config.ts`: Canonical domain, public route metadata, business identity constants, and llms content.
@@ -75,7 +76,8 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Media notes
 
-- Cloudinary remains the source for remote imagery and the homepage film. Add new image hosts to `next.config.mjs`.
+- Cloudinary remains the source for remote imagery and the homepage film. `next/image` uses the custom loader in `lib/cloudinary-loader.ts`; do not switch back to `images.unoptimized`. Add new image hosts to `next.config.mjs`.
+- The homepage film is poster-first and user-started. Do not restore the raw autoplay MP4.
 - Hero and testimonial images should be high resolution; update the arrays, not the JSX.
 - Optimized Adventures films and posters live in `public/videos/reef-encounters/`; their public metadata lives in `lib/videos.ts`.
 - Reef films use native controls and `playsInline` without autoplay or looping; only the featured film preloads metadata, while supporting films wait for interaction.

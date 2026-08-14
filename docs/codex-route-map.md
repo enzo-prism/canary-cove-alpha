@@ -8,7 +8,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 - `lib/seo.ts` owns page metadata. `lib/site-config.ts` owns the public-route inventory used by sitemap and `llms` outputs.
 - Search is manual. If public content changes, `lib/search/search-index.ts` usually needs an update in the same commit.
 - CTA tracking is split: use `components/analytics/tracked-link.tsx` when a link can be wrapped; nav, forms, search, and menu state use direct helpers in `lib/analytics.ts`.
-- `next.config.mjs` keeps `images.unoptimized: true` and only allows remote images from `res.cloudinary.com`.
+- `next.config.mjs` uses a custom Cloudinary loader (`lib/cloudinary-loader.ts`) and only allows remote images from `res.cloudinary.com`. Do not set `images.unoptimized`.
 - Hash destinations are not purely local. Search results, homepage CTAs, old marketing links, and redirects depend on them.
 
 ## Route owners
@@ -16,10 +16,10 @@ Use this file when you need to answer "where is this page actually built?" witho
 ### `/`
 
 - Page: `app/page.tsx`
-- Primary components: `Hero`, `HeroImageRotator`, `ModelCarousel`, `EditorialSplit`, `BentoMetrics`, `ProcessSteps`, `SpecsAccordion`, `TestimonialSlider`, `EmailCapture`, `SiteSearch`
+- Primary components: `Hero`, `HeroImageRotator`, `ModelCarousel`, `EditorialSplit`, `PropertyFilm`, `TestimonialSlider`, `ProcessSteps`, `EmailCapture`
 - Data/config: `lib/homepage-content.ts`, `lib/images.ts`, `lib/seo.ts` (`PAGE_METADATA.home`)
 - Important anchors: `#property-film`
-- High-risk couplings: hero backgrounds live in `components/hero-image-rotator.tsx`; hero copy/CTAs live in `components/hero.tsx`; the hero order is randomized on load with a sessionStorage guard
+- High-risk couplings: hero backgrounds live in `components/hero-image-rotator.tsx`; hero copy/CTAs live in `components/hero.tsx` (Book → `/book`, See rates → `/rates`); the hero order is randomized on load with a sessionStorage guard; the film is poster-first in `components/property-film.tsx`; search is header-triggered, not homepage-embedded
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/design-visual.spec.ts`, `e2e/hero-contrast.spec.ts`, `e2e/search.spec.ts`
 
 ### `/stay`

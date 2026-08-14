@@ -11,7 +11,7 @@ This document is the fastest way for a future Codex session to get productive in
 - Primary site type: guest-facing marketing site for a luxury Belize estate.
 - Analytics: Vercel Analytics and Google Analytics 4 are both enabled.
 - Search: custom client-side search backed by a handwritten index in `lib/search/search-index.ts`.
-- Images: `next.config.mjs` keeps `next/image` in `unoptimized` mode and only allows remote assets from Cloudinary.
+- Images: `next/image` uses a custom Cloudinary loader (`lib/cloudinary-loader.ts`) and only allows remote assets from Cloudinary. Do not switch back to `images.unoptimized`.
 
 ## Quickstart
 
@@ -62,8 +62,8 @@ These are mostly route-local page compositions rather than a single shared page 
 
 ### Important note about page templates
 
-- `components/basic-page.tsx` exists but is not the main pattern for current public routes.
-- `components/section-page.tsx` exists as a reusable pattern but is not the dominant route pattern today.
+- `components/basic-page.tsx` and `components/section-page.tsx` were removed. Do not restore them.
+- Interior routes that need a shared chrome use `components/layout/page-shell.tsx` plus the `page-wash` utility.
 - In practice, most real route work happens directly inside `app/<route>/page.tsx` plus route-specific components.
 
 ## Architecture map
@@ -83,10 +83,11 @@ These are mostly route-local page compositions rather than a single shared page 
 ### Homepage
 
 - `app/page.tsx`: section order and homepage composition.
-- `components/hero.tsx`: first-screen message, rates/book CTAs, and overlay.
-- `components/hero-image-rotator.tsx`: rotating hero imagery.
-- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/process-steps.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/email-capture.tsx`, `components/header-search.tsx`
-- `lib/homepage-content.ts`: homepage structured content.
+- `components/hero.tsx`: first-screen heading, Book → `/book`, and See rates → `/rates`.
+- `components/hero-image-rotator.tsx`: rotating hero imagery with a stronger contrast gradient.
+- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/process-steps.tsx`, `components/email-capture.tsx`
+- `lib/homepage-content.ts`: estate spaces (`ESTATE_SPACES`, aliased as `MODEL_LINEUP`), proof points, editorial blocks, and process steps.
+- Below-fold homepage modules are loaded with `next/dynamic`. Search is not rendered on the homepage; it opens from the header.
 
 ### Stay page
 
@@ -138,12 +139,13 @@ These are mostly route-local page compositions rather than a single shared page 
 
 ## Critical couplings and easy misses
 
-- Routes are custom. `components/basic-page.tsx` and `components/section-page.tsx` still exist, but most meaningful public work happens in route-local page files plus a few shared sections.
+- Routes are custom. Shared chrome lives in `components/layout/page-shell.tsx`. Do not restore the deleted `basic-page` / `section-page` templates.
 - Metadata is split on purpose. `lib/seo.ts` owns page metadata, while `lib/site-config.ts` owns the public route inventory used by sitemap, structured data helpers, and `llms` outputs.
 - Search is curated manually. New pages, new sections, rate changes, policy changes, and logistics changes usually require edits in `lib/search/search-index.ts`.
 - Hash links are a real integration surface. `next.config.mjs`, search results, homepage CTAs, and stay-page buttons all depend on current anchor IDs.
 - Hero imagery is a behavior surface, not just content. `components/hero-image-rotator.tsx` now shuffles the homepage hero order on each load and avoids replaying the previous sequence inside the same session.
-- Desktop nav styling is intentionally plain. `components/navigation/desktop-nav.tsx` uses a direct `Link` structure for the pill treatment; reintroducing extra wrapper styling from Radix menu primitives can break the active-state shape.
+- Desktop nav uses direct pill `Link`s plus a Radix `Popover` for Explore. Reintroducing NavigationMenu wrapper styling can break the active-state pill shape.
+- Site search is header-triggered (`components/header-search.tsx`) and lazy-loads the dialog. Cmd/Ctrl+K and `canary-cove:open-search` also open it.
 - Vercel analytics data is sanitized before send. `components/vercel-analytics.tsx` and `lib/vercel-analytics.ts` strip hashes and query strings so URL-based event cardinality stays low.
 - `next.config.mjs` still contains older hash redirects for some interior marketing pages. Treat redirect edits as audit work, not blind copy updates.
 
@@ -156,6 +158,7 @@ Start with these files:
 - `lib/nav-items.ts`
 - `components/navigation/desktop-nav.tsx`
 - `components/navigation/mobile-nav.tsx`
+- `components/header-search.tsx`
 - `components/footer.tsx`
 - `app/sitemap.ts`
 - `app/robots.ts`
@@ -198,7 +201,8 @@ Check these files together:
 - route-local gallery components, including `components/reef-encounters.tsx`
 - local media assets under `public/videos/reef-encounters/`
 - `lib/search/search-index.ts` and `lib/seo.ts` when public media copy or anchors change
-- `next.config.mjs` (`images.remotePatterns`) if a new host appears
+- `lib/cloudinary-loader.ts` if Cloudinary URL transforms or the width cap change
+- `next.config.mjs` (`images.remotePatterns` / `images.loaderFile`) if a new host or loader appears
 - `e2e/design-visual.spec.ts` if the change is visually significant
 - `e2e/release-gate.spec.ts` for video inventory, playback configuration, accessibility, and responsive framing
 
@@ -252,7 +256,7 @@ All public forms are expected to expose:
 - Reef-encounter films are optimized local static assets under `public/videos/reef-encounters/`.
 - Publish web-ready H.264/AAC MP4s with fast-start metadata and matching poster images; do not commit camera originals.
 - Preserve native controls, `playsInline`, keyboard focus, and no autoplay or looping. Preload metadata only for the featured film; supporting films use `preload="none"`.
-- `next/image` is intentionally left in `unoptimized` mode in `next.config.mjs`.
+- `next/image` uses `loader: "custom"` and `lib/cloudinary-loader.ts`. Width requests are capped at 2560. Do not set `images.unoptimized`.
 - Vercel Analytics is enabled.
 - Google Analytics 4 is loaded globally through `GoogleAnalyticsScripts`.
 - `GoogleAnalyticsPageviews` sends manual GA4 `page_view` events because the global GA config uses `send_page_view: false`.
@@ -285,6 +289,7 @@ The site search is not generated from routes automatically.
 Key facts:
 
 - `lib/search/search-index.ts` is a manual, curated inventory of pages, sections, and FAQ-style answers.
+- `components/header-search.tsx` is the site-wide trigger (header button + Cmd/Ctrl+K).
 - `components/site-search.tsx` drives the modal and tracking events.
 - `lib/search/search.ts` handles normalization, synonym expansion, intent detection, and grouped results.
 
@@ -312,7 +317,7 @@ pnpm test:e2e
   - desktop/mobile navigation
   - homepage CTAs
   - footer links
-  - booking embed presence
+  - booking form presence (no calendar embed)
   - reef-film anchor, three-video inventory, posters, sources, playback controls, responsive framing, and no autoplay
 - `e2e/forms.spec.ts`
   - email capture success/failure
@@ -341,7 +346,8 @@ pnpm test:e2e
 
 - Functional coverage runs in Chromium, Firefox, and WebKit.
 - Visual-regression snapshots are intentionally Chromium-only to avoid cross-engine baseline churn.
-- If a visual change is intentional, update the snapshot files in `e2e/design-visual.spec.ts-snapshots/` and mention it in the commit or PR notes.
+- Linux and Darwin Chromium snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`. Update the OS you actually ran; a Linux agent cannot refresh Darwin baselines.
+- If a visual change is intentional, update the snapshot files and mention it in the commit or PR notes.
 
 ## Known non-blocking noise
 

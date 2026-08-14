@@ -1,10 +1,10 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero, estate lineup, editorial splits, diving film, bento metrics, process steps, testimonials, specs, email capture, search).
+- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero overlay, proof row, estate spaces, editorial splits, poster-first diving film, testimonials, process steps, email capture).
 - Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, TestimonialSlider, EmailCapture, ReefEncounters).
-- Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`) and should be used to keep spacing consistent.
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, EmailCapture, ReefEncounters).
+- Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`, `page-shell.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
 - Shared data lives in `lib/`: `images.ts`, `videos.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
 - Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
@@ -32,7 +32,7 @@
 - E2E tests live in `e2e/` and run with Playwright.
 - The production release gate is: `pnpm typecheck`, `pnpm lint`, `pnpm test`, `pnpm build`, and `pnpm test:e2e`.
 - Cross-browser Playwright coverage runs on Chromium, Firefox, and WebKit.
-- Visual baselines are intentionally maintained on Chromium only to keep snapshots stable. When a design change is intentional, update the snapshots in `e2e/design-visual.spec.ts-snapshots/` and call that out in the commit.
+- Visual baselines are intentionally maintained on Chromium only to keep snapshots stable. Linux and Darwin snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`. When a design change is intentional, update the snapshots for the OS you ran and call that out in the commit.
 - Key suites:
   - `e2e/release-gate.spec.ts` for route health, navigation, CTA routing, footer links, embeds, and reef-film playback configuration
   - `e2e/forms.spec.ts` for email capture, contact, and booking form success/error states
@@ -52,18 +52,19 @@
 - For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
 
 ## Navigation Architecture Notes
-- Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`.
+- Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Rates is a first-class item. Experiences, Dining, Adventures, and Gallery live under the Explore dropdown.
 - Emoji for nav labels come from `lib/emoji.ts`; update there when adjusting iconography.
-- Desktop nav uses Radix `NavigationMenu` in `components/navigation/desktop-nav.tsx`. Mobile nav uses `Sheet` + `components/navigation/mobile-nav.tsx`.
-- `components/header.tsx` composes the nav and manages sticky scroll state (no logo currently). Be mindful when adjusting padding/height so the shrink animation remains smooth.
+- Desktop nav uses direct pill links plus a Radix `Popover` for Explore in `components/navigation/desktop-nav.tsx`. Mobile nav uses `Sheet` + `components/navigation/mobile-nav.tsx` and flattens dropdown children.
+- `components/header.tsx` composes the nav, site search trigger, and sticky scroll state. Be mindful when adjusting padding/height so the shrink animation and `--site-header-height` stay in sync.
 
 ## Assets, Fonts & Media
-- SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx`.
+- SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx` (Regular, Medium, Semibold, Bold subset woff2s). Do not add the unused Light face back.
 - Hero imagery is defined in `components/hero-image-rotator.tsx` as Cloudinary URLs; keep these high-resolution to avoid blur.
 - Image registry lives in `lib/images.ts`; remove low-resolution assets rather than letting them slip into galleries.
-- The diving film section lives in `app/page.tsx` and uses a Cloudinary MP4 with a poster frame.
+- `lib/cloudinary-loader.ts` resizes Cloudinary assets on their CDN and caps requested width at 2560.
+- The homepage diving film lives in `components/property-film.tsx`: poster-first, user-started playback, compressed Cloudinary derivative. Do not restore the raw autoplay MP4.
 - The Adventures reef-film gallery lives in `components/reef-encounters.tsx`; its copy and asset paths live in `lib/videos.ts`, with optimized MP4s and posters under `public/videos/reef-encounters/`.
-- `components/photo-carousel.tsx` wraps Embla and is used by `components/basic-page.tsx` for interior pages.
+- `components/photo-carousel.tsx` wraps Embla and is used by interior galleries such as `/book`.
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
 
 ## Forms & Integrations
@@ -85,7 +86,9 @@
 - Hero background images: `components/hero-image-rotator.tsx`
 - Testimonial copy: `lib/testimonial-spotlights.ts` and the selection in `app/page.tsx`
 - Navigation items/icons: `lib/nav-items.ts`, `lib/emoji.ts`
-- Search UI: `components/site-search.tsx`
+- Search UI: `components/header-search.tsx` plus `components/site-search.tsx`
+- Cloudinary image loader: `lib/cloudinary-loader.ts`
+- Homepage film: `components/property-film.tsx`
 - Styling tokens/utilities: `app/globals.css`
 - Image registry: `lib/images.ts`
 - Shared carousel layer: `components/ui/carousel.tsx`

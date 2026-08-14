@@ -55,6 +55,7 @@ When top-level IA changes, review:
 - `components/navigation/desktop-nav.tsx`
 - `components/navigation/mobile-nav.tsx`
 - `components/header.tsx`
+- `components/header-search.tsx`
 - `components/footer.tsx`
 - `app/sitemap.ts`
 - `app/robots.ts`
@@ -92,6 +93,7 @@ When pricing, policies, logistics, amenities, dining rules, or FAQs change, revi
 
 - `lib/search/search-index.ts`
 - `lib/search/search.ts`
+- `components/header-search.tsx`
 - `components/site-search.tsx`
 - `e2e/search.spec.ts`
 
@@ -117,7 +119,7 @@ Best practices here:
 - prefer updating alt text and captions at the data layer
 - keep hero and gallery assets high resolution
 - avoid hardcoding Cloudinary URLs inline unless the component is truly one-off
-- remember that `next.config.mjs` keeps `images.unoptimized: true`, so large hero swaps should be treated as real performance decisions
+- remember that `next/image` uses `lib/cloudinary-loader.ts` (width cap 2560). Do not set `images.unoptimized`; large hero swaps still matter because the loader only downscales, it does not invent missing resolution
 
 For reef-film changes, review together:
 
