@@ -92,3 +92,10 @@
 - Interior page shell: `components/basic-page.tsx`
 - Booking form: `components/booking-form.tsx`, `app/book/page.tsx`
 - Adventures reef films: `app/adventures/page.tsx`, `components/reef-encounters.tsx`, `lib/videos.ts`
+
+## Cursor Cloud specific instructions
+- This repo is a single Next.js (App Router) marketing site. There is no database, backend service, or external dependency needed to run it locally — `pnpm dev` on port 3000 is the whole app. Standard commands live in the README and `package.json` scripts.
+- The startup update script already runs `pnpm install`, so dependencies are present. Playwright browser binaries are cached in the VM snapshot; if `pnpm test:e2e` errors that browsers are missing, run `pnpm exec playwright install chromium firefox webkit` (not part of the update script to keep it minimal).
+- Playwright's `webServer` in `playwright.config.ts` starts `pnpm dev` itself and reuses an already-running dev server when not in CI, and it injects `CANARY_GUEST_PASSWORD_HASH` / `CANARY_GUEST_SESSION_SECRET` automatically — you do not need to set those env vars to run e2e.
+- Env vars are optional for normal dev: everything in `process.env` (e.g. `CANARY_GUEST_*`, `NEXT_PUBLIC_SITE_URL`) has safe defaults. Only the private guest routes (`/guest`, `proxy.ts`) actually need `CANARY_GUEST_PASSWORD_HASH` and `CANARY_GUEST_SESSION_SECRET`; the public site works without them.
+- Forms POST to live Formspree endpoints via `/api/forms`; avoid submitting real form data during testing so you don't send noise to production inboxes. Prefer exercising the site search or navigation for quick manual verification.
