@@ -72,7 +72,7 @@ test.describe("gallery page", () => {
     const before = await photoCount(page)
 
     await page.getByTestId("gallery-search-input").fill("ceviche")
-    await expect(page.getByTestId("gallery-result-count")).not.toContainText(`${TOTAL} of ${TOTAL}`)
+    await expect(page.getByTestId("gallery-result-count")).not.toContainText(`36 of ${TOTAL}`)
 
     const after = await photoCount(page)
     expect(after).toBeLessThan(before)
@@ -137,9 +137,13 @@ test.describe("gallery page", () => {
     const first = await photoCount(page)
     expect(first).toBe(36)
 
-    await expect.poll(() => scrollToBottomAndCount(page), { timeout: 15_000 }).toBeGreaterThan(first)
-    const loaded = await photoCount(page)
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${loaded} of ${TOTAL} photos`)
+    await expect
+      .poll(async () => {
+        const loaded = await scrollToBottomAndCount(page)
+        const text = (await page.getByTestId("gallery-result-count").textContent()) ?? ""
+        return loaded > first && text.includes(`${loaded} of ${TOTAL} photos`)
+      }, { timeout: 15_000 })
+      .toBeTruthy()
   })
 
   test("reaches the end of the library by scrolling", async ({ page }) => {
