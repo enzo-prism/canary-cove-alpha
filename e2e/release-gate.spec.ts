@@ -51,7 +51,7 @@ test.describe("release gate smoke coverage", () => {
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
     await expect(nav).toBeVisible()
 
-    await nav.getByRole("link", { name: "Stay" }).click()
+    await nav.getByRole("link", { name: "Stay", exact: true }).click()
     await expect(page).toHaveURL(/\/stay$/)
 
     await page.goto("/")

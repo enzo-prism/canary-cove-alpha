@@ -147,7 +147,7 @@ test.describe("nav icon hover motion", () => {
     await page.evaluate(() => document.fonts.ready)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    const link = nav.getByRole("link", { name: /home/i })
+    const link = nav.getByRole("link", { name: /^Stay$/ })
     const icon = link.locator(".nav-icon")
     const label = link.locator(".nav-label")
 
@@ -177,7 +177,7 @@ test.describe("nav icon hover motion", () => {
     await page.evaluate(() => document.fonts.ready)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    const link = nav.getByRole("link", { name: /home/i })
+    const link = nav.getByRole("link", { name: /^Stay$/ })
     const icon = link.locator(".nav-icon")
 
     await link.hover()

@@ -139,8 +139,8 @@ test.describe("homepage section rhythm", () => {
       const intro = sections[1]
       const rhythm = HOMEPAGE_RHYTHM[viewport.name]
 
-      expect(hero.topInset).toBe(0)
-      expect(hero.bottomInset).toBe(0)
+      expect(Math.abs(hero.topInset)).toBe(0)
+      expect(Math.abs(hero.bottomInset)).toBe(0)
 
       expect(intro.topInset).toBeGreaterThanOrEqual(rhythm.introTop[0])
       expect(intro.topInset).toBeLessThanOrEqual(rhythm.introTop[1])

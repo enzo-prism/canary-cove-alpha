@@ -57,7 +57,9 @@ test.describe("gallery page", () => {
   test("is reachable from the site navigation", async ({ page }) => {
     await page.goto("/stay")
     await page.waitForLoadState("domcontentloaded")
-    await page.getByRole("navigation").getByRole("link", { name: "Gallery", exact: true }).first().click()
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    await nav.getByRole("button", { name: "Explore" }).click()
+    await page.getByRole("link", { name: "Gallery", exact: true }).click()
     await expect(page).toHaveURL(/\/gallery$/)
     await expect(page.getByTestId("gallery-browser")).toBeVisible()
   })

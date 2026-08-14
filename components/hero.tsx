@@ -11,11 +11,8 @@ export function Hero() {
     >
       <HeroImageRotator className="min-h-[82svh] sm:min-h-[86svh] lg:min-h-[96svh]">
         <div className="absolute inset-0 flex items-end">
-          <div
-            data-testid="homepage-intro"
-            className="w-full px-6 pb-16 pt-28 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24"
-          >
-            <div className="flow flow-sm max-w-3xl text-white">
+          <div className="w-full px-6 pb-16 pt-28 sm:px-8 sm:pb-20 lg:px-12 lg:pb-24">
+            <div data-testid="homepage-intro" className="flow flow-sm max-w-3xl text-white">
               <p className="text-[11px] uppercase tracking-[0.34em] text-white/72">Ambergris Caye, Belize</p>
               <h1
                 data-testid="homepage-intro-heading"
