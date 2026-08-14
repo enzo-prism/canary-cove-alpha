@@ -69,7 +69,7 @@
 ## Forms & Integrations
 - Contact form and homepage email capture both post to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
 - Booking requests post to Formspree endpoint `https://formspree.io/f/xqeqllek`.
-- The booking calendar on `/book` is a Bookingmood iframe embed. Keep the iframe present even if the surrounding copy/layout changes.
+- Booking requests use the Formspree `/book` form in `components/booking-form.tsx`. The Bookingmood iframe was removed because the subscription was cancelled; do not restore it or add a replacement calendar vendor.
 - The site uses Cloudinary-hosted images/video and Vercel Analytics.
 
 ## Deployment Notes
@@ -90,5 +90,5 @@
 - Image registry: `lib/images.ts`
 - Shared carousel layer: `components/ui/carousel.tsx`
 - Interior page shell: `components/basic-page.tsx`
-- Booking form + Bookingmood embed: `components/booking-form.tsx`, `app/book/page.tsx`
+- Booking form: `components/booking-form.tsx`, `app/book/page.tsx`
 - Adventures reef films: `app/adventures/page.tsx`, `components/reef-encounters.tsx`, `lib/videos.ts`

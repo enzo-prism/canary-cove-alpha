@@ -113,17 +113,6 @@ export const SEARCH_ITEMS: SearchItem[] = [
     type: "section",
   },
   {
-    id: "availability-calendar",
-    title: "Availability calendar & holds",
-    description:
-      "Check dates in the live calendar, then share your trip details so we can confirm or place a courtesy hold.",
-    href: "/book#availability-calendar",
-    group: "Pricing & availability",
-    keywords: ["availability", "calendar", "hold", "request", "book", "dates"],
-    intent: "pricing",
-    type: "section",
-  },
-  {
     id: "included-costs",
     title: "What’s included and what costs extra",
     description:
@@ -333,7 +322,7 @@ export const SEARCH_ITEMS: SearchItem[] = [
   {
     id: "book-your-stay",
     title: "Book your stay",
-    description: "Check dates in the live calendar, then share your trip details so we can confirm or place a courtesy hold.",
+    description: "Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.",
     href: "/book",
     group: "Contact",
     keywords: ["book", "request", "availability", "calendar", "hold"],

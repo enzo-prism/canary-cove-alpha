@@ -39,7 +39,7 @@ export default function PrivacyPage() {
           <section className="flow flow-sm">
             <h2 className="text-section">Third-party services</h2>
             <p className="text-body text-foreground/80">
-              Canary Cove uses Formspree to receive submitted forms, Bookingmood to display live availability, ElevenLabs to power the on-site voice concierge, Cloudinary to serve media, and Google Analytics plus Vercel Analytics to understand site usage. Those providers may process information according to their own policies.
+              Canary Cove uses Formspree to receive submitted forms, ElevenLabs to power the on-site voice concierge, Cloudinary to serve media, and Google Analytics plus Vercel Analytics to understand site usage. Those providers may process information according to their own policies.
             </p>
           </section>
 

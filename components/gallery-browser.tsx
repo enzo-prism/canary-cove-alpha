@@ -262,7 +262,7 @@ export function GalleryBrowser() {
           className="border-border/70 bg-white/75 text-muted-foreground"
           data-testid="gallery-result-count"
         >
-          {filtered.length} of {ORDERED_PHOTOS.length} photos
+          {visible.length} of {filtered.length} photos
         </Badge>
         {hasFilters ? (
           <Button

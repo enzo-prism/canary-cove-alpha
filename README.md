@@ -83,7 +83,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 ## Integration notes
 
 - Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
-- `/book` embeds Bookingmood for live availability.
+- `/book` uses the request-to-book Formspree form. Bookingmood was removed because the subscription was cancelled.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
 - Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
 - GA4 pageviews are manually emitted because automatic pageviews are disabled in the global tag config.
@@ -98,7 +98,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Testing notes
 
-- `e2e/release-gate.spec.ts` covers public route health, CTA routing, footer links, the booking embed, and responsive reef-film behavior.
+- `e2e/release-gate.spec.ts` covers public route health, CTA routing, footer links, and responsive reef-film behavior.
 - `e2e/forms.spec.ts` covers form validation plus success/error states.
 - `e2e/search.spec.ts` covers search answers, grouped results, and fallback behavior.
 - `e2e/usability.spec.ts` covers overflow, tap targets, resize behavior, and carousel resilience.

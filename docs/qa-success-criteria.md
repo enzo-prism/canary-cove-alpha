@@ -16,7 +16,7 @@ This document defines the production-readiness bar for the public marketing site
 
 - Every public route returns `2xx` and renders a visible `h1`.
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
-- The Bookingmood availability embed is present on `/book`.
+- The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
 - The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the homepage and gives guests a useful fallback state when a query has no results.
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
@@ -49,7 +49,7 @@ This document defines the production-readiness bar for the public marketing site
 
 ## Test-suite map
 
-- `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, booking embed presence, and reef-film anchor/playback configuration
+- `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, and reef-film anchor/playback configuration
 - `e2e/forms.spec.ts`: booking, contact, and email-capture validation plus success/failure flows
 - `e2e/search.spec.ts`: search query behavior, grouped results, instant answers, and fallback handling
 - `e2e/usability.spec.ts`: overflow, target sizing, resizing, and carousel interaction coverage

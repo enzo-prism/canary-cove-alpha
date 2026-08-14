@@ -67,7 +67,7 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     path: "/book",
     title: "Check Availability & Book",
     description:
-      "Live availability calendar, booking request flow, comfort details, and payment or cancellation policies.",
+      "Booking request flow, comfort details, and payment or cancellation policies.",
     category: "primary",
     images: [IMAGES.villaLawn.src],
   },
@@ -209,7 +209,7 @@ export const buildLlmsFullTxt = () => {
     `- Included gear and guided experiences: ${getCanonicalUrl("/experiences")}`,
     `- Fishing, diving, reef, and trip planning: ${getCanonicalUrl("/adventures")}`,
     `- Arrival logistics from Belize City and San Pedro: ${getCanonicalUrl("/getting-here")}`,
-    `- Live availability, booking inquiry flow, and policies: ${getCanonicalUrl("/book")}`,
+    `- Booking inquiry flow, and policies: ${getCanonicalUrl("/book")}`,
     `- Direct outreach: ${getCanonicalUrl("/contact")}`,
     "",
     "## Public route summaries",

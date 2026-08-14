@@ -50,7 +50,7 @@ pnpm exec playwright install firefox webkit
 
 - `/`: homepage, custom composition root in `app/page.tsx`.
 - `/stay`: custom editorial stay page with mini gallery, highlights, amenities, testimonials, and dual villa/outdoor galleries.
-- `/book`: custom booking page with Bookingmood iframe, booking form, policies, and testimonials.
+- `/book`: custom booking page with the Formspree booking form, policies, and testimonials. Bookingmood was removed because the subscription was cancelled.
 - `/contact`: custom lead/contact page.
 - `/privacy`, `/terms`: legal pages.
 
@@ -241,12 +241,10 @@ All public forms are expected to expose:
 - visible success state
 - visible failure state
 
-### Booking calendar
+### Booking path
 
-- `/book` embeds Bookingmood:
-  - `https://www.bookingmood.com/embed/939b7bb6-8e48-4256-a7af-0ec62e4a4d68`
-
-When editing the booking page, preserve the embed presence and responsive behavior unless the booking provider is intentionally being changed.
+- `/book` uses the request-to-book Formspree form in `components/booking-form.tsx`.
+- Bookingmood was removed because the subscription was cancelled. Do not restore that embed or add a replacement calendar vendor.
 
 ### Media and analytics
 

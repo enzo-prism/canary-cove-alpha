@@ -95,11 +95,11 @@ const INSTANT_ANSWERS: Record<SearchIntent, InstantAnswer> = {
     intent: "pricing",
     title: "Rates & availability",
     bullets: [
-      "Check dates in the live calendar, then share your trip details so we can confirm or place a courtesy hold.",
+      "Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.",
       "Our rates are published below for full transparency.",
     ],
     links: [
-      { label: "Availability calendar", href: "/book#availability-calendar" },
+      { label: "Book", href: "/book" },
       { label: "Rates & seasons", href: "/rates" },
     ],
   },

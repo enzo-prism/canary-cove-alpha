@@ -77,7 +77,7 @@ export const PAGE_METADATA = {
   book: createPageMetadata({
     title: "Check Availability & Book Canary Cove | Belize Estate",
     description:
-      "View the live calendar, request your dates, and review payment, cancellation, and booking details for Canary Cove.",
+      "Request your dates, and review payment, cancellation, and booking details for Canary Cove.",
     path: "/book",
     image: IMAGES.villaLawn.src,
     imageAlt: IMAGES.villaLawn.alt,

@@ -33,6 +33,11 @@ export default function Page() {
                 One private estate with beach, docks, pool, suites, and open-air living reserved entirely for your group on
                 Ambergris Caye.
               </p>
+              <p className="text-body">
+                <a href="https://mainhouse.canarycove.com" className="underline underline-offset-4">
+                  Main House (5 suites)
+                </a>
+              </p>
             </div>
           </div>
         </div>

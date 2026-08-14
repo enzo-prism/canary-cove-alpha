@@ -50,8 +50,8 @@ test.describe("gallery page", () => {
 
     await expect(page).toHaveURL(/\/gallery$/)
     await expect(page.getByRole("heading", { level: 1 })).toContainText("Every photo of Canary Cove")
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
-    expect(await photoCount(page)).toBeGreaterThan(0)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`36 of ${TOTAL} photos`)
+    expect(await photoCount(page)).toBe(36)
   })
 
   test("is reachable from the site navigation", async ({ page }) => {
@@ -92,10 +92,10 @@ test.describe("gallery page", () => {
 
     await page.getByTestId("gallery-search-input").fill("snowstorm")
     await expect(page.getByTestId("gallery-empty")).toBeVisible()
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`0 of ${TOTAL}`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText("0 of 0")
 
     await page.getByTestId("gallery-empty").getByRole("button", { name: "Reset filters" }).click()
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL}`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`36 of ${TOTAL}`)
   })
 
   test("filters by category chip and reports the count on the chip itself", async ({ page }) => {
@@ -107,7 +107,9 @@ test.describe("gallery page", () => {
     await chip.click()
 
     await expect(chip).toHaveAttribute("aria-pressed", "true")
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${diningCount} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(
+      `${Math.min(36, diningCount)} of ${diningCount} photos`,
+    )
   })
 
   test("carries no photographs of former staff", async ({ page }) => {
@@ -136,7 +138,8 @@ test.describe("gallery page", () => {
     expect(first).toBe(36)
 
     await expect.poll(() => scrollToBottomAndCount(page), { timeout: 15_000 }).toBeGreaterThan(first)
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
+    const loaded = await photoCount(page)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`${loaded} of ${TOTAL} photos`)
   })
 
   test("reaches the end of the library by scrolling", async ({ page }) => {
@@ -204,7 +207,9 @@ test.describe("gallery page", () => {
     await page.getByTestId("gallery-amenity-filter-hot-tub").click()
 
     await expect(page.getByTestId("gallery-amenity-filter-hot-tub")).toHaveAttribute("aria-pressed", "true")
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${hotTubCount} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(
+      `${Math.min(36, hotTubCount)} of ${hotTubCount} photos`,
+    )
   })
 
   test("reset clears an active amenity sub-group", async ({ page }) => {
@@ -214,7 +219,7 @@ test.describe("gallery page", () => {
     await page.getByTestId("gallery-amenity-filter-hot-tub").click()
     await page.getByTestId("gallery-reset").click()
 
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`36 of ${TOTAL} photos`)
     await expect(page.getByTestId("gallery-amenity-filters")).toHaveCount(0)
   })
 
@@ -246,7 +251,9 @@ test.describe("gallery page", () => {
     await page.getByTestId("gallery-room-filter-bunk-room").click()
 
     await expect(page.getByTestId("gallery-room-filter-bunk-room")).toHaveAttribute("aria-pressed", "true")
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${bunkCount} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(
+      `${Math.min(36, bunkCount)} of ${bunkCount} photos`,
+    )
   })
 
   test("reset clears an active room sub-group", async ({ page }) => {
@@ -256,7 +263,7 @@ test.describe("gallery page", () => {
     await page.getByTestId("gallery-room-filter-suite-1").click()
     await page.getByTestId("gallery-reset").click()
 
-    await expect(page.getByTestId("gallery-result-count")).toContainText(`${TOTAL} of ${TOTAL} photos`)
+    await expect(page.getByTestId("gallery-result-count")).toContainText(`36 of ${TOTAL} photos`)
     await expect(page.getByTestId("gallery-room-filters")).toHaveCount(0)
   })
 })

@@ -37,7 +37,7 @@ When you add or rename a section `id`, review:
 Examples:
 
 - `/stay` has button-triggered smooth scrolling in `components/stay-highlights.tsx`
-- `/book` uses section IDs such as `#availability-calendar` and `#comfort-confidence`
+- `/book` uses section IDs such as `#comfort-confidence`
 - search answers and results link directly into anchored sections
 
 Also note:
@@ -234,7 +234,7 @@ Before shipping, sanity-check these when relevant:
 - `/privacy` and `/terms`
 - footer links
 - route hashes landing below the sticky header
-- Bookingmood embed still present on `/book`
+- Bookingmood was removed because the subscription was cancelled; do not restore a live calendar embed on `/book`
 - form success/error states still working
 - Vercel reports the production deployment as `Ready` for the exact `origin/main` commit
 - both `canarycove.com` and `www.canarycove.com` resolve to that production deployment
