@@ -2,6 +2,16 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-08-15 — Diving film overlay collision
+
+- Commit: `0c3de1da1ae080305359e595afc3358d655063b7`
+- Production: `https://www.canarycove.com/#property-film`
+- Vercel: GitHub status `Deployment has completed` for `v0-canary-cove-navbar-structure` (`8tJgHBvq5gj5fGh2hcczVxM1AuWe`)
+- PR: https://github.com/enzo-prism/canary-cove-alpha/pull/22
+- Homepage diving film keeps poster-first playback, but the play control now stacks above the copy instead of centering over the manta-ray headline.
+- Marketing overlay hides after a guest click so native video controls stay usable.
+- Verified production `/`, `/book`, `/privacy`, and `/terms` return `200`; apex `https://canarycove.com` 307-redirects to www; live HTML includes `property-film-play`, `property-film-heading`, and no preloaded film `<video>`.
+
 ## 2026-08-14 — Performance, UX, and design pass
 
 - Commit: `4418f69f0f5547b1ddbcd04653de2be6c338a952`
