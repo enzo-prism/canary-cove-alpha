@@ -177,6 +177,60 @@ test.describe("release gate smoke coverage", () => {
     }
   })
 
+  test("homepage diving film stays poster-first and keeps its play control off the headline", async ({
+    page,
+  }) => {
+    for (const viewport of [
+      { width: 390, height: 844 },
+      { width: 768, height: 1024 },
+      { width: 1280, height: 900 },
+    ]) {
+      await page.setViewportSize(viewport)
+      await page.goto("/")
+      await waitForPageReady(page)
+
+      const film = page.getByTestId("property-film")
+      const play = page.getByTestId("property-film-play")
+      const heading = page.getByTestId("property-film-heading")
+      const copy = page.getByTestId("property-film-copy")
+
+      await film.scrollIntoViewIfNeeded()
+      await expect(play).toBeVisible()
+      await expect(heading).toBeVisible()
+      await expect(film.locator("video")).toHaveCount(0)
+
+      const playBox = await play.boundingBox()
+      const headingBox = await heading.boundingBox()
+      const copyBox = await copy.boundingBox()
+      expect(playBox).not.toBeNull()
+      expect(headingBox).not.toBeNull()
+      expect(copyBox).not.toBeNull()
+      if (!playBox || !headingBox || !copyBox) continue
+
+      expect(playBox.y + playBox.height, `Play control overlapped the film copy at ${viewport.width}px.`).toBeLessThanOrEqual(
+        copyBox.y - 8,
+      )
+      expect(playBox.y + playBox.height, `Play control overlapped the film headline at ${viewport.width}px.`).toBeLessThanOrEqual(
+        headingBox.y - 8,
+      )
+    }
+
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+    await waitForPageReady(page)
+
+    const play = page.getByTestId("property-film-play")
+    await play.scrollIntoViewIfNeeded()
+    await play.click()
+
+    const video = page.getByTestId("property-film-video")
+    await expect(video).toBeVisible()
+    await expect(video).toHaveAttribute("controls", "")
+    await expect(video).toHaveAttribute("playsinline", "")
+    await expect(page.getByTestId("property-film-play")).toHaveCount(0)
+    await expect(page.getByTestId("property-film-heading")).toHaveCount(0)
+  })
+
   test("all public routes return a successful status", async ({ request, baseURL }) => {
     for (const route of SITE_ROUTES) {
       const response = await request.get(`${baseURL}${route}`)

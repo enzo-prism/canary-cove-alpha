@@ -30,6 +30,8 @@ test.describe("usability and responsive resilience", () => {
     await expectTapTarget(page.getByRole("button", { name: "Open navigation menu" }))
     await expectTapTarget(page.getByTestId("homepage-primary-cta"))
     await expectTapTarget(page.getByTestId("search-open-button"))
+    await page.getByTestId("property-film-play").scrollIntoViewIfNeeded()
+    await expectTapTarget(page.getByTestId("property-film-play"))
   })
 
   test("critical routes stay usable while resizing the viewport", async ({ page }) => {
