@@ -1,0 +1,12 @@
+{
+  "name": "canary-cove-alpha",
+  "install": "pnpm install --frozen-lockfile",
+  "agentCanUpdateSnapshot": true,
+  "terminals": [
+    {
+      "name": "dev",
+      "command": "pnpm dev",
+      "description": "Next.js development server"
+    }
+  ]
+}
