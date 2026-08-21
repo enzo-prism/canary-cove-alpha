@@ -74,5 +74,7 @@ These are manual operational checks, not browser-test assertions:
 - Consi is not directly emailed during ingestion and is not configured to receive or be forwarded Formspree notifications.
 - Personal lead data stays out of analytics, logs, screenshots, commits, and public docs.
 - Bookingmood remains retired and is not part of the lead workflow.
+- The daily 8:00 AM America/Los_Angeles dashboard reconciliation separates homepage captures, verifies zero-change runs by readback, and sends every new, changed, or ambiguous result to review before publish.
+- Vercel remains the active website host. SiteGround is not a release dependency.
 
 The detailed procedure and completion checklist live in `docs/lead-operations.md`.

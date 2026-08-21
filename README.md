@@ -85,7 +85,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 ## Integration notes
 
 - Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
-- Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. Use the Formspree submission ID for deduplication when available, keep homepage email-capture rows separate, and verify the saved record by dashboard readback.
+- Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. The `canarycove-dash` repo checks Formspree daily at 8:00 AM America/Los_Angeles. Use the Formspree submission ID for deduplication when available, keep homepage email-capture rows separate, and verify dashboard state by readback. Changed or ambiguous results require review before any dashboard publish.
 - Do not email Consi as part of routine lead ingestion and do not route Formspree notifications to her. See `docs/lead-operations.md` for the canonical handoff and privacy rules.
 - `/book` uses the request-to-book Formspree form. Bookingmood was removed because the subscription was cancelled.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
@@ -114,6 +114,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - Production is hosted on Vercel project `v0-canary-cove-navbar-structure`.
 - Production URL: `https://www.canarycove.com`
 - Pushing `main` is the normal path to a production deployment.
+- Vercel is the active website host. SiteGround is no longer a website dependency; cancellation is approved, but Kristin's confirmation that it is complete may still be pending. Do not treat SiteGround as part of the deploy path.
 - If the primary domain or business identity changes, update `lib/site-config.ts`, `lib/seo.ts`, and the metadata/structured-data surfaces in the same release.
 
 ## Docs for future sessions

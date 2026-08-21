@@ -6,7 +6,7 @@ This document is the fastest way for a future Codex session to get productive in
 
 - Framework: Next.js 16 App Router with React 19 and Tailwind CSS v4.
 - Package manager: `pnpm` is canonical.
-- Hosting: Vercel project `v0-canary-cove-navbar-structure`.
+- Hosting: Vercel project `v0-canary-cove-navbar-structure`. Vercel is the active website host; SiteGround is no longer a website dependency.
 - Production URL: `https://www.canarycove.com`
 - Primary site type: guest-facing marketing site for a luxury Belize estate.
 - Analytics: Vercel Analytics and Google Analytics 4 are both enabled.
@@ -239,7 +239,8 @@ Check these files together:
 
 - Contact and email-capture forms submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xvzarybk`.
 - Booking requests submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xqeqllek`.
-- After intake, review booking/contact submissions and add genuine lead data to the Canary Cove lead dashboard. Use the immutable Formspree submission ID for deduplication when available, otherwise use the source form plus exact timestamp and normalized email. Read the saved dashboard record back after every ingest. Homepage email-capture rows are tracked separately.
+- The `canarycove-dash` repo reconciles both Formspree sources daily at 8:00 AM America/Los_Angeles. It separates homepage email captures, uses immutable submission IDs for deduplication when available, and reads the resulting dashboard counts back.
+- Zero-change runs stop after verification. New, changed, or ambiguous results are review-gated; do not commit, push, or deploy changed lead data without current approval. The verified August 21, 2026 baseline is documented in `docs/lead-operations.md`.
 - Do not email Consi as part of this workflow. Do not configure Formspree to notify her or forward Formspree notifications to her.
 - The dashboard record, not the Formspree inbox, notification email, or analytics event, is the operational source of truth. Follow `docs/lead-operations.md` for classification, privacy, idempotency, and completion rules.
 
@@ -369,6 +370,8 @@ Typical production release:
 4. Confirm the Vercel production deployment reaches `Ready` and its Git commit SHA matches `origin/main`.
 5. Confirm `canarycove.com` and `www.canarycove.com` are attached to that deployment.
 6. Spot-check the production route you changed and record the release in `docs/release-log.md`.
+
+SiteGround is not part of this release path. Its cancellation is approved, although Kristin's completion confirmation may still be pending; do not add SiteGround deploy or rollback steps.
 
 Useful production-sensitive checks:
 

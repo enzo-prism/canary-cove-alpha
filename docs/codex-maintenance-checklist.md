@@ -157,6 +157,7 @@ Also confirm whether the change affects:
 
 For routine lead operations (not a site code change):
 
+- let the `canarycove-dash` reconciliation run daily at 8:00 AM America/Los_Angeles and confirm it read every page from both Formspree sources with an explicit UTC reconciliation timestamp
 - review Canary Cove booking/contact submissions and reject spam, malformed entries, and clearly labeled tests; keep homepage email-capture rows out of this dashboard
 - deduplicate by immutable Formspree submission ID when available, otherwise by source form plus exact timestamp and normalized email
 - add or reconcile genuine lead data in the Canary Cove lead dashboard, which is the operational source of truth
@@ -164,6 +165,7 @@ For routine lead operations (not a site code change):
 - do not email Consi and do not route Formspree notifications to her
 - keep personal data out of analytics, logs, screenshots, commits, and task notes
 - do not restore Bookingmood or submit a real form solely to test the operations workflow
+- treat a zero-change reconciliation as verification only; route every new, changed, or ambiguous result through review before a data commit or deployment
 
 ## Analytics
 
@@ -253,4 +255,5 @@ Before shipping, sanity-check these when relevant:
 - when lead operations are in scope, no direct email or Formspree notification was sent to Consi
 - Vercel reports the production deployment as `Ready` for the exact `origin/main` commit
 - both `canarycove.com` and `www.canarycove.com` resolve to that production deployment
+- SiteGround is absent from the website release path; Vercel is the active host (SiteGround cancellation is approved, with Kristin's final confirmation potentially still pending)
 - changed local videos return `video/mp4` and a byte-range request returns `206`
