@@ -153,6 +153,17 @@ Also confirm whether the change affects:
 - validation logic
 - success copy
 - privacy-policy wording
+- the canonical post-submission flow in `docs/lead-operations.md`
+
+For routine lead operations (not a site code change):
+
+- review Canary Cove booking/contact submissions and reject spam, malformed entries, and clearly labeled tests; keep homepage email-capture rows out of this dashboard
+- deduplicate by immutable Formspree submission ID when available, otherwise by source form plus exact timestamp and normalized email
+- add or reconcile genuine lead data in the Canary Cove lead dashboard, which is the operational source of truth
+- read the dashboard record back and verify the source, required fields, and absence of duplicates
+- do not email Consi and do not route Formspree notifications to her
+- keep personal data out of analytics, logs, screenshots, commits, and task notes
+- do not restore Bookingmood or submit a real form solely to test the operations workflow
 
 ## Analytics
 
@@ -238,6 +249,8 @@ Before shipping, sanity-check these when relevant:
 - route hashes landing below the sticky header
 - Bookingmood was removed because the subscription was cancelled; do not restore a live calendar embed on `/book`
 - form success/error states still working
+- when lead operations are in scope, the dashboard record was read back successfully and no duplicate was created
+- when lead operations are in scope, no direct email or Formspree notification was sent to Consi
 - Vercel reports the production deployment as `Ready` for the exact `origin/main` commit
 - both `canarycove.com` and `www.canarycove.com` resolve to that production deployment
 - changed local videos return `video/mp4` and a byte-range request returns `206`

@@ -63,3 +63,16 @@ This document defines the production-readiness bar for the public marketing site
 - The suite is intentionally biased toward guest-facing journeys and visible regressions rather than implementation details.
 - Visual baselines should be updated only when the design change is intentional and reviewed.
 - Playwright helper noise filtering lives in `e2e/helpers.ts`, including filtering for Vercel Analytics debug output and cancelled Cloudinary media requests in dev.
+
+## Operational lead-handoff criteria
+
+These are manual operational checks, not browser-test assertions:
+
+- Formspree is treated as the intake/review system; the Canary Cove lead dashboard is the operational source of truth.
+- Genuine booking/contact leads are written idempotently using the immutable Formspree submission ID when available, with source form plus exact timestamp and normalized email as the fallback; repeat processing does not create duplicate dashboard records. Homepage email-capture rows stay outside this dashboard.
+- Every ingest is completed by reading the dashboard record back and verifying its source and required fields.
+- Consi is not directly emailed during ingestion and is not configured to receive or be forwarded Formspree notifications.
+- Personal lead data stays out of analytics, logs, screenshots, commits, and public docs.
+- Bookingmood remains retired and is not part of the lead workflow.
+
+The detailed procedure and completion checklist live in `docs/lead-operations.md`.

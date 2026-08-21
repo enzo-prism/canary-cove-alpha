@@ -71,6 +71,8 @@
 - Contact form and homepage email capture both post to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
 - Booking requests post to Formspree endpoint `https://formspree.io/f/xqeqllek`.
 - Booking requests use the Formspree `/book` form in `components/booking-form.tsx`. The Bookingmood iframe was removed because the subscription was cancelled; do not restore it or add a replacement calendar vendor.
+- `docs/lead-operations.md` is the canonical post-submission runbook. Review booking/contact Formspree submissions, add genuine leads to the Canary Cove lead dashboard, deduplicate by immutable Formspree submission ID when available, keep homepage email-capture rows separate, and verify each dashboard write by readback.
+- The Canary Cove lead dashboard is the operational source of truth. Do not email Consi during routine lead ingestion, and do not add her as a Formspree notification recipient or forward notifications to her.
 - The site uses Cloudinary-hosted images/video and Vercel Analytics.
 
 ## Deployment Notes

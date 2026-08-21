@@ -85,6 +85,8 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 ## Integration notes
 
 - Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
+- Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. Use the Formspree submission ID for deduplication when available, keep homepage email-capture rows separate, and verify the saved record by dashboard readback.
+- Do not email Consi as part of routine lead ingestion and do not route Formspree notifications to her. See `docs/lead-operations.md` for the canonical handoff and privacy rules.
 - `/book` uses the request-to-book Formspree form. Bookingmood was removed because the subscription was cancelled.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
 - Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
@@ -120,5 +122,6 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `docs/codex-playbook.md`: architecture, integrations, QA expectations, and deploy workflow
 - `docs/codex-route-map.md`: page-by-page ownership map with anchors, data sources, and likely regression surfaces
 - `docs/codex-maintenance-checklist.md`: “if you change X, also review Y” checklist for routes, anchors, search, analytics, forms, and media
+- `docs/lead-operations.md`: canonical Formspree review, deduplication, Canary Cove lead-dashboard ingest, notification, privacy, and readback procedure
 - `docs/qa-success-criteria.md`: explicit production readiness bar
 - `docs/release-log.md`: production release history with commit and verification evidence

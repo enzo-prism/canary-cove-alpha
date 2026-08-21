@@ -109,6 +109,7 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/contact-form.tsx`: contact form.
 - `components/email-capture.tsx`: homepage email capture.
 - `app/api/forms/route.ts`: first-party form proxy. It validates `booking`, `contact`, or `email_capture`, appends ops metadata, forwards to Formspree, and records the Vercel `lead_submit` conversion only after Formspree accepts the lead.
+- `docs/lead-operations.md`: canonical post-submission operations runbook. Formspree is intake; the Canary Cove lead dashboard is the operational source of truth.
 
 ### Route-specific marketing modules
 
@@ -238,6 +239,9 @@ Check these files together:
 
 - Contact and email-capture forms submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xvzarybk`.
 - Booking requests submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xqeqllek`.
+- After intake, review booking/contact submissions and add genuine lead data to the Canary Cove lead dashboard. Use the immutable Formspree submission ID for deduplication when available, otherwise use the source form plus exact timestamp and normalized email. Read the saved dashboard record back after every ingest. Homepage email-capture rows are tracked separately.
+- Do not email Consi as part of this workflow. Do not configure Formspree to notify her or forward Formspree notifications to her.
+- The dashboard record, not the Formspree inbox, notification email, or analytics event, is the operational source of truth. Follow `docs/lead-operations.md` for classification, privacy, idempotency, and completion rules.
 
 All public forms are expected to expose:
 
@@ -381,3 +385,4 @@ Useful production-sensitive checks:
 - Be careful when touching `components/ui/carousel.tsx`; it affects hero-adjacent carousels, interior galleries, and slider tests.
 - When route structure changes, treat `nav`, `footer`, `search`, `redirects`, `sitemap`, and `SITE_ROUTES` as a bundle to review.
 - If production domain, booking provider, analytics setup, or Formspree endpoints change, update the docs in the same commit so the next session does not inherit stale context.
+- If the lead-dashboard schema or ingest mechanism changes, update `docs/lead-operations.md`, preserve immutable submission-ID deduplication, and retain dashboard readback as the completion gate.
