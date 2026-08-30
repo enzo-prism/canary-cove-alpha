@@ -47,7 +47,7 @@ const nextConfig = {
       // the Main House page now lives on its own subdomain. Temporary redirect
       // on purpose: the destination may move behind the /guest gate later.
       { source: "/stay/main-house", destination: "https://mainhouse.canarycove.com", permanent: false },
-      { source: "/stay/suites", destination: "/stay#suites", permanent: true },
+      { source: "/stay/suites", destination: "/stay#inside-the-villa", permanent: true },
       { source: "/stay/villa", destination: "/stay#villa", permanent: true },
       { source: "/stay/villa/inside", destination: "/stay#inside-the-villa", permanent: true },
       { source: "/stay/amenities", destination: "/stay#amenities", permanent: true },

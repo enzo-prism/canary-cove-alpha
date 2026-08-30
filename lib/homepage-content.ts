@@ -24,7 +24,7 @@ export const ESTATE_SPACES = [
       { label: "Climate", value: "AC + fans" },
       { label: "Wake", value: "Water views" },
     ],
-    cta: { label: "See suites", href: "/stay#suites" },
+    cta: { label: "See suites", href: "/stay#inside-the-villa" },
   },
   {
     name: "Pool Deck",

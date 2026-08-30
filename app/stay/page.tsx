@@ -7,6 +7,7 @@ import { StayHighlights } from "@/components/stay-highlights"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { StayOutdoorGallery } from "@/components/stay-outdoor-gallery"
 import { StayVillaGallery } from "@/components/stay-villa-gallery"
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { PageStructuredData } from "@/components/structured-data"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { PAGE_METADATA } from "@/lib/seo"
@@ -33,11 +34,19 @@ export default function Page() {
                 One private estate with beach, docks, pool, suites, and open-air living reserved entirely for your group on
                 Ambergris Caye.
               </p>
-              <p className="text-body">
-                <a href="https://mainhouse.canarycove.com" className="underline underline-offset-4">
-                  Main House (5 suites)
-                </a>
-              </p>
+              <TrackedLink
+                href="/stay/main-house"
+                eventName="cta_click"
+                eventPayload={{ location: "stay_hero", target: "/stay/main-house" }}
+                className="mx-auto flex max-w-xl flex-col gap-1 rounded-[24px] border border-border/60 bg-white/90 px-5 py-4 text-left shadow-[0_12px_32px_rgba(15,23,42,0.06)] transition-colors hover:border-border hover:bg-white"
+              >
+                <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">Returning guests</p>
+                <p className="text-base font-semibold text-foreground">Main House · 5 suites</p>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  The full estate as one home base, from $2,500 a night in low season. A separate $10,000 damage deposit
+                  applies.
+                </p>
+              </TrackedLink>
             </div>
           </div>
         </div>
