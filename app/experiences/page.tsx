@@ -108,7 +108,7 @@ export default function Page() {
               </CardContent>
             </Card>
 
-            <Card className="surface-panel border-border/55 bg-white/92">
+            <Card id="diving-fishing" className="surface-panel scroll-mt-28 border-border/55 bg-white/92">
               <CardHeader className="px-6 pb-3 pt-6 sm:px-8 sm:pt-8">
                 <CardTitle className="text-section text-[1.9rem] sm:text-[2.1rem]">Add-on adventures</CardTitle>
               </CardHeader>

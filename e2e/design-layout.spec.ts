@@ -147,4 +147,25 @@ test.describe("design layout regressions", () => {
     await expect(items).toHaveCount(4)
     await expect(items.first()).toContainText("•")
   })
+
+  test("stay presents Main House as a designed returning-guest card", async ({ page }) => {
+    await page.goto("/stay")
+    await waitForPageReady(page)
+
+    const card = page.getByRole("link", { name: /Main House · 5 suites/i })
+    await expect(card).toBeVisible()
+    await expect(card).toHaveAttribute("href", "/stay/main-house")
+    await expect(card).toContainText("Returning guests")
+    await expect(card).not.toHaveClass(/underline/)
+  })
+
+  test("experiences exposes on-the-water and diving-fishing anchors", async ({ page }) => {
+    await page.goto("/experiences")
+    await waitForPageReady(page)
+
+    await expect(page.locator("#on-the-water")).toBeVisible()
+    await expect(page.locator("#on-the-water")).toContainText("Included with your stay")
+    await expect(page.locator("#diving-fishing")).toBeVisible()
+    await expect(page.locator("#diving-fishing")).toContainText("Add-on adventures")
+  })
 })
