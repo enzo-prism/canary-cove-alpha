@@ -38,6 +38,12 @@ This document defines the production-readiness bar for the public marketing site
 ## Design criteria
 
 - Hero overlay copy stays readable against the rotating photography (contrast gradient plus overlay).
+- Immersive headers on `/` and `/experiences` keep the brand mark readable over photography (inverted wordmark on a frosted chip until scroll).
+- Desktop Explore uses the same stacked icon-above-label pill as the other primary items; it must not sit taller or as a horizontal row.
+- Getting Here step numbers stay aligned to their own step and must not overlap.
+- Homepage testimonial quotes stay inside their photo cards; interior testimonial grids keep author names pinned to the bottom of equal-height cards.
+- Experiences hero tucks under the live `--site-header-height` without covering the page heading.
+- Dining “How dining works” items keep visible bullet markers, matching stay amenities.
 - Critical sections maintain their spacing rhythm.
 - Galleries and carousels keep their intended framing and do not regress into clipped, low-contrast, or partial-slide states.
 - Visual-regression baselines remain stable for:
@@ -55,6 +61,7 @@ This document defines the production-readiness bar for the public marketing site
 - `e2e/search.spec.ts`: search query behavior, grouped results, instant answers, and fallback handling
 - `e2e/usability.spec.ts`: overflow, target sizing, resizing, and carousel interaction coverage
 - `e2e/responsive.spec.ts`, `e2e/spacing.spec.ts`, `e2e/hero-contrast.spec.ts`: layout rhythm and readability checks
+- `e2e/design-layout.spec.ts`: Explore pill alignment, immersive brand contrast, Getting Here badges, testimonial clipping, Experiences hero offset, dining bullets
 - `e2e/design-visual.spec.ts`: Chromium-only visual baselines
 - `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`: slider interaction quality
 

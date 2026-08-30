@@ -45,7 +45,7 @@ export function Footer() {
         </div>
 
         <div className="flex flex-col gap-2 text-xs text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>(c) {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
+          <p>© {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
           <div className="flex gap-4">
             <TrackedLink href="/privacy" eventName="nav_click" eventPayload={{ surface: "footer_legal", destination: "/privacy" }} className="hover:text-foreground">
               Privacy

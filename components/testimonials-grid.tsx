@@ -58,14 +58,16 @@ export function TestimonialsGrid({ groups, testimonials: testimonialsProp }: Tes
             key={`${testimonial.year}-${index}`}
             type="button"
             onClick={() => handleOpen(testimonial)}
-            className="group flex h-full flex-col gap-3 rounded-2xl border border-border/60 bg-white/90 p-5 text-left shadow-sm shadow-black/5 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/10 hover:shadow-[0_14px_30px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 motion-reduce:transition-none"
+            className="group flex h-full min-h-[220px] flex-col gap-3 rounded-2xl border border-border/60 bg-white/90 p-5 text-left shadow-sm shadow-black/5 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/10 hover:shadow-[0_14px_30px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 motion-reduce:transition-none"
             aria-label={`Open testimonial from ${testimonial.author ?? "guest"} (${testimonial.year})`}
           >
             <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{testimonial.year}</span>
-            <p className="text-sm leading-relaxed text-foreground">"{testimonial.quote}"</p>
+            <p className="line-clamp-5 text-sm leading-relaxed text-foreground">"{testimonial.quote}"</p>
             {testimonial.author ? (
-              <span className="text-xs font-semibold text-foreground">- {testimonial.author}</span>
-            ) : null}
+              <span className="mt-auto pt-2 text-xs font-semibold text-foreground">- {testimonial.author}</span>
+            ) : (
+              <span className="mt-auto pt-2 text-xs font-semibold text-muted-foreground">- Guest</span>
+            )}
           </button>
         ))}
       </div>

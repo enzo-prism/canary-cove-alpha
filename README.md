@@ -106,7 +106,8 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `e2e/forms.spec.ts` covers form validation plus success/error states.
 - `e2e/search.spec.ts` covers search answers, grouped results, and fallback behavior.
 - `e2e/usability.spec.ts` covers overflow, tap targets, resize behavior, and carousel resilience.
-- `e2e/design-visual.spec.ts` guards hero, forms, and mini-gallery visual baselines.
+- `e2e/design-visual.spec.ts` covers hero, forms, and mini-gallery visual baselines.
+- `e2e/design-layout.spec.ts` covers desktop Explore pill height, immersive brand contrast, Getting Here step badges, testimonial quote clipping, Experiences hero offset, and dining bullets.
 - `e2e/responsive.spec.ts`, `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`, `e2e/hero-contrast.spec.ts`, and `e2e/spacing.spec.ts` protect interaction quality and layout rhythm.
 
 ## Deployment notes

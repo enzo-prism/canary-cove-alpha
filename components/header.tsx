@@ -99,7 +99,17 @@ export function Header() {
           scrolled ? "py-3" : "py-4"
         }`}
       >
-        <BrandMark compact className="shrink-0" />
+        <div data-testid="site-brand">
+          <BrandMark
+            compact
+            inverted={hasImmersiveTop}
+            className={
+              hasImmersiveTop
+                ? "shrink-0 rounded-full border border-white/25 bg-black/35 px-3 py-1.5 backdrop-blur-md"
+                : "shrink-0"
+            }
+          />
+        </div>
         <DesktopNav items={NAV_ITEMS} isActive={isActive} />
 
         <div className="ml-auto flex items-center gap-2">

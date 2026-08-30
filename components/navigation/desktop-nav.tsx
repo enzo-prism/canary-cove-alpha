@@ -43,16 +43,23 @@ export function DesktopNav({ items, isActive }: DesktopNavProps) {
                     <PopoverTrigger asChild>
                       <button
                         type="button"
+                        data-testid="desktop-nav-explore"
                         className={cn(
-                          "group/nav flex min-w-[5.15rem] items-center justify-center gap-1 rounded-[1.6rem] px-4 py-2.5 text-[13px] font-medium leading-none transition-[background-color,color,box-shadow] duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
+                          "group/nav flex min-w-[5.15rem] flex-col items-center justify-center gap-1 whitespace-nowrap rounded-[1.6rem] px-4 py-2.5 text-[13px] font-medium leading-none transition-[background-color,color,box-shadow,transform] duration-300 ease-out focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30",
                           active
                             ? "bg-foreground text-background shadow-[inset_0_1px_0_rgba(255,255,255,0.08),0_10px_24px_rgba(15,23,42,0.14)]"
                             : "text-muted-foreground hover:bg-foreground/[0.04] hover:text-foreground",
                         )}
                       >
-                        {Icon ? <Icon className="h-3.5 w-3.5" /> : null}
-                        <span>{item.label}</span>
-                        <ChevronDown className="h-3 w-3 opacity-70" />
+                        {Icon ? (
+                          <span className={cn("nav-icon", active ? "text-background" : "text-muted-foreground group-hover/nav:text-foreground")}>
+                            <Icon className="h-3.5 w-3.5" />
+                          </span>
+                        ) : null}
+                        <span className="nav-label inline-flex items-center gap-1">
+                          {item.label}
+                          <ChevronDown className="h-3 w-3 opacity-70" />
+                        </span>
                       </button>
                     </PopoverTrigger>
                     <PopoverContent align="center" className="w-72 rounded-2xl p-2">

@@ -148,7 +148,10 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
               data-testid={`testimonial-slide-${index}`}
               className="min-w-0 flex-[0_0_100%] pr-6 carousel-slide"
             >
-              <div className="relative min-h-[360px] overflow-hidden rounded-[28px] bg-surface-muted sm:min-h-[420px]">
+              <div
+                data-testid={`testimonial-card-${index}`}
+                className="relative flex min-h-[360px] flex-col justify-end overflow-hidden rounded-[28px] bg-surface-muted sm:min-h-[420px]"
+              >
                 <Image
                   src={testimonial.image.src}
                   alt={testimonial.image.alt}
@@ -161,7 +164,12 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent" />
                 <div className="relative z-10 max-w-xl space-y-4 p-6 sm:p-10">
-                  <p className="text-xl font-semibold text-white sm:text-2xl">"{testimonial.quote}"</p>
+                  <p
+                    data-testid={`testimonial-quote-${index}`}
+                    className="line-clamp-5 text-lg font-semibold text-pretty text-white sm:text-xl md:text-2xl"
+                  >
+                    "{testimonial.quote}"
+                  </p>
                   <p className="text-sm uppercase tracking-[0.3em] text-white/70">
                     {testimonial.author ?? "Guest"} - {testimonial.year}
                   </p>
