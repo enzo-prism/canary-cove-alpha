@@ -4,8 +4,10 @@ This log records production releases that materially change guest-facing behavio
 
 ## 2026-08-30 — Design-bug pass: nav, header, Getting Here, testimonials
 
+- Commit: `85d467e41ab20072e6d9fe68cf765e1ccf0e9303`
 - Production: `https://www.canarycove.com`
 - Vercel: GitHub status to be confirmed `Ready` for `v0-canary-cove-navbar-structure` after this `main` push
+- PR: https://github.com/enzo-prism/canary-cove-alpha/pull/24
 - Desktop Explore now uses the same stacked icon-above-label pill as Stay/Rates/Reviews/Getting Here, so the nav bar no longer has a taller middle item.
 - Immersive headers on `/` and `/experiences` invert the brand mark and sit it on a frosted chip so the wordmark stays readable over photography.
 - Experiences hero tucks under the sticky header with `--site-header-height` instead of hardcoded pixel offsets.
