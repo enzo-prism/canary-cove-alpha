@@ -2,6 +2,19 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-08-30 — Design-bug pass: nav, header, Getting Here, testimonials
+
+- Production: `https://www.canarycove.com`
+- Vercel: GitHub status to be confirmed `Ready` for `v0-canary-cove-navbar-structure` after this `main` push
+- Desktop Explore now uses the same stacked icon-above-label pill as Stay/Rates/Reviews/Getting Here, so the nav bar no longer has a taller middle item.
+- Immersive headers on `/` and `/experiences` invert the brand mark and sit it on a frosted chip so the wordmark stays readable over photography.
+- Experiences hero tucks under the sticky header with `--site-header-height` instead of hardcoded pixel offsets.
+- Getting Here step numbers are positioned on each `relative` list item, so the four badges no longer stack on top of each other.
+- Homepage testimonial quotes clamp inside the photo cards; interior testimonial grids pin author names to the bottom of equal-height cards.
+- Dining “How dining works” items use the same visible bullet treatment as stay amenities.
+- Footer copyright uses `©`.
+- Added `e2e/design-layout.spec.ts` to lock these layout regressions.
+
 ## 2026-08-15 — Diving film overlay collision
 
 - Commit: `0c3de1da1ae080305359e595afc3358d655063b7`
