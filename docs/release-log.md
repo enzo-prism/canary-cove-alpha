@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-08-30 — Main House stay card and estate space deep links
+
+- Commit: `ba24cd6e98b8a6d6c655c4172958405d5e42e22e`
+- Production: `https://www.canarycove.com`
+- Vercel: GitHub status `Ready` for `v0-canary-cove-navbar-structure` (`dpl_3UnVMz5BN2TQqUNpbxpijnYGdetQ`)
+- PR: https://github.com/enzo-prism/canary-cove-alpha/pull/25
+- Stay presents Main House as a designed returning-guest card (`Main House · 5 suites`) that links `/stay/main-house` (307 to `https://mainhouse.canarycove.com`). The stray underlined microsite link is gone.
+- Homepage King Suites CTA lands on `/stay#inside-the-villa`. `/stay/suites` redirects there.
+- Homepage Private Docks CTA lands on `/experiences#on-the-water`, which now exists on the Included card.
+- The homepage estate carousel remains the 3-suite villa product. Main House is not a carousel “space.”
+- Companion microsite: `enzo-prism/main-house-CC` PR https://github.com/enzo-prism/main-house-CC/pull/3 squash-merged as `43faed23f0720f7fcea2947e5597f9b84b285340`. Vercel `canary-cove-main-house` production `Ready` (`dpl_5Wv2N4MX2K4kK4di4hPrSrusRgNj`). Live `https://mainhouse.canarycove.com` now uses current Cove nav (Stay, Rates, Explore, Reviews, Getting Here), covers the hero photo, wraps the H1 as Canary Cove / Main House, stacks returning-guest copy above the photo on mobile, and includes a skip link.
+
 ## 2026-08-30 — Design-bug pass: nav, header, Getting Here, testimonials
 
 - Commit: `85d467e41ab20072e6d9fe68cf765e1ccf0e9303`
