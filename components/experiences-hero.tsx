@@ -5,7 +5,7 @@ import { IMAGES } from "@/lib/images"
 
 export function ExperiencesHero() {
   return (
-    <section className="relative -mt-[84px] overflow-hidden border-b border-white/10 pt-[104px] sm:-mt-[88px] sm:pt-[112px] lg:-mt-[92px] lg:pt-[120px]">
+    <section className="relative -mt-[var(--site-header-height)] overflow-hidden border-b border-white/10 pt-[calc(var(--site-header-height)+1.5rem)]">
       <div className="absolute inset-0">
         <Image
           src={IMAGES.heroBackgroundEstate.src}
