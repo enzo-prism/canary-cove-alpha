@@ -38,6 +38,7 @@
   - `e2e/forms.spec.ts` for email capture, contact, and booking form success/error states
   - `e2e/usability.spec.ts` for overflow, hit targets, resize resilience, and keyboard/touch behavior
   - `e2e/design-visual.spec.ts` for visual regressions on hero, forms, and mini galleries
+  - `e2e/design-layout.spec.ts` for desktop Explore pill alignment, immersive brand contrast, Getting Here step badges, testimonial clipping, Experiences hero offset, and dining bullets
 - `e2e/helpers.ts` intentionally filters Vercel analytics debug noise and cancelled Cloudinary video requests in dev so real regressions stand out.
 
 ## Commit & Pull Request Guidelines
@@ -55,7 +56,11 @@
 - Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Rates is a first-class item. Experiences, Dining, Adventures, and Gallery live under the Explore dropdown.
 - Emoji for nav labels come from `lib/emoji.ts`; update there when adjusting iconography.
 - Desktop nav uses direct pill links plus a Radix `Popover` for Explore in `components/navigation/desktop-nav.tsx`. Mobile nav uses `Sheet` + `components/navigation/mobile-nav.tsx` and flattens dropdown children.
+- The Explore trigger must use the same stacked `flex-col` icon-above-label pill as Stay/Rates/Reviews/Getting Here. Put the icon in `.nav-icon` and the label plus chevron in `.nav-label`. A horizontal Explore row makes the pill taller than its siblings.
 - `components/header.tsx` composes the nav, site search trigger, and sticky scroll state. Be mindful when adjusting padding/height so the shrink animation and `--site-header-height` stay in sync.
+- Immersive header (`/` and `/experiences` until `window.scrollY > 40`) inverts `BrandMark` and wraps it in a frosted chip so the wordmark stays readable over photography. Do not leave the default dark wordmark on a translucent bar.
+- `/experiences` hero should tuck under the sticky header with `-mt-[var(--site-header-height)]` and matching padding. Do not hardcode pixel header offsets.
+- Getting Here step numbers are absolutely positioned. The parent `li` must be `relative` or every badge stacks on the `ol`.
 
 ## Assets, Fonts & Media
 - SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx` (Regular, Medium, Semibold, Bold subset woff2s). Do not add the unused Light face back.
@@ -98,3 +103,5 @@
 - Interior page shell: `components/layout/page-shell.tsx`
 - Booking form: `components/booking-form.tsx`, `app/book/page.tsx`
 - Adventures reef films: `app/adventures/page.tsx`, `components/reef-encounters.tsx`, `lib/videos.ts`
+- Experiences hero offset: `components/experiences-hero.tsx` (uses `--site-header-height`)
+- Getting Here steps: `app/getting-here/page.tsx`
