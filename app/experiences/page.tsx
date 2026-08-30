@@ -92,7 +92,7 @@ export default function Page() {
       <section className="relative z-10 px-4 pb-16 pt-0 sm:px-6 sm:pb-20 lg:px-8 lg:pb-24">
         <Container size="wide" className="-mt-10 flow flow-xl sm:-mt-14 lg:-mt-16">
           <div className="grid gap-6 lg:grid-cols-2">
-            <Card className="surface-panel border-border/55 bg-white/92">
+            <Card id="on-the-water" className="surface-panel scroll-mt-28 border-border/55 bg-white/92">
               <CardHeader className="px-6 pb-3 pt-6 sm:px-8 sm:pt-8">
                 <CardTitle className="text-section text-[1.9rem] sm:text-[2.1rem]">Included with your stay</CardTitle>
               </CardHeader>
