@@ -14,6 +14,13 @@ import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.dining
 
+const diningBasics = [
+  "Chef service, cooking, and cleanup included.",
+  "Groceries, alcohol, and beverages billed at cost.",
+  "Gluten-free, vegetarian, and kid-friendly menus available.",
+  "We’ll recommend and reserve island restaurants on request.",
+]
+
 export default function Page() {
   return (
     <main id="main-content" className="min-h-screen">
@@ -62,11 +69,15 @@ export default function Page() {
                 kitchen is stocked before arrival for self-serve breakfasts and snacks, with food and beverage purchases billed at
                 cost.
               </p>
-              <ul className="grid gap-2 text-sm text-foreground sm:grid-cols-2">
-                <li>Chef service, cooking, and cleanup included.</li>
-                <li>Groceries, alcohol, and beverages billed at cost.</li>
-                <li>Gluten-free, vegetarian, and kid-friendly menus available.</li>
-                <li>We’ll recommend and reserve island restaurants on request.</li>
+              <ul className="grid gap-3 text-sm leading-relaxed text-foreground sm:grid-cols-2">
+                {diningBasics.map((item) => (
+                  <li key={item} data-testid="dining-basic" className="flex gap-3">
+                    <span className="mt-1 text-[10px] text-primary" aria-hidden="true">
+                      •
+                    </span>
+                    <span>{item}</span>
+                  </li>
+                ))}
               </ul>
             </CardContent>
           </Card>

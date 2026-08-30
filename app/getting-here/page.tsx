@@ -68,8 +68,11 @@ export default function Page() {
               <CardContent className="p-6">
                 <ol className="relative space-y-6 border-l border-border/70 pl-6">
                   {steps.map((step, index) => (
-                    <li key={step.title} className="space-y-2">
-                      <div className="absolute -left-[13px] mt-1 flex h-7 w-7 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-black">
+                    <li key={step.title} data-testid="getting-here-step" className="relative space-y-2">
+                      <div
+                        data-testid="getting-here-step-index"
+                        className="absolute -left-6 top-1 flex h-7 w-7 -translate-x-1/2 items-center justify-center rounded-full bg-primary/10 text-xs font-semibold text-foreground"
+                      >
                         {index + 1}
                       </div>
                       <div className="flex items-center gap-2 text-sm font-semibold text-foreground">
@@ -95,7 +98,7 @@ export default function Page() {
                   <Button
                     asChild
                     variant="secondary"
-                    className="w-full justify-center rounded-xl border border-border/70 bg-primary/10 text-black hover:bg-primary/15"
+                    className="w-full justify-center rounded-xl border border-border/70 bg-primary/10 text-foreground hover:bg-primary/15"
                   >
                     <TrackedLink
                       href="https://ideclare.gov.bz/Belize_Digital_Forms/"
