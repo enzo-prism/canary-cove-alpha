@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
+import { useEffect, useState, type FormEvent } from "react"
 import { Building2, CalendarRange, Check, Home, Send, Users } from "lucide-react"
 
 import { InquiryField, inquiryControlClassName, inquiryTextareaClassName } from "@/components/forms/inquiry-field"
@@ -110,6 +110,16 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
   const eligibility = mainHouseEligibility(accommodation, returningGuest)
   const blockedForFirstStay = eligibility === "blocked"
 
+  useEffect(() => {
+    if (status !== "success") return
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [status])
+
+  useEffect(() => {
+    if (!blockedForFirstStay) return
+    document.getElementById("main-house-eligibility")?.scrollIntoView({ behavior: "smooth", block: "center" })
+  }, [blockedForFirstStay])
+
   const clearFieldError = (key: keyof FieldErrors) => {
     setFieldErrors((current) => {
       if (!current[key]) return current
@@ -197,7 +207,13 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
           : firstErrorKey === "returningGuest"
             ? "returningGuest-choice-yes"
             : firstErrorKey
-      focusInquiryField(focusId)
+      window.setTimeout(() => {
+        document.querySelector("[data-testid='booking-validation-summary']")?.scrollIntoView({
+          behavior: "smooth",
+          block: "center",
+        })
+        focusInquiryField(focusId)
+      }, 0)
       return
     }
 
@@ -251,7 +267,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               <h2 className="text-section">Request received</h2>
               <p className="max-w-xl text-lg leading-8 text-muted-foreground">
                 {submittedStayWindow
-                  ? `We’ll confirm availability for ${submittedStayWindow} and follow up with next steps shortly.`
+                  ? `‘ll confirm availability for ${submittedStayWindow} and follow up with next steps shortly.`
                   : "Our team will confirm availability and follow up with next steps shortly."}
               </p>
             </div>
@@ -317,6 +333,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
 
           {accommodation === "main-house" ? (
             <div
+              id="main-house-eligibility"
               className={cn(
                 "rounded-2xl border px-5 py-4",
                 blockedForFirstStay ? "border-destructive/30 bg-destructive/5" : "border-border bg-surface-elevated",

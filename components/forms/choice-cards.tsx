@@ -58,7 +58,7 @@ export function ChoiceCards<T extends string>({
               className={cn(
                 "flex min-h-[7.25rem] items-start gap-4 rounded-2xl border px-4 py-4 text-left transition-colors duration-200 motion-reduce:transition-none focus-ring",
                 selected
-                  ? "border-foreground/70 bg-surface-elevated"
+                  ? "border-foreground bg-surface-elevated"
                   : "border-border bg-surface hover:border-foreground/25",
               )}
             >

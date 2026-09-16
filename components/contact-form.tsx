@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type FormEvent } from "react"
+import { useEffect, useState, type FormEvent } from "react"
 import { Check, Send } from "lucide-react"
 
 import { InquiryField, inquiryControlClassName, inquiryTextareaClassName } from "@/components/forms/inquiry-field"
@@ -38,6 +38,11 @@ export function ContactForm() {
   const [status, setStatus] = useState<ContactStatus>("idle")
   const [message, setMessage] = useState("")
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({})
+
+  useEffect(() => {
+    if (status !== "success") return
+    window.scrollTo({ top: 0, behavior: "smooth" })
+  }, [status])
 
   const clearFieldError = (key: keyof FieldErrors) => {
     setFieldErrors((current) => {
