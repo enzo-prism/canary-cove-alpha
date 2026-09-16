@@ -1,8 +1,14 @@
+import { Clock3, Mail, MessageCircle } from "lucide-react"
+
+import { ContactChannels } from "@/components/forms/contact-channels"
 import { ContactDetails } from "@/components/contact-details"
 import { ContactForm } from "@/components/contact-form"
+import { InquiryIntro } from "@/components/forms/inquiry-intro"
+import { Container } from "@/components/layout/container"
 import { PageShell } from "@/components/layout/page-shell"
-import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
+import { Section } from "@/components/layout/section"
 import { TestimonialsGrid } from "@/components/testimonials-grid"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.contact
@@ -10,29 +16,34 @@ export const metadata = PAGE_METADATA.contact
 export default function Page() {
   return (
     <PageShell path="/contact" wash>
-      <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-5xl xl:max-w-6xl space-y-12">
-          <div className="space-y-3">
-            <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl">Contact Canary Cove</h1>
-            <p className="text-lg text-muted-foreground sm:text-xl">Reach out and we’ll respond within one business day.</p>
-          </div>
+      <Section padding="tight">
+        <Container className="space-y-16 sm:space-y-20">
+          <InquiryIntro
+            kicker="Write to us"
+            title="Ask about the stay"
+            lede="A note, a call, or an email. We reply within one business day — and you can reach us directly if the form is not the right path."
+            notes={[
+              { icon: Clock3, label: "Reply within one business day" },
+              { icon: MessageCircle, label: "A real note, not an empty send" },
+              { icon: Mail, label: "Phone and email stay available" },
+            ]}
+          />
 
-          <div className="grid grid-cols-1 items-start gap-10 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="mx-auto w-full max-w-3xl space-y-12">
+            <ContactChannels />
             <ContactForm />
-            <ContactDetails />
           </div>
+          <ContactDetails />
 
-          <div className="space-y-4">
+          <div className="space-y-4 border-t border-border/70 pt-12">
             <div className="space-y-2">
-              <h2 className="text-2xl font-semibold text-foreground">Guests on our team</h2>
-              <p className="text-base text-muted-foreground">
-                A few notes about the people who make every stay feel effortless.
-              </p>
+              <h2 className="text-section">Guests on our team</h2>
+              <p className="text-body max-w-2xl">A few notes about the people who make every stay feel effortless.</p>
             </div>
             <TestimonialsGrid testimonials={TESTIMONIAL_SPOTLIGHTS.contact} />
           </div>
-        </div>
-      </section>
+        </Container>
+      </Section>
     </PageShell>
   )
 }
