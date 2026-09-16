@@ -267,7 +267,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               <h2 className="text-section">Request received</h2>
               <p className="max-w-xl text-lg leading-8 text-muted-foreground">
                 {submittedStayWindow
-                  ? `‘ll confirm availability for ${submittedStayWindow} and follow up with next steps shortly.`
+                  ? `We’ll confirm availability for ${submittedStayWindow} and follow up with next steps shortly.`
                   : "Our team will confirm availability and follow up with next steps shortly."}
               </p>
             </div>
