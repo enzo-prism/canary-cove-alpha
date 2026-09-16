@@ -21,6 +21,31 @@ export const SITE_LOGO_URL = `${SITE_URL}/canary-cove-logo.png`
 export const SITE_FACEBOOK_URL = "https://www.facebook.com/CanaryCove/"
 export const PRIMARY_CONTACT_PHONE = "+5016105121"
 export const BOOKING_CONTACT_PHONE = "+5016267534"
+/** Estate inbox used for guest correspondence. Do not invent a @canarycove.com alias. */
+export const SITE_INQUIRY_EMAIL = "canarycove@gmail.com"
+
+export const SITE_CONTACTS = {
+  gil: {
+    name: "Gil",
+    role: "Canary Cove Manager",
+    initials: "GC",
+    phone: PRIMARY_CONTACT_PHONE,
+    telHref: `tel:${PRIMARY_CONTACT_PHONE}`,
+    localLabel: "610-5121",
+    internationalLabel: "+501 610-5121",
+  },
+  consi: {
+    name: "Consi",
+    role: "Booking Manager",
+    initials: "CB",
+    phone: BOOKING_CONTACT_PHONE,
+    telHref: `tel:${BOOKING_CONTACT_PHONE}`,
+    localLabel: "626-7534",
+    internationalLabel: "+501 626-7534",
+  },
+} as const
+
+export const SITE_INQUIRY_MAILTO = `mailto:${SITE_INQUIRY_EMAIL}?subject=${encodeURIComponent("Canary Cove inquiry")}`
 export const SITE_ADDRESS = {
   name: SITE_NAME,
   streetAddress: "6 1/2 Miles North San Pedro Town",
@@ -65,9 +90,9 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
   },
   {
     path: "/book",
-    title: "Check Availability & Book",
+    title: "Request a Stay",
     description:
-      "Booking request flow, comfort details, and payment or cancellation policies.",
+      "Request a hold on your preferred dates. This is an inquiry, not checkout. Payment and cancellation terms are on the same page.",
     category: "primary",
     images: [IMAGES.villaLawn.src],
   },

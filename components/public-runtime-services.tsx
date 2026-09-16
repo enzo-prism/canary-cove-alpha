@@ -8,6 +8,7 @@ import { GoogleAnalyticsPageviews } from "@/components/google-analytics-pageview
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { VercelAnalytics } from "@/components/vercel-analytics"
 import { GOOGLE_ANALYTICS_ID } from "@/lib/google-analytics"
+import { isInquiryPath } from "@/lib/inquiry"
 
 const PRIVATE_RUNTIME_SELECTOR = [
   'script[src*="googletagmanager.com"]',
@@ -108,8 +109,26 @@ function PrivateRuntimeCleanup() {
   return null
 }
 
+function InquiryPageDockGuard({ active }: { active: boolean }) {
+  useLayoutEffect(() => {
+    if (active) {
+      document.body.dataset.inquiryPage = "true"
+    } else {
+      delete document.body.dataset.inquiryPage
+    }
+
+    return () => {
+      delete document.body.dataset.inquiryPage
+    }
+  }, [active])
+
+  return null
+}
+
 export default function PublicRuntimeServices() {
   const pathname = usePathname()
+  const hideConciergeDock = isInquiryPath(pathname)
+
   if (pathname.startsWith("/guest")) {
     return (
       <>
@@ -121,12 +140,13 @@ export default function PublicRuntimeServices() {
 
   return (
     <>
+      <InquiryPageDockGuard active={hideConciergeDock} />
       <PrivateNetworkBoundary />
       <PublicUnloadPrivacyGuard />
       <GoogleAnalyticsScripts />
       <GoogleAnalyticsPageviews />
       <VercelAnalytics />
-      <ElevenLabsConvaiWidget />
+      {hideConciergeDock ? null : <ElevenLabsConvaiWidget />}
     </>
   )
 }

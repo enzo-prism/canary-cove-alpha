@@ -1,5 +1,6 @@
 import { TrackedLink } from "@/components/analytics/tracked-link"
 import { FacebookLink } from "@/components/facebook-link"
+import { SITE_CONTACTS } from "@/lib/site-config"
 
 const FOOTER_LINKS = [
   { href: "/stay", label: "Stay" },
@@ -26,7 +27,16 @@ export function Footer() {
               Fully staffed beachfront stay on Ambergris Caye. One booking at a time.
             </p>
             <p className="text-sm text-muted-foreground">17&apos; 59.914 NORTH - 87&apos; 54.901 WEST</p>
-            <p className="text-sm text-muted-foreground">Call Gil: 011 501-610-5121 - Consi: 011 501-626-7534</p>
+            <p className="text-sm text-muted-foreground">
+              Call{" "}
+              <a href={SITE_CONTACTS.gil.telHref} className="underline underline-offset-4 hover:text-foreground">
+                {SITE_CONTACTS.gil.name}: {SITE_CONTACTS.gil.internationalLabel}
+              </a>
+              {" · "}
+              <a href={SITE_CONTACTS.consi.telHref} className="underline underline-offset-4 hover:text-foreground">
+                {SITE_CONTACTS.consi.name}: {SITE_CONTACTS.consi.internationalLabel}
+              </a>
+            </p>
           </div>
           <div className="grid gap-3 text-sm text-muted-foreground sm:grid-cols-2">
             {FOOTER_LINKS.map((link) => (

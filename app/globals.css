@@ -14,6 +14,11 @@ body[data-scroll-locked] elevenlabs-convai {
   display: none !important;
 }
 
+/* Inquiry pages keep the dock off the fields entirely. */
+body[data-inquiry-page="true"] elevenlabs-convai {
+  display: none !important;
+}
+
 :root {
   --background: oklch(0.985 0.008 95);
   --foreground: oklch(0.22 0.01 95);
@@ -252,6 +257,10 @@ body[data-scroll-locked] elevenlabs-convai {
 
   .form-error {
     @apply text-xs leading-5 text-destructive;
+  }
+
+  .inquiry-canvas {
+    width: 100%;
   }
 
   .page-wash {
