@@ -321,8 +321,8 @@ export const SEARCH_ITEMS: SearchItem[] = [
   },
   {
     id: "book-your-stay",
-    title: "Book your stay",
-    description: "Share your preferred dates and any celebrations. Our team will confirm availability and send a tailored quote.",
+    title: "Request a stay",
+    description: "Request a hold on your preferred dates. We confirm availability in person, then send a quote.",
     href: "/book",
     group: "Contact",
     keywords: ["book", "request", "availability", "calendar", "hold"],
