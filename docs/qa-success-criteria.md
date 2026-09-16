@@ -17,10 +17,10 @@ This document defines the production-readiness bar for the public marketing site
 - Every public route returns `2xx` and renders a visible `h1`.
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
 - The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
-- The ElevenLabs concierge widget is present on public pages where the shared layout renders.
+- The ElevenLabs concierge widget is present on public pages where the shared layout renders, except `/book` and `/contact`, where it is hidden so it cannot cover form fields.
 - Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
 - The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
-- Booking requests validate matching email addresses and a sensible date order before submission.
+- Booking requests require dates, validate matching email addresses and a sensible date order, and surface Main House first-stay eligibility before submit.
 - The homepage diving film is poster-first and starts only after a guest click; do not ship the raw autoplay MP4.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 - `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.

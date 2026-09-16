@@ -66,7 +66,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/layout/page-shell.tsx`: Shared header/footer/structured-data shell for interior routes.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
 - `components/email-capture.tsx`: Homepage email capture with in-app submit states.
-- `components/booking-form.tsx`: Booking request form with client-side validation.
+- `components/booking-form.tsx`: Stay-request form with required dates, visible choice cards, and in-form errors.
 - `app/api/forms/route.ts`: First-party form proxy that forwards accepted lead forms to Formspree and records server-side Vercel lead conversions.
 - `components/ui/carousel.tsx`: Shared Embla wrapper used across galleries and sliders.
 - `lib/search/search-index.ts`: Handwritten search inventory and instant-answer content.
