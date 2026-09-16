@@ -196,7 +196,7 @@ const INSTANT_ANSWERS: Record<SearchIntent, InstantAnswer> = {
     ],
     links: [
       { label: "Contact Canary Cove", href: "/contact" },
-      { label: "Book your stay", href: "/book" },
+      { label: "Request a stay", href: "/book" },
     ],
   },
 }
@@ -210,7 +210,7 @@ const ASK_US_ANSWER: InstantAnswer = {
   ],
   links: [
     { label: "Contact Canary Cove", href: "/contact" },
-    { label: "Book your stay", href: "/book" },
+    { label: "Request a stay", href: "/book" },
   ],
 }
 
