@@ -101,13 +101,21 @@ test.describe("release gate smoke coverage", () => {
   })
 
   test("sitewide guest concierge widget renders from the shared layout", async ({ page }) => {
-    for (const route of ["/", "/book"]) {
+    for (const route of ["/", "/stay"]) {
       await page.goto(route)
       await waitForPageReady(page)
 
       const conciergeWidget = page.getByTestId("elevenlabs-convai-widget")
       await expect(conciergeWidget).toBeVisible()
       await expect(conciergeWidget).toHaveAttribute("variant", "tiny")
+    }
+  })
+
+  test("hides the concierge dock on inquiry forms so it cannot cover fields", async ({ page }) => {
+    for (const route of ["/book", "/contact"]) {
+      await page.goto(route)
+      await waitForPageReady(page)
+      await expect(page.getByTestId("elevenlabs-convai-widget")).toHaveCount(0)
     }
   })
 
