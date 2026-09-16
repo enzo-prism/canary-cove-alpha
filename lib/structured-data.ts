@@ -6,6 +6,7 @@ import {
   SITE_ADDRESS,
   SITE_DESCRIPTION,
   SITE_FACEBOOK_URL,
+  SITE_INQUIRY_EMAIL,
   SITE_GEO,
   SITE_LOCALE,
   SITE_LOGO_URL,
@@ -34,10 +35,12 @@ export function buildSiteJsonLd(): JsonLdNode {
         description: SITE_DESCRIPTION,
         logo: SITE_LOGO_URL,
         sameAs: [SITE_FACEBOOK_URL],
+        email: SITE_INQUIRY_EMAIL,
         contactPoint: [
           {
             "@type": "ContactPoint",
             telephone: PRIMARY_CONTACT_PHONE,
+            email: SITE_INQUIRY_EMAIL,
             contactType: "customer service",
             availableLanguage: ["en"],
           },
@@ -58,6 +61,7 @@ export function buildSiteJsonLd(): JsonLdNode {
         logo: SITE_LOGO_URL,
         image: [IMAGES.heroVillaSeating.src, IMAGES.villaPool.src, IMAGES.mainDock.src],
         telephone: PRIMARY_CONTACT_PHONE,
+        email: SITE_INQUIRY_EMAIL,
         sameAs: [SITE_FACEBOOK_URL],
         address: {
           "@type": "PostalAddress",

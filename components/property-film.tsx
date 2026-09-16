@@ -68,7 +68,7 @@ export function PropertyFilm() {
                       eventName="cta_click"
                       eventPayload={{ location: "dive_film", target: "/book" }}
                     >
-                      Book your stay
+                      Request a stay
                     </TrackedLink>
                   </Button>
                   <Button

@@ -31,7 +31,7 @@ export function Hero() {
                   className="h-12 bg-white text-foreground hover:bg-white/90"
                 >
                   <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "homepage_hero", target: "/book" }}>
-                    Book your stay
+                    Request a stay
                   </TrackedLink>
                 </Button>
                 <Button
