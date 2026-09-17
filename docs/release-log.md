@@ -2,6 +2,19 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-09-17 — Nav redesign, slider fixes, video player, email removal
+
+- Commit: `aa082153d105f916bda7f712cfd0be68ae325e7b`
+- Production: `https://www.canarycove.com`
+- Vercel: `Ready` for `v0-canary-cove-navbar-structure` (`dpl_GcCMzewURR76mrT18qry3S1gt5kw`), auto-deployed from the `main` push
+- Header is now a solid bar with scroll shrink, plain text links with an underlined active section, Stay/Explore split-trigger dropdowns (hover intent, click, keyboard), a full-screen mobile overlay menu with sticky Book footer, a search pill with ⌘K hint, and a single Book CTA.
+- `/about` renamed to `/reviews` (permanent 308 redirect; live verified). Reviews, Getting Here, and Contact are plain nav links; Rates lives under Stay.
+- Testimonial slider: bottom-anchored scrim (white-text contrast p10 1.7→5.9+ across slides/viewports), unclamped quotes, all-position dots, no dead strip, faster transitions. Same fixes in model, mini, and shared carousels.
+- Custom video player on reef encounter and property films (shared component, keyboard model, poster/replay states).
+- Email-listing feature removed site-wide; historical `email_capture` rows stay separate in ops docs.
+- Buttons gained subtle press feedback; ScrollReset only fires on route changes (fixes a mount race that yanked WebKit scroll).
+- Verified live: `/`, `/reviews`, `/book`, `/rates`, `/experiences`, `/stay`, `/gallery` return `200`; `/about` 308-redirects to `/reviews`; homepage HTML includes `desktop-nav-stay` and no `email-capture-card`.
+
 ## 2026-08-30 — Main House stay card and estate space deep links
 
 - Commit: `ba24cd6e98b8a6d6c655c4172958405d5e42e22e`
