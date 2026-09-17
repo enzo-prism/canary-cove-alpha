@@ -1,6 +1,5 @@
 import { expect, test } from "@playwright/test"
 
-import { NAV_ITEMS } from "@/lib/nav-items"
 import { waitForPageReady } from "./helpers"
 
 const boxesOverlap = (
@@ -11,65 +10,89 @@ const boxesOverlap = (
 test.describe("design layout regressions", () => {
   test.use({ viewport: { width: 1280, height: 900 } })
 
-  test("Explore sits in the same stacked icon+label pill as the other desktop items", async ({ page }) => {
+  test("desktop dropdown triggers align with plain links and open captioned panels", async ({ page }) => {
     await page.goto("/")
     await waitForPageReady(page)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
     const stay = nav.getByRole("link", { name: "Stay", exact: true })
-    const explore = nav.getByTestId("desktop-nav-explore")
-
-    await expect(explore.locator(".nav-icon svg")).toHaveCount(1)
-    await expect(explore.locator(".nav-label")).toContainText("Explore")
+    const exploreToggle = nav.getByTestId("desktop-nav-explore")
 
     const stayBox = await stay.boundingBox()
-    const exploreBox = await explore.boundingBox()
+    const exploreBox = await exploreToggle.boundingBox()
     expect(stayBox).not.toBeNull()
     expect(exploreBox).not.toBeNull()
     if (!stayBox || !exploreBox) return
 
-    expect(Math.abs(exploreBox.height - stayBox.height)).toBeLessThanOrEqual(4)
+    expect(Math.abs(exploreBox.height - stayBox.height)).toBeLessThanOrEqual(8)
+
+    await nav.getByTestId("desktop-nav-stay").click()
+    const panel = page.locator('[data-slot="popover-content"]')
+    await expect(panel.getByRole("link", { name: /The Villa/ })).toBeVisible()
+    await expect(panel.getByRole("link", { name: /Main House/ })).toBeVisible()
+    await expect(panel.getByRole("link", { name: /^Rates/ })).toBeVisible()
+    await expect(panel.getByText("Three suites, pool, and grounds")).toBeVisible()
+    await expect(panel.getByRole("link", { name: /Main House/ })).toContainText("external site")
+
+    await page.keyboard.press("Escape")
+    await expect(panel).toBeHidden()
+    await expect(nav.getByTestId("desktop-nav-stay")).toBeFocused()
   })
 
-  test("every desktop navigation destination exposes a visible icon", async ({ page }) => {
-    await page.goto("/")
+  test("active section underlines its nav link, including dropdown parents", async ({ page }) => {
+    await page.goto("/rates")
     await waitForPageReady(page)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    for (const item of NAV_ITEMS) {
-      if (item.type === "dropdown") {
-        const trigger = nav.getByTestId("desktop-nav-explore")
-        await expect(trigger.locator(".nav-icon svg"), `${item.label} should have a desktop navigation icon`).toHaveCount(1)
-        continue
-      }
+    const stay = nav.getByRole("link", { name: "Stay", exact: true })
+    const stayDecoration = await stay.evaluate((el) => getComputedStyle(el).textDecorationLine)
+    expect(stayDecoration).toContain("underline")
 
-      const icon = nav.getByRole("link", { name: item.label, exact: true }).locator(".nav-icon")
-      await expect(icon, `${item.label} should have a desktop navigation icon`).toBeVisible()
-      await expect(icon.locator("svg")).toHaveCount(1)
-    }
-  })
-
-  test("immersive header brand keeps a contrasting surface over photography", async ({ page }) => {
-    await page.goto("/")
+    await page.goto("/reviews")
     await waitForPageReady(page)
 
-    const brand = page.getByTestId("site-brand").locator("a")
-    const wordmark = brand.locator("span.uppercase").first()
-    await expect(brand).toBeVisible()
+    const reviews = nav.getByRole("link", { name: "Reviews", exact: true })
+    await expect(reviews).toHaveAttribute("aria-current", "page")
+    const reviewsDecoration = await reviews.evaluate((el) => getComputedStyle(el).textDecorationLine)
+    expect(reviewsDecoration).toContain("underline")
+  })
 
-    const contrast = await brand.evaluate((el) => {
-      const styles = getComputedStyle(el)
-      return {
-        backgroundColor: styles.backgroundColor,
-      }
-    })
-    const color = await wordmark.evaluate((el) => getComputedStyle(el).color)
-    const rgb = (color.match(/\d+/g) ?? []).map(Number)
+  test("header bar stays solid over every hero and shrinks on scroll", async ({ page }) => {
+    for (const route of ["/", "/experiences"]) {
+      await page.goto(route)
+      await waitForPageReady(page)
 
-    expect(contrast.backgroundColor).not.toBe("rgba(0, 0, 0, 0)")
-    expect(rgb[0]).toBeGreaterThan(200)
-    expect(rgb[1]).toBeGreaterThan(200)
-    expect(rgb[2]).toBeGreaterThan(200)
+      const header = page.locator("header").first()
+      const wordmark = page.getByTestId("site-brand").locator("span.uppercase").first()
+      await expect(header).toBeVisible()
+
+      const background = await header.evaluate((el) => getComputedStyle(el).backgroundColor)
+      const alpha = (() => {
+        const slash = background.match(/\/\s*([\d.]+)\s*\)/)
+        if (slash) return Number(slash[1])
+        const rgba = background.match(/^rgba?\(([^)]+)\)/)
+        if (rgba) {
+          const parts = rgba[1].split(",").map((part) => part.trim())
+          return parts.length === 4 ? Number(parts[3]) : 1
+        }
+        return 1
+      })()
+      expect(alpha).toBeGreaterThanOrEqual(0.9)
+
+      const color = await wordmark.evaluate((el) => getComputedStyle(el).color)
+      const isDark = (() => {
+        const lab = color.match(/^lab\(\s*([\d.]+)/)
+        if (lab) return Number(lab[1]) < 40
+        const rgb = (color.match(/\d+/g) ?? []).map(Number)
+        return rgb.length >= 3 && rgb[0] < 120 && rgb[1] < 120 && rgb[2] < 120
+      })()
+      expect(isDark).toBe(true)
+    }
+
+    const header = page.locator("header").first()
+    const restBox = await header.boundingBox()
+    await page.evaluate(() => window.scrollTo(0, 400))
+    await expect.poll(async () => (await header.boundingBox())?.height ?? 0).toBeLessThan(restBox?.height ?? 65)
   })
 
   test("getting-here step numbers stay aligned to their own step", async ({ page }) => {

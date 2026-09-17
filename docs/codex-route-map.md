@@ -16,7 +16,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 ### `/`
 
 - Page: `app/page.tsx`
-- Primary components: `Hero`, `HeroImageRotator`, `ModelCarousel`, `EditorialSplit`, `PropertyFilm`, `TestimonialSlider`, `ProcessSteps`, `EmailCapture`
+- Primary components: `Hero`, `HeroImageRotator`, `ModelCarousel`, `EditorialSplit`, `PropertyFilm`, `TestimonialSlider`, `ProcessSteps`
 - Data/config: `lib/homepage-content.ts`, `lib/images.ts`, `lib/seo.ts` (`PAGE_METADATA.home`)
 - Important anchors: `#property-film`
 - High-risk couplings: hero backgrounds live in `components/hero-image-rotator.tsx`; hero copy/CTAs live in `components/hero.tsx` (Book → `/book`, See rates → `/rates`); the hero order is randomized on load with a sessionStorage guard; the film is poster-first in `components/property-film.tsx`; search is header-triggered, not homepage-embedded
@@ -55,7 +55,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 - Primary components: `ContactDetails`, `ContactForm`, `TestimonialsGrid`
 - Data/config: `lib/testimonial-spotlights.ts`, `lib/analytics.ts`, `lib/seo.ts` (`PAGE_METADATA.contact`)
 - Important anchors: none beyond the standard main content container
-- High-risk couplings: `ContactForm` shares the same Formspree endpoint as the homepage email capture, but only genuine contact leads enter the dashboard-centered workflow in `docs/lead-operations.md`. Homepage email-capture rows are tracked separately; Formspree/email notifications are not the operational source of truth.
+- High-risk couplings: `ContactForm` posts to the shared Formspree endpoint formerly also used by the removed homepage email capture, but only genuine contact leads enter the dashboard-centered workflow in `docs/lead-operations.md`. Historical email-capture rows are tracked separately; Formspree/email notifications are not the operational source of truth.
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/forms.spec.ts`, `e2e/design-visual.spec.ts`
 
 ### `/experiences`
@@ -64,7 +64,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 - Primary components: `ExperiencesHero`, `ExperiencesGalleryMosaic`, `ExperiencesGuestHighlights`
 - Data/config: `lib/images.ts`, route-local highlight/card arrays in `app/experiences/page.tsx`, `lib/seo.ts` (`PAGE_METADATA.experiences`)
 - Important anchors: none currently exposed in the page markup beyond `#main-content`
-- High-risk couplings: the header treats `/experiences` like the homepage for the immersive top state; `next.config.mjs` still contains older `/experiences#...` redirect destinations, so audit redirects before adding new hash links
+- High-risk couplings: `next.config.mjs` still contains older `/experiences#...` redirect destinations, so audit redirects before adding new hash links
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/design-visual.spec.ts`
 
 ### `/dining`
@@ -94,11 +94,11 @@ Use this file when you need to answer "where is this page actually built?" witho
 - High-risk couplings: travel questions are answered through the search index and `llms` outputs, so copy changes should be reflected there too
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/search.spec.ts`
 
-### `/about`
+### `/reviews`
 
-- Page: `app/about/page.tsx`
+- Page: `app/reviews/page.tsx` (moved from `/about` in the 2026 nav redesign; `/about` 308-redirects here)
 - Primary components: route-local editorial sections, `StayMiniGallery`, `GalleryGrid`, `TestimonialsGrid`
-- Data/config: `lib/images.ts`, `lib/gallery-utils.ts`, `lib/emoji.ts`, `lib/seo.ts` (`PAGE_METADATA.about`)
+- Data/config: `lib/images.ts`, `lib/gallery-utils.ts`, `lib/emoji.ts`, `lib/seo.ts` (`PAGE_METADATA.reviews`)
 - Important anchors: `#guest-testimonials`
 - High-risk couplings: the page is large and testimonial-heavy, and its image set is filtered through `filterHighResGalleryItems`
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/design-visual.spec.ts`
@@ -118,4 +118,4 @@ Use this file when you need to answer "where is this page actually built?" witho
 - If any public hash changes, search `next.config.mjs`, `lib/search/search-index.ts`, `lib/search/search.ts`, and homepage CTA content for the old value.
 - If a CTA or footer link changes, check whether it should be a `TrackedLink` instead of a plain `Link`.
 - If imagery changes, update `lib/images.ts` first and treat `e2e/design-visual.spec.ts` as part of the change.
-- If a route starts or stops using immersive top-of-page styling, review `components/header.tsx`.
+- If header height, padding, or breakpoints change, verify `--site-header-height` consumers (`app/book`, `app/contact`, `experiences-hero`, `gallery-browser`) and the overlay z-index scale in `app/globals.css`.

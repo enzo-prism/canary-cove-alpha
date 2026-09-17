@@ -26,7 +26,7 @@ The dashboard is reconciled from Formspree into its curated data file and then d
 - Execution owner: the `canarycove-dash` repository
 - The run must read every page from both approved Formspree sources, supply an explicit UTC reconciliation timestamp, classify operational rows, and read the resulting counts back.
 - The dashboard command must use the direct importer binary with `--exported-at <UTC timestamp>`, then validate with the direct Node test, TypeScript, and Next.js binaries. The exact command contract lives in the `canarycove-dash` README; do not substitute the local `pnpm build` wrapper when it is stopped by the Sharp ignored-build policy.
-- Homepage `email_capture` submissions share the contact Formspree source but remain a separate count. They do not enter the guest-enquiry dashboard.
+- Historical homepage `email_capture` submissions share the contact Formspree source but remain a separate count. They do not enter the guest-enquiry dashboard. (The site no longer collects email-capture signups.)
 - A zero-change run ends after count and production-date verification. It does not create a data commit or deployment.
 - Any new, changed, or ambiguous submission is review-gated. Prepare the reconciliation result for review and fail closed; do not commit, push, or deploy changed lead data without current approval.
 - Routine reconciliation never emails Consi and never adds or forwards Formspree notifications to her. Bookingmood is not part of this flow.
@@ -47,7 +47,7 @@ When an automated run identifies a new or changed website/Formspree submission a
 
 1. Review the submission and confirm it belongs to Canary Cove and is a genuine lead. Exclude spam, malformed submissions, clearly labeled tests, and non-lead system traffic.
 2. Check for the same immutable Formspree submission ID before writing when that provider ID is available. Otherwise compare the source form, exact submission timestamp, and normalized email against the existing dashboard data. If the source row was already processed, reconcile the existing record instead of creating another one. Never deduplicate by name or email alone because a guest may submit a real follow-up.
-3. Apply the genuine booking/contact lead through the `canarycove-dash` importer using the minimum information needed for follow-up. Preserve the form type/source (`booking` or `contact`) and a stable dashboard ID. Never hand-edit its generated `data/submissions.ts` file. Homepage `email_capture` rows are tracked separately and do not belong in this lead dashboard.
+3. Apply the genuine booking/contact lead through the `canarycove-dash` importer using the minimum information needed for follow-up. Preserve the form type/source (`booking` or `contact`) and a stable dashboard ID. Never hand-edit its generated `data/submissions.ts` file. Historical homepage `email_capture` rows are tracked separately and do not belong in this lead dashboard.
 4. Read the dashboard record back after the write. Verify that the expected lead exists once, the source is correct, and the required contact/request fields match the reviewed submission.
 5. Treat the ingest as incomplete if the dashboard write or readback cannot be verified. Record or report the blocker without emailing the lead details elsewhere.
 

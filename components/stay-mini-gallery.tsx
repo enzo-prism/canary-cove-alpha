@@ -102,7 +102,7 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
                 onClick={() => scrollTo(index)}
                 className={cn(
                   "relative h-2 rounded-full transition-all after:absolute after:-inset-2 after:content-[''] motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100",
-                  selectedIndex === index ? "w-10 bg-foreground" : "w-2 bg-muted-foreground/35 hover:bg-foreground/55",
+                  selectedIndex === index ? "w-10 bg-foreground" : "w-2 bg-muted-foreground/40 hover:bg-foreground/55",
                 )}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={selectedIndex === index ? "true" : undefined}

@@ -19,14 +19,18 @@ test.describe("release gate smoke coverage", () => {
     )
   })
 
-  test("stay page links to the Main House microsite", async ({ page }) => {
+  test("stay page links to the Main House microsite", async ({ page, request, baseURL }) => {
     await page.goto("/stay")
     await waitForPageReady(page)
 
-    await expect(page.getByRole("link", { name: "Main House (5 suites)" })).toHaveAttribute(
+    await expect(page.getByRole("link", { name: /Main House.*5 suites/ })).toHaveAttribute(
       "href",
-      "https://mainhouse.canarycove.com",
+      "/stay/main-house",
     )
+
+    const redirect = await request.get(`${baseURL}/stay/main-house`, { maxRedirects: 0 })
+    expect(redirect.status()).toBe(307)
+    expect(redirect.headers()["location"]).toBe("https://mainhouse.canarycove.com/")
   })
 
   for (const route of SITE_ROUTES) {
@@ -83,6 +87,37 @@ test.describe("release gate smoke coverage", () => {
     await expect(page).toHaveURL(/\/contact$/)
   })
 
+  test("mobile menu manages focus and closes on route change", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+    await waitForPageReady(page)
+
+    const openTrigger = page.getByRole("button", { name: "Open navigation menu" })
+    await openTrigger.click()
+    await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeFocused()
+    await expect(page.locator("body[data-mobile-nav-open='true']")).toHaveCount(1)
+
+    await page.keyboard.press("Escape")
+    await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeHidden()
+    await expect(openTrigger).toBeFocused()
+    await expect(page.locator("body[data-mobile-nav-open='true']")).toHaveCount(0)
+  })
+
+  test("desktop Stay dropdown reaches Rates and legacy /about redirects to /reviews", async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto("/")
+    await waitForPageReady(page)
+
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    await nav.getByTestId("desktop-nav-stay").click()
+    await page.locator('[data-slot="popover-content"]').getByRole("link", { name: /^Rates/ }).click()
+    await expect(page).toHaveURL(/\/rates$/)
+
+    await page.goto("/about")
+    await expect(page).toHaveURL(/\/reviews$/)
+    await expect(page.getByRole("heading", { level: 1 })).toBeVisible()
+  })
+
   test("footer links resolve, including legal pages", async ({ page }) => {
     await page.goto("/")
     await waitForPageReady(page)
@@ -123,15 +158,40 @@ test.describe("release gate smoke coverage", () => {
 
     for (let index = 0; index < 3; index += 1) {
       const video = videos.nth(index)
-      await expect(video).toHaveAttribute("controls", "")
+      await expect(video).not.toHaveAttribute("controls", "")
       await expect(video).toHaveAttribute("playsinline", "")
       await expect(video).toHaveAttribute("preload", index === 0 ? "metadata" : "none")
-      await expect(video).toHaveAttribute("tabindex", "0")
-      await expect(video).toHaveAttribute("aria-describedby", /-description$/)
+      await expect(video).toHaveAttribute("tabindex", "-1")
       await expect(video).not.toHaveAttribute("autoplay", "")
       await expect(video).toHaveAttribute("poster", /reef-encounters\/.*-poster\.jpg$/)
       await expect(video.locator("source")).toHaveAttribute("src", /reef-encounters\/.*\.mp4$/)
     }
+
+    const players = page.locator("#reef-encounters [data-testid^='reef-video-'][role='region']")
+    await expect(players).toHaveCount(3)
+
+    const firstPlayer = players.first()
+    await expect(firstPlayer).toHaveAttribute("tabindex", "0")
+    await expect(firstPlayer).toHaveAttribute("aria-describedby", /-description$/)
+    await expect(firstPlayer.locator("[data-testid$='-play']")).toBeVisible()
+
+    // The play control must drive the media element: headless shells without
+    // H.264 land on the player's graceful error UI instead of playing.
+    await firstPlayer.locator("[data-testid$='-play']").click()
+    await expect(firstPlayer.locator("[data-testid$='-toggle']")).toBeVisible()
+    await expect(firstPlayer.getByRole("button", { name: /^Mute|^Unmute/ })).toBeVisible()
+    await expect(firstPlayer.getByRole("slider", { name: /^Seek in/ })).toBeVisible()
+    await expect(firstPlayer.getByRole("button", { name: /Fullscreen/ })).toBeVisible()
+    await expect
+      .poll(async () => {
+        const state = await firstPlayer.evaluate((player) => {
+          const media = player.querySelector("video")
+          const failed = player.querySelector("[data-testid$='-retry']") !== null
+          return { paused: media?.paused ?? true, failed }
+        })
+        return !state.paused || state.failed
+      })
+      .toBe(true)
 
     for (const viewport of [
       { width: 320, height: 700 },
@@ -224,9 +284,12 @@ test.describe("release gate smoke coverage", () => {
     await play.click()
 
     const video = page.getByTestId("property-film-video")
+    const player = page.getByTestId("property-film-player")
     await expect(video).toBeVisible()
-    await expect(video).toHaveAttribute("controls", "")
+    await expect(video).not.toHaveAttribute("controls", "")
     await expect(video).toHaveAttribute("playsinline", "")
+    await expect(player.locator("[data-testid$='-toggle']")).toBeVisible()
+    await expect(player.locator("[data-testid$='-fullscreen']")).toBeVisible()
     await expect(page.getByTestId("property-film-play")).toHaveCount(0)
     await expect(page.getByTestId("property-film-heading")).toHaveCount(0)
   })

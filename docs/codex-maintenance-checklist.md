@@ -63,7 +63,7 @@ When top-level IA changes, review:
 - `lib/site-config.ts`
 - `e2e/release-gate.spec.ts`
 
-If the active desktop-nav pill styling changes, keep the direct `Link` structure in `components/navigation/desktop-nav.tsx` unless you are intentionally redesigning the component. Adding extra menu-link wrapper styles can distort the pill.
+If the active desktop-nav underline or dropdown styling changes, keep the split link/chevron trigger structure in `components/navigation/desktop-nav.tsx` unless you are intentionally redesigning the component. The label must stay a real link so parent routes remain reachable.
 
 ## Metadata, sitemap, and llms surfaces
 
@@ -141,7 +141,6 @@ All public forms are expected to show validation, success, and failure states.
 When changing forms or booking behavior, review:
 
 - `components/contact-form.tsx`
-- `components/email-capture.tsx`
 - `components/booking-form.tsx`
 - `app/book/page.tsx`
 - `app/privacy/page.tsx`
@@ -158,7 +157,7 @@ Also confirm whether the change affects:
 For routine lead operations (not a site code change):
 
 - let the `canarycove-dash` reconciliation run daily at 8:00 AM America/Los_Angeles and confirm it read every page from both Formspree sources with an explicit UTC reconciliation timestamp
-- review Canary Cove booking/contact submissions and reject spam, malformed entries, and clearly labeled tests; keep homepage email-capture rows out of this dashboard
+- review Canary Cove booking/contact submissions and reject spam, malformed entries, and clearly labeled tests; historical homepage email-capture rows stay out of this dashboard
 - deduplicate by immutable Formspree submission ID when available, otherwise by source form plus exact timestamp and normalized email
 - add or reconcile genuine lead data in the Canary Cove lead dashboard, which is the operational source of truth
 - read the dashboard record back and verify the source, required fields, and absence of duplicates

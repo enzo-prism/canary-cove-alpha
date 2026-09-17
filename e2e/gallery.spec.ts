@@ -59,7 +59,7 @@ test.describe("gallery page", () => {
     await page.waitForLoadState("domcontentloaded")
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
     await nav.getByRole("button", { name: "Explore" }).click()
-    await page.getByRole("link", { name: "Gallery", exact: true }).click()
+    await page.locator('[data-slot="popover-content"]').getByRole("link", { name: /^Gallery/ }).click()
     await expect(page).toHaveURL(/\/gallery$/)
     await expect(page.getByTestId("gallery-browser")).toBeVisible()
   })

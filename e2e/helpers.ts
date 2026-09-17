@@ -6,7 +6,7 @@ export const SITE_ROUTES = [
   "/experiences",
   "/dining",
   "/adventures",
-  "/about",
+  "/reviews",
   "/getting-here",
   "/rates",
   "/book",
@@ -90,12 +90,18 @@ export const hideDevArtifactsForVisuals = async (page: Page) => {
       }
 
       video,
-      header,
       elevenlabs-convai,
       nextjs-portal,
       [data-testid="elevenlabs-convai-widget"],
       [aria-label="Open Next.js Dev Tools"] {
         visibility: hidden !important;
+      }
+
+      /* display:none (not visibility) so the sticky bar neither overlaps the
+         capture nor shifts it: its scroll-shrink feedback loop otherwise moves
+         edge-aligned elements by 8px between runs. */
+      header {
+        display: none !important;
       }
     `,
   })

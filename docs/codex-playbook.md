@@ -56,7 +56,7 @@ pnpm exec playwright install firefox webkit
 
 ### Other marketing routes
 
-- `/experiences`, `/dining`, `/adventures`, `/about`, `/getting-here`, `/rates`
+- `/experiences`, `/dining`, `/adventures`, `/reviews`, `/getting-here`, `/rates`
 
 These are mostly route-local page compositions rather than a single shared page template.
 
@@ -85,7 +85,7 @@ These are mostly route-local page compositions rather than a single shared page 
 - `app/page.tsx`: section order and homepage composition.
 - `components/hero.tsx`: first-screen heading, Book → `/book`, and See rates → `/rates`.
 - `components/hero-image-rotator.tsx`: rotating hero imagery with a stronger contrast gradient.
-- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/process-steps.tsx`, `components/email-capture.tsx`
+- `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/process-steps.tsx`
 - `lib/homepage-content.ts`: estate spaces (`ESTATE_SPACES`, aliased as `MODEL_LINEUP`), proof points, editorial blocks, and process steps.
 - Below-fold homepage modules are loaded with `next/dynamic`. Search is not rendered on the homepage; it opens from the header.
 
@@ -107,8 +107,7 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/booking-form.tsx`: booking request form.
 - `components/booking-policies.tsx`: payment/cancellation/policies content.
 - `components/contact-form.tsx`: contact form.
-- `components/email-capture.tsx`: homepage email capture.
-- `app/api/forms/route.ts`: first-party form proxy. It validates `booking`, `contact`, or `email_capture`, appends ops metadata, forwards to Formspree, and records the Vercel `lead_submit` conversion only after Formspree accepts the lead.
+- `app/api/forms/route.ts`: first-party form proxy. It validates `booking` or `contact`, appends ops metadata, forwards to Formspree, and records the Vercel `lead_submit` conversion only after Formspree accepts the lead.
 - `docs/lead-operations.md`: canonical post-submission operations runbook. Formspree is intake; the Canary Cove lead dashboard is the operational source of truth.
 
 ### Route-specific marketing modules
@@ -116,7 +115,7 @@ These are mostly route-local page compositions rather than a single shared page 
 - `app/experiences/page.tsx`: route-local composition built around `components/experiences-hero.tsx`, `components/experiences-gallery-mosaic.tsx`, and `components/experiences-guest-highlights.tsx`
 - `app/adventures/page.tsx`: route-local adventure composition with the `ReefEncounters` film gallery
 - `app/contact/page.tsx`: route-local composition using `components/contact-details.tsx`, `components/contact-form.tsx`, and `components/testimonials-grid.tsx`
-- `app/dining/page.tsx`, `app/getting-here/page.tsx`, `app/rates/page.tsx`, and `app/about/page.tsx`: mostly route-local sections rather than shared page-template assembly
+- `app/dining/page.tsx`, `app/getting-here/page.tsx`, `app/rates/page.tsx`, and `app/reviews/page.tsx`: mostly route-local sections rather than shared page-template assembly
 
 ### Shared media and carousel layer
 
@@ -227,7 +226,6 @@ Check these files together:
 Check these files together:
 
 - `components/contact-form.tsx`
-- `components/email-capture.tsx`
 - `components/booking-form.tsx`
 - `app/book/page.tsx`
 - `app/privacy/page.tsx`
@@ -237,9 +235,9 @@ Check these files together:
 
 ### Forms
 
-- Contact and email-capture forms submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xvzarybk`.
+- The contact form submits to `/api/forms`, then proxies to Formspree endpoint `https://formspree.io/f/xvzarybk`.
 - Booking requests submit to `/api/forms`, then proxy to Formspree endpoint `https://formspree.io/f/xqeqllek`.
-- The `canarycove-dash` repo reconciles both Formspree sources daily at 8:00 AM America/Los_Angeles. It separates homepage email captures, uses immutable submission IDs for deduplication when available, and reads the resulting dashboard counts back.
+- The `canarycove-dash` repo reconciles both Formspree sources daily at 8:00 AM America/Los_Angeles. It separates historical homepage email captures, uses immutable submission IDs for deduplication when available, and reads the resulting dashboard counts back.
 - Zero-change runs stop after verification. New, changed, or ambiguous results are review-gated; do not commit, push, or deploy changed lead data without current approval. The verified August 21, 2026 baseline is documented in `docs/lead-operations.md`.
 - Do not email Consi as part of this workflow. Do not configure Formspree to notify her or forward Formspree notifications to her.
 - The dashboard record, not the Formspree inbox, notification email, or analytics event, is the operational source of truth. Follow `docs/lead-operations.md` for classification, privacy, idempotency, and completion rules.

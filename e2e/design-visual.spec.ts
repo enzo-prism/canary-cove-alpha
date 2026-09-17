@@ -3,7 +3,16 @@ import { expect, test, type Locator } from "@playwright/test"
 import { hideDevArtifactsForVisuals, waitForPageReady } from "./helpers"
 
 const expectStableVisual = async (locator: Locator, snapshot: string) => {
+  const page = locator.page()
+  // Freeze the sticky header's shrink transition: scrolling an element into
+  // view can cross the shrink threshold mid-capture, shifting the element box
+  // by up to 8px between runs. With transitions off the header snaps to its
+  // settled state deterministically.
+  await page.addStyleTag({ content: `header, header * { transition: none !important; }` })
+  await page.evaluate(() => document.fonts.ready)
   await locator.scrollIntoViewIfNeeded()
+  await page.evaluate(() => window.scrollTo(0, Math.round(window.scrollY)))
+  await page.waitForTimeout(300)
   await locator.locator("img").evaluateAll(async (images) => {
     await Promise.all(
       images.map(async (image) => {
@@ -77,16 +86,6 @@ test.describe("design baselines", () => {
     await waitForPageReady(page)
     await hideDevArtifactsForVisuals(page)
     await expectStableVisual(page.getByTestId("contact-form-card"), "contact-form-desktop.png")
-  })
-
-  test("homepage email capture stays visually stable on mobile", async ({ page }) => {
-    await page.setViewportSize({ width: 390, height: 844 })
-    await page.goto("/")
-    await waitForPageReady(page)
-    await hideDevArtifactsForVisuals(page)
-
-    await page.getByTestId("email-capture-card").scrollIntoViewIfNeeded()
-    await expectStableVisual(page.getByTestId("email-capture-card"), "email-capture-mobile.png")
   })
 
   test("gallery cards keep their intended composition", async ({ page }) => {

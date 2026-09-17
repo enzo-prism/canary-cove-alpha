@@ -26,7 +26,6 @@ const PropertyFilm = dynamic(() => import("@/components/property-film").then((mo
 const TestimonialSlider = dynamic(() =>
   import("@/components/testimonial-slider").then((module) => module.TestimonialSlider),
 )
-const EmailCapture = dynamic(() => import("@/components/email-capture").then((module) => module.EmailCapture))
 
 export const metadata = PAGE_METADATA.home
 
@@ -67,9 +66,9 @@ export default function Home() {
             <TestimonialSlider testimonials={HOMEPAGE_TESTIMONIALS} />
             <Button asChild variant="outline" size="sm" className="w-fit">
               <TrackedLink
-                href="/about#guest-testimonials"
+                href="/reviews#guest-testimonials"
                 eventName="cta_click"
-                eventPayload={{ location: "homepage_testimonials", target: "/about#guest-testimonials" }}
+                eventPayload={{ location: "homepage_testimonials", target: "/reviews#guest-testimonials" }}
               >
                 Read more reviews
               </TrackedLink>
@@ -83,20 +82,17 @@ export default function Home() {
         </Container>
       </Section>
       <Section padding="tight">
-        <Container size="wide">
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(320px,0.95fr)]">
-            <EmailCapture />
-            <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
-              <Badge className="bg-transparent">Plan your stay</Badge>
-              <div className="mt-5 flow flow-sm">
-                <h2 className="text-section">Get to the right answer fast.</h2>
-                <p className="text-body max-w-xl">
-                  Search rates, dining, logistics, or adventures without digging through the whole site.
-                </p>
-              </div>
-              <div className="mt-6">
-                <OpenSearchButton />
-              </div>
+        <Container>
+          <div className="surface-panel px-6 py-6 sm:px-8 sm:py-8">
+            <Badge className="bg-transparent">Plan your stay</Badge>
+            <div className="mt-5 flow flow-sm">
+              <h2 className="text-section">Get to the right answer fast.</h2>
+              <p className="text-body max-w-xl">
+                Search rates, dining, logistics, or adventures without digging through the whole site.
+              </p>
+            </div>
+            <div className="mt-6">
+              <OpenSearchButton />
             </div>
           </div>
         </Container>

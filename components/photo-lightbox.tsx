@@ -87,7 +87,7 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
         <DialogPrimitive.Content
           data-testid="photo-lightbox"
           aria-label="Photo gallery viewer"
-          className="fixed inset-0 z-50 flex flex-col outline-none"
+          className="fixed inset-0 z-[90] flex flex-col outline-none"
         >
           <DialogPrimitive.Title className="sr-only">Photo gallery</DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">

@@ -9,11 +9,6 @@ export const LEAD_FORM_CONFIG = {
     surface: "contact_form",
     leadSource: "contact_inquiry",
   },
-  email_capture: {
-    endpoint: "https://formspree.io/f/xvzarybk",
-    surface: "email_capture",
-    leadSource: "email_capture",
-  },
 } as const
 
 export type LeadFormKey = keyof typeof LEAD_FORM_CONFIG

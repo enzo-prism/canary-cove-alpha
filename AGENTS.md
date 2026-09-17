@@ -1,9 +1,9 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero overlay, proof row, estate spaces, editorial splits, poster-first diving film, testimonials, process steps, email capture).
+- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero overlay, proof row, estate spaces, editorial splits, poster-first diving film, testimonials, process steps).
 - Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, EmailCapture, ReefEncounters).
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, ReefEncounters).
 - Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`, `page-shell.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
 - Shared data lives in `lib/`: `images.ts`, `videos.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
@@ -35,10 +35,10 @@
 - Visual baselines are intentionally maintained on Chromium only to keep snapshots stable. Linux and Darwin snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`. When a design change is intentional, update the snapshots for the OS you ran and call that out in the commit.
 - Key suites:
   - `e2e/release-gate.spec.ts` for route health, navigation, CTA routing, footer links, embeds, and reef-film playback configuration
-  - `e2e/forms.spec.ts` for email capture, contact, and booking form success/error states
+  - `e2e/forms.spec.ts` for contact and booking form success/error states
   - `e2e/usability.spec.ts` for overflow, hit targets, resize resilience, and keyboard/touch behavior
   - `e2e/design-visual.spec.ts` for visual regressions on hero, forms, and mini galleries
-  - `e2e/design-layout.spec.ts` for desktop Explore pill alignment, immersive brand contrast, Getting Here step badges, testimonial clipping, Experiences hero offset, and dining bullets
+  - `e2e/design-layout.spec.ts` for dropdown alignment/panels, active-section underline, solid-bar/shrink behavior, Getting Here step badges, testimonial clipping, Experiences hero offset, and dining bullets
 - `e2e/helpers.ts` intentionally filters Vercel analytics debug noise and cancelled Cloudinary video requests in dev so real regressions stand out.
 
 ## Commit & Pull Request Guidelines
@@ -53,10 +53,9 @@
 - For paired work, prefer feature branches (`git checkout -b feat/new-section`) and open PRs against `main`. After merge, clean up the branch locally (`git branch -d feat/new-section`) and remotely (`git push origin --delete feat/new-section`).
 
 ## Navigation Architecture Notes
-- Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Rates is a first-class item. Experiences, Dining, Adventures, and Gallery live under the Explore dropdown.
-- Emoji for nav labels come from `lib/emoji.ts`; update there when adjusting iconography.
-- Desktop nav uses direct pill links plus a Radix `Popover` for Explore in `components/navigation/desktop-nav.tsx`. Mobile nav uses `Sheet` + `components/navigation/mobile-nav.tsx` and flattens dropdown children.
-- The Explore trigger must use the same stacked `flex-col` icon-above-label pill as Stay/Rates/Reviews/Getting Here. Put the icon in `.nav-icon` and the label plus chevron in `.nav-label`. A horizontal Explore row makes the pill taller than its siblings.
+- Navigation is data-driven via `NAV_ITEMS` in `lib/nav-items.ts`. Stay (The Villa, Main House, Rates) and Explore (Experiences, Dining, Adventures, Gallery) are dropdowns; Reviews, Getting Here, and Contact are plain links; Book is the sole header CTA.
+- Desktop nav uses plain text links plus controlled Radix `Popover` dropdowns with split link/chevron triggers in `components/navigation/desktop-nav.tsx`. Mobile nav is a full-screen `Sheet` overlay (`side="full"`) with grouped links and a sticky Book footer in `components/navigation/mobile-nav.tsx`.
+- Overlay z-index scale: header 50, dropdown panels 60, mobile nav overlay 80, dialogs (incl. site search) 90, skip link 100. Documented in `app/globals.css`.
 - `components/header.tsx` composes the nav, site search trigger, and sticky scroll state. Be mindful when adjusting padding/height so the shrink animation and `--site-header-height` stay in sync.
 - Immersive header (`/` and `/experiences` until `window.scrollY > 40`) inverts `BrandMark` and wraps it in a frosted chip so the wordmark stays readable over photography. Do not leave the default dark wordmark on a translucent bar.
 - `/experiences` hero should tuck under the sticky header with `-mt-[var(--site-header-height)]` and matching padding. Do not hardcode pixel header offsets.
@@ -73,10 +72,10 @@
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.
 
 ## Forms & Integrations
-- Contact form and homepage email capture both post to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
+- The contact form posts to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
 - Booking requests post to Formspree endpoint `https://formspree.io/f/xqeqllek`.
 - Booking requests use the Formspree `/book` form in `components/booking-form.tsx`. The Bookingmood iframe was removed because the subscription was cancelled; do not restore it or add a replacement calendar vendor.
-- `docs/lead-operations.md` is the canonical post-submission runbook. The `canarycove-dash` repo runs a daily 8:00 AM America/Los_Angeles reconciliation from Formspree. Keep homepage email-capture rows separate, deduplicate by immutable Formspree submission ID when available, and verify dashboard state by readback. Changed or ambiguous results are review-gated; do not publish them automatically.
+- `docs/lead-operations.md` is the canonical post-submission runbook. The `canarycove-dash` repo runs a daily 8:00 AM America/Los_Angeles reconciliation from Formspree. Keep historical homepage email-capture rows separate, deduplicate by immutable Formspree submission ID when available, and verify dashboard state by readback. Changed or ambiguous results are review-gated; do not publish them automatically.
 - The Canary Cove lead dashboard is the operational source of truth. Do not email Consi during routine lead ingestion, and do not add her as a Formspree notification recipient or forward notifications to her.
 - The site uses Cloudinary-hosted images/video and Vercel Analytics.
 

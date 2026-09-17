@@ -5,7 +5,7 @@ import { PageStructuredData } from "@/components/structured-data"
 import { Badge } from "@/components/ui/badge"
 import { PAGE_METADATA } from "@/lib/seo"
 
-export const metadata = PAGE_METADATA.about
+export const metadata = PAGE_METADATA.reviews
 
 type TestimonialEntry = {
   quote: string
@@ -519,7 +519,7 @@ const featuredReview = featuredReviewGroup
 export default function Page() {
   return (
     <main id="main-content" className="page-wash min-h-screen">
-      <PageStructuredData path="/about" />
+      <PageStructuredData path="/reviews" />
       <Header />
       <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
         <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">

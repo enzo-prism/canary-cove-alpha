@@ -5,6 +5,7 @@ import { useState } from "react"
 import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
+import { VideoPlayer } from "@/components/video-player"
 
 const FILM_POSTER = "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059677/outside_sq8dvn.webp"
 const FILM_SRC = "https://res.cloudinary.com/dhqpqfw6w/video/upload/q_auto,vc_auto,w_1280/v1762995355/pv_mwqjho.mp4"
@@ -19,19 +20,18 @@ export function PropertyFilm() {
     >
       <div className="relative min-h-[480px] sm:min-h-[520px] lg:min-h-[620px]">
         {playing ? (
-          <video
-            className="absolute inset-0 h-full w-full object-cover"
+          <VideoPlayer
+            src={FILM_SRC}
+            poster={FILM_POSTER}
+            title="World-class diving with a giant manta ray"
             autoPlay
             loop
             muted
-            playsInline
-            controls
             preload="metadata"
-            poster={FILM_POSTER}
-            data-testid="property-film-video"
-          >
-            <source src={FILM_SRC} type="video/mp4" />
-          </video>
+            fill
+            testId="property-film-player"
+            videoTestId="property-film-video"
+          />
         ) : (
           <>
             {/* eslint-disable-next-line @next/next/no-img-element */}

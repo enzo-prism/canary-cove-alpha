@@ -64,9 +64,12 @@ const nextConfig = {
       { source: "/adventures/day-trips", destination: "/adventures#day-trips", permanent: true },
       { source: "/adventures/diving", destination: "/adventures#diving", permanent: true },
       { source: "/adventures/boats-crew", destination: "/adventures#boats-crew", permanent: true },
-      { source: "/about/reviews", destination: "/about#reviews", permanent: true },
-      { source: "/about/getting-here", destination: "/about#getting-here", permanent: true },
-      { source: "/about/faq", destination: "/about#faq", permanent: true },
+      { source: "/about/reviews", destination: "/reviews#reviews", permanent: true },
+      { source: "/about/getting-here", destination: "/reviews#getting-here", permanent: true },
+      { source: "/about/faq", destination: "/reviews#faq", permanent: true },
+      // The guest-reviews page moved from /about to /reviews in the 2026
+      // navigation redesign; the URL now matches its long-standing label.
+      { source: "/about", destination: "/reviews", permanent: true },
       { source: "/lms.txt", destination: "/llms.txt", permanent: true },
     ]
   },

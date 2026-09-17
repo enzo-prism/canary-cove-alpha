@@ -2,6 +2,8 @@ export type DropdownItem = {
   label: string
   href: string
   caption: string
+  /** Renders an external indicator; the link still navigates in the same tab. */
+  external?: boolean
 }
 
 export type NavItem =
@@ -19,8 +21,21 @@ export type NavItem =
     }
 
 export const NAV_ITEMS: NavItem[] = [
-  { type: "link", label: "Stay", href: "/stay" },
-  { type: "link", label: "Rates", href: "/rates" },
+  {
+    type: "dropdown",
+    label: "Stay",
+    href: "/stay",
+    items: [
+      { label: "The Villa", href: "/stay", caption: "Three suites, pool, and grounds" },
+      {
+        label: "Main House",
+        href: "/stay/main-house",
+        caption: "Returning guests",
+        external: true,
+      },
+      { label: "Rates", href: "/rates", caption: "Seasons, minimums, and inclusions" },
+    ],
+  },
   {
     type: "dropdown",
     label: "Explore",
@@ -32,8 +47,8 @@ export const NAV_ITEMS: NavItem[] = [
       { label: "Gallery", href: "/gallery", caption: "Every photograph of the estate" },
     ],
   },
-  { type: "link", label: "Reviews", href: "/about" },
+  { type: "link", label: "Reviews", href: "/reviews" },
   { type: "link", label: "Getting Here", href: "/getting-here" },
+  { type: "link", label: "Contact", href: "/contact" },
   { type: "link", label: "Book", href: "/book", cta: true },
-  { type: "link", label: "Contact", href: "/contact", cta: true },
 ]

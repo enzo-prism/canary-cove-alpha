@@ -22,7 +22,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
   const [viewportRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
-    duration: 35,
+    duration: 25,
     containScroll: "trimSnaps",
     dragFree: false,
     skipSnaps: false,
@@ -33,12 +33,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
   const wheelLockRef = useRef<number | null>(null)
   const hoverRef = useRef(false)
   const keyThrottleRef = useRef<number>(0)
-  const visibleDots =
-    testimonials.length <= 3
-      ? testimonials.map((_, index) => index)
-      : [selectedIndex - 1, selectedIndex, selectedIndex + 1].map(
-          (index) => (index + testimonials.length) % testimonials.length,
-        )
+  const visibleDots = testimonials.map((_, index) => index)
 
   const scrollTo = useCallback((index: number) => emblaApi?.scrollTo(index), [emblaApi])
 
@@ -146,7 +141,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
               role="group"
               aria-roledescription="slide"
               data-testid={`testimonial-slide-${index}`}
-              className="min-w-0 flex-[0_0_100%] pr-6 carousel-slide"
+              className="min-w-0 flex-[0_0_100%] carousel-slide"
             >
               <div
                 data-testid={`testimonial-card-${index}`}
@@ -162,11 +157,11 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
                   className="object-cover"
                   style={{ objectPosition: imageObjectPosition(testimonial.image) }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 via-[60%] to-transparent" />
                 <div className="relative z-10 max-w-xl space-y-4 p-6 sm:p-10">
                   <p
                     data-testid={`testimonial-quote-${index}`}
-                    className="line-clamp-5 text-lg font-semibold text-pretty text-white sm:text-xl md:text-2xl"
+                    className="text-xl font-semibold text-pretty text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.5)] md:text-2xl"
                   >
                     "{testimonial.quote}"
                   </p>
@@ -191,7 +186,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
               aria-current={index === selectedIndex ? "true" : undefined}
               className={cn(
                 "relative h-2 w-8 rounded-full transition-colors duration-300 after:absolute after:-inset-2 after:content-['']",
-                index === selectedIndex ? "bg-foreground" : "bg-border",
+                index === selectedIndex ? "bg-foreground" : "bg-muted-foreground/40",
               )}
             />
           )

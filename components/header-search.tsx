@@ -41,13 +41,19 @@ export function HeaderSearch() {
       <Button
         type="button"
         variant="ghost"
-        size="icon"
         aria-label="Open site search"
         data-testid="search-open-button"
         onClick={openSearch}
-        className="h-11 w-11 rounded-full border border-border/70 bg-background/75 text-foreground hover:bg-foreground hover:text-background"
+        className="h-11 w-11 rounded-full border border-border/70 bg-background/75 text-foreground hover:bg-foreground hover:text-background lg:h-10 lg:w-auto lg:gap-2.5 lg:px-4"
       >
-        <Search className="h-4 w-4" />
+        <Search className="h-4 w-4 shrink-0" />
+        <span className="hidden text-sm font-medium lg:inline">Search</span>
+        <kbd
+          aria-hidden="true"
+          className="hidden h-5 items-center rounded-md border border-current/25 px-1.5 text-[11px] font-medium opacity-70 lg:inline-flex"
+        >
+          ⌘K
+        </kbd>
         <span className="sr-only">Search</span>
       </Button>
       {ready ? (

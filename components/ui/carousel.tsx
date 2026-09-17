@@ -51,7 +51,7 @@ function Carousel({
   const { tabIndex, ...rest } = props
   const keyThrottleRef = React.useRef<number>(0)
   const resolvedOptions: CarouselOptions = {
-    duration: 35,
+    duration: 25,
     align: 'start',
     containScroll: 'trimSnaps',
     dragFree: false,

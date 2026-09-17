@@ -3,6 +3,7 @@ import { Film, Waves } from "lucide-react"
 import { Container } from "@/components/layout/container"
 import { Badge } from "@/components/ui/badge"
 import { Card } from "@/components/ui/card"
+import { VideoPlayer } from "@/components/video-player"
 import { REEF_ENCOUNTER_VIDEOS, type ReefEncounterVideo } from "@/lib/videos"
 
 function ReefEncounterCard({ video, featured = false }: { video: ReefEncounterVideo; featured?: boolean }) {
@@ -13,20 +14,15 @@ function ReefEncounterCard({ video, featured = false }: { video: ReefEncounterVi
     >
       <figure>
         <div className="relative overflow-hidden border-b border-border/55 bg-foreground">
-          <video
-            className="aspect-video w-full bg-foreground object-cover"
-            controls
-            playsInline
-            preload={featured ? "metadata" : "none"}
+          <VideoPlayer
+            src={video.src}
             poster={video.poster}
-            aria-label={`Play ${video.title}`}
-            aria-describedby={`${video.slug}-description`}
-            tabIndex={0}
-            data-testid={`reef-video-${video.slug}`}
-          >
-            <source src={video.src} type="video/mp4" />
-            Your browser does not support HTML video.
-          </video>
+            title={video.title}
+            durationLabel={video.duration}
+            descriptionId={`${video.slug}-description`}
+            preload={featured ? "metadata" : "none"}
+            testId={`reef-video-${video.slug}`}
+          />
         </div>
 
         <figcaption className={`flow-xs px-5 py-5 sm:px-6 ${featured ? "sm:py-6" : ""}`}>

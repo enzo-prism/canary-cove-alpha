@@ -118,7 +118,7 @@ export const PUBLIC_SITE_PAGES: SitePage[] = [
     images: [IMAGES.villaPool.src, IMAGES.villaBedroom.src, IMAGES.livingRoom.src],
   },
   {
-    path: "/about",
+    path: "/reviews",
     title: "Guest Reviews",
     description:
       "Browse notes from guest books and letters shared by Canary Cove guests across years of private stays in Belize.",

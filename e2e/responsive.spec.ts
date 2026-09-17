@@ -1,7 +1,5 @@
 import { expect, test } from "@playwright/test"
 
-import { NAV_ITEMS } from "@/lib/nav-items"
-
 const viewports = [
   { name: "mobile", width: 375, height: 812 },
   { name: "tablet", width: 768, height: 1024 },
@@ -123,65 +121,67 @@ test.describe("responsive layout coverage", () => {
   }
 })
 
-test.describe("nav icon hover motion", () => {
+test.describe("desktop dropdown motion", () => {
   test.use({ viewport: { width: 1280, height: 900 } })
 
-  test("every desktop navigation item has a visible icon", async ({ page }) => {
+  test("dropdown opens on hover intent and closes when the pointer leaves", async ({ page }) => {
     await page.goto("/")
     await page.waitForLoadState("domcontentloaded")
     await page.evaluate(() => document.fonts.ready)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    for (const item of NAV_ITEMS) {
-      if (item.type !== "link") continue
-      const label = item.label
-      const icon = nav.getByRole("link", { name: label, exact: true }).locator(".nav-icon")
-      await expect(icon, `${label} should have a desktop navigation icon`).toBeVisible()
-      await expect(icon.locator("svg")).toHaveCount(1)
-    }
+    const panel = page.locator('[data-slot="popover-content"]')
+
+    await nav.getByRole("link", { name: "Stay", exact: true }).hover()
+    await expect(panel.getByRole("link", { name: /^Rates/ })).toBeVisible()
+
+    await page.mouse.move(20, 450)
+    await expect(panel).toBeHidden()
   })
 
-  test("icon animates without moving label", async ({ page }) => {
+  test("chevron toggles the panel and the keyboard can drive it", async ({ page }) => {
     await page.goto("/")
     await page.waitForLoadState("domcontentloaded")
     await page.evaluate(() => document.fonts.ready)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    const link = nav.getByRole("link", { name: /^Stay$/ })
-    const icon = link.locator(".nav-icon")
-    const label = link.locator(".nav-label")
+    const toggle = nav.getByTestId("desktop-nav-explore")
+    const panel = page.locator('[data-slot="popover-content"]')
 
-    await expect(icon).toBeVisible()
-    await expect(label).toBeVisible()
+    await toggle.click()
+    await expect(panel.getByRole("link", { name: /^Gallery/ })).toBeVisible()
+    await toggle.click()
+    await expect(panel).toBeHidden()
 
-    const labelBefore = await label.boundingBox()
-    const iconBefore = await icon.evaluate((el) => getComputedStyle(el).transform)
-
-    await link.hover()
-
-    const iconAfter = await icon.evaluate((el) => getComputedStyle(el).transform)
-    const labelAfter = await label.boundingBox()
-
-    expect(iconBefore).toBe("none")
-    expect(iconAfter).not.toBe("none")
-    if (labelBefore && labelAfter) {
-      expect(Math.abs(labelAfter.x - labelBefore.x)).toBeLessThanOrEqual(0.5)
-      expect(Math.abs(labelAfter.y - labelBefore.y)).toBeLessThanOrEqual(0.5)
-    }
+    await toggle.focus()
+    await page.keyboard.press("ArrowDown")
+    await expect(panel.getByRole("link", { name: /^Experiences/ })).toBeFocused()
+    await page.keyboard.press("ArrowDown")
+    await expect(panel.getByRole("link", { name: /^Dining/ })).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(panel).toBeHidden()
+    await expect(toggle).toBeFocused()
   })
 
-  test("reduced motion disables icon animation", async ({ page }) => {
+  test("reduced motion keeps dropdowns functional without animation", async ({ page }) => {
     await page.emulateMedia({ reducedMotion: "reduce" })
     await page.goto("/")
     await page.waitForLoadState("domcontentloaded")
     await page.evaluate(() => document.fonts.ready)
 
     const nav = page.getByRole("navigation", { name: "Primary navigation" })
-    const link = nav.getByRole("link", { name: /^Stay$/ })
-    const icon = link.locator(".nav-icon")
+    const toggle = nav.getByTestId("desktop-nav-stay")
+    const panel = page.locator('[data-slot="popover-content"]')
 
-    await link.hover()
-    const transform = await icon.evaluate((el) => getComputedStyle(el).transform)
-    expect(transform).toBe("none")
+    await toggle.click()
+    await expect(panel.getByRole("link", { name: /^Rates/ })).toBeVisible()
+
+    const chevronTransition = await toggle
+      .locator("svg")
+      .evaluate((el) => getComputedStyle(el).transitionProperty)
+    expect(chevronTransition).toBe("none")
+
+    await page.keyboard.press("Escape")
+    await expect(panel).toBeHidden()
   })
 })

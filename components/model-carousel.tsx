@@ -27,7 +27,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
   const [viewportRef, emblaApi] = useEmblaCarousel({
     align: "start",
     loop: true,
-    duration: 35,
+    duration: 25,
     containScroll: "trimSnaps",
     dragFree: false,
     skipSnaps: false,
@@ -173,7 +173,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
               data-testid={`model-slide-${index}`}
               role="group"
               aria-roledescription="slide"
-              className="min-w-0 flex-[0_0_100%] pr-6 xl:flex-[0_0_80%] carousel-slide"
+              className="min-w-0 flex-[0_0_100%] xl:flex-[0_0_80%] carousel-slide"
             >
               <div className="surface-panel grid gap-10 p-8 sm:p-10 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)] lg:items-start lg:gap-12">
                 <div className="relative aspect-[4/3] w-full min-w-0 overflow-hidden rounded-[22px] bg-surface-muted">
@@ -242,7 +242,7 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
               aria-current={index === selectedIndex ? "true" : undefined}
               className={cn(
                 "relative h-2 w-8 rounded-full transition-colors duration-300 after:absolute after:-inset-2 after:content-['']",
-                index === selectedIndex ? "bg-foreground" : "bg-border",
+                index === selectedIndex ? "bg-foreground" : "bg-muted-foreground/40",
               )}
             />
           )

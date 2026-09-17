@@ -19,7 +19,7 @@ This document defines the production-readiness bar for the public marketing site
 - The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
 - The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
-- The homepage email capture, contact form, and booking form all expose a clear success state and a clear failure state.
+- The contact form and booking form both expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
 - The homepage diving film is poster-first and starts only after a guest click; do not ship the raw autoplay MP4.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
@@ -38,8 +38,8 @@ This document defines the production-readiness bar for the public marketing site
 ## Design criteria
 
 - Hero overlay copy stays readable against the rotating photography (contrast gradient plus overlay).
-- Immersive headers on `/` and `/experiences` keep the brand mark readable over photography (inverted wordmark on a frosted chip until scroll).
-- Desktop Explore uses the same stacked icon-above-label pill as the other primary items; it must not sit taller or as a horizontal row.
+- The header bar stays solid over every hero (no route-conditional transparency) and shrinks on scroll.
+- Desktop nav uses plain text links with an underlined active section; Stay and Explore open captioned dropdown panels via hover intent, chevron click, or keyboard.
 - Getting Here step numbers stay aligned to their own step and must not overlap.
 - Homepage testimonial quotes stay inside their photo cards; interior testimonial grids keep author names pinned to the bottom of equal-height cards.
 - Experiences hero tucks under the live `--site-header-height` without covering the page heading.
@@ -57,11 +57,11 @@ This document defines the production-readiness bar for the public marketing site
 ## Test-suite map
 
 - `e2e/release-gate.spec.ts`: public route health, core navigation, CTAs, footer links, and reef-film anchor/playback configuration
-- `e2e/forms.spec.ts`: booking, contact, and email-capture validation plus success/failure flows
+- `e2e/forms.spec.ts`: booking and contact validation plus success/failure flows
 - `e2e/search.spec.ts`: search query behavior, grouped results, instant answers, and fallback handling
 - `e2e/usability.spec.ts`: overflow, target sizing, resizing, and carousel interaction coverage
 - `e2e/responsive.spec.ts`, `e2e/spacing.spec.ts`, `e2e/hero-contrast.spec.ts`: layout rhythm and readability checks
-- `e2e/design-layout.spec.ts`: Explore pill alignment, immersive brand contrast, Getting Here badges, testimonial clipping, Experiences hero offset, dining bullets
+- `e2e/design-layout.spec.ts`: dropdown alignment/panels, active-section underline, solid-bar/shrink behavior, Getting Here badges, testimonial clipping, Experiences hero offset, dining bullets
 - `e2e/design-visual.spec.ts`: Chromium-only visual baselines
 - `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`: slider interaction quality
 
@@ -76,7 +76,7 @@ This document defines the production-readiness bar for the public marketing site
 These are manual operational checks, not browser-test assertions:
 
 - Formspree is treated as the intake/review system; the Canary Cove lead dashboard is the operational source of truth.
-- Genuine booking/contact leads are written idempotently using the immutable Formspree submission ID when available, with source form plus exact timestamp and normalized email as the fallback; repeat processing does not create duplicate dashboard records. Homepage email-capture rows stay outside this dashboard.
+- Genuine booking/contact leads are written idempotently using the immutable Formspree submission ID when available, with source form plus exact timestamp and normalized email as the fallback; repeat processing does not create duplicate dashboard records. Historical homepage email-capture rows stay outside this dashboard.
 - Every ingest is completed by reading the dashboard record back and verifying its source and required fields.
 - Consi is not directly emailed during ingestion and is not configured to receive or be forwarded Formspree notifications.
 - Personal lead data stays out of analytics, logs, screenshots, commits, and public docs.

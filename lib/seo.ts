@@ -133,11 +133,11 @@ export const PAGE_METADATA = {
     image: IMAGES.villaPool.src,
     imageAlt: IMAGES.villaPool.alt,
   }),
-  about: createPageMetadata({
+  reviews: createPageMetadata({
     title: "Guest Reviews & Testimonials | Canary Cove",
     description:
       "Read guest reviews, letters, and guestbook notes from stays at Canary Cove, from family vacations to diving and dining getaways in Belize.",
-    path: "/about",
+    path: "/reviews",
     image: IMAGES.romanticViews.src,
     imageAlt: IMAGES.romanticViews.alt,
   }),

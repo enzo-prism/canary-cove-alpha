@@ -39,7 +39,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Project map
 
-- `app/page.tsx`: Homepage composition and section order (hero overlay, proof row, estate spaces, editorial splits, poster-first film, testimonials, process steps, email capture).
+- `app/page.tsx`: Homepage composition and section order (hero overlay, proof row, estate spaces, editorial splits, poster-first film, testimonials, process steps).
 - `components/hero.tsx`: Hero overlay copy and Book / See rates CTAs.
 - `components/hero-image-rotator.tsx`: Rotating hero background images (high-res only).
 - `components/model-carousel.tsx`: Estate spaces slider.
@@ -48,7 +48,6 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `components/process-steps.tsx`: Step-by-step flow.
 - `components/property-film.tsx`: Poster-first homepage diving film.
 - `components/testimonial-slider.tsx`: Testimonial slider.
-- `components/email-capture.tsx`: Email capture block.
 - `components/reef-encounters.tsx`: Responsive native-video gallery on `/adventures`.
 - `components/layout/container.tsx` + `components/layout/section.tsx`: Layout primitives for gutters + vertical rhythm.
 - `components/navigation/desktop-nav.tsx`: Desktop nav UI and dropdown structure.
@@ -65,7 +64,6 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `lib/structured-data.ts` and `components/structured-data.tsx`: Sitewide organization/lodging schema and per-page breadcrumb/page JSON-LD.
 - `components/layout/page-shell.tsx`: Shared header/footer/structured-data shell for interior routes.
 - `components/contact-form.tsx`: Contact form + custom success/error state (Formspree backend).
-- `components/email-capture.tsx`: Homepage email capture with in-app submit states.
 - `components/booking-form.tsx`: Booking request form with client-side validation.
 - `app/api/forms/route.ts`: First-party form proxy that forwards accepted lead forms to Formspree and records server-side Vercel lead conversions.
 - `components/ui/carousel.tsx`: Shared Embla wrapper used across galleries and sliders.
@@ -85,7 +83,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 ## Integration notes
 
 - Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
-- Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. The `canarycove-dash` repo checks Formspree daily at 8:00 AM America/Los_Angeles. Use the Formspree submission ID for deduplication when available, keep homepage email-capture rows separate, and verify dashboard state by readback. Changed or ambiguous results require review before any dashboard publish.
+- Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. The `canarycove-dash` repo checks Formspree daily at 8:00 AM America/Los_Angeles. Use the Formspree submission ID for deduplication when available, keep historical homepage email-capture rows separate, and verify dashboard state by readback. Changed or ambiguous results require review before any dashboard publish.
 - Do not email Consi as part of routine lead ingestion and do not route Formspree notifications to her. See `docs/lead-operations.md` for the canonical handoff and privacy rules.
 - `/book` uses the request-to-book Formspree form. Bookingmood was removed because the subscription was cancelled.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
@@ -107,7 +105,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - `e2e/search.spec.ts` covers search answers, grouped results, and fallback behavior.
 - `e2e/usability.spec.ts` covers overflow, tap targets, resize behavior, and carousel resilience.
 - `e2e/design-visual.spec.ts` covers hero, forms, and mini-gallery visual baselines.
-- `e2e/design-layout.spec.ts` covers desktop Explore pill height, immersive brand contrast, Getting Here step badges, testimonial quote clipping, Experiences hero offset, and dining bullets.
+- `e2e/design-layout.spec.ts` covers dropdown alignment/panels, active-section underline, solid-bar/shrink behavior, Getting Here step badges, testimonial quote clipping, Experiences hero offset, and dining bullets.
 - `e2e/responsive.spec.ts`, `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`, `e2e/hero-contrast.spec.ts`, and `e2e/spacing.spec.ts` protect interaction quality and layout rhythm.
 
 ## Deployment notes

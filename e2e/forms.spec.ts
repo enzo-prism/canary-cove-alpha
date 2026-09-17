@@ -106,36 +106,6 @@ const completeBookingStepFour = async (
 }
 
 test.describe("forms and interactive inquiries", () => {
-  test("homepage email capture handles success and failure states", async ({ page }) => {
-    await page.route(FORM_API_ROUTE, async (route) => {
-      await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) })
-    })
-
-    await installAnalyticsRecorder(page)
-    await page.goto("/")
-    await waitForPageReady(page)
-    await resetAnalyticsEvents(page)
-
-    await page.getByTestId("email-capture-input").fill("guest@example.com")
-    await page.getByTestId("email-capture-submit").click()
-    await expect(page.getByTestId("email-capture-status")).toContainText("You're on the list")
-    await expect.poll(async () => (await getGenerateLeadEvents(page)).length).toBe(1)
-    expect(await getGenerateLeadEvents(page)).toEqual([
-      ["event", "generate_lead", { form_name: "email_capture", lead_source: "email_capture" }],
-    ])
-
-    await resetAnalyticsEvents(page)
-    await page.unroute(FORM_API_ROUTE)
-    await page.route(FORM_API_ROUTE, async (route) => {
-      await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ ok: false }) })
-    })
-
-    await page.getByTestId("email-capture-input").fill("guest@example.com")
-    await page.getByTestId("email-capture-submit").click()
-    await expect(page.getByTestId("email-capture-status")).toContainText("couldn't save")
-    expect(await getGenerateLeadEvents(page)).toEqual([])
-  })
-
   test("contact form handles success and failure states", async ({ page }) => {
     await page.route(FORM_API_ROUTE, async (route) => {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) })

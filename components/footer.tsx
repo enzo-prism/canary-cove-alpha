@@ -8,7 +8,7 @@ const FOOTER_LINKS = [
   { href: "/experiences", label: "Experiences" },
   { href: "/dining", label: "Dining" },
   { href: "/adventures", label: "Adventures" },
-  { href: "/about", label: "Reviews" },
+  { href: "/reviews", label: "Reviews" },
   { href: "/getting-here", label: "Getting Here" },
   { href: "/book", label: "Book" },
   { href: "/contact", label: "Contact" },
