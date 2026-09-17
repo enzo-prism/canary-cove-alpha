@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-09-17 — Rates page redesign as an editorial price ledger
+
+- Commit: `43145a1d15209fa413d7a45dfaedbe3bbf38a778`
+- Production: `https://www.canarycove.com/rates`
+- Vercel: `Ready` for `v0-canary-cove-navbar-structure` (`dpl_DRp5cTvkZ66rvDtoMeT2i1sLk3eW`), auto-deployed from the `main` push
+- Ledger hero (from-price glance list, one Check-dates CTA, on-page anchor index) over villa pool photography; H1 “One estate. One group. Priced by the night.”
+- What’s-included ledger with sticky chef column; villa seasons as a real comparison table with /night prices and compressed month ranges.
+- Main House as a gated repeat-guest panel (terms block, price rail, existing request CTA/analytics); all repeat-guest terms and prices preserved.
+- Services browser rebuilt as per-group tables with search, group index, live match counts, and the nitrox note; fragment anchors land clear of the header via `overflow-clip` (Chromium ignores scroll-margin inside `overflow:hidden` scroll containers).
+- Nav Rates caption now “Seasons, suites, and inclusions”; nitrox trigger meets the 24px target minimum; skip link moves focus into `main`.
+- Verified live: all key routes return `200`; apex 307-redirects to www; live HTML contains all rate anchors, Main House terms, prices, and analytics events; production screenshots confirm the `#main-house-accommodations` landing and mobile hero.
+
 ## 2026-09-17 — Nav redesign, slider fixes, video player, email removal
 
 - Commit: `aa082153d105f916bda7f712cfd0be68ae325e7b`
