@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-09-17 — Stay page redesign as an editorial ledger
+
+- Commit: `309dd669f8aa1c442347a8847d97a8d12d85f361`
+- Production: `https://www.canarycove.com/stay`
+- Vercel: `Ready` for `v0-canary-cove-navbar-structure` (`dpl_Fyii33yZyW6xhrWyC1GtUXD9FF6r`), auto-deployed from the `main` push
+- Hero leads with H1 “One estate. Your group. Nothing shared.”, stay-glance ledger, Check-dates CTA, and anchor index above the photo carousel; villa-vs-Main-House disambiguation in the lede.
+- Mini gallery keeps its carousel contract and snapshot slot; arrows inset at 44px, dot focus rings, labeled region, tap-to-lightbox with captions.
+- Villa/outdoor galleries keep all 18 photos and lightbox behavior with left-aligned headers and de-carded secondary figures.
+- Amenities rewritten as a ledger with sticky chef rail plus a kitchen filmstrip viewer; guest experience as a numbered ledger with the 2024 testimonial leading.
+- Main House band preserves facts, microsite link, and `stay_hero` analytics; planning-split close; highlights section retired with legacy anchors re-homed.
+- Verified live: key routes return `200`; live HTML contains all stay anchors, Main House facts, gallery testid, 2024 testimonial, and analytics events; production screenshots confirm desktop and mobile hero.
+
 ## 2026-09-17 — Rates page redesign as an editorial price ledger
 
 - Commit: `43145a1d15209fa413d7a45dfaedbe3bbf38a778`
