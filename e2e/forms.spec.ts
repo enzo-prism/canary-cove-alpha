@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
-import { selectRadixOption, waitForPageReady } from "./helpers"
+import { waitForPageReady } from "./helpers"
 
 const FORM_API_ROUTE = "**/api/forms"
 
@@ -54,6 +54,57 @@ const getGenerateLeadEvents = async (page: Page) =>
     )
   })
 
+const contactCard = (page: Page) => page.getByTestId("contact-form-card")
+const bookingCard = (page: Page) => page.getByTestId("booking-form-card")
+
+const completeContactStepOne = async (page: Page, message: string, topic?: string) => {
+  if (topic) {
+    await contactCard(page).getByText(topic, { exact: true }).click()
+  }
+  await page.getByRole("textbox", { name: "Message" }).fill(message)
+  await page.getByTestId("contact-next").click()
+}
+
+const completeContactStepTwo = async (page: Page, name: string, email: string) => {
+  await page.getByLabel("Name").fill(name)
+  await page.getByLabel("Email").fill(email)
+  await page.getByTestId("contact-submit").click()
+}
+
+const completeBookingStepOne = async (page: Page, accommodation: string, returningGuest: string) => {
+  await bookingCard(page).getByText(accommodation, { exact: true }).click()
+  await bookingCard(page).getByText(returningGuest, { exact: true }).click()
+  await page.getByTestId("booking-next").click()
+}
+
+const completeBookingStepTwo = async (page: Page, arrival: string, departure: string) => {
+  await page.getByLabel("Preferred Arrival Date").fill(arrival)
+  await page.getByLabel("Preferred Departure Date").fill(departure)
+  await page.getByTestId("booking-next").click()
+}
+
+const completeBookingStepThree = async (page: Page, adults?: string, children?: string) => {
+  if (adults !== undefined) {
+    await page.getByLabel("Number of Adult Guests").fill(adults)
+  }
+  if (children !== undefined) {
+    await page.getByLabel("Children under 21 and ages").fill(children)
+  }
+  await page.getByTestId("booking-next").click()
+}
+
+const completeBookingStepFour = async (
+  page: Page,
+  contact: { firstName: string; lastName: string; phone: string; email: string; confirmEmail: string },
+) => {
+  await page.getByLabel("First Name").fill(contact.firstName)
+  await page.getByLabel("Last Name").fill(contact.lastName)
+  await page.getByLabel("Phone Number").fill(contact.phone)
+  await page.getByLabel(/^Email Address$/).fill(contact.email)
+  await page.getByLabel(/^Confirm Email Address$/).fill(contact.confirmEmail)
+  await page.getByTestId("booking-next").click()
+}
+
 test.describe("forms and interactive inquiries", () => {
   test("homepage email capture handles success and failure states", async ({ page }) => {
     await page.route(FORM_API_ROUTE, async (route) => {
@@ -95,10 +146,8 @@ test.describe("forms and interactive inquiries", () => {
     await waitForPageReady(page)
     await resetAnalyticsEvents(page)
 
-    await page.getByLabel("Name").fill("Alex Martin")
-    await page.getByLabel("Email").fill("alex@example.com")
-    await page.getByLabel("Message").fill("Planning a milestone trip and looking for the best window in June.")
-    await page.getByTestId("contact-submit").click()
+    await completeContactStepOne(page, "Planning a milestone trip and looking for the best window in June.", "Dates & pricing")
+    await completeContactStepTwo(page, "Alex Martin", "alex@example.com")
 
     await expect(page.getByTestId("contact-success")).toContainText("Thanks for reaching out")
     await expect.poll(async () => (await getGenerateLeadEvents(page)).length).toBe(1)
@@ -113,13 +162,26 @@ test.describe("forms and interactive inquiries", () => {
     })
 
     await page.getByRole("button", { name: "Send another message" }).click()
-    await page.getByLabel("Name").fill("Alex Martin")
-    await page.getByLabel("Email").fill("alex@example.com")
-    await page.getByLabel("Message").fill("Checking a second time to make sure failure handling works.")
-    await page.getByTestId("contact-submit").click()
+    await completeContactStepOne(page, "Checking a second time to make sure failure handling works.")
+    await completeContactStepTwo(page, "Alex Martin", "alex@example.com")
 
     await expect(page.getByTestId("contact-error")).toContainText("Something went wrong")
     expect(await getGenerateLeadEvents(page)).toEqual([])
+  })
+
+  test("contact form validates each step before continuing", async ({ page }) => {
+    await page.goto("/contact")
+    await waitForPageReady(page)
+
+    await page.getByTestId("contact-next").click()
+    await expect(page.getByText("Step 1 of 2")).toBeVisible()
+    await expect(page.locator("#contact-step-error")).toContainText("what's on your mind")
+
+    await completeContactStepOne(page, "Do you host small weddings?")
+    await expect(page.getByText("Step 2 of 2")).toBeVisible()
+
+    await page.getByTestId("contact-submit").click()
+    await expect(page.locator("#contact-step-error")).toContainText("enter your name")
   })
 
   test("booking form validates email confirmation and travel dates before sending", async ({ page }) => {
@@ -128,26 +190,50 @@ test.describe("forms and interactive inquiries", () => {
     await waitForPageReady(page)
     await resetAnalyticsEvents(page)
 
+    await completeBookingStepOne(page, "Villa (1–3 suites)", "No, this would be my first stay")
+    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
+    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_BEFORE_ARRIVAL)
+    await page.getByTestId("booking-next").click()
+
+    await expect(page.getByTestId("booking-validation-error")).toContainText("Departure date must be after")
+    expect(await getGenerateLeadEvents(page)).toEqual([])
+
+    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_AFTER_ARRIVAL)
+    await page.getByTestId("booking-next").click()
+    await completeBookingStepThree(page)
+
     await page.getByLabel("First Name").fill("Alex")
     await page.getByLabel("Last Name").fill("Martin")
     await page.getByLabel("Phone Number").fill("+1 555 123 1234")
     await page.getByLabel(/^Email Address$/).fill("alex@example.com")
     await page.getByLabel(/^Confirm Email Address$/).fill("mismatch@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
-    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_BEFORE_ARRIVAL)
-    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
-    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
-    await page.getByLabel("Message").fill("Would love to celebrate a birthday week with diving and boat days.")
-    await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
+    await page.getByTestId("booking-next").click()
 
-    await page.getByTestId("booking-submit").click()
     await expect(page.getByTestId("booking-validation-error")).toContainText("email fields match")
     expect(await getGenerateLeadEvents(page)).toEqual([])
+  })
 
-    await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await page.getByTestId("booking-submit").click()
-    await expect(page.getByTestId("booking-validation-error")).toContainText("Departure date must be after")
-    expect(await getGenerateLeadEvents(page)).toEqual([])
+  test("booking contact step requires identity fields and a valid email", async ({ page }) => {
+    await page.goto("/book")
+    await waitForPageReady(page)
+
+    await completeBookingStepOne(page, "Villa (1–3 suites)", "No, this would be my first stay")
+    await page.getByTestId("booking-next").click()
+    await page.getByTestId("booking-next").click()
+
+    await page.getByTestId("booking-next").click()
+    await expect(page.getByTestId("booking-validation-error")).toContainText("first name")
+
+    await page.getByLabel("First Name").fill("Alex")
+    await page.getByLabel("Last Name").fill("Martin")
+    await page.getByTestId("booking-next").click()
+    await expect(page.getByTestId("booking-validation-error")).toContainText("phone number")
+
+    await page.getByLabel("Phone Number").fill("+1 555 123 1234")
+    await page.getByLabel(/^Email Address$/).fill("not-an-email")
+    await page.getByLabel(/^Confirm Email Address$/).fill("not-an-email")
+    await page.getByTestId("booking-next").click()
+    await expect(page.getByTestId("booking-validation-error")).toContainText("valid email address")
   })
 
   test("booking form handles success and server failure states", async ({ page }) => {
@@ -160,18 +246,18 @@ test.describe("forms and interactive inquiries", () => {
     await waitForPageReady(page)
     await resetAnalyticsEvents(page)
 
-    await page.getByLabel("First Name").fill("Alex")
-    await page.getByLabel("Last Name").fill("Martin")
-    await page.getByLabel("Phone Number").fill("+1 555 123 1234")
-    await page.getByLabel(/^Email Address$/).fill("alex@example.com")
-    await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
-    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_AFTER_ARRIVAL)
-    await page.getByLabel("Number of Adult Guests").fill("4")
-    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
-    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
+    await completeBookingStepOne(page, "Villa (1–3 suites)", "No, this would be my first stay")
+    await completeBookingStepTwo(page, ARRIVAL_DATE, DEPARTURE_AFTER_ARRIVAL)
+    await completeBookingStepThree(page, "4")
+    await completeBookingStepFour(page, {
+      firstName: "Alex",
+      lastName: "Martin",
+      phone: "+1 555 123 1234",
+      email: "alex@example.com",
+      confirmEmail: "alex@example.com",
+    })
     await page.getByLabel("Message").fill("Looking for a five-night stay with chef dinners and one fishing day.")
-    await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
+    await bookingCard(page).getByText("Google", { exact: true }).click()
     await page.getByTestId("booking-submit").click()
 
     await expect(page.getByRole("alertdialog")).toContainText("Request received")
@@ -187,22 +273,42 @@ test.describe("forms and interactive inquiries", () => {
       await route.fulfill({ status: 500, contentType: "application/json", body: JSON.stringify({ ok: false }) })
     })
 
-    await page.getByLabel("First Name").fill("Alex")
-    await page.getByLabel("Last Name").fill("Martin")
-    await page.getByLabel("Phone Number").fill("+1 555 123 1234")
-    await page.getByLabel(/^Email Address$/).fill("alex@example.com")
-    await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
-    await page.getByLabel("Preferred Departure Date").fill(DEPARTURE_AFTER_ARRIVAL)
-    await page.getByLabel("Number of Adult Guests").fill("4")
-    await selectRadixOption(page, "Accommodation requested", "Villa (1–3 suites)")
-    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
+    await completeBookingStepOne(page, "Villa (1–3 suites)", "No, this would be my first stay")
+    await completeBookingStepTwo(page, ARRIVAL_DATE, DEPARTURE_AFTER_ARRIVAL)
+    await completeBookingStepThree(page, "4")
+    await completeBookingStepFour(page, {
+      firstName: "Alex",
+      lastName: "Martin",
+      phone: "+1 555 123 1234",
+      email: "alex@example.com",
+      confirmEmail: "alex@example.com",
+    })
     await page.getByLabel("Message").fill("Trying again to verify the error state is visible.")
-    await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
+    await bookingCard(page).getByText("Google", { exact: true }).click()
     await page.getByTestId("booking-submit").click()
 
     await expect(page.getByTestId("booking-error")).toContainText("Something went wrong")
     expect(await getGenerateLeadEvents(page)).toEqual([])
+  })
+
+  test("booking wizard keeps entries when moving back and forth", async ({ page }) => {
+    await page.goto("/book")
+    await waitForPageReady(page)
+
+    await expect(page.getByText("Step 1 of 5")).toBeVisible()
+    await bookingCard(page).getByText("Villa (1–3 suites)", { exact: true }).click()
+    await bookingCard(page).getByText("No, this would be my first stay", { exact: true }).click()
+    await page.getByTestId("booking-next").click()
+
+    await expect(page.getByText("Step 2 of 5")).toBeVisible()
+    await page.getByLabel("Preferred Arrival Date").fill(ARRIVAL_DATE)
+    await page.getByRole("button", { name: "Back" }).click()
+
+    await expect(page.getByText("Step 1 of 5")).toBeVisible()
+    await expect(page.getByRole("radio", { name: /Villa \(1–3 suites\)/ })).toBeChecked()
+    await page.getByTestId("booking-next").click()
+
+    await expect(page.getByLabel("Preferred Arrival Date")).toHaveValue(ARRIVAL_DATE)
   })
 
   test("qualifies Main House requests as returning-guest only", async ({ page }) => {
@@ -214,15 +320,10 @@ test.describe("forms and interactive inquiries", () => {
 
     await page.goto("/book?accommodation=main-house")
     await waitForPageReady(page)
-    await page.getByLabel("First Name").fill("Alex")
-    await page.getByLabel("Last Name").fill("Martin")
-    await page.getByLabel("Phone Number").fill("+1 555 123 1234")
-    await page.getByLabel(/^Email Address$/).fill("alex@example.com")
-    await page.getByLabel(/^Confirm Email Address$/).fill("alex@example.com")
-    await selectRadixOption(page, "Have you stayed at Canary Cove before?", "No, this would be my first stay")
-    await page.getByLabel("Message").fill("I am interested in bringing a larger family group.")
-    await selectRadixOption(page, "How did you hear about Canary Cove?", "Google")
-    await page.getByTestId("booking-submit").click()
+
+    await expect(page.getByRole("radio", { name: /Main House \(5 suites\)/ })).toBeChecked()
+    await bookingCard(page).getByText("No, this would be my first stay", { exact: true }).click()
+    await page.getByTestId("booking-next").click()
 
     await expect(page.getByTestId("booking-validation-summary")).toContainText("available only to returning Canary Cove guests")
     await expect(page.getByText("separate $10,000 damage deposit")).toBeVisible()

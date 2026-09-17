@@ -1,5 +1,7 @@
 "use client"
 
+import { Phone } from "lucide-react"
+
 import { Avatar, AvatarFallback } from "@/components/ui/avatar"
 import { Card, CardContent } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -44,9 +46,25 @@ function ContactPerson({ contact }: { contact: Contact }) {
       </div>
       <div className="space-y-1 text-sm text-muted-foreground">
         <p className="font-medium text-foreground">Phone from Belize</p>
-        <p>{contact.phoneLocal}</p>
+        <p>
+          <a
+            href={`tel:+501${contact.phoneLocal.replace(/[^0-9]/g, "")}`}
+            className="focus-ring inline-flex items-center gap-1.5 rounded-lg font-medium text-foreground underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+          >
+            <Phone className="h-3.5 w-3.5" aria-hidden />
+            {contact.phoneLocal}
+          </a>
+        </p>
         <p className="mt-2 font-medium text-foreground">Phone from Outside Belize</p>
-        <p>{contact.phoneOutside}</p>
+        <p>
+          <a
+            href={`tel:+501${contact.phoneLocal.replace(/[^0-9]/g, "")}`}
+            className="focus-ring inline-flex items-center gap-1.5 rounded-lg font-medium text-foreground underline decoration-primary/40 underline-offset-4 hover:decoration-primary"
+          >
+            <Phone className="h-3.5 w-3.5" aria-hidden />
+            {contact.phoneOutside}
+          </a>
+        </p>
       </div>
     </div>
   )

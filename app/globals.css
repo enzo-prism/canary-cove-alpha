@@ -336,4 +336,20 @@ body[data-scroll-locked] elevenlabs-convai {
   .focus-ring {
     @apply focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-primary/25 focus-visible:ring-offset-background;
   }
+
+  .focus-ring-within {
+    @apply has-[:focus-visible]:outline-none has-[:focus-visible]:ring-2 has-[:focus-visible]:ring-offset-2 has-[:focus-visible]:ring-primary/25 has-[:focus-visible]:ring-offset-background;
+  }
+
+  /* Hide native number spinners where a custom stepper is provided. */
+  .wizard-number::-webkit-outer-spin-button,
+  .wizard-number::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  .wizard-number {
+    -moz-appearance: textfield;
+    appearance: textfield;
+  }
 }
