@@ -75,7 +75,8 @@ export function ContactDetails() {
     <Card className="rounded-2xl border border-border/70 bg-white/90 shadow-[0_12px_40px_rgba(15,23,42,0.08)]">
       <CardContent className="space-y-6 p-6">
         <div className="space-y-4">
-          <p className="form-kicker">Other Ways to Get in Touch</p>
+          <p className="form-kicker">Talk to someone</p>
+          <p className="-mt-2 text-sm text-muted-foreground">Best hours: 8am–5pm Belize time (UTC−6).</p>
           {contacts.map((contact, index) => (
             <div key={contact.name} className="space-y-6">
               <ContactPerson contact={contact} />
@@ -87,16 +88,8 @@ export function ContactDetails() {
         <Separator className="bg-border/70" />
 
         <div className="space-y-2">
-          <p className="form-kicker">Canary Cove Location</p>
-          <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.latitude}</p>
-          <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.longitude}</p>
-        </div>
-
-        <Separator className="bg-border/70" />
-
-        <div className="space-y-2">
           <p className="form-kicker">Address</p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm leading-6 text-muted-foreground">
             {SITE_ADDRESS_LINES[0]}
             <br />
             {SITE_ADDRESS_LINES[1]}
@@ -104,6 +97,20 @@ export function ContactDetails() {
             {SITE_ADDRESS_LINES[2]}
           </p>
         </div>
+
+        <Separator className="bg-border/70" />
+
+        <details className="group space-y-2">
+          <summary className="focus-ring cursor-pointer list-none rounded-lg text-sm font-semibold text-foreground">
+            <span className="underline decoration-[#B98A2F] decoration-2 underline-offset-4 group-open:no-underline">
+              Map coordinates
+            </span>
+          </summary>
+          <div className="space-y-1 pt-1">
+            <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.latitude}</p>
+            <p className="text-sm text-muted-foreground">{SITE_GEO_LABELS.longitude}</p>
+          </div>
+        </details>
       </CardContent>
     </Card>
   )

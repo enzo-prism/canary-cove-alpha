@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type FormEvent } from "react"
 
-import { CalendarDays, Check, Mail, MapPin, MessageSquare, Waves } from "lucide-react"
+import { ArrowRight, CalendarDays, Check, Mail, MapPin, MessageSquare, Waves } from "lucide-react"
 
 import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
 import { isBlank, isValidEmail } from "@/lib/booking-validation"
@@ -227,9 +227,17 @@ export function ContactForm() {
               ) : null}
               .
             </p>
-            <Button type="button" variant="outline" className="w-fit" onClick={() => setStatus("idle")}>
-              Send another message
-            </Button>
+            <div className="flex flex-wrap gap-2.5">
+              <Button type="button" variant="outline" className="w-fit" onClick={() => setStatus("idle")}>
+                Send another message
+              </Button>
+              <Button type="button" variant="ghost" className="w-fit gap-1.5" asChild>
+                <a href="/book">
+                  Start a booking request
+                  <ArrowRight className="h-4 w-4" aria-hidden />
+                </a>
+              </Button>
+            </div>
           </div>
         ) : (
           <form className="space-y-6" onSubmit={handleSubmit} noValidate>

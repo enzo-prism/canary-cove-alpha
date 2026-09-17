@@ -147,7 +147,7 @@ export function PhotoCarousel() {
                     </Button>
                   </div>
                 </div>
-                <div className="flex items-center justify-end">
+                <div className="hidden items-center justify-end lg:flex">
                   <div className="pointer-events-auto flex gap-3">
                     <Button
                       variant="ghost"
@@ -162,6 +162,32 @@ export function PhotoCarousel() {
                       variant="ghost"
                       size="icon"
                       className="border border-white/25 bg-black/30 text-white/80 hover:bg-white hover:text-foreground"
+                      onClick={scrollNext}
+                      aria-label="Next slide"
+                    >
+                      <ChevronRight className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center lg:hidden">
+                  <div className="pointer-events-auto">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="border border-white/40 bg-black/55 text-white backdrop-blur-sm hover:bg-white hover:text-foreground"
+                      onClick={scrollPrev}
+                      aria-label="Previous slide"
+                    >
+                      <ChevronLeft className="h-5 w-5" />
+                    </Button>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center lg:hidden">
+                  <div className="pointer-events-auto">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="border border-white/40 bg-black/55 text-white backdrop-blur-sm hover:bg-white hover:text-foreground"
                       onClick={scrollNext}
                       aria-label="Next slide"
                     >

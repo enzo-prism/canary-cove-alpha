@@ -1,6 +1,5 @@
 "use client"
 
-import { EMOJI } from "@/lib/emoji"
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Separator } from "@/components/ui/separator"
@@ -14,7 +13,7 @@ export function BookingPolicies() {
           variant="outline"
           className="w-fit border-border/70 text-sm uppercase tracking-[0.28em] text-muted-foreground"
         >
-          Payment & policies {EMOJI.rates}
+          Payment & policies
         </Badge>
         <div className="space-y-2">
           <h2 className="text-section text-2xl">Clear terms before you arrive.</h2>

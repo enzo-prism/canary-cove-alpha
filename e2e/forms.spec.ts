@@ -326,7 +326,7 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByTestId("booking-next").click()
 
     await expect(page.getByTestId("booking-validation-summary")).toContainText("available only to returning Canary Cove guests")
-    await expect(page.getByText("separate $10,000 damage deposit")).toBeVisible()
+    await expect(bookingCard(page).getByText("separate $10,000 damage deposit")).toBeVisible()
     expect(formRequests).toBe(0)
   })
 })
