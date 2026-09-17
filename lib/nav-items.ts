@@ -33,7 +33,7 @@ export const NAV_ITEMS: NavItem[] = [
         caption: "Returning guests",
         external: true,
       },
-      { label: "Rates", href: "/rates", caption: "Seasons, minimums, and inclusions" },
+      { label: "Rates", href: "/rates", caption: "Seasons, suites, and inclusions" },
     ],
   },
   {

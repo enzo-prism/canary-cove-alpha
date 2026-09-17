@@ -7,7 +7,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 export function NitroxPopover() {
   return (
     <Popover>
-      <PopoverTrigger className="inline-flex items-center gap-1 font-semibold text-foreground underline-offset-4 hover:underline">
+      <PopoverTrigger className="inline-flex min-h-6 min-w-6 items-center justify-center gap-1 rounded-sm px-1 font-semibold text-foreground underline-offset-4 hover:underline">
         Nitrox
         <Info className="h-3 w-3 text-muted-foreground" />
       </PopoverTrigger>
