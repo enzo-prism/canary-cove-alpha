@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-09-17 — Search upgrade, /reviews and /dining redesigns, verbatim guest quotes
+
+- Commit: `cd3d982ee711fd46ddd4556e8cf406eb573c24c8`
+- Production: `https://www.canarycove.com`
+- Vercel: `Ready` for `v0-canary-cove-navbar-structure` (`dpl_3o3YBh7JXkhdANzkqxS7ip3s4oNX`), auto-deployed from the `main` push
+- Search: rescore-only intent expansion with word-boundary triggers, 4-per-group / 12-total result caps, instant answers, recent searches, and match highlighting; short queries require a literal substring.
+- `/reviews` redesigned as an editorial ledger: spotlight arc, theme filters (OR matching) with typed search override (AND matching), per-year archive with `#year-<YYYY>` anchors, note dialog with opener focus restore, and clear anchor offsets.
+- `/dining` redesigned as a ledger: dining-basics glance, table matrix, service ledger, grouped galleries (21 real registry photos), and genuine guest notes; dead `lib/emoji.ts` removed.
+- Integrity: every attributed guest quote is now byte-identical to `lib/testimonial-spotlights.ts` or the guestbook — fixed paraphrased quotes on `/rates`, `/experiences`, `/adventures`, plus invented quotes on `/reviews` and `/dining`. QA criteria and route map now pin the verbatim rule.
+- Verified live: 8/8 key routes return `200`; live HTML contains the new anchors, genuine quotes, and `dining-basic` markers with zero fabricated strings; live Cmd+K search returns the Wi-Fi instant answer; production screenshots confirm reviews/dining desktop and dining mobile with no overflow.
+- E2E note: `typecheck`, `lint`, unit (113), `build`, and e2e Chromium/WebKit pass except `private-guest-access` and all-Firefox failures, both proven identical on the clean base tree (environmental: foreign process on :3000, broken Firefox runtime) and untouched by this batch.
+
 ## 2026-09-17 — Stay page redesign as an editorial ledger
 
 - Commit: `309dd669f8aa1c442347a8847d97a8d12d85f361`
