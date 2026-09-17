@@ -64,8 +64,7 @@ const ADVENTURE_ZONES = [
 const STORY_TILES = [
   {
     type: "quote" as const,
-    quote:
-      "A piece of heaven on earth. Swimming with sharks, rays, starfish, and conch felt like a dream, and the staff made the entire trip joyful, effortless, and deeply recharging for our family.",
+    quote: TESTIMONIAL_SPOTLIGHTS.adventures[0].quote,
     author: TESTIMONIAL_SPOTLIGHTS.adventures[0].author,
     year: TESTIMONIAL_SPOTLIGHTS.adventures[0].year,
   },
@@ -83,8 +82,7 @@ const STORY_TILES = [
   },
   {
     type: "quote" as const,
-    quote:
-      "The scenery is breathtaking, the facilities are fantastic, and the staff's hospitality was the best. Snorkeling, diving, kayaking, paddle boarding, and Hol Chan made this one unforgettable.",
+    quote: TESTIMONIAL_SPOTLIGHTS.adventures[1].quote,
     author: TESTIMONIAL_SPOTLIGHTS.adventures[1].author,
     year: TESTIMONIAL_SPOTLIGHTS.adventures[1].year,
   },

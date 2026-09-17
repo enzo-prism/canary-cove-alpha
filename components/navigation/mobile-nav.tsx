@@ -68,6 +68,7 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
 
   const openSearch = () => {
     trackNavClick("header_mobile", "/search")
+    onNavigate?.()
     window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT))
   }
 

@@ -3,7 +3,7 @@
 import Fuse, { type FuseResult } from "fuse.js"
 
 import type { SearchItem, SearchGroup } from "@/lib/search/search-index"
-import { SEARCH_GROUPS, SEARCH_ITEMS } from "@/lib/search/search-index"
+import { SEARCH_GROUPS, SEARCH_ITEMS, SYNONYMS } from "@/lib/search/search-index"
 
 export type SearchIntent =
   | "pricing"
@@ -54,7 +54,7 @@ const INTENT_PRIORITY: SearchIntent[] = [
 ]
 
 const INTENT_TRIGGERS: Record<SearchIntent, string[]> = {
-  pricing: ["rate", "rates", "price", "pricing", "cost", "availability", "calendar", "hold"],
+  pricing: ["rate", "rates", "price", "pricing", "cost", "availability", "calendar", "hold", "how much", "per night", "nightly"],
   included: [
     "included",
     "all inclusive",
@@ -72,10 +72,37 @@ const INTENT_TRIGGERS: Record<SearchIntent, string[]> = {
     "hot tub heating",
   ],
   dining: ["chef", "food", "meals", "groceries", "alcohol", "beverages", "dietary", "provisioning"],
-  "getting-here": ["bze", "belize city", "airport", "flight", "transfer", "customs", "immigration"],
+  "getting-here": [
+    "bze",
+    "belize city",
+    "airport",
+    "flight",
+    "transfer",
+    "customs",
+    "immigration",
+    "get there",
+    "getting there",
+    "how to get",
+    "how to arrive",
+    "directions",
+  ],
   "getting-around": ["san pedro", "town", "water taxi", "boat to town", "golf cart", "charter"],
-  reliability: ["wifi", "wi fi", "internet", "generator", "power", "water", "security", "safe", "safes"],
-  policies: ["payment", "deposit", "cancellation", "cancel", "refund", "policy", "policies"],
+  reliability: [
+    "wifi",
+    "wi fi",
+    "internet",
+    "generator",
+    "power",
+    "water",
+    "security",
+    "safe",
+    "safes",
+    "work calls",
+    "video calls",
+    "zoom",
+    "remote work",
+  ],
+  policies: ["payment", "deposit", "cancellation", "cancel", "refund", "policy", "policies", "refundable", "pay"],
   contact: ["contact", "call", "message", "reach", "support"],
 }
 
@@ -254,7 +281,40 @@ export function normalizeQuery(query: string) {
     .replace(/[^a-z0-9]+/g, " ")
     .replace(/\s+/g, " ")
     .trim()
-  return normalized.replace(/\bwi fi\b/g, "wifi")
+    .replace(/\bwi fi\b/g, "wifi")
+  return applySynonyms(normalized)
+}
+
+// Whole-word synonym expansion (multi-word keys first); the canonical token
+// is appended so the original wording still participates in matching.
+function applySynonyms(normalized: string) {
+  if (!normalized) return normalized
+  const words = normalized.split(" ")
+  const canonical = new Set<string>()
+  const entries = Object.entries(SYNONYMS).sort((a, b) => b[0].length - a[0].length)
+  for (const [phrase, target] of entries) {
+    const phraseWords = phrase.split(" ")
+    const found =
+      phraseWords.length === 1
+        ? words.includes(phrase)
+        : words.some((_, i) => phraseWords.every((word, j) => words[i + j] === word))
+    if (found && !words.includes(target)) {
+      canonical.add(target)
+    }
+  }
+  return canonical.size > 0 ? `${normalized} ${Array.from(canonical).join(" ")}` : normalized
+}
+
+// Word-boundary trigger matching: every trigger word must appear as a whole
+// query word (consecutive for multi-word triggers). Substring matching caused
+// "scallops" to trigger the contact intent via "call".
+function triggerMatches(queryWords: string[], trigger: string) {
+  const triggerWords = normalizeQuery(trigger).split(" ").filter(Boolean)
+  if (triggerWords.length === 0) return false
+  if (triggerWords.length === 1) {
+    return queryWords.includes(triggerWords[0])
+  }
+  return queryWords.some((_, i) => triggerWords.every((word, j) => queryWords[i + j] === word))
 }
 
 export function expandSynonyms(query: string) {
@@ -263,15 +323,16 @@ export function expandSynonyms(query: string) {
     return { expandedQuery: "", matchedIntents: [] as SearchIntent[] }
   }
 
+  const queryWords = normalized.split(" ").filter(Boolean)
   const matchedIntents = new Set<SearchIntent>()
   for (const intent of INTENT_PRIORITY) {
     const triggers = INTENT_TRIGGERS[intent]
-    if (triggers.some((trigger) => normalized.includes(normalizeQuery(trigger)))) {
+    if (triggers.some((trigger) => triggerMatches(queryWords, trigger))) {
       matchedIntents.add(intent)
     }
   }
 
-  const tokens = new Set(normalized.split(" ").filter(Boolean))
+  const tokens = new Set(queryWords)
   for (const intent of matchedIntents) {
     INTENT_TRIGGERS[intent].forEach((trigger) => {
       normalizeQuery(trigger)
@@ -287,25 +348,24 @@ export function expandSynonyms(query: string) {
   }
 }
 
-function detectIntent(query: string, matchedIntents: SearchIntent[]) {
+function detectIntent(query: string) {
   if (!query) return null
   const normalized = normalizeQuery(query)
+  const queryWords = normalized.split(" ").filter(Boolean)
 
   for (const intent of INTENT_PRIORITY) {
     const triggers = INTENT_TRIGGERS[intent]
-    if (triggers.some((trigger) => normalized.includes(normalizeQuery(trigger)))) {
+    if (triggers.some((trigger) => triggerMatches(queryWords, trigger))) {
       return intent
     }
   }
 
+  // Fuzzy intent is a typo safety net, not a guesser: short queries need a
+  // near-exact match ("pool" must not become policies).
+  const fuzzyCap = normalized.length <= 4 ? 0.15 : 0.25
   const fuzzyMatch = intentFuse.search(normalized)[0]
-  if (fuzzyMatch && fuzzyMatch.score !== undefined && fuzzyMatch.score <= 0.25) {
+  if (fuzzyMatch && fuzzyMatch.score !== undefined && fuzzyMatch.score <= fuzzyCap) {
     return fuzzyMatch.item.intent
-  }
-
-  if (matchedIntents.length > 0) {
-    const sorted = INTENT_PRIORITY.find((intent) => matchedIntents.includes(intent))
-    return sorted ?? null
   }
 
   return null
@@ -337,10 +397,71 @@ function groupResults(items: SearchItem[], intent: SearchIntent | null) {
     }))
 }
 
+// Re-rank bonuses (subtracted from the Fuse score; lower is better). Exact
+// title and keyword matches must beat intent-boosted fuzzy matches so a
+// perfect hit like "Pool, docks, and outdoor spaces" can never rank second.
+const RERANK = {
+  exactTitle: 0.3,
+  titlePrefix: 0.22,
+  titleToken: 0.15,
+  titleTokenCap: 0.3,
+  keywordHit: 0.08,
+  keywordHitCap: 0.24,
+  phrase: 0.1,
+  fullQuery: 0.25,
+  multiToken: 0.05,
+  multiTokenCap: 0.15,
+  intentItem: 0.6,
+  intentGroup: 0.75,
+} as const
+
+const MAX_ITEMS_PER_GROUP = 4
+const MAX_TOTAL_ITEMS = 12
+
+const TYPE_RANK: Record<SearchItem["type"], number> = {
+  page: 0,
+  section: 1,
+  faq: 2,
+}
+
+function rerankScore(item: SearchItem, baseScore: number, queryWords: string[], normalizedQuery: string) {
+  const title = normalizeQuery(item.title)
+  const titleWords = title.split(" ").filter(Boolean)
+  const keywordSet = new Set(item.keywords.map((keyword) => normalizeQuery(keyword)))
+  const keywordWords = new Set<string>()
+  keywordSet.forEach((keyword) => keyword.split(" ").forEach((word) => keywordWords.add(word)))
+
+  let score = baseScore
+  if (title === normalizedQuery) {
+    score -= RERANK.exactTitle
+  }
+  if (normalizedQuery.length >= 3 && titleWords.some((word) => word.startsWith(normalizedQuery))) {
+    score -= RERANK.titlePrefix
+  }
+  const titleTokenHits = queryWords.filter((word) => titleWords.includes(word)).length
+  score -= Math.min(titleTokenHits * RERANK.titleToken, RERANK.titleTokenCap)
+  const keywordHits = queryWords.filter((word) => keywordWords.has(word)).length
+  score -= Math.min(keywordHits * RERANK.keywordHit, RERANK.keywordHitCap)
+  if (queryWords.length >= 2 && `${title} ${normalizeQuery(item.description ?? "")}`.includes(normalizedQuery)) {
+    score -= RERANK.phrase
+  }
+  // A complete match of the user's own query beats an expansion-token match.
+  if (queryWords.length > 0 && queryWords.every((word) => titleWords.includes(word) || keywordWords.has(word))) {
+    score -= RERANK.fullQuery
+  }
+  const anywhereHits = queryWords.filter(
+    (word) => titleWords.includes(word) || keywordWords.has(word),
+  ).length
+  if (anywhereHits > 1) {
+    score -= Math.min((anywhereHits - 1) * RERANK.multiToken, RERANK.multiTokenCap)
+  }
+  return Math.max(score, 0.001)
+}
+
 export function runSearch(query: string, options?: { allowFallback?: boolean }): SearchOutput {
   const normalizedQuery = normalizeQuery(query)
-  const { expandedQuery, matchedIntents } = expandSynonyms(query)
-  const intent = detectIntent(query, matchedIntents)
+  const { expandedQuery } = expandSynonyms(query)
+  const intent = detectIntent(query)
 
   if (!normalizedQuery) {
     return {
@@ -355,58 +476,89 @@ export function runSearch(query: string, options?: { allowFallback?: boolean }):
   }
 
   const combined = new Map<string, { item: SearchItem; score: number }>()
-  const addResults = (results: FuseResult<SearchItem>[], weight: number) => {
+  const addResults = (results: FuseResult<SearchItem>[], weight: number, rescoreOnly: boolean) => {
     results.forEach((result) => {
       const score = (result.score ?? 1) * weight
       const existing = combined.get(result.item.id)
-      if (!existing || score < existing.score) {
-        combined.set(result.item.id, { item: result.item, score })
+      if (!existing) {
+        if (!rescoreOnly) {
+          combined.set(result.item.id, { item: result.item, score })
+        }
+        return
+      }
+      if (score < existing.score) {
+        existing.score = score
       }
     })
   }
 
-  const terms: Array<{ term: string; weight: number }> = [
-    { term: normalizedQuery, weight: 1 },
-  ]
-  if (expandedQuery && expandedQuery !== normalizedQuery) {
-    terms.push({ term: expandedQuery, weight: 1.05 })
+  const queryWords = normalizedQuery.split(" ").filter(Boolean)
+  // Direct terms (the user's own query + its words) build the recall set.
+  // Expansion terms only rescore existing candidates: an expansion token that
+  // exactly matches some item scores 0 no matter its weight, which dragged
+  // the whole catalog into single-token queries.
+  addResults(fuse.search(normalizedQuery), 1, false)
+  queryWords.forEach((token) => {
+    if (!token || token.length < 2 || token === normalizedQuery) return
+    addResults(fuse.search(token), token.length <= 3 ? 1.5 : 1.35, false)
+  })
+  if (intent && expandedQuery && expandedQuery !== normalizedQuery) {
+    addResults(fuse.search(expandedQuery), 1.15, true)
+    expandedQuery.split(" ").forEach((token) => {
+      if (!token || token.length < 2 || queryWords.includes(token) || token === expandedQuery) return
+      addResults(fuse.search(token), token.length <= 3 ? 1.5 : 1.35, true)
+    })
   }
 
-  const tokenSet = new Set<string>()
-  normalizedQuery.split(" ").forEach((token) => tokenSet.add(token))
-  expandedQuery.split(" ").forEach((token) => tokenSet.add(token))
-  tokenSet.forEach((token) => {
-    if (!token || token.length < 2) return
-    if (token === normalizedQuery || token === expandedQuery) return
-    const weight = token.length <= 3 ? 1.2 : 1.1
-    terms.push({ term: token, weight })
-  })
+  let candidates = Array.from(combined.values())
+  // Short queries fuzz-match noise ("dog" hit "dock"); require a literal
+  // substring so only genuine matches survive.
+  if (normalizedQuery.length <= 3) {
+    candidates = candidates.filter(({ item }) =>
+      `${normalizeQuery(item.title)} ${normalizeQuery(item.description ?? "")} ${item.keywords.map((keyword) => normalizeQuery(keyword)).join(" ")}`.includes(
+        normalizedQuery,
+      ),
+    )
+  }
 
-  terms.forEach(({ term, weight }) => {
-    addResults(fuse.search(term), weight)
-  })
-
-  const boosted = Array.from(combined.values())
+  const ranked = candidates
     .map((result) => {
-      let score = result.score
+      let score = rerankScore(result.item, result.score, queryWords, normalizedQuery)
       if (intent && result.item.intent === intent) {
-        score *= 0.6
+        score *= RERANK.intentItem
       }
       if (intent && INTENT_GROUPS[intent]?.includes(result.item.group)) {
-        score *= 0.75
+        score *= RERANK.intentGroup
       }
       return {
         item: result.item,
         score,
       }
     })
-    .sort((a, b) => a.score - b.score)
+    .sort((a, b) => {
+      if (a.score !== b.score) return a.score - b.score
+      const typeOrder = TYPE_RANK[a.item.type] - TYPE_RANK[b.item.type]
+      if (typeOrder !== 0) return typeOrder
+      const groupOrder = SEARCH_GROUPS.indexOf(a.item.group) - SEARCH_GROUPS.indexOf(b.item.group)
+      if (groupOrder !== 0) return groupOrder
+      return a.item.id < b.item.id ? -1 : 1
+    })
     .map((result) => result.item)
 
-  const groups = groupResults(boosted, intent)
+  const totalResults = ranked.length
+  const capped = ranked.slice(0, MAX_TOTAL_ITEMS)
+  const perGroupCount = new Map<SearchGroup, number>()
+  const visible = capped.filter((item) => {
+    const count = perGroupCount.get(item.group) ?? 0
+    if (count >= MAX_ITEMS_PER_GROUP) return false
+    perGroupCount.set(item.group, count + 1)
+    return true
+  })
+
+  const groups = groupResults(visible, intent)
   const answer = intent ? INSTANT_ANSWERS[intent] ?? null : null
 
-  if (options?.allowFallback && boosted.length === 0) {
+  if (options?.allowFallback && ranked.length === 0) {
     return {
       query,
       normalizedQuery,
@@ -425,8 +577,17 @@ export function runSearch(query: string, options?: { allowFallback?: boolean }):
     intent,
     answer,
     groups,
-    totalResults: boosted.length,
+    totalResults,
   }
+}
+
+// Closest title for "did you mean" when a longer query matches nothing.
+export function findSuggestion(query: string) {
+  const normalized = normalizeQuery(query)
+  if (normalized.length < 4) return null
+  const best = fuse.search(normalized)[0]
+  if (!best || best.score === undefined || best.score > 0.5) return null
+  return best.item.title
 }
 
 export function getAskUsAnswer() {

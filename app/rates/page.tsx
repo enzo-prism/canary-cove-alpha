@@ -179,14 +179,12 @@ const SERVICE_GROUPS: RatesServiceGroup[] = [
 
 const RATE_PERSPECTIVES = [
   {
-    quote:
-      "This was one of the most complete trips we have ever taken. The house, the staff, and the way the team handled every last-minute need made the whole stay feel effortless.",
+    quote: TESTIMONIAL_SPOTLIGHTS.rates[0].quote,
     author: TESTIMONIAL_SPOTLIGHTS.rates[0].author,
     year: TESTIMONIAL_SPOTLIGHTS.rates[0].year,
   },
   {
-    quote:
-      "A truly unforgettable stay, made memorable by the amazing staff, the beautiful house, and grounds we would happily return to.",
+    quote: TESTIMONIAL_SPOTLIGHTS.rates[1].quote,
     author: TESTIMONIAL_SPOTLIGHTS.rates[1].author,
     year: TESTIMONIAL_SPOTLIGHTS.rates[1].year,
   },

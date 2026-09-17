@@ -19,6 +19,8 @@ This document defines the production-readiness bar for the public marketing site
 - The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
 - The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
+- Search results stay bounded (per-group and total caps), intent expansion only rescores existing matches, and instant answers link into the anchored section they describe.
+- Guest quotes render byte-identical to their sources (`lib/testimonial-spotlights.ts` or the reviews guestbook); paraphrased or invented quotes must never carry guest attribution.
 - The contact form and booking form both expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
 - The homepage diving film is poster-first and starts only after a guest click; do not ship the raw autoplay MP4.
@@ -43,7 +45,7 @@ This document defines the production-readiness bar for the public marketing site
 - Getting Here step numbers stay aligned to their own step and must not overlap.
 - Homepage testimonial quotes stay inside their photo cards; interior testimonial grids keep author names pinned to the bottom of equal-height cards.
 - Experiences hero tucks under the live `--site-header-height` without covering the page heading.
-- Dining “How dining works” items keep visible bullet markers, matching stay amenities.
+- Dining hero ledger keeps exactly 4 `dining-basic` rows with visible `•` markers.
 - Critical sections maintain their spacing rhythm.
 - Galleries and carousels keep their intended framing and do not regress into clipped, low-contrast, or partial-slide states.
 - Visual-regression baselines remain stable for:

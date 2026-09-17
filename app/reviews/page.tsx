@@ -1,8 +1,15 @@
+import Image from "next/image"
+import { ArrowUpRight } from "lucide-react"
+
+import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
-import { GuestReviewsBrowser } from "@/components/guest-reviews-browser"
 import { Header } from "@/components/header"
+import { Container } from "@/components/layout/container"
+import { Section } from "@/components/layout/section"
+import { ReviewsArchive } from "@/components/reviews-archive"
 import { PageStructuredData } from "@/components/structured-data"
-import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
 
 export const metadata = PAGE_METADATA.reviews
@@ -508,80 +515,225 @@ const archiveYears = Array.from(
 const archiveStartYear = archiveYears[0]
 const archiveEndYear = archiveYears[archiveYears.length - 1]
 
-const featuredReviewGroup = TESTIMONIALS.find((group) => group.entries.length > 0)
-const featuredReview = featuredReviewGroup
-  ? {
-      year: featuredReviewGroup.year,
-      ...featuredReviewGroup.entries[0],
-    }
-  : null
+const newestGroup = TESTIMONIALS[0]
+const newestAuthor = newestGroup?.entries[0]?.author ?? "Guest at Canary Cove"
+const archiveSpanYears = archiveEndYear - archiveStartYear + 1
+
+const REVIEW_SPOTLIGHTS = [
+  {
+    quote:
+      "What a perfect vacation! The house is wonderful, staff beyond our wildest dreams, dining like no other! Thank you for one of the most memorable vacations of our lives. We will be back for sure.",
+    author: "Bernthal/Stambaugh family",
+    year: "2024",
+    anchor: "#year-2024",
+  },
+  {
+    quote:
+      "Such a magical spot, on so many levels - the site, the sights, the house, the team, the town, the vibe, the food, the water, the fishing - we could go on & on - your team here is really excellent, and stands as a testament to you and your vision.",
+    author: "R. And family",
+    year: "2017",
+    anchor: "#year-2017",
+  },
+  {
+    quote: "Best trip ever! I definitely won't forget it!",
+    author: "G., kid",
+    year: "2015",
+    anchor: "#year-2015",
+  },
+] as const
+
+const REVIEW_ANCHORS = [
+  { label: "Start here", href: "#start-here" },
+  { label: "The archive", href: "#guest-testimonials" },
+  { label: "Plan your stay", href: "#reviews-plan" },
+] as const
+
+function ReviewGlance() {
+  const rows = [
+    { label: "Total notes", value: `${totalReviews} guestbook notes` },
+    { label: "Newest note", value: `${archiveEndYear} · ${newestAuthor}` },
+    { label: "Common themes", value: "Staff, food, reef days" },
+  ] as const
+
+  return (
+    <dl className="border-t border-border/60">
+      {rows.map((row) => (
+        <div key={row.label} className="flex items-baseline justify-between gap-6 border-b border-border/60 py-3.5">
+          <dt className="text-[0.95rem] font-medium text-foreground/80">{row.label}</dt>
+          <dd className="shrink-0 text-right text-[0.95rem] font-semibold tabular-nums text-foreground">
+            {row.value}
+          </dd>
+        </div>
+      ))}
+    </dl>
+  )
+}
 
 export default function Page() {
   return (
-    <main id="main-content" className="page-wash min-h-screen">
+    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
       <PageStructuredData path="/reviews" />
       <Header />
-      <section className="px-4 py-16 sm:px-6 sm:py-24 lg:px-8">
-        <div className="mx-auto max-w-6xl xl:max-w-7xl space-y-8">
-          <div className="overflow-hidden rounded-[36px] border border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.95)_0%,rgba(248,244,236,0.94)_100%)] shadow-[0_24px_80px_rgba(15,23,42,0.08)]">
-            <div className="grid grid-cols-1 gap-8 px-6 py-8 sm:px-8 sm:py-10 xl:grid-cols-[minmax(0,1.18fr)_minmax(320px,0.82fr)] xl:items-start">
-              <div className="space-y-6">
-                <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                  Guest Reviews
-                </Badge>
-                <div className="space-y-4">
-                  <h1 className="text-4xl font-semibold tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-                    Guest reviews from Canary Cove
-                  </h1>
-                  <p className="max-w-3xl text-lg leading-8 text-muted-foreground sm:text-xl">
-                    Real notes from guest books and letters, collected across years of private stays in Belize. Browse the archive
-                    to see how guests talk about the staff, food, diving, family time, and the feel of the estate.
-                  </p>
-                </div>
 
-                <div className="grid gap-3 sm:grid-cols-3">
-                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
-                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Archive span</p>
-                    <p className="mt-3 text-2xl font-semibold text-foreground">
-                      {archiveStartYear}-{archiveEndYear}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Guestbook notes across returning seasons.</p>
-                  </div>
-                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
-                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Total notes</p>
-                    <p className="mt-3 text-2xl font-semibold text-foreground">{totalReviews}</p>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">Messages preserved from families, couples, and groups.</p>
-                  </div>
-                  <div className="rounded-[24px] border border-border/60 bg-background/70 p-4">
-                    <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Common themes</p>
-                    <p className="mt-3 text-lg font-semibold text-foreground">Staff, food, diving, family time</p>
-                    <p className="mt-2 text-sm leading-6 text-muted-foreground">The moments guests mention again and again.</p>
-                  </div>
-                </div>
+      <Section padding="tight" className="overflow-hidden">
+        <Container size="wide">
+          <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-14">
+            <div className="flow flow-md max-w-2xl">
+              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+                Reviews · Ambergris Caye
+              </p>
+              <h1 className="text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[3.9rem]">
+                {archiveSpanYears} years of guestbook notes.
+              </h1>
+              <p className="max-w-xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
+                Unedited notes from the villa guestbooks, {archiveStartYear}–{archiveEndYear}. Read what stays with
+                guests — the staff by name, the chef&apos;s table, the reef days — then write your own chapter.
+              </p>
+              <ReviewGlance />
+              <div className="flex flex-col gap-5 pt-1">
+                <Button asChild size="lg" className="w-full sm:w-fit">
+                  <TrackedLink
+                    href="/book"
+                    eventName="cta_click"
+                    eventPayload={{ location: "reviews_hero", target: "/book" }}
+                  >
+                    Check dates
+                    <ArrowUpRight className="size-4" />
+                  </TrackedLink>
+                </Button>
+                <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
+                  {REVIEW_ANCHORS.map((anchor, index) => (
+                    <span key={anchor.href} className="flex items-center gap-2">
+                      {index > 0 ? (
+                        <span aria-hidden="true" className="text-border">
+                          /
+                        </span>
+                      ) : null}
+                      <a
+                        href={anchor.href}
+                        className="rounded-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                      >
+                        {anchor.label}
+                      </a>
+                    </span>
+                  ))}
+                </nav>
               </div>
+            </div>
 
-              {featuredReview ? (
-                <article className="rounded-[28px] border border-border/60 bg-background/82 p-5 shadow-[0_16px_38px_rgba(15,23,42,0.06)] sm:p-6">
-                  <div className="flex items-center justify-between gap-3">
-                    <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                      {featuredReview.year}
-                    </Badge>
-                    <span className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">Featured note</span>
-                  </div>
-                  <p className="mt-4 text-lg leading-8 text-foreground sm:text-xl">
-                    "{featuredReview.quote}"
-                  </p>
-                  <p className="mt-5 text-sm font-medium text-foreground/80">
-                    {featuredReview.author ?? "Guest at Canary Cove"}
-                  </p>
-                </article>
-              ) : null}
+            <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-surface-muted shadow-[0_24px_70px_rgba(15,23,42,0.10)] lg:aspect-[4/5]">
+              <Image
+                src={IMAGES.romanticViews.src}
+                alt={IMAGES.romanticViews.alt}
+                fill
+                priority
+                className="object-cover"
+                style={{ objectPosition: imageObjectPosition(IMAGES.romanticViews) }}
+                sizes="(min-width: 1024px) 44vw, 100vw"
+              />
             </div>
           </div>
+        </Container>
+      </Section>
 
-          <GuestReviewsBrowser groups={TESTIMONIALS} />
-        </div>
-      </section>
+      <Section id="start-here" padding="tight" className="scroll-mt-24 bg-surface">
+        <Container size="narrow">
+          <div className="flow flow-sm max-w-3xl">
+            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+              Start here
+            </p>
+            <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
+              Three notes that say it best.
+            </h2>
+          </div>
+          <div className="flow flow-lg mt-10">
+            {REVIEW_SPOTLIGHTS.map((spotlight, index) => (
+              <figure
+                key={`${spotlight.year}-${spotlight.author}`}
+                className={`border-l-2 border-primary/30 pl-6 sm:pl-8 ${index === 1 ? "md:ml-16" : ""} ${index === 2 ? "md:ml-8" : ""}`}
+              >
+                <blockquote
+                  className={
+                    index === 0
+                      ? "max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10"
+                      : "max-w-2xl text-lg leading-8 text-foreground/85"
+                  }
+                >
+                  “{spotlight.quote}”
+                </blockquote>
+                <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+                  {spotlight.author} ·{" "}
+                  <a
+                    href={spotlight.anchor}
+                    className="rounded-sm underline decoration-primary/40 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                  >
+                    {spotlight.year}
+                  </a>
+                </figcaption>
+              </figure>
+            ))}
+          </div>
+        </Container>
+      </Section>
+
+      <Section padding="tight">
+        <Container size="default">
+          <ReviewsArchive groups={TESTIMONIALS} />
+        </Container>
+      </Section>
+
+      <Section id="reviews-plan" padding="tight" className="scroll-mt-24 bg-surface">
+        <Container size="default">
+          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
+              <Image
+                src={IMAGES.diningSpread.src}
+                alt={IMAGES.diningSpread.alt}
+                fill
+                className="object-cover"
+                style={{ objectPosition: imageObjectPosition(IMAGES.diningSpread) }}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+              />
+            </div>
+            <div className="flow flow-md">
+              <div className="flow flow-sm">
+                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+                  Plan your stay
+                </p>
+                <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
+                  Send your dates. We&apos;ll add the next chapter.
+                </h2>
+                <p className="text-body max-w-xl">
+                  Share your dates, group size, and what a perfect week looks like — we&apos;ll map it into a stay
+                  your own guestbook note will remember.
+                </p>
+              </div>
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Button asChild size="lg" className="w-full sm:w-fit">
+                  <TrackedLink
+                    href="/book"
+                    eventName="cta_click"
+                    eventPayload={{ location: "reviews_plan", target: "/book" }}
+                  >
+                    Check dates
+                    <ArrowUpRight className="size-4" />
+                  </TrackedLink>
+                </Button>
+                <Button asChild size="lg" variant="outline" className="w-full border-border/70 bg-white/80 sm:w-fit">
+                  <TrackedLink
+                    href="/rates"
+                    eventName="cta_click"
+                    eventPayload={{ location: "reviews_plan", target: "/rates" }}
+                  >
+                    See rates
+                  </TrackedLink>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </Container>
+      </Section>
+
       <Footer />
     </main>
   )

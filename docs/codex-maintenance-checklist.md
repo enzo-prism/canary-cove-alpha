@@ -36,7 +36,7 @@ When you add or rename a section `id`, review:
 
 Examples:
 
-- `/stay` has button-triggered smooth scrolling in `components/stay-highlights.tsx`
+- `/stay`, `/rates`, `/reviews`, and `/dining` use plain anchor links with `scroll-mt-*` offsets on section wrappers (no JS smooth scrolling)
 - `/book` uses section IDs such as `#comfort-confidence`
 - search answers and results link directly into anchored sections
 
@@ -91,17 +91,23 @@ Search is curated manually. It does not discover routes or sections automaticall
 
 When pricing, policies, logistics, amenities, dining rules, or FAQs change, review:
 
-- `lib/search/search-index.ts`
-- `lib/search/search.ts`
-- `components/header-search.tsx`
-- `components/site-search.tsx`
+- `lib/search/search-index.ts` (items, `SYNONYMS`, chips, popular questions)
+- `lib/search/search.ts` (retrieval pipeline — see below)
+- `lib/search/recent-searches.ts` (localStorage recents)
+- `components/header-search.tsx` (trigger + shortcut)
+- `components/site-search.tsx` (palette UI)
+- `components/search-highlight.tsx` (match highlighting)
+- `lib/search/__tests__/search.test.ts` (ranking regression tests)
 - `e2e/search.spec.ts`
+
+Retrieval pipeline (`runSearch`): synonym expansion (additive) → word-boundary intent detection (exact triggers, then capped fuzzy) → Fuse recall from the user's own query and its words only → intent expansion terms rescore but never add candidates → re-rank bonuses for exact/prefix/full-query matches → 4-per-group and 12-total caps. Short queries (≤3 chars) require a literal substring. Keep this order: intent expansion must stay rescore-only or single-token queries over-recall the catalog.
 
 Typical misses:
 
 - adding a new route but not indexing it
 - renaming a section heading or anchor without updating the linked search result
 - changing policy copy without updating the instant-answer bullets
+- adding an intent trigger as a substring instead of a whole word (substring triggers misfire, e.g. "call" inside "scallops")
 
 ## Media, video, galleries, and imagery
 

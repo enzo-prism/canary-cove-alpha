@@ -13,6 +13,7 @@ const SiteSearch = dynamic(() => import("@/components/site-search").then((module
 export function HeaderSearch() {
   const [ready, setReady] = useState(false)
   const [open, setOpen] = useState(false)
+  const [shortcutHint, setShortcutHint] = useState("Ctrl K")
 
   const openSearch = () => {
     setReady(true)
@@ -36,6 +37,12 @@ export function HeaderSearch() {
     }
   }, [])
 
+  useEffect(() => {
+    if (typeof navigator === "undefined") return
+    const isApple = /Mac|iPhone|iPad|iPod/.test(navigator.platform)
+    setShortcutHint(isApple ? "⌘K" : "Ctrl K")
+  }, [])
+
   return (
     <>
       <Button
@@ -52,7 +59,7 @@ export function HeaderSearch() {
           aria-hidden="true"
           className="hidden h-5 items-center rounded-md border border-current/25 px-1.5 text-[11px] font-medium opacity-70 lg:inline-flex"
         >
-          ⌘K
+          {shortcutHint}
         </kbd>
         <span className="sr-only">Search</span>
       </Button>

@@ -8,6 +8,7 @@ import { ExperiencesHero } from "@/components/experiences-hero"
 import { PageStructuredData } from "@/components/structured-data"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PAGE_METADATA } from "@/lib/seo"
+import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 
 export const metadata = PAGE_METADATA.experiences
 
@@ -69,16 +70,14 @@ const FEATURED_ACTIVITY_CARDS = [
 
 const EXPERIENCE_HIGHLIGHTS = [
   {
-    quote:
-      "In 6 days we packed enough adventure into a fabulous vacation to last a long time. The staff ensured safety first, and incredible fun was had by all.",
-    author: "G. & family",
-    year: "2017",
+    quote: TESTIMONIAL_SPOTLIGHTS.experiences[0].quote,
+    author: TESTIMONIAL_SPOTLIGHTS.experiences[0].author,
+    year: TESTIMONIAL_SPOTLIGHTS.experiences[0].year,
   },
   {
-    quote:
-      "It was a week of golden moments: nurse sharks, rays settling into the sand, and sliding into the perfect water. Thank you for providing a little bit of heaven.",
-    author: "C., R., & crew",
-    year: "2017",
+    quote: TESTIMONIAL_SPOTLIGHTS.experiences[1].quote,
+    author: TESTIMONIAL_SPOTLIGHTS.experiences[1].author,
+    year: TESTIMONIAL_SPOTLIGHTS.experiences[1].year,
   },
 ] as const
 

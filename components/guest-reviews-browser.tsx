@@ -1,412 +1,458 @@
 "use client"
 
-import { CalendarDays, Quote, Search, X } from "lucide-react"
-import { useDeferredValue, useEffect, useMemo, useState } from "react"
+import { useMemo, useRef, useState } from "react"
+import { RotateCcw, Search } from "lucide-react"
 
 import { trackReviewArchiveFilter, trackReviewNoteOpen } from "@/lib/analytics"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-type TestimonialEntry = {
-  quote: string
-  author?: string
-}
+import { Highlight } from "@/components/search-highlight"
 
 export type TestimonialGroup = {
   year: string
-  entries: TestimonialEntry[]
+  entries: Array<{ quote: string; author?: string }>
 }
 
-type ReviewCard = TestimonialEntry & {
-  id: string
-  visitLabel: string
-  visitDisplayLabel: string
-  yearKey: string
-}
-
-type VisitGroup = {
+type VisitArchive = {
   label: string
-  displayLabel: string
-  entries: ReviewCard[]
+  monthKey: string
+  yearKey: string
+  entries: Array<{ quote: string; author?: string }>
 }
 
-type ArchiveYearGroup = {
+type YearArchive = {
   yearKey: string
-  reviewCount: number
-  visitCount: number
-  visits: VisitGroup[]
+  label: string
+  visits: VisitArchive[]
+}
+
+type ArchivedReview = {
+  id: string
+  quote: string
+  author: string
+  visitLabel: string
+  yearKey: string
+}
+
+const VISIT_LABELS: Record<string, string> = {
+  "1": "January visit",
+  "2": "February visit",
+  "3": "March visit",
+  "4": "April visit",
+  "5": "May visit",
+  "6": "June visit",
+  "7": "July visit",
+  "8": "August visit",
+  "9": "September visit",
+  "10": "October visit",
+  "11": "November visit",
+  "12": "December visit",
+}
+
+function buildReviewArchive(groups: TestimonialGroup[]): {
+  years: YearArchive[]
+  reviews: ArchivedReview[]
+} {
+  const sortedGroups = [...groups].sort((a, b) => {
+    const [monthA, yearA] = a.year.split("/").map(Number)
+    const [monthB, yearB] = b.year.split("/").map(Number)
+    return yearB - yearA || monthB - monthA
+  })
+
+  const years: YearArchive[] = []
+  const reviews: ArchivedReview[] = []
+
+  sortedGroups.forEach((group) => {
+    const [monthRaw, yearRaw] = group.year.split("/")
+    const yearKey = yearRaw || group.year
+    const monthKey = monthRaw || ""
+    const visitLabel = `${VISIT_LABELS[monthKey] ?? "Guest visit"} ${yearKey}`
+
+    const reviewIds = group.entries.map((_, entryIndex) => `${yearKey}-${monthKey}-${entryIndex}`)
+    reviewIds.forEach((id, entryIndex) => {
+      reviews.push({
+        id,
+        quote: group.entries[entryIndex].quote,
+        author: group.entries[entryIndex].author ?? "Guest at Canary Cove",
+        visitLabel,
+        yearKey,
+      })
+    })
+
+    let year = years.find((entry) => entry.yearKey === yearKey)
+    if (!year) {
+      year = { yearKey, label: yearKey, visits: [] }
+      years.push(year)
+    }
+    year.visits.push({
+      label: visitLabel,
+      monthKey,
+      yearKey,
+      entries: group.entries,
+    })
+  })
+
+  return { years, reviews }
+}
+
+function matchesQuery(review: ArchivedReview, queryWords: string[]) {
+  if (queryWords.length === 0) return true
+  const haystack = `${review.quote} ${review.author} ${review.visitLabel}`.toLowerCase()
+  return queryWords.every((word) => haystack.includes(word))
+}
+
+export function matchesAnyWord(review: ArchivedReview, words: string[]) {
+  if (words.length === 0) return false
+  const haystack = `${review.quote} ${review.author} ${review.visitLabel}`.toLowerCase()
+  return words.some((word) => haystack.includes(word))
+}
+
+export function countMatches(groups: TestimonialGroup[], words: string[]) {
+  if (words.length === 0) return 0
+  const { reviews } = buildReviewArchive(groups)
+  return reviews.filter((review) => matchesAnyWord(review, words)).length
 }
 
 type GuestReviewsBrowserProps = {
   groups: TestimonialGroup[]
+  query?: string
+  onQueryChange?: (query: string) => void
+  themeWords?: string[] | null
+  themeLabel?: string | null
+  onClearTheme?: () => void
 }
 
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-]
+export function GuestReviewsBrowser({
+  groups,
+  query: externalQuery,
+  onQueryChange,
+  themeWords = null,
+  themeLabel = null,
+  onClearTheme,
+}: GuestReviewsBrowserProps) {
+  const [internalQuery, setInternalQuery] = useState("")
+  const [selectedYear, setSelectedYear] = useState("all")
+  const [openNoteId, setOpenNoteId] = useState<string | null>(null)
+  const noteOpenerRef = useRef<HTMLElement | null>(null)
 
-const extractYearKey = (label: string) => {
-  const match = label.match(/(\d{4})$/)
-  return match?.[1] ?? label
-}
+  const query = externalQuery ?? internalQuery
+  const setQuery = onQueryChange ?? setInternalQuery
+  const queryWords = useMemo(
+    () => query.toLowerCase().split(/\s+/).map((word) => word.trim()).filter(Boolean),
+    [query],
+  )
+  // Theme filters match ANY word (broad net); typed queries match ALL words.
+  const highlightWords = themeWords ?? queryWords
 
-const formatVisitLabel = (label: string) => {
-  const match = label.match(/^(\d{1,2})\/(\d{4})$/)
-  if (!match) return label
+  const { years, reviews } = useMemo(() => buildReviewArchive(groups), [groups])
+  const yearOptions = useMemo(() => years.map((year) => year.yearKey), [years])
 
-  const monthIndex = Number(match[1]) - 1
-  const year = match[2]
+  const filteredReviews = useMemo(
+    () =>
+      reviews.filter((review) => {
+        const matchesYear = selectedYear === "all" || review.yearKey === selectedYear
+        if (!matchesYear) return false
+        if (themeWords) return matchesAnyWord(review, themeWords)
+        return matchesQuery(review, queryWords)
+      }),
+    [reviews, queryWords, selectedYear, themeWords],
+  )
 
-  return MONTH_NAMES[monthIndex] ? `${MONTH_NAMES[monthIndex]} ${year}` : label
-}
+  const hasFilters = queryWords.length > 0 || selectedYear !== "all" || themeWords !== null
 
-const buildArchiveGroups = (groups: TestimonialGroup[], query: string, selectedYear: string) => {
-  const archive = new Map<string, ArchiveYearGroup>()
-
-  groups.forEach((group) => {
-    const yearKey = extractYearKey(group.year)
-    if (selectedYear !== "All" && yearKey !== selectedYear) return
-
-    const matchingEntries = group.entries
-      .filter((entry) => {
-        if (!query) return true
-        const haystack = [entry.quote, entry.author, group.year].filter(Boolean).join(" ").toLowerCase()
-        return haystack.includes(query)
-      })
-      .map((entry, index) => ({
-        ...entry,
-        id: `${group.year}-${index}`,
-        visitLabel: group.year,
-        visitDisplayLabel: formatVisitLabel(group.year),
-        yearKey,
+  const filteredYears = useMemo(() => {
+    const visibleIds = new Set(filteredReviews.map((review) => review.id))
+    return years
+      .map((year) => ({
+        ...year,
+        visits: year.visits
+          .map((visit) => ({
+            ...visit,
+            entries: visit.entries.filter((_, entryIndex) =>
+              visibleIds.has(`${visit.yearKey}-${visit.monthKey}-${entryIndex}`),
+            ),
+          }))
+          .filter((visit) => visit.entries.length > 0),
       }))
+      .filter((year) => (selectedYear === "all" || year.yearKey === selectedYear) && year.visits.length > 0)
+  }, [filteredReviews, selectedYear, years])
 
-    if (!matchingEntries.length) return
+  const reviewCount = filteredReviews.length
+  const visitCount = filteredYears.reduce((count, year) => count + year.visits.length, 0)
+  const totalNotes = reviews.length
+  const totalVisits = years.reduce((count, year) => count + year.visits.length, 0)
 
-    if (!archive.has(yearKey)) {
-      archive.set(yearKey, {
-        yearKey,
-        reviewCount: 0,
-        visitCount: 0,
-        visits: [],
-      })
+  const openNote = openNoteId ? (reviews.find((review) => review.id === openNoteId) ?? null) : null
+
+  const handleQueryChange = (value: string) => {
+    // Typing takes over from any theme starting point.
+    if (value !== "") {
+      onClearTheme?.()
     }
-
-    const archiveYear = archive.get(yearKey)
-    if (!archiveYear) return
-
-    archiveYear.reviewCount += matchingEntries.length
-    archiveYear.visitCount += 1
-    archiveYear.visits.push({
-      label: group.year,
-      displayLabel: formatVisitLabel(group.year),
-      entries: matchingEntries,
-    })
-  })
-
-  return Array.from(archive.values())
-}
-
-export function GuestReviewsBrowser({ groups }: GuestReviewsBrowserProps) {
-  const [query, setQuery] = useState("")
-  const [selectedYear, setSelectedYear] = useState("All")
-  const [active, setActive] = useState<ReviewCard | null>(null)
-  const [open, setOpen] = useState(false)
-  const [openYears, setOpenYears] = useState<string[]>([])
-
-  const deferredQuery = useDeferredValue(query.trim().toLowerCase())
-  const yearOptions = useMemo(() => ["All", ...Array.from(new Set(groups.map((group) => extractYearKey(group.year))))], [groups])
-  const archiveGroups = useMemo(
-    () => buildArchiveGroups(groups, deferredQuery, selectedYear),
-    [deferredQuery, groups, selectedYear],
-  )
-
-  const filteredCount = useMemo(
-    () => archiveGroups.reduce((count, group) => count + group.reviewCount, 0),
-    [archiveGroups],
-  )
-
-  const totalCount = useMemo(
-    () => groups.reduce((count, group) => count + group.entries.length, 0),
-    [groups],
-  )
-
-  const hasFilters = query.length > 0 || selectedYear !== "All"
-  const selectedYearLabel = selectedYear === "All" ? "All years" : selectedYear
-
-  useEffect(() => {
-    if (archiveGroups.length === 0) {
-      setOpenYears([])
-      return
-    }
-
-    const nextOpenYears =
-      hasFilters || deferredQuery
-        ? archiveGroups.map((group) => group.yearKey)
-        : archiveGroups.slice(0, 1).map((group) => group.yearKey)
-
-    setOpenYears(nextOpenYears)
-  }, [archiveGroups, deferredQuery, hasFilters])
-
-  const handleOpen = (testimonial: ReviewCard) => {
-    trackReviewNoteOpen(testimonial.yearKey, testimonial.visitLabel)
-    setActive(testimonial)
-    setOpen(true)
+    setQuery(value)
   }
 
-  const handleYearChange = (year: string) => {
-    setSelectedYear(year)
-    trackReviewArchiveFilter(year)
+  const handleYearChange = (value: string) => {
+    setSelectedYear(value)
+    trackReviewArchiveFilter(value)
   }
 
-  const clearFilters = () => {
+  const handleReset = () => {
     setQuery("")
-    setSelectedYear("All")
+    setSelectedYear("all")
+    onClearTheme?.()
+    trackReviewArchiveFilter("all")
+  }
+
+  const handleNoteOpen = (review: ArchivedReview) => {
+    // Controlled dialog without a trigger: remember the opener so focus can be restored on close.
+    noteOpenerRef.current =
+      document.activeElement instanceof HTMLElement ? document.activeElement : null
+    setOpenNoteId(review.id)
+    trackReviewNoteOpen(review.yearKey, review.visitLabel)
+  }
+
+  const handleNoteCloseAutoFocus = (event: Event) => {
+    if (noteOpenerRef.current) {
+      event.preventDefault()
+      noteOpenerRef.current.focus()
+    }
   }
 
   return (
-    <>
-      <Card
-        id="guest-testimonials"
-        className="scroll-mt-24 rounded-[32px] border border-border/70 bg-white/92 shadow-[0_18px_55px_rgba(15,23,42,0.08)]"
-      >
-        <CardContent className="space-y-8 p-5 sm:p-6 lg:p-8">
-          <div className="space-y-3">
-            <Badge variant="outline" className="border-border/70 text-muted-foreground">
-              Guestbook Archive
-            </Badge>
-            <div className="space-y-2">
-              <h2 className="text-3xl font-semibold tracking-tight text-foreground sm:text-4xl">
-                Browse every guest note
-              </h2>
-              <p className="max-w-2xl text-base leading-7 text-muted-foreground">
-                Search for a phrase, jump to a year, and open any note for the full story. The archive stays compact until
-                you choose where to dive in.
-              </p>
-            </div>
+    <div className="flow flow-md scroll-mt-24" id="guest-testimonials">
+      <div className="flex flex-col gap-3 lg:flex-row lg:items-center lg:justify-between">
+        <h2 className="text-section text-[1.7rem] text-foreground sm:text-[2.1rem]">
+          Every note, newest first.
+        </h2>
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+          <label htmlFor="reviews-search" className="sr-only">
+            Search guest notes
+          </label>
+          <div className="relative sm:w-72">
+            <Search className="pointer-events-none absolute left-4 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              id="reviews-search"
+              value={query}
+              onChange={(event) => handleQueryChange(event.target.value)}
+              placeholder="Search staff, food, reef days…"
+              className="h-12 w-full rounded-full border border-border/70 bg-white/92 pl-11 pr-4 text-sm text-foreground shadow-sm shadow-black/5 outline-none transition-colors placeholder:text-muted-foreground/80 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40"
+            />
           </div>
+          <label htmlFor="reviews-year" className="sr-only">
+            Filter by year
+          </label>
+          <select
+            id="reviews-year"
+            value={selectedYear}
+            onChange={(event) => handleYearChange(event.target.value)}
+            className="h-12 rounded-full border border-border/70 bg-white/92 px-4 text-sm text-foreground shadow-sm shadow-black/5 outline-none transition-colors focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/40"
+          >
+            <option value="all">All years</option>
+            {yearOptions.map((year) => (
+              <option key={year} value={year}>
+                {year}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
-          <div className="space-y-4 rounded-[28px] border border-border/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.96)_0%,rgba(247,244,237,0.92)_100%)] p-4 sm:p-5">
-            <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_minmax(240px,320px)]">
-              <div className="rounded-[22px] border border-border/70 bg-white/90 px-4 py-3 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
-                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
-                  <Search className="h-3.5 w-3.5" />
-                  Search reviews
-                </div>
-                <div className="mt-3 flex items-center gap-3">
-                  <Search className="h-4 w-4 shrink-0 text-muted-foreground" />
-                  <Input
-                    value={query}
-                    onChange={(event) => setQuery(event.target.value)}
-                    placeholder="Staff, scuba, snorkeling, food, family..."
-                    className="h-auto border-0 bg-transparent px-0 py-0 text-sm shadow-none focus-visible:ring-0 focus-visible:ring-offset-0"
-                    aria-label="Search guest reviews"
-                  />
-                  {query ? (
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => setQuery("")}
-                      className="h-8 w-8 shrink-0 rounded-full text-muted-foreground hover:bg-foreground/5 hover:text-foreground"
-                      aria-label="Clear search"
-                    >
-                      <X className="h-4 w-4" />
-                    </Button>
-                  ) : null}
-                </div>
-              </div>
-
-              <div className="rounded-[22px] border border-border/70 bg-white/90 px-4 py-3 shadow-[0_10px_26px_rgba(15,23,42,0.04)]">
-                <div className="flex items-center gap-2 text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
-                  <CalendarDays className="h-3.5 w-3.5" />
-                  Browse by year
-                </div>
-                <Select value={selectedYear} onValueChange={handleYearChange}>
-                  <SelectTrigger
-                    aria-label="Filter reviews by year"
-                    className="mt-3 h-auto rounded-none border-0 bg-transparent px-0 py-0 text-left text-sm font-medium text-foreground shadow-none focus:ring-0 focus:ring-offset-0"
-                  >
-                    <SelectValue placeholder="All years" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {yearOptions.map((year) => (
-                      <SelectItem key={year} value={year}>
-                        {year === "All" ? "All years" : year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-3 border-t border-border/60 pt-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex flex-wrap items-center gap-2">
-                <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
-                  {filteredCount} of {totalCount} visible
-                </Badge>
-                {selectedYear !== "All" ? (
-                  <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
-                    Year: {selectedYearLabel}
-                  </Badge>
-                ) : null}
-                {query ? (
-                  <Badge variant="outline" className="border-border/70 bg-white/75 text-muted-foreground">
-                    Search: "{query}"
-                  </Badge>
-                ) : null}
-              </div>
-              {hasFilters ? (
-                <Button
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <p role="status" className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+          {hasFilters
+            ? `${reviewCount} matching note${reviewCount === 1 ? "" : "s"} · ${visitCount} visit${visitCount === 1 ? "" : "s"}`
+            : `${totalNotes} notes · ${totalVisits} visits`}
+        </p>
+        {hasFilters ? (
+          <span className="flex items-center gap-2">
+            {themeWords && themeLabel ? (
+              <span className="inline-flex h-9 items-center gap-2 rounded-full border border-primary/40 bg-white px-3 text-xs font-medium text-foreground">
+                Theme: {themeLabel}
+                <button
                   type="button"
-                  variant="ghost"
-                  size="sm"
-                  onClick={clearFilters}
-                  className="w-fit rounded-full text-muted-foreground hover:bg-white/80 hover:text-foreground"
+                  onClick={() => onClearTheme?.()}
+                  aria-label={`Clear ${themeLabel} theme filter`}
+                  className="inline-flex size-5 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
                 >
-                  Reset filters
-                </Button>
-              ) : null}
-            </div>
+                  ×
+                </button>
+              </span>
+            ) : null}
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={handleReset}
+              className="h-9 gap-1.5 rounded-full text-muted-foreground hover:text-foreground"
+            >
+              <RotateCcw className="size-3.5" />
+              Reset filters
+            </Button>
+          </span>
+        ) : null}
+      </div>
+
+      {hasFilters ? (
+        filteredReviews.length > 0 ? (
+          <ol className="border-t border-border/60">
+            {filteredReviews.map((review) => (
+              <li key={review.id} className="border-b border-border/60">
+                <button
+                  type="button"
+                  onClick={() => handleNoteOpen(review)}
+                  aria-label={`Open note from ${review.author}`}
+                  className="group flex w-full items-baseline gap-4 px-1 py-4 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                >
+                  <span className="w-14 shrink-0 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
+                    {review.yearKey}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-[0.95rem] text-foreground/85">
+                      <Highlight text={`“${review.quote}”`} tokens={highlightWords} />
+                    </span>
+                    <span className="mt-1 block text-xs text-muted-foreground">
+                      {review.author} · {review.visitLabel}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="shrink-0 text-sm font-medium text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
+                  >
+                    →
+                  </span>
+                </button>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <div className="rounded-[24px] border border-border/60 bg-white/80 px-6 py-10 text-center">
+            <p className="text-base font-semibold text-foreground">No notes match these filters</p>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Try a different word — “reef”, “chef”, “kids” — or reset the filters.
+            </p>
+            <Button type="button" variant="outline" size="sm" onClick={handleReset} className="mt-4 rounded-full">
+              Reset filters
+            </Button>
           </div>
-
-          {archiveGroups.length > 0 ? (
-            <div className="rounded-[28px] border border-border/60 bg-background/55 px-5 py-2 sm:px-6">
-              <Accordion type="multiple" value={openYears} onValueChange={setOpenYears} className="divide-y divide-border/60">
-                {archiveGroups.map((group) => (
-                  <AccordionItem key={group.yearKey} value={group.yearKey} className="border-none">
-                    <AccordionTrigger className="items-start gap-4 py-5 text-left hover:no-underline">
-                      <div className="space-y-2">
-                        <div className="flex flex-wrap items-center gap-3">
-                          <h3 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">{group.yearKey}</h3>
-                          <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                            {group.reviewCount} review{group.reviewCount === 1 ? "" : "s"}
-                          </Badge>
-                        </div>
-                        <p className="text-sm leading-6 text-muted-foreground">
-                          {group.visitCount} guestbook {group.visitCount === 1 ? "entry" : "entries"} preserved from this year.
-                        </p>
-                      </div>
-                    </AccordionTrigger>
-                    <AccordionContent className="pb-6">
-                      <div className="space-y-5">
-                        {group.visits.map((visit) => (
-                          <section
-                            key={visit.label}
-                            className="space-y-4 rounded-[24px] border border-border/60 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(249,246,239,0.95)_100%)] p-4 sm:p-5"
-                          >
-                            <div className="flex flex-wrap items-center justify-between gap-3">
-                              <div className="space-y-1">
-                                <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">Guestbook entry</p>
-                                <h4 className="text-lg font-semibold text-foreground sm:text-xl">{visit.displayLabel}</h4>
-                              </div>
-                              <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                                {visit.entries.length} note{visit.entries.length === 1 ? "" : "s"}
-                              </Badge>
-                            </div>
-
-                            <div className="grid gap-4 lg:grid-cols-2">
-                              {visit.entries.map((testimonial) => (
+        )
+      ) : (
+        <Accordion type="multiple" defaultValue={years.length > 0 ? [years[0].yearKey] : []} className="flow flow-sm">
+          {filteredYears.map((year) => (
+            <AccordionItem
+              key={year.yearKey}
+              value={year.yearKey}
+              id={`year-${year.yearKey}`}
+              className="scroll-mt-28 rounded-[24px] border border-border/60 bg-white/80 px-5 sm:px-6"
+            >
+              <AccordionTrigger className="py-5 hover:no-underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring [&[data-state=open]>svg]:rotate-180">
+                <span className="flex flex-1 items-baseline gap-3 text-left">
+                  <span className="text-lg font-semibold tracking-tight text-foreground">{year.label}</span>
+                  {(() => {
+                    const notes = year.visits.reduce((count, visit) => count + visit.entries.length, 0)
+                    const visits = year.visits.length
+                    return (
+                      <span className="text-xs text-muted-foreground">
+                        {notes} note{notes === 1 ? "" : "s"} · {visits} visit{visits === 1 ? "" : "s"}
+                      </span>
+                    )
+                  })()}
+                </span>
+              </AccordionTrigger>
+              <AccordionContent className="pb-6">
+                <div className="flow flow-md">
+                  {year.visits.map((visit) => {
+                    const visitId = `visit-${visit.yearKey}-${visit.monthKey}`
+                    return (
+                      <section key={visit.monthKey} aria-labelledby={visitId} className="flow flow-xs">
+                        <h3 id={visitId} className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
+                          {visit.label}
+                        </h3>
+                        <ol className="border-t border-border/55">
+                          {visit.entries.map((entry, entryIndex) => {
+                            const reviewId = `${visit.yearKey}-${visit.monthKey}-${entryIndex}`
+                            return (
+                              <li key={reviewId} className="border-b border-border/55">
                                 <button
-                                  key={testimonial.id}
                                   type="button"
-                                  onClick={() => handleOpen(testimonial)}
-                                  className="group flex min-h-[220px] h-full flex-col rounded-[24px] border border-border/60 bg-white/92 p-5 text-left shadow-[0_12px_30px_rgba(15,23,42,0.05)] transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/10 hover:shadow-[0_18px_42px_rgba(15,23,42,0.1)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                                  aria-label={`Open guest review from ${testimonial.author ?? "a guest"} (${testimonial.visitLabel})`}
+                                  onClick={() =>
+                                    handleNoteOpen({
+                                      id: reviewId,
+                                      quote: entry.quote,
+                                      author: entry.author ?? "Guest at Canary Cove",
+                                      visitLabel: visit.label,
+                                      yearKey: visit.yearKey,
+                                    })
+                                  }
+                                  aria-label={`Open note from ${entry.author ?? "a Canary Cove guest"}`}
+                                  className="group flex w-full items-baseline gap-4 px-1 py-3.5 text-left transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
                                 >
-                                  <div className="flex items-center gap-2 text-muted-foreground">
-                                    <Quote className="h-4 w-4" />
-                                    <span className="text-[11px] uppercase tracking-[0.3em]">Guest review</span>
-                                  </div>
-                                  <p className="mt-4 line-clamp-5 text-[15px] leading-7 text-foreground sm:text-base">
-                                    "{testimonial.quote}"
-                                  </p>
-                                  <div className="mt-auto flex items-end justify-between gap-4 pt-6">
-                                    <span className="text-sm font-medium leading-6 text-foreground/90">
-                                      {testimonial.author ?? "Guest at Canary Cove"}
-                                    </span>
-                                    <span className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">
-                                      Open note
-                                    </span>
-                                  </div>
+                                  <span className="min-w-0 flex-1 truncate text-[0.95rem] text-foreground/85">
+                                    <Highlight text={`“${entry.quote}”`} tokens={highlightWords} />
+                                  </span>
+                                  <span className="hidden shrink-0 text-xs text-muted-foreground sm:block">
+                                    {entry.author ?? "Guest at Canary Cove"}
+                                  </span>
+                                  <span
+                                    aria-hidden="true"
+                                    className="shrink-0 text-sm font-medium text-muted-foreground transition-all group-hover:translate-x-0.5 group-hover:text-foreground"
+                                  >
+                                    →
+                                  </span>
                                 </button>
-                              ))}
-                            </div>
-                          </section>
-                        ))}
-                      </div>
-                    </AccordionContent>
-                  </AccordionItem>
-                ))}
-              </Accordion>
-            </div>
-          ) : (
-            <div className="rounded-[28px] border border-dashed border-border/70 bg-background/65 px-6 py-12 text-center">
-              <p className="text-lg font-medium text-foreground">No reviews match that filter yet.</p>
-              <p className="mt-2 text-sm leading-7 text-muted-foreground">
-                Try a broader search, or clear the year filter to browse the full archive again.
-              </p>
-              <Button type="button" variant="outline" className="mt-6 rounded-full" onClick={clearFilters}>
-                Reset filters
-              </Button>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+                              </li>
+                            )
+                          })}
+                        </ol>
+                      </section>
+                    )
+                  })}
+                </div>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
+      )}
 
-      <Dialog
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen)
-          if (!nextOpen) setActive(null)
-        }}
-      >
-        <DialogContent className="max-w-2xl rounded-[32px] border-border/70 bg-[linear-gradient(180deg,rgba(255,255,255,0.98)_0%,rgba(248,244,236,0.98)_100%)] p-0">
-          {active ? (
-            <div className="space-y-6 p-6 sm:p-8">
-              <DialogHeader className="space-y-3 text-left">
-                <div className="flex flex-wrap gap-2">
-                  <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                    {active.visitDisplayLabel}
-                  </Badge>
-                  <Badge variant="outline" className="border-border/70 text-muted-foreground">
-                    Guestbook note
+      <Dialog open={openNote !== null} onOpenChange={(nextOpen) => !nextOpen && setOpenNoteId(null)}>
+        <DialogContent
+          className="max-h-[85dvh] overflow-y-auto rounded-[28px]"
+          onCloseAutoFocus={handleNoteCloseAutoFocus}
+        >
+          {openNote ? (
+            <>
+              <DialogHeader className="text-left">
+                <div className="flex flex-wrap items-center gap-2">
+                  <Badge variant="secondary" className="rounded-full">
+                    {openNote.visitLabel}
                   </Badge>
                 </div>
-                <DialogTitle className="text-2xl font-semibold text-foreground">
-                  {active.author ?? "Guest at Canary Cove"}
+                <DialogTitle className="text-xl font-semibold tracking-tight text-foreground">
+                  Note from {openNote.author}
                 </DialogTitle>
-                <DialogDescription className="text-sm leading-6 text-muted-foreground">
-                  Shared by a Canary Cove guest and preserved in the review archive.
+                <DialogDescription className="text-sm text-muted-foreground">
+                  Shared in the Canary Cove guestbook.
                 </DialogDescription>
               </DialogHeader>
-              <p className="text-base leading-8 text-foreground sm:text-[1.05rem]">"{active.quote}"</p>
-            </div>
+              <p className="text-[1.02rem] leading-8 text-foreground/90">“{openNote.quote}”</p>
+            </>
           ) : null}
         </DialogContent>
       </Dialog>
-    </>
+    </div>
   )
 }

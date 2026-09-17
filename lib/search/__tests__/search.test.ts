@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { POPULAR_QUESTIONS } from "@/lib/search/search-index"
-import { normalizeQuery, runSearch } from "@/lib/search/search"
+import { findSuggestion, normalizeQuery, runSearch } from "@/lib/search/search"
 
 const flattenResults = (query: string) => {
   const result = runSearch(query)
@@ -58,5 +58,61 @@ describe("popular questions coverage", () => {
       const hasFallback = result.answer?.intent === "ask-us"
       expect(hasResults || hasFallback).toBe(true)
     })
+  })
+})
+
+describe("search ranking regressions", () => {
+  it("never hijacks pool with the policies answer", () => {
+    const result = runSearch("pool")
+    expect(result.intent).not.toBe("policies")
+    expect(flattenResults("pool")[0]?.id).toBe("villa-outdoors")
+  })
+
+  it("matches intent triggers on word boundaries, not substrings", () => {
+    expect(runSearch("scallops").intent).not.toBe("contact")
+    expect(runSearch("work calls").intent).toBe("reliability")
+  })
+
+  it("understands natural travel phrasing", () => {
+    expect(runSearch("how do we get there").intent).toBe("getting-here")
+    expect(runSearch("how do rates work").intent).toBe("pricing")
+  })
+
+  it("ranks dedicated pages first", () => {
+    expect(flattenResults("cancellation")[0]?.id).toBe("cancellation-policy")
+    expect(flattenResults("deposit")[0]?.id).toBe("payment-terms")
+    expect(flattenResults("BZE")[0]?.id).toBe("arrival-steps")
+  })
+
+  it("expands synonyms without losing the original wording", () => {
+    expect(runSearch("how much").intent).toBe("pricing")
+    expect(normalizeQuery("how much")).toContain("price")
+    expect(normalizeQuery("how much")).toContain("how much")
+  })
+
+  it("returns clean no-results for short nonsense queries", () => {
+    expect(runSearch("dog").totalResults).toBe(0)
+    expect(runSearch("dog").intent).toBeNull()
+  })
+
+  it("caps visible results for scannability", () => {
+    const result = runSearch("rates")
+    const visible = result.groups.flatMap((group) => group.items)
+    expect(visible.length).toBeLessThanOrEqual(12)
+    result.groups.forEach((group) => {
+      expect(group.items.length).toBeLessThanOrEqual(4)
+    })
+  })
+
+  it("indexes the full site, including new sections", () => {
+    expect(flattenResults("gallery").some((item) => item.id === "gallery-overview")).toBe(true)
+    expect(flattenResults("reviews").some((item) => item.id === "reviews-overview")).toBe(true)
+    expect(flattenResults("golf cart").some((item) => item.id === "golf-cart-rentals")).toBe(true)
+    expect(flattenResults("guest experience").some((item) => item.id === "guest-experience-stay")).toBe(true)
+  })
+
+  it("suggests the closest title for near-miss queries", () => {
+    expect(findSuggestion("cancelltion")).toBe("Cancellation policy")
+    expect(findSuggestion("dog")).toBeNull()
   })
 })
