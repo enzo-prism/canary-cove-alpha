@@ -53,8 +53,8 @@ const secondaryGalleryItems: StayGalleryFeature[] = [
   },
   {
     image: IMAGES.bedDetail,
-    title: "Hotel-level detail",
-    detail: "Thoughtful touches throughout the bedrooms help the whole estate feel polished and cared for.",
+    title: "Thoughtful bedroom details",
+    detail: "Considered touches throughout the bedrooms help the whole estate feel polished and cared for.",
   },
 ]
 
@@ -63,8 +63,8 @@ export function StayVillaGallery() {
     <StayGallerySection
       id="inside-the-villa"
       eyebrow="Inside the villa"
-      title="A closer look at the interiors."
-      description="The house balances open gathering spaces with private suites, so your group can move easily from long meals and kitchen conversations to quiet, comfortable rooms."
+      title="Gather big, sleep private."
+      description="Open gathering spaces stay connected to private suites, so your group moves easily from long meals to quiet, comfortable rooms."
       primaryItems={primaryGalleryItems}
       secondaryItems={secondaryGalleryItems}
     />

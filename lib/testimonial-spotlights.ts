@@ -41,6 +41,13 @@ export const TESTIMONIAL_SPOTLIGHTS = {
   ],
   stay: [
     {
+      // Also featured on /book: the newest guest note on file leads the stay perspectives.
+      year: "2024",
+      quote:
+        "What a perfect vacation! The house is wonderful, staff beyond our wildest dreams, dining like no other! Thank you for one of the most memorable vacations of our lives. We will be back for sure.",
+      author: "Bernthal/Stambaugh family",
+    },
+    {
       year: "2017",
       quote:
         "Your gracious hospitality has made our stay more wonderful than I could have imagined. You have a beautiful home here in paradise!",

@@ -63,7 +63,7 @@ export function StayOutdoorGallery() {
     <StayGallerySection
       id="outside-the-villa"
       eyebrow="Outside the villa"
-      title="The grounds, decks, and waterfront."
+      title="Pool, palms, dock. Repeat."
       description="From the pool terrace to the dock and shoreline, the estate gives your group a private outdoor rhythm with space to lounge, swim, launch, and stay outside for hours."
       primaryItems={primaryGalleryItems}
       secondaryItems={secondaryGalleryItems}

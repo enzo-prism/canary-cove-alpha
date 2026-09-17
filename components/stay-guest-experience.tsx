@@ -1,10 +1,9 @@
 import Image from "next/image"
 
-import { Card, CardContent } from "@/components/ui/card"
 import { IMAGES, imageObjectPosition } from "@/lib/images"
 import type { Testimonial } from "@/lib/testimonial-spotlights"
 
-const experienceCards = [
+const experienceRows = [
   {
     title: "Arrival and hosting",
     detail: "From the San Pedro pickup to the welcome at the dock, the stay starts smoothly and stays personal.",
@@ -12,7 +11,8 @@ const experienceCards = [
   },
   {
     title: "Chef-led dining",
-    detail: "Private lunches and dinners are served at the estate so your group never has to work around a restaurant schedule.",
+    detail:
+      "Private lunches and dinners are served at the estate so your group never has to work around a restaurant schedule.",
     image: IMAGES.chefMarvinPortrait,
   },
   {
@@ -31,56 +31,71 @@ type StayGuestExperienceProps = {
   testimonials: Testimonial[]
 }
 
+function PerspectiveStack({ perspectives }: { perspectives: Testimonial[] }) {
+  const [first, second] = perspectives
+
+  return (
+    <div className="flow flow-lg">
+      <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8">
+        <blockquote className="max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10">
+          “{first.quote}”
+        </blockquote>
+        <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+          {first.author} · {first.year}
+        </figcaption>
+      </figure>
+      {second ? (
+        <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8 md:ml-16">
+          <blockquote className="max-w-2xl text-lg leading-8 text-foreground/85">“{second.quote}”</blockquote>
+          <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+            {second.author} · {second.year}
+          </figcaption>
+        </figure>
+      ) : null}
+    </div>
+  )
+}
+
 export function StayGuestExperience({ testimonials }: StayGuestExperienceProps) {
   return (
     <div className="flow flow-xl">
-      <div className="flow flow-sm text-center">
-        <p className="text-[11px] uppercase tracking-[0.36em] text-muted-foreground">The guest experience</p>
-        <h2 className="text-section text-foreground">How the stay feels once you arrive.</h2>
+      <div className="max-w-2xl flow flow-sm">
+        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">The guest experience</p>
+        <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">How the stay feels once you arrive.</h2>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {experienceCards.map((card) => (
-          <Card
-            key={card.title}
-            className="overflow-hidden rounded-[28px] border border-border/60 bg-[#0f2030] text-white shadow-[0_18px_45px_rgba(15,23,42,0.14)]"
+      <ol className="border-t border-border/60">
+        {experienceRows.map((row, index) => (
+          <li
+            key={row.title}
+            className="flex items-center gap-5 border-b border-border/60 py-5 sm:gap-7 sm:py-6"
           >
-            <div className="relative aspect-[4/5] overflow-hidden">
+            <span aria-hidden="true" className="w-8 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <span className="relative hidden aspect-square w-24 shrink-0 overflow-hidden rounded-[20px] border border-border/55 bg-surface-muted sm:block">
               <Image
-                src={card.image.src}
-                alt={card.image.alt}
+                src={row.image.src}
+                alt=""
                 fill
                 className="object-cover"
-                style={{ objectPosition: imageObjectPosition(card.image) }}
-                sizes="(min-width: 1280px) 280px, 100vw"
+                style={{ objectPosition: imageObjectPosition(row.image) }}
+                sizes="96px"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#06111b] via-[#06111b]/40 to-transparent" />
-            </div>
-            <CardContent className="flow flow-xs p-5">
-              <h3 className="text-base font-semibold">{card.title}</h3>
-              <p className="text-sm leading-relaxed text-white/72">{card.detail}</p>
-            </CardContent>
-          </Card>
+            </span>
+            <span className="flow-xs">
+              <h3 className="text-lg font-semibold text-foreground">{row.title}</h3>
+              <p className="max-w-2xl text-[0.95rem] leading-7 text-foreground/75">{row.detail}</p>
+            </span>
+          </li>
         ))}
-      </div>
+      </ol>
 
-      <div className="grid gap-6 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1fr)_minmax(0,1fr)]">
-        <div className="flow flow-sm lg:pr-6">
-          <p className="text-[11px] uppercase tracking-[0.32em] text-muted-foreground">What guests say about the stay</p>
-          <h3 className="text-section text-foreground">What guests say about the stay</h3>
-          <p className="text-body">
-            Notes on the home, staff, and what it feels like to settle into the estate with your own group and no outside noise.
-          </p>
-        </div>
-        {testimonials.slice(0, 2).map((testimonial) => (
-          <Card key={`${testimonial.year}-${testimonial.author}`} className="surface-panel rounded-[28px] border-border/60 bg-surface/95">
-            <CardContent className="flow flow-sm p-7">
-              <p className="text-[11px] uppercase tracking-[0.28em] text-muted-foreground">{testimonial.year}</p>
-              <p className="text-base leading-relaxed text-foreground">"{testimonial.quote}"</p>
-              {testimonial.author ? <p className="text-sm text-muted-foreground">- {testimonial.author}</p> : null}
-            </CardContent>
-          </Card>
-        ))}
+      <div className="flow flow-md pt-2">
+        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+          What guests say about the stay
+        </p>
+        <PerspectiveStack perspectives={testimonials.slice(0, 2)} />
       </div>
     </div>
   )
