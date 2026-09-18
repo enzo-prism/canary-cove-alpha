@@ -727,11 +727,11 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   headingRefs.current[4] = node
                 }}
                 title="Anything we should plan around?"
-                helper="Celebrations, pace, reef days, dining — the more context, the sharper your quote."
+                helper="A line or two on the nature of this request — celebrations, pace, reef days, or dining."
               />
               <div className="space-y-2">
                 <Label htmlFor="requests">
-                  Message <span className="font-normal text-muted-foreground">(optional)</span>
+                  Nature of inquiry <span className="font-normal text-muted-foreground">(optional)</span>
                 </Label>
                 <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested trip details">
                   {REQUEST_STARTERS.map((starter) => (
@@ -757,7 +757,11 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   value={values.requests}
                   onChange={(event) => setValue("requests", event.target.value)}
                   className={textareaClassName}
+                  aria-describedby="requests-helper"
                 />
+                <p id="requests-helper" className="form-helper">
+                  Optional, but a short purpose note helps us quote the stay you actually want.
+                </p>
               </div>
               <fieldset>
                 <legend className="text-[15px] font-semibold text-foreground">
