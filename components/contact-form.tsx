@@ -30,7 +30,7 @@ const FORM_KEY = "contact"
 const MAX_MESSAGE_LENGTH = 3000
 
 const STEPS: WizardStepMeta[] = [
-  { id: "message", label: "Message", icon: MessageSquare },
+  { id: "message", label: "Inquiry", icon: MessageSquare },
   { id: "reply", label: "Details", icon: Mail },
 ]
 
@@ -120,7 +120,7 @@ export function ContactForm() {
   const validateStep = (index: number): boolean => {
     if (index === 0) {
       if (isBlank(message)) {
-        failStep("Please tell us what's on your mind before continuing.", ["message"])
+        failStep("Please add a short nature of inquiry before continuing.", ["message"])
         return false
       }
       return true
@@ -245,7 +245,7 @@ export function ContactForm() {
               <div className="flow flow-sm">
                 <h2 className="text-section text-balance">Ask about dates, logistics, or the stay itself.</h2>
                 <p className="text-body max-w-xl text-foreground/80">
-                  Two short steps — your question first, then where to reply.
+                  Two short steps — the nature of your inquiry first, then where to reply.
                 </p>
               </div>
               <FormStepIndicator
@@ -266,8 +266,8 @@ export function ContactForm() {
                 ref={(node) => {
                   headingRefs.current[0] = node
                 }}
-                title="What can we help with?"
-                helper="Pick a topic to focus your note — it routes your question to the right person."
+                title="Nature of inquiry"
+                helper="A line or two on why you're reaching out. Topic chips are optional and help us route your note."
               />
               <fieldset>
                 <legend className="text-[15px] font-semibold text-foreground">
@@ -289,7 +289,7 @@ export function ContactForm() {
                 </div>
               </fieldset>
               <div className="space-y-2">
-                <FieldLabel htmlFor="message" required>Message</FieldLabel>
+                <FieldLabel htmlFor="message" required>Nature of inquiry</FieldLabel>
                 <Textarea
                   id="message"
                   name="message"
@@ -309,7 +309,7 @@ export function ContactForm() {
                 />
                 <div className="flex flex-col gap-1 sm:flex-row sm:items-center sm:justify-between">
                   <p id="message-helper" className="form-helper">
-                    Helpful context: travel dates, group size, or the pace you have in mind.
+                    Tell us the reason for this note — dates, a question, or the stay you have in mind.
                   </p>
                   <p id="message-counter" className="form-helper tabular-nums" aria-live="polite">
                     {message.length} of {MAX_MESSAGE_LENGTH} max characters

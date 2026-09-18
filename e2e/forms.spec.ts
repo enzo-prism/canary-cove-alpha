@@ -61,7 +61,7 @@ const completeContactStepOne = async (page: Page, message: string, topic?: strin
   if (topic) {
     await contactCard(page).getByText(topic, { exact: true }).click()
   }
-  await page.getByRole("textbox", { name: "Message" }).fill(message)
+  await page.getByRole("textbox", { name: "Nature of inquiry" }).fill(message)
   await page.getByTestId("contact-next").click()
 }
 
@@ -145,7 +145,7 @@ test.describe("forms and interactive inquiries", () => {
 
     await page.getByTestId("contact-next").click()
     await expect(page.getByText("Step 1 of 2")).toBeVisible()
-    await expect(page.locator("#contact-step-error")).toContainText("what's on your mind")
+    await expect(page.locator("#contact-step-error")).toContainText("nature of inquiry")
 
     await completeContactStepOne(page, "Do you host small weddings?")
     await expect(page.getByText("Step 2 of 2")).toBeVisible()
@@ -226,7 +226,7 @@ test.describe("forms and interactive inquiries", () => {
       email: "alex@example.com",
       confirmEmail: "alex@example.com",
     })
-    await page.getByLabel("Message").fill("Looking for a five-night stay with chef dinners and one fishing day.")
+    await page.getByLabel("Nature of inquiry").fill("Looking for a five-night stay with chef dinners and one fishing day.")
     await bookingCard(page).getByText("Google", { exact: true }).click()
     await page.getByTestId("booking-submit").click()
 
@@ -253,7 +253,7 @@ test.describe("forms and interactive inquiries", () => {
       email: "alex@example.com",
       confirmEmail: "alex@example.com",
     })
-    await page.getByLabel("Message").fill("Trying again to verify the error state is visible.")
+    await page.getByLabel("Nature of inquiry").fill("Trying again to verify the error state is visible.")
     await bookingCard(page).getByText("Google", { exact: true }).click()
     await page.getByTestId("booking-submit").click()
 
