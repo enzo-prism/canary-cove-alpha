@@ -5,6 +5,7 @@ import { ArrowDown, ArrowRight, Phone } from "lucide-react"
 
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
+import { AvailabilityCalendar } from "@/components/availability-calendar"
 import { BookingForm } from "@/components/booking-form"
 import { BookingPolicies } from "@/components/booking-policies"
 import { PhotoCarousel } from "@/components/photo-carousel"
@@ -57,13 +58,19 @@ export default async function Page({ searchParams }: BookPageProps) {
                   ),
                 )}
               </ul>
-              <div>
+              <div className="flex flex-wrap gap-3">
                 <a
                   href="#booking-form"
                   className="focus-ring inline-flex min-h-12 items-center gap-2 rounded-full bg-white px-6 text-[15px] font-semibold text-[#0B1F24] motion-safe:transition-colors motion-safe:duration-200 hover:bg-white/90"
                 >
                   Start your request
                   <ArrowDown className="h-4 w-4" aria-hidden />
+                </a>
+                <a
+                  href="#availability"
+                  className="focus-ring inline-flex min-h-12 items-center gap-2 rounded-full border border-white/25 px-6 text-[15px] font-semibold text-white motion-safe:transition-colors motion-safe:duration-200 hover:border-white/50"
+                >
+                  See open dates
                 </a>
               </div>
             </div>
@@ -83,6 +90,8 @@ export default async function Page({ searchParams }: BookPageProps) {
           </div>
         </div>
       </section>
+
+      <AvailabilityCalendar />
 
       {/* 2. Request desk — short sticky rail, scrolling form. */}
       <section

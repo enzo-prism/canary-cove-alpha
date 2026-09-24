@@ -74,7 +74,8 @@
 ## Forms & Integrations
 - The contact form posts to Formspree endpoint `https://formspree.io/f/xvzarybk` with in-app success/error states.
 - Booking requests post to Formspree endpoint `https://formspree.io/f/xqeqllek`.
-- Booking requests use the Formspree `/book` form in `components/booking-form.tsx`. The Bookingmood iframe was removed because the subscription was cancelled; do not restore it or add a replacement calendar vendor.
+- Booking requests use the Formspree `/book` form in `components/booking-form.tsx`. The Bookingmood iframe was removed because the subscription was cancelled; do not restore it.
+- `/book` may show a first-party Villa / Main House availability calendar from `GET /api/availability`, which reads `canarycove@gmail.com` with `events.list` (not FreeBusy) and returns dates only. Hide the calendar if the fetch fails. Requires `GOOGLE_CALENDAR_SERVICE_ACCOUNT_JSON`.
 - `docs/lead-operations.md` is the canonical post-submission runbook. The `canarycove-dash` repo runs a daily 8:00 AM America/Los_Angeles reconciliation from Formspree. Keep historical homepage email-capture rows separate, deduplicate by immutable Formspree submission ID when available, and verify dashboard state by readback. Changed or ambiguous results are review-gated; do not publish them automatically.
 - The Canary Cove lead dashboard is the operational source of truth. Do not email Consi during routine lead ingestion, and do not add her as a Formspree notification recipient or forward notifications to her.
 - The site uses Cloudinary-hosted images/video and Vercel Analytics.

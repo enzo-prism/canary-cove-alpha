@@ -50,7 +50,7 @@ pnpm exec playwright install firefox webkit
 
 - `/`: homepage, custom composition root in `app/page.tsx`.
 - `/stay`: custom editorial stay page with mini gallery, highlights, amenities, testimonials, and dual villa/outdoor galleries.
-- `/book`: custom booking page with the Formspree booking form, policies, and testimonials. Bookingmood was removed because the subscription was cancelled.
+- `/book`: custom booking page with the Formspree booking form, policies, testimonials, and an optional first-party availability calendar. Bookingmood was removed because the subscription was cancelled.
 - `/contact`: custom lead/contact page.
 - `/privacy`, `/terms`: legal pages.
 
@@ -251,7 +251,8 @@ All public forms are expected to expose:
 ### Booking path
 
 - `/book` uses the request-to-book Formspree form in `components/booking-form.tsx`.
-- Bookingmood was removed because the subscription was cancelled. Do not restore that embed or add a replacement calendar vendor.
+- Bookingmood was removed because the subscription was cancelled. Do not restore that embed.
+- Live availability is first-party: `GET /api/availability` uses Google Calendar `events.list` and `GOOGLE_CALENDAR_SERVICE_ACCOUNT_JSON`. FreeBusy is not used. The public payload is booked date ranges per unit only. The calendar hides if the fetch fails.
 
 ### Media and analytics
 
@@ -320,7 +321,7 @@ pnpm test:e2e
   - desktop/mobile navigation
   - homepage CTAs
   - footer links
-  - booking form presence (no calendar embed)
+  - booking form presence (no Bookingmood embed; first-party calendar optional)
   - reef-film anchor, three-video inventory, posters, sources, playback controls, responsive framing, and no autoplay
 - `e2e/forms.spec.ts`
   - email capture success/failure

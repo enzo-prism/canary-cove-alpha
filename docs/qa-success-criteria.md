@@ -16,7 +16,7 @@ This document defines the production-readiness bar for the public marketing site
 
 - Every public route returns `2xx` and renders a visible `h1`.
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
-- The `/book` request-to-book Formspree form is present. There is no live availability calendar embed.
+- The `/book` request-to-book Formspree form is present. There is no Bookingmood or third-party calendar embed. A first-party per-unit availability calendar may render when Google Calendar credentials are configured; the form stays if that fetch fails.
 - The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
 - Search results stay bounded (per-group and total caps), intent expansion only rescores existing matches, and instant answers link into the anchored section they describe.
