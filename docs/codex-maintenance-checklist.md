@@ -254,7 +254,7 @@ Before shipping, sanity-check these when relevant:
 - `/privacy` and `/terms`
 - footer links
 - route hashes landing below the sticky header
-- Bookingmood was removed because the subscription was cancelled; do not restore a live calendar embed on `/book`
+- Bookingmood stays retired; do not restore that embed. The first-party `/book` calendar is dates-only and must hide if `/api/availability` fails.
 - form success/error states still working
 - when lead operations are in scope, the dashboard record was read back successfully and no duplicate was created
 - when lead operations are in scope, no direct email or Formspree notification was sent to Consi
