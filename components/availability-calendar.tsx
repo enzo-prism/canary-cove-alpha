@@ -142,7 +142,7 @@ export function AvailabilityCalendar() {
           <div className="space-y-2">
             <p className="text-[11px] font-semibold uppercase tracking-[0.32em] text-[#B98A2F]">Live availability</p>
             <h2 className="text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-              Villa and Main House, booked separately.
+              Villa &amp; Main House, booked separately.
             </h2>
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">
               Open dates are a starting point. We still confirm every request personally. Guest names never appear
