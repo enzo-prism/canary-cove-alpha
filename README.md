@@ -85,7 +85,7 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 - Forms post to `/api/forms`, which validates the form key and forwards to the correct Formspree endpoint.
 - Formspree is the intake transport, while the Canary Cove lead dashboard is the operational source of truth for genuine booking/contact leads. The `canarycove-dash` repo checks Formspree daily at 8:00 AM America/Los_Angeles. Use the Formspree submission ID for deduplication when available, keep historical homepage email-capture rows separate, and verify dashboard state by readback. Changed or ambiguous results require review before any dashboard publish.
 - Do not email Consi as part of routine lead ingestion and do not route Formspree notifications to her. See `docs/lead-operations.md` for the canonical handoff and privacy rules.
-- `/book` uses the request-to-book Formspree form. Bookingmood was removed because the subscription was cancelled.
+- `/book` uses the request-to-book Formspree form. Bookingmood stays off. A first-party availability calendar reads Google Calendar server-side when `GOOGLE_CALENDAR_SERVICE_ACCOUNT_JSON` is set and hides itself if that fetch fails.
 - Analytics are dual-wired: Vercel Analytics and Google Analytics 4.
 - Vercel custom events use the official `track()` API through `lib/analytics.ts`, and `components/vercel-analytics.tsx` strips query strings and hashes before events are sent.
 - GA4 pageviews are manually emitted because automatic pageviews are disabled in the global tag config.

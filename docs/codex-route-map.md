@@ -46,7 +46,7 @@ Use this file when you need to answer "where is this page actually built?" witho
 - Primary components: `PhotoCarousel`, `BookingForm`, `BookingPolicies`, `TestimonialsGrid`
 - Data/config: `lib/testimonial-spotlights.ts`, `lib/analytics.ts`, `lib/seo.ts` (`PAGE_METADATA.book`)
 - Important anchors: `#comfort-confidence`, `#payment-terms`, `#cancellation-policy`, `#booking-form`
-- High-risk couplings: `BookingForm` posts to Formspree and is privacy-policy sensitive. Post-submission handling follows `docs/lead-operations.md`: genuine leads go to the Canary Cove lead dashboard with submission-ID deduplication and readback verification, without notifying Consi. Bookingmood was removed because the subscription was cancelled.
+- High-risk couplings: `BookingForm` posts to Formspree and is privacy-policy sensitive. Post-submission handling follows `docs/lead-operations.md`: genuine leads go to the Canary Cove lead dashboard with submission-ID deduplication and readback verification, without notifying Consi. Bookingmood was removed because the subscription was cancelled. `AvailabilityCalendar` reads `/api/availability` and must never render guest names.
 - Tests most likely to fail: `e2e/release-gate.spec.ts`, `e2e/forms.spec.ts`, `e2e/design-visual.spec.ts`
 
 ### `/contact`
