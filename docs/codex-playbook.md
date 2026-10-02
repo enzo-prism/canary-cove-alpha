@@ -50,7 +50,7 @@ pnpm exec playwright install firefox webkit
 
 - `/`: homepage, custom composition root in `app/page.tsx`.
 - `/stay`: custom editorial stay page with mini gallery, highlights, amenities, testimonials, and dual villa/outdoor galleries.
-- `/book`: custom booking page with the Formspree booking form, policies, and testimonials. Bookingmood was removed because the subscription was cancelled.
+- `/book`: custom booking page with the Formspree booking form, policies, testimonials, and an optional first-party availability calendar. Bookingmood was removed because the subscription was cancelled.
 - `/contact`: custom lead/contact page.
 - `/privacy`, `/terms`: legal pages.
 
@@ -251,7 +251,11 @@ All public forms are expected to expose:
 ### Booking path
 
 - `/book` uses the request-to-book Formspree form in `components/booking-form.tsx`.
-- Bookingmood was removed because the subscription was cancelled. Do not restore that embed or add a replacement calendar vendor.
+- Bookingmood was removed because the subscription was cancelled. Do not restore that embed.
+- Live availability is first-party: `GET /api/availability` uses Google Calendar `events.list` and `GOOGLE_CALENDAR_SERVICE_ACCOUNT_JSON`. FreeBusy is not used. The public payload is booked date ranges per unit only. The calendar hides if the fetch fails.
+- The response includes a checked date window (today through 548 days ahead, end exclusive) and an update timestamp. Never present dates outside that window or past nights as open. The browser refreshes every two minutes and on return to the page; server and CDN caches each expire after one minute. Failed refreshes remove stale calendar data while keeping the form and `#availability` fallback reachable.
+- Keep the service-account JSON only in Vercel's encrypted Preview and Production environment variables. The intended reader is `canary-cove-calendar-reader@canary-cove-calendar.iam.gserviceaccount.com`; it needs `See all event details` on `canarycove@gmail.com`, with no calendar write permissions. Never expose raw Google events or guest names through the public endpoint.
+- Include `Villa` or `Main House` in each reservation title and use an all-day event covering the whole stay. Untagged events conservatively block both properties unless an overlapping, matching guest marker identifies the property. Google all-day end dates are exclusive; changes and cancellations are read automatically.
 
 ### Media and analytics
 
@@ -320,7 +324,7 @@ pnpm test:e2e
   - desktop/mobile navigation
   - homepage CTAs
   - footer links
-  - booking form presence (no calendar embed)
+  - booking form presence (no Bookingmood embed; first-party calendar optional)
   - reef-film anchor, three-video inventory, posters, sources, playback controls, responsive framing, and no autoplay
 - `e2e/forms.spec.ts`
   - email capture success/failure

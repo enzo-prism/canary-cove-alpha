@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test"
 import { CORE_VIEWPORTS, expectTapTarget, waitForPageReady } from "./helpers"
 
 test.describe("usability and responsive resilience", () => {
-  test("booking page keeps the request-to-book form and has no live calendar embed", async ({ page }) => {
+  test("booking page keeps the request-to-book form and has no Bookingmood embed", async ({ page }) => {
     await page.goto("/book")
     await waitForPageReady(page)
 

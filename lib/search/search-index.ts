@@ -373,6 +373,16 @@ export const SEARCH_ITEMS: SearchItem[] = [
     type: "page",
   },
   {
+    id: "availability-calendar",
+    title: "Villa & Main House availability calendar",
+    description: "Check booked and open nights for each property, then request your preferred dates.",
+    href: "/book#availability",
+    group: "Pricing & availability",
+    keywords: ["calendar", "open dates", "booked dates", "available nights", "villa availability", "main house availability"],
+    intent: "pricing",
+    type: "section",
+  },
+  {
     id: "booking-form",
     title: "Check availability form",
     description: "Send your dates and group details for a tailored quote.",
