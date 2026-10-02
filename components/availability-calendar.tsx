@@ -212,6 +212,7 @@ export function AvailabilityCalendar() {
               type="button"
               variant="outline"
               size="icon"
+              className="h-11 w-11 shrink-0"
               aria-label="Previous month"
               data-testid="availability-prev-month"
               disabled={monthStart <= firstMonth}
@@ -219,13 +220,14 @@ export function AvailabilityCalendar() {
             >
               <ChevronLeft className="h-4 w-4" aria-hidden />
             </Button>
-            <p className="min-w-[10rem] text-center text-sm font-semibold text-foreground" data-testid="availability-month-label">
+            <p aria-live="polite" className="min-w-[10rem] text-center text-sm font-semibold text-foreground" data-testid="availability-month-label">
               {formatMonth(monthStart)}
             </p>
             <Button
               type="button"
               variant="outline"
               size="icon"
+              className="h-11 w-11 shrink-0"
               aria-label="Next month"
               data-testid="availability-next-month"
               disabled={monthStart >= lastMonth}

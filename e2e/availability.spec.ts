@@ -1,6 +1,6 @@
 import { expect, test, type Page } from "@playwright/test"
 
-import { waitForPageReady } from "./helpers"
+import { expectTapTarget, waitForPageReady } from "./helpers"
 
 const SAMPLE_AVAILABILITY = {
   ok: true,
@@ -89,6 +89,18 @@ test.describe("booking availability calendar", () => {
     await expect(page.getByTestId("availability-calendar")).toHaveCount(0)
     await expect(page.locator("iframe[src*='bookingmood']")).toHaveCount(0)
     await expect(page.locator("#availability")).toContainText("confirm availability personally")
+  })
+
+  test("month navigation stays usable on mobile", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await mockAvailability(page, SAMPLE_AVAILABILITY)
+    await page.goto("/book")
+    await expect(page.getByTestId("availability-calendar")).toBeVisible()
+    await expectTapTarget(page.getByTestId("availability-prev-month"))
+    await expectTapTarget(page.getByTestId("availability-next-month"))
+    expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    await page.getByTestId("availability-next-month").click()
+    await expect(page.getByTestId("availability-month-label")).toHaveText("November 2026")
   })
 
   test("never presents past nights or nights beyond the checked window as open", async ({ page }) => {
