@@ -41,6 +41,9 @@ export const installErrorCollectors = (page: Page) => {
     if (location.includes("https://www.google-analytics.com/g/collect")) return
     if (text.includes("https://www.googletagmanager.com/gtag/js")) return
     if (text.includes("https://www.google-analytics.com/g/collect")) return
+    // Calendar outages intentionally return 502/503 and render the tested
+    // request-form fallback, rather than an empty calendar of open dates.
+    if (location.endsWith("/api/availability") && /502|503/.test(text)) return
     consoleErrors.push(text)
   })
 
@@ -57,6 +60,8 @@ export const installErrorCollectors = (page: Page) => {
     if (url.includes("https://www.googletagmanager.com/gtag/js")) return
     if (url.includes("https://www.google-analytics.com/g/collect")) return
     if (failureText === "cancelled" && url.includes("res.cloudinary.com") && url.endsWith(".mp4")) return
+    // WebKit reports aborted local video preload requests as "other".
+    if (failureText === "cancelled" && new URL(url).pathname.startsWith("/videos/reef-encounters/") && url.endsWith(".mp4")) return
     failedRequests.push(`${resourceType}: ${url} -> ${failureText}`)
   })
 

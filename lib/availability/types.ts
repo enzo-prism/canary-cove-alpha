@@ -26,5 +26,7 @@ export type ClassifiedEvent = CalendarEvent & {
 
 export type PublicAvailability = {
   timezone: typeof PROPERTY_TIMEZONE
+  window: DateRange
+  updatedAt: string
   units: Record<StayUnit, { booked: DateRange[] }>
 }

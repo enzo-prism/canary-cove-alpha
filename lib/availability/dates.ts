@@ -24,6 +24,11 @@ export function addDays(isoDate: string, days: number): string {
   return date.toISOString().slice(0, 10)
 }
 
+export function availabilityWindow(now = new Date()): DateRange {
+  const start = todayInPropertyTz(now)
+  return { start, end: addDays(start, 548) }
+}
+
 export function startOfMonth(isoDate: string): string {
   return `${isoDate.slice(0, 7)}-01`
 }

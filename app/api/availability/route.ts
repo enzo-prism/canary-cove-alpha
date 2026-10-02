@@ -4,7 +4,7 @@ import { toPublicAvailability } from "@/lib/availability/public-payload"
 
 export const dynamic = "force-dynamic"
 
-const SUCCESS_CACHE = "public, s-maxage=900, stale-while-revalidate=60"
+const SUCCESS_CACHE = "public, max-age=0, s-maxage=60, must-revalidate"
 const FAILURE_CACHE = "no-store"
 
 function unavailable(status: number) {
@@ -18,7 +18,8 @@ export async function GET() {
   }
 
   try {
-    const result = await listCalendarEvents()
+    const now = new Date()
+    const result = await listCalendarEvents({ now })
     if (!result.ok) {
       if (result.reason === "missing-credentials") {
         clearAvailabilityCache()
@@ -27,7 +28,7 @@ export async function GET() {
       return unavailable(502)
     }
 
-    const availability = toPublicAvailability(result.events)
+    const availability = toPublicAvailability(result.events, now)
     writeAvailabilityCache(availability)
     return Response.json({ ok: true, ...availability }, { headers: { "Cache-Control": SUCCESS_CACHE } })
   } catch {

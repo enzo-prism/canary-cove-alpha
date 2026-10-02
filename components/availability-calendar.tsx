@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react"
 
 import { ChevronLeft, ChevronRight } from "lucide-react"
 
-import { addMonths, isDateBooked, monthGrid, startOfMonth, todayInPropertyTz } from "@/lib/availability/dates"
+import { addDays, addMonths, isDateBooked, isIsoDate, monthGrid, startOfMonth, todayInPropertyTz } from "@/lib/availability/dates"
 import type { DateRange, PublicAvailability, StayUnit } from "@/lib/availability/types"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -17,6 +17,18 @@ const UNIT_COPY: Record<StayUnit, { title: string; hint: string }> = {
 }
 
 type AvailabilityResponse = PublicAvailability & { ok?: boolean }
+
+function validAvailability(payload: AvailabilityResponse): boolean {
+  return payload.ok === true && payload.timezone === "America/Belize" &&
+    !!payload.window && isIsoDate(payload.window.start) && isIsoDate(payload.window.end) &&
+    payload.window.start < payload.window.end &&
+    typeof payload.updatedAt === "string" && Number.isFinite(Date.parse(payload.updatedAt)) &&
+    (["villa", "main-house"] as const).every((unit) =>
+      Array.isArray(payload.units?.[unit]?.booked) && payload.units[unit].booked.every((range) =>
+        isIsoDate(range.start) && isIsoDate(range.end) && range.start < range.end,
+      ),
+    )
+}
 
 const monthFormatter = new Intl.DateTimeFormat("en-US", {
   month: "long",
@@ -44,11 +56,13 @@ function UnitMonth({
   monthStart,
   booked,
   today,
+  window,
 }: {
   unit: StayUnit
   monthStart: string
   booked: DateRange[]
   today: string
+  window: DateRange
 }) {
   const cells = useMemo(() => monthGrid(monthStart), [monthStart])
   const copy = UNIT_COPY[unit]
@@ -75,19 +89,22 @@ function UnitMonth({
           }
 
           const bookedDay = isDateBooked(isoDate, booked)
+          const checkedDay = isoDate >= today && isoDate >= window.start && isoDate < window.end
           const isToday = isoDate === today
           return (
             <span
               key={isoDate}
               data-testid={`availability-day-${unit}-${isoDate}`}
-              data-booked={bookedDay ? "true" : "false"}
-              aria-label={`${formatDay(isoDate)}, ${bookedDay ? "booked" : "open"}`}
+              data-booked={checkedDay ? (bookedDay ? "true" : "false") : "unknown"}
+              aria-label={`${formatDay(isoDate)}, ${checkedDay ? (bookedDay ? "booked" : "open") : "not available to check"}`}
               className={cn(
                 "flex min-h-10 items-center justify-center rounded-xl text-sm tabular-nums",
-                bookedDay
+                !checkedDay
+                  ? "bg-transparent text-muted-foreground/50"
+                  : bookedDay
                   ? "bg-[#0B1F24] text-white"
                   : "bg-background/80 text-foreground",
-                isToday && !bookedDay && "ring-1 ring-[#B98A2F]",
+                isToday && checkedDay && !bookedDay && "ring-1 ring-[#B98A2F]",
               )}
             >
               {Number(isoDate.slice(-2))}
@@ -101,34 +118,76 @@ function UnitMonth({
 
 export function AvailabilityCalendar() {
   const [availability, setAvailability] = useState<PublicAvailability | null>(null)
+  const [loading, setLoading] = useState(true)
   const [monthStart, setMonthStart] = useState(() => startOfMonth(todayInPropertyTz()))
   const today = todayInPropertyTz()
 
   useEffect(() => {
     let cancelled = false
+    let inFlight = false
+    let requestController: AbortController | null = null
 
     const load = async () => {
+      if (inFlight) return
+      inFlight = true
+      const controller = new AbortController()
+      requestController = controller
+      const timeout = setTimeout(() => controller.abort(), 25_000)
       try {
-        const response = await fetch("/api/availability", { headers: { Accept: "application/json" } })
-        if (!response.ok) return
+        const response = await fetch("/api/availability", {
+          headers: { Accept: "application/json" },
+          cache: "no-store",
+          signal: controller.signal,
+        })
+        if (!response.ok) throw new Error("Availability unavailable")
         const payload = (await response.json()) as AvailabilityResponse
-        if (cancelled || payload.ok === false || !payload.units) return
+        if (!validAvailability(payload)) throw new Error("Invalid availability")
+        if (cancelled) return
         setAvailability({
           timezone: payload.timezone,
+          window: payload.window,
+          updatedAt: payload.updatedAt,
           units: payload.units,
+        })
+        setMonthStart((current) => {
+          const firstMonth = startOfMonth(payload.window.start)
+          const lastMonth = startOfMonth(addDays(payload.window.end, -1))
+          return current < firstMonth ? firstMonth : current > lastMonth ? lastMonth : current
         })
       } catch {
         if (!cancelled) setAvailability(null)
+      } finally {
+        clearTimeout(timeout)
+        requestController = null
+        inFlight = false
+        if (!cancelled) setLoading(false)
       }
     }
 
     void load()
+    const interval = setInterval(() => { void load() }, 120_000)
+    const refresh = () => { if (document.visibilityState === "visible") void load() }
+    window.addEventListener("focus", refresh)
+    document.addEventListener("visibilitychange", refresh)
     return () => {
       cancelled = true
+      requestController?.abort()
+      clearInterval(interval)
+      window.removeEventListener("focus", refresh)
+      document.removeEventListener("visibilitychange", refresh)
     }
   }, [])
 
-  if (!availability) return null
+  if (!availability) return (
+    <section id="availability" aria-label="Availability" className="scroll-mt-[calc(var(--site-header-height)+16px)] px-4 pt-10 sm:px-6 lg:px-8">
+      <p role="status" className="mx-auto max-w-6xl text-sm leading-6 text-muted-foreground">
+        {loading ? "Checking available dates…" : "Send your preferred dates below and we’ll confirm availability personally."}
+      </p>
+    </section>
+  )
+
+  const firstMonth = startOfMonth(availability.window.start)
+  const lastMonth = startOfMonth(addDays(availability.window.end, -1))
 
   return (
     <section
@@ -145,8 +204,7 @@ export function AvailabilityCalendar() {
               Villa &amp; Main House, booked separately.
             </h2>
             <p className="max-w-xl text-sm leading-6 text-muted-foreground">
-              Open dates are a starting point. We still confirm every request personally. Guest names never appear
-              here.
+              Check open nights, then send your preferred dates below. We confirm every request personally.
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -156,6 +214,7 @@ export function AvailabilityCalendar() {
               size="icon"
               aria-label="Previous month"
               data-testid="availability-prev-month"
+              disabled={monthStart <= firstMonth}
               onClick={() => setMonthStart((current) => addMonths(current, -1))}
             >
               <ChevronLeft className="h-4 w-4" aria-hidden />
@@ -169,6 +228,7 @@ export function AvailabilityCalendar() {
               size="icon"
               aria-label="Next month"
               data-testid="availability-next-month"
+              disabled={monthStart >= lastMonth}
               onClick={() => setMonthStart((current) => addMonths(current, 1))}
             >
               <ChevronRight className="h-4 w-4" aria-hidden />
@@ -177,12 +237,13 @@ export function AvailabilityCalendar() {
         </div>
 
         <div className="mt-6 grid gap-4 lg:grid-cols-2">
-          <UnitMonth unit="villa" monthStart={monthStart} booked={availability.units.villa.booked} today={today} />
+          <UnitMonth unit="villa" monthStart={monthStart} booked={availability.units.villa.booked} today={today} window={availability.window} />
           <UnitMonth
             unit="main-house"
             monthStart={monthStart}
             booked={availability.units["main-house"].booked}
             today={today}
+            window={availability.window}
           />
         </div>
 
@@ -196,6 +257,9 @@ export function AvailabilityCalendar() {
             Open
           </li>
         </ul>
+        <p className="mt-3 text-xs leading-5 text-muted-foreground">
+          Calendar updates automatically. For dates after {formatDay(addDays(availability.window.end, -1))}, send us a request.
+        </p>
       </div>
     </section>
   )

@@ -1,6 +1,6 @@
 import { createSign } from "node:crypto"
 
-import { addDays, isIsoDate, todayInPropertyTz } from "@/lib/availability/dates"
+import { addDays, availabilityWindow, isIsoDate, todayInPropertyTz } from "@/lib/availability/dates"
 import type { CalendarEvent } from "@/lib/availability/types"
 
 const TOKEN_URL = "https://oauth2.googleapis.com/token"
@@ -98,7 +98,19 @@ function toIsoDate(value: GoogleDate | undefined): string | null {
 function toCalendarEvent(item: GoogleEvent): CalendarEvent | null {
   if (!item.id || item.status === "cancelled") return null
   const start = toIsoDate(item.start)
-  const end = toIsoDate(item.end)
+  let end = toIsoDate(item.end)
+  // Timed departures reserve their last calendar day unless they end at
+  // midnight in Belize. All-day Google end dates are already exclusive.
+  if (end && item.end?.dateTime) {
+    const time = new Intl.DateTimeFormat("en-GB", {
+      timeZone: "America/Belize",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hourCycle: "h23",
+    }).format(new Date(item.end.dateTime))
+    if (time !== "00:00:00") end = addDays(end, 1)
+  }
   if (!start || !end || start >= end) return null
   return {
     id: item.id,
@@ -119,6 +131,8 @@ async function accessToken(account: ServiceAccountJson, fetchImpl: typeof fetch,
     method: "POST",
     headers: { "Content-Type": "application/x-www-form-urlencoded" },
     body,
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
   })
   if (!response.ok) return null
 
@@ -137,9 +151,11 @@ export async function listCalendarEvents(options: ReadOptions = {}): Promise<Cal
   if (!token) return { ok: false, reason: "upstream" }
 
   const calendarId = encodeURIComponent(env.GOOGLE_CALENDAR_ID?.trim() || DEFAULT_CALENDAR_ID)
-  const timeMin = `${addDays(todayInPropertyTz(now), -1)}T00:00:00Z`
-  const timeMax = `${addDays(todayInPropertyTz(now), 548)}T00:00:00Z`
+  const window = availabilityWindow(now)
+  const timeMin = `${window.start}T00:00:00-06:00`
+  const timeMax = `${window.end}T00:00:00-06:00`
   const events: CalendarEvent[] = []
+  const pages = new Set<string>()
   let pageToken: string | undefined
 
   do {
@@ -154,15 +170,22 @@ export async function listCalendarEvents(options: ReadOptions = {}): Promise<Cal
 
     const response = await fetchImpl(url, {
       headers: { Authorization: `Bearer ${token}` },
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
     })
     if (!response.ok) return { ok: false, reason: "upstream" }
 
     const payload = (await response.json()) as GoogleEventsResponse
+    if (!Array.isArray(payload.items ?? [])) return { ok: false, reason: "upstream" }
     for (const item of payload.items ?? []) {
       const event = toCalendarEvent(item)
       if (event) events.push(event)
     }
     pageToken = payload.nextPageToken
+    if (pageToken) {
+      if (pages.has(pageToken) || pages.size >= 100) return { ok: false, reason: "upstream" }
+      pages.add(pageToken)
+    }
   } while (pageToken)
 
   return { ok: true, events }

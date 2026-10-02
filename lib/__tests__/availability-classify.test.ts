@@ -7,7 +7,8 @@ import { SAMPLE_CALENDAR_EVENTS } from "@/lib/availability/sample-events"
 
 const classified = classifyCalendarEvents(SAMPLE_CALENDAR_EVENTS)
 const byTitle = Object.fromEntries(classified.map((event) => [event.title, event]))
-const publicAvailability = toPublicAvailability(SAMPLE_CALENDAR_EVENTS)
+const checkedAt = new Date("2026-10-02T18:00:00Z")
+const publicAvailability = toPublicAvailability(SAMPLE_CALENDAR_EVENTS, checkedAt)
 
 describe("guest name tokens", () => {
   test("strips unit and stay-marker words so overlapping titles can match", () => {
@@ -19,6 +20,11 @@ describe("guest name tokens", () => {
 })
 
 describe("sample event classification", () => {
+  test("recognizes common Main House title formats", () => {
+    for (const title of ["Guest MainHouse", "Guest Main-House", "Guest Main House"]) {
+      expect(classifyCalendarEvents([{ id: title, title, start: "2026-10-10", end: "2026-10-12" }])[0].unit).toBe("main-house")
+    }
+  })
   test("maps each sample event to a unit with a reason", () => {
     expect(
       classified.map((event) => ({
@@ -182,6 +188,8 @@ describe("sample event classification", () => {
     expect(serialized).not.toMatch(/Lyn|Saucier|Listwin|Overstreet|Keller|Kuck|Sonja|Trent|Arrival|Departure|persons|pax/i)
     expect(publicAvailability).toEqual({
       timezone: "America/Belize",
+      window: { start: "2026-10-02", end: "2028-04-02" },
+      updatedAt: checkedAt.toISOString(),
       units: {
         villa: {
           booked: [

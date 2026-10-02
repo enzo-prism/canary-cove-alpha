@@ -1,6 +1,6 @@
 import type { PublicAvailability } from "@/lib/availability/types"
 
-const CACHE_TTL_MS = 15 * 60 * 1000
+const CACHE_TTL_MS = 60 * 1000
 
 type CacheEntry = {
   value: PublicAvailability

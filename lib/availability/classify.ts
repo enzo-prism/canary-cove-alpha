@@ -19,6 +19,7 @@ const TITLE_NOISE = new Set([
   "guests",
   "house",
   "main",
+  "mainhouse",
   "night",
   "nights",
   "of",
@@ -37,7 +38,7 @@ const TITLE_NOISE = new Set([
 function titleUnit(title: string): ClassificationUnit | null {
   const normalized = title.toLowerCase()
   const hasVilla = /\bvillas?\b/.test(normalized)
-  const hasMainHouse = /\bmain\s+house\b/.test(normalized)
+  const hasMainHouse = /\bmain[\s-]*house\b/.test(normalized)
   if (hasVilla && hasMainHouse) return "both"
   if (hasVilla) return "villa"
   if (hasMainHouse) return "main-house"
