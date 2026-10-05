@@ -13,6 +13,7 @@ const publicAvailability = toPublicAvailability(SAMPLE_CALENDAR_EVENTS, checkedA
 describe("guest name tokens", () => {
   test("strips unit and stay-marker words so overlapping titles can match", () => {
     expect(guestNameTokens("Theo Cloudberry Arrival Main House")).toEqual(["theo", "cloudberry"])
+    expect(guestNameTokens("Theo Cloudberry")).toEqual(["theo", "cloudberry"])
     expect(guestNameTokens("Ada Meridian")).toEqual(["ada", "meridian"])
     expect(guestNameTokens("Arrival 3 persons")).toEqual([])
     expect(guestNameTokens("Villa")).toEqual([])
@@ -185,7 +186,7 @@ describe("sample event classification", () => {
 
   test("public payload is dates only", () => {
     const serialized = JSON.stringify(publicAvailability)
-    expect(serialized).not.toMatch(/fictionalmarker6|fictionalmarker9|fictionalmarker5|fictionalmarker7|fictionalmarker3|fictionalmarker4|fictionalmarker10|fictionalmarker12|Arrival|Departure|persons|pax/i)
+    expect(serialized).not.toMatch(/Paperkite|Cloudberry|Starfern|Pebblewing|Moonquill|Arrival|Departure|persons|pax/i)
     expect(publicAvailability).toEqual({
       timezone: "America/Belize",
       window: { start: "2042-02-03", end: "2043-08-05" },

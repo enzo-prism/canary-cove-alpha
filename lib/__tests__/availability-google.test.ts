@@ -64,7 +64,7 @@ describe("listCalendarEvents", () => {
     ])
 
     const publicPayload = toPublicAvailability(result.events)
-    expect(JSON.stringify(publicPayload)).not.toMatch(/fictionalmarker6|fictionalmarker9/)
+    expect(JSON.stringify(publicPayload)).not.toMatch(/Mira Paperkite/)
     expect(publicPayload.units.villa.booked).toEqual([{ start: "2042-02-11", end: "2042-02-16" }])
     expect(publicPayload.units["main-house"].booked).toEqual([{ start: "2042-02-11", end: "2042-02-16" }])
   })

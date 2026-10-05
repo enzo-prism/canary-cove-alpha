@@ -61,7 +61,7 @@ test.describe("booking availability calendar", () => {
     await expect(calendar).toBeVisible()
     await expect(page.getByTestId("booking-form-card")).toBeVisible()
     await expect(page.locator("iframe[src*='bookingmood']")).toHaveCount(0)
-    await expect(calendar).not.toContainText(/fictionalmarker6|fictionalmarker9|fictionalmarker5|fictionalmarker7|fictionalmarker3|fictionalmarker10/i)
+    await expect(calendar).not.toContainText(/Paperkite|Cloudberry|Starfern|Pebblewing|Moonquill|Trip|Departure|pax/i)
 
     await goToMonth(page, "February 2042")
     await expect(page.getByTestId("availability-day-villa-2042-02-11")).toHaveAttribute("data-booked", "true")
