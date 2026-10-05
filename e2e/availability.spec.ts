@@ -73,9 +73,9 @@ test.describe("booking availability calendar", () => {
     await expect(page.getByTestId("availability-day-main-house-2042-03-07")).toHaveAttribute("data-booked", "true")
     await expect(page.getByTestId("availability-day-villa-2042-03-07")).toHaveAttribute("data-booked", "false")
 
-    await goToMonth(page, "April 2042")
     await expect(page.getByTestId("availability-day-main-house-2042-03-10")).toHaveAttribute("data-booked", "true")
     await expect(page.getByTestId("availability-day-main-house-2042-03-11")).toHaveAttribute("data-booked", "false")
+    await goToMonth(page, "April 2042")
     await expect(page.getByTestId("availability-day-villa-2042-04-19")).toHaveAttribute("data-booked", "true")
     await expect(page.getByTestId("availability-day-main-house-2042-04-19")).toHaveAttribute("data-booked", "false")
   })
