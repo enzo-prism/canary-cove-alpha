@@ -1,6 +1,7 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, type CSSProperties } from "react"
+import Image from "next/image"
 import Link from "next/link"
 import { ArrowUpRight, ChevronDown } from "lucide-react"
 
@@ -20,10 +21,10 @@ const CLOSE_DELAY_MS = 120
 
 const linkClass = (active: boolean) =>
   cn(
-    "focus-ring rounded-lg px-3 py-2 text-sm transition-colors duration-200 motion-reduce:transition-none",
+    "focus-ring rounded-full px-3 py-2 text-[14px] font-medium transition-colors duration-300 motion-reduce:transition-none",
     active
-      ? "font-semibold text-foreground underline decoration-2 underline-offset-[6px]"
-      : "font-medium text-foreground/75 hover:text-foreground",
+      ? "text-foreground underline decoration-canary-deep decoration-2 underline-offset-[9px]"
+      : "text-foreground/70 hover:text-foreground",
   )
 
 function focusPanelLink(panel: HTMLElement | null, index: number) {
@@ -35,6 +36,7 @@ function focusPanelLink(panel: HTMLElement | null, index: number) {
 
 export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
   const [openDropdown, setOpenDropdown] = useState<string | null>(null)
+  const [preview, setPreview] = useState<Record<string, number>>({})
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const panelRefs = useRef<Record<string, HTMLElement | null>>({})
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
@@ -105,7 +107,7 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
 
   return (
     <nav aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
-      <ul className="flex min-w-0 list-none items-center gap-1">
+      <ul className="flex min-w-0 list-none items-center gap-0.5 xl:gap-1">
         {primary.map((item) => {
           if (item.type === "dropdown") {
             const open = openDropdown === item.label
@@ -153,12 +155,12 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
                           }
                         }}
                         className={cn(
-                          "focus-ring flex h-9 w-7 items-center justify-center rounded-l-none rounded-r-lg transition-colors duration-200 motion-reduce:transition-none",
+                          "focus-ring flex h-9 w-7 items-center justify-center rounded-l-none rounded-r-full transition-colors duration-200 motion-reduce:transition-none",
                           active ? "text-foreground" : "text-foreground/60 hover:text-foreground",
                         )}
                       >
                         <ChevronDown
-                          className={cn("h-3.5 w-3.5 transition-transform duration-200 motion-reduce:transition-none", open && "rotate-180")}
+                          className={cn("h-3.5 w-3.5 transition-transform duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none", open && "rotate-180")}
                         />
                       </button>
                     </PopoverTrigger>
@@ -168,40 +170,78 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
                       panelRefs.current[item.label] = node
                     }}
                     align="center"
-                    sideOffset={10}
+                    sideOffset={14}
                     onKeyDown={(event) => handlePanelKeyDown(event, item.label)}
-                    className="w-[300px] rounded-2xl p-2"
+                    onMouseEnter={clearTimer}
+                    onMouseLeave={scheduleClose}
+                    className="w-[600px] overflow-hidden rounded-[1.5rem] border-border/80 bg-sand-light p-2 shadow-[var(--shadow-lift)]"
                   >
-                    <ul className="flex flex-col">
-                      {item.items.map((child) => (
-                        <li key={child.href}>
-                          <Link
-                            href={child.href}
-                            aria-current={isActive(child.href) ? "page" : undefined}
-                            onClick={() => {
-                              clearTimer()
-                              setOpenDropdown(null)
-                              trackNavClick("header_desktop", child.href)
-                            }}
-                            className={cn(
-                              "flex min-h-11 flex-col justify-center rounded-xl px-3 py-2.5 transition-colors duration-200 hover:bg-foreground/[0.05] motion-reduce:transition-none",
-                              isActive(child.href) && "bg-foreground/[0.06]",
-                            )}
+                    <div className="grid grid-cols-[1fr_220px] gap-2">
+                      <ul className="flex flex-col py-1">
+                        {item.items.map((child, index) => (
+                          <li
+                            key={child.href}
+                            className="enter-up"
+                            style={{ "--enter-delay": `${60 + index * 45}ms` } as CSSProperties}
                           >
-                            <span className="flex items-center gap-1.5 text-sm font-medium text-foreground">
-                              {child.label}
-                              {child.external ? (
-                                <>
-                                  <ArrowUpRight className="h-3.5 w-3.5 text-muted-foreground" aria-hidden="true" />
-                                  <span className="sr-only">(external site)</span>
-                                </>
-                              ) : null}
-                            </span>
-                            <span className="block text-xs text-muted-foreground">{child.caption}</span>
-                          </Link>
-                        </li>
-                      ))}
-                    </ul>
+                            <Link
+                              href={child.href}
+                              aria-current={isActive(child.href) ? "page" : undefined}
+                              onMouseEnter={() => setPreview((prev) => ({ ...prev, [item.label]: index }))}
+                              onFocus={() => setPreview((prev) => ({ ...prev, [item.label]: index }))}
+                              onClick={() => {
+                                clearTimer()
+                                setOpenDropdown(null)
+                                trackNavClick("header_desktop", child.href)
+                              }}
+                              className={cn(
+                                "group flex min-h-14 items-center justify-between gap-4 rounded-2xl px-4 py-3 transition-colors duration-300 hover:bg-sand-deep/70 focus-visible:bg-sand-deep/70 focus-visible:outline-none motion-reduce:transition-none",
+                                isActive(child.href) && "bg-sand-deep/60",
+                              )}
+                            >
+                              <span className="flex flex-col">
+                                <span className="flex items-center gap-1.5 font-display text-[1.45rem] leading-tight text-foreground">
+                                  {child.label}
+                                  {child.external ? (
+                                    <>
+                                      <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
+                                      <span className="sr-only">(external site)</span>
+                                    </>
+                                  ) : null}
+                                </span>
+                                <span className="block text-xs text-muted-foreground">{child.caption}</span>
+                              </span>
+                              <span
+                                aria-hidden="true"
+                                className="flex h-8 w-8 shrink-0 -translate-x-2 items-center justify-center rounded-full bg-ink text-sand-light opacity-0 transition-[opacity,transform] duration-500 ease-[var(--ease-out-expo)] group-hover:translate-x-0 group-hover:opacity-100 group-focus-visible:translate-x-0 group-focus-visible:opacity-100"
+                              >
+                                <ArrowUpRight className="h-3.5 w-3.5" />
+                              </span>
+                            </Link>
+                          </li>
+                        ))}
+                      </ul>
+                      <div aria-hidden="true" className="relative min-h-[260px] overflow-hidden rounded-[1.1rem] bg-sand-deep">
+                        {item.items.map((child, index) =>
+                          child.image ? (
+                            <Image
+                              key={child.href}
+                              src={child.image.src}
+                              alt=""
+                              fill
+                              sizes="220px"
+                              className={cn(
+                                "object-cover transition-[opacity,transform] duration-700 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+                                (preview[item.label] ?? 0) === index ? "scale-100 opacity-100" : "scale-110 opacity-0",
+                              )}
+                            />
+                          ) : null,
+                        )}
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-ink/70 to-transparent p-4 pt-12">
+                          <p className="text-[10px] font-semibold uppercase tracking-[0.28em] text-white/80">{item.label}</p>
+                        </div>
+                      </div>
+                    </div>
                   </PopoverContent>
                 </Popover>
               </li>

@@ -1,10 +1,12 @@
 "use client"
 
-import { useCallback, useEffect, useState, type CSSProperties, type ReactNode } from "react"
+import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react"
 import Image from "next/image"
+import { motion, useScroll, useTransform } from "motion/react"
 
 import { cn } from "@/lib/utils"
 import { IMAGES, type ImageFocal } from "@/lib/images"
+import { useMotionOk } from "@/components/motion/use-motion-ok"
 
 type HeroImage = {
   src: string
@@ -16,27 +18,29 @@ type HeroImage = {
 
 // Only use large-format assets here. Full-bleed hero backgrounds need enough
 // source width to stay sharp on wide desktop screens and high-density displays.
+// The first slide is fixed (it is the LCP image) and should be the brightest,
+// most "this is the place" frame; the rest are shuffled per session.
 const HERO_IMAGES: HeroImage[] = [
   {
-    ...IMAGES.heroBackgroundEstate,
-    focusX: 60,
+    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059670/canarycove-haydeelustudio-521-scaled_ohjnr1.webp",
+    alt: "Infinity pool and yellow umbrella looking out to the sea at Canary Cove",
+    focusX: 40,
   },
   {
-    ...IMAGES.villaPool,
-    focusX: 54,
+    ...IMAGES.heroVillaDining,
+    focusX: 45,
+  },
+  {
+    ...IMAGES.heroVillaSeating,
+    focusX: 55,
+  },
+  {
+    ...IMAGES.heroBackgroundLawn,
+    focusX: 55,
   },
   {
     ...IMAGES.livingRoom,
     focusX: 58,
-  },
-  {
-    src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059670/canarycove-haydeelustudio-521-scaled_ohjnr1.webp",
-    alt: "Canary Cove villa view opening toward the water",
-    focusX: 62,
-  },
-  {
-    ...IMAGES.heroBackgroundDrink,
-    focusX: 56,
   },
 ]
 
@@ -69,9 +73,20 @@ const getRandomizedHeroImages = (previousOrder?: string | null) => {
 type HeroImageRotatorProps = {
   className?: string
   children?: ReactNode
+  /** Rendered over the photography, under the copy (e.g. the info rail). */
+  chrome?: ReactNode
 }
 
-export function HeroImageRotator({ className, children }: HeroImageRotatorProps) {
+export function HeroImageRotator({ className, children, chrome }: HeroImageRotatorProps) {
+  const rootRef = useRef<HTMLDivElement | null>(null)
+  const motionOk = useMotionOk()
+  const [hasRotated, setHasRotated] = useState(false)
+  // Scroll-linked depth: the photography sinks and dims as the page scrolls
+  // away. Applied to an inner layer so the hero box itself never moves.
+  const { scrollYProgress } = useScroll({ target: rootRef, offset: ["start start", "end start"] })
+  const layerY = useTransform(scrollYProgress, [0, 1], motionOk ? ["0%", "22%"] : ["0%", "0%"])
+  const layerScale = useTransform(scrollYProgress, [0, 1], motionOk ? [1, 1.08] : [1, 1])
+  const dim = useTransform(scrollYProgress, [0, 1], motionOk ? [0, 0.55] : [0, 0])
   const [photos, setPhotos] = useState<HeroImage[]>(HERO_IMAGES)
   const [activeIndex, setActiveIndex] = useState(0)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
@@ -81,6 +96,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
   const [showAllSlides, setShowAllSlides] = useState(false)
 
   const goNext = useCallback(() => {
+    setHasRotated(true)
     setActiveIndex((prev) => (prev + 1) % photos.length)
   }, [photos.length])
 
@@ -122,40 +138,53 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
 
   return (
     <div
-      className={cn("relative min-h-[60vh] w-full overflow-hidden bg-surface-elevated", className)}
+      ref={rootRef}
+      className={cn("relative min-h-[60vh] w-full overflow-hidden bg-ink", className)}
     >
-      {(showAllSlides ? photos : photos.slice(0, 1)).map((photo, index) => (
-        <Image
-          key={photo.src}
-          src={photo.src}
-          alt={photo.alt}
-          fill
-          priority={index === 0}
-          sizes="(min-width: 2560px) 2560px, 100vw"
-          style={
-            {
-              // The per-image horizontal bias wins on x; a record-level focal
-              // point supplies y (and x when no bias is set).
-              objectPosition: `${photo.focusX ?? photo.focal?.x ?? 50}% ${photo.focal?.y ?? 50}%`,
-            } satisfies CSSProperties
-          }
-          className={cn(
-            "absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 ease-out motion-reduce:transition-none",
-            index === activeIndex ? "opacity-100" : "opacity-0",
-          )}
-        />
-      ))}
+      <motion.div className="absolute inset-0 will-change-transform" style={{ y: layerY, scale: layerScale }}>
+        {(showAllSlides ? photos : photos.slice(0, 1)).map((photo, index) => {
+          const active = index === activeIndex
+          return (
+            <div
+              key={photo.src}
+              data-active={active ? "" : undefined}
+              className={cn(
+                "hero-slide absolute inset-0",
+                active ? "opacity-100" : "opacity-0",
+                active && !hasRotated && "ken-burns",
+              )}
+            >
+              <Image
+                src={photo.src}
+                alt={photo.alt}
+                fill
+                priority={index === 0}
+                sizes="(min-width: 2560px) 2560px, 100vw"
+                style={
+                  {
+                    // The per-image horizontal bias wins on x; a record-level focal
+                    // point supplies y (and x when no bias is set).
+                    objectPosition: `${photo.focusX ?? photo.focal?.x ?? 50}% ${photo.focal?.y ?? 50}%`,
+                  } satisfies CSSProperties
+                }
+                className="object-cover"
+              />
+            </div>
+          )
+        })}
+      </motion.div>
       <div
         data-testid="hero-contrast-overlay"
-        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(7,18,22,0.28)_0%,rgba(7,18,22,0.08)_36%,rgba(7,18,22,0.22)_62%,rgba(7,18,22,0.62)_100%)]"
+        className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(8,26,29,0.42)_0%,rgba(8,26,29,0.08)_28%,rgba(8,26,29,0.32)_52%,rgba(8,26,29,0.84)_100%)]"
       />
+      <motion.div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-reef-deep" style={{ opacity: dim }} />
       {photos.length > 1 ? (
         <div
           data-testid="hero-rotate-indicator"
           aria-hidden="true"
-          className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center sm:bottom-7"
+          className="pointer-events-none absolute left-[var(--gutter)] top-6 z-20 md:bottom-9 md:left-1/2 md:top-auto md:-translate-x-1/2"
         >
-          <div className="flex items-center gap-1.5 rounded-full border border-white/18 bg-black/12 px-3 py-2 shadow-[0_18px_50px_rgba(7,18,22,0.18)] backdrop-blur-xl">
+          <div className="flex items-center gap-1.5">
             {photos.map((photo, index) => {
               const isActive = index === activeIndex
 
@@ -163,14 +192,14 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
                 <span
                   key={photo.src}
                   className={cn(
-                    "relative h-[2px] w-5 overflow-hidden rounded-full bg-white/16 sm:w-7",
-                    isActive && "bg-white/20",
+                    "relative h-[2px] w-8 overflow-hidden rounded-full bg-white/25 sm:w-12",
+                    isActive && "bg-white/30",
                   )}
                 >
                   {isActive ? (
                     <span
                       key={`${photo.src}-${activeIndex}`}
-                      className="absolute inset-0 origin-left rounded-full bg-white/82"
+                      className="absolute inset-0 origin-left rounded-full bg-canary"
                       style={
                         prefersReducedMotion
                           ? ({
@@ -192,6 +221,7 @@ export function HeroImageRotator({ className, children }: HeroImageRotatorProps)
           </div>
         </div>
       ) : null}
+      {chrome}
       {children ? <div className="absolute inset-0 z-10">{children}</div> : null}
     </div>
   )

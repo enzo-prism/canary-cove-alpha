@@ -1,34 +1,41 @@
 import Link from "next/link"
 
+import { BrandGlyph } from "@/components/brand-glyph"
 import { cn } from "@/lib/utils"
 
 type BrandMarkProps = {
   className?: string
   compact?: boolean
+  tone?: "ink" | "light"
 }
 
-export function BrandMark({ className, compact = false }: BrandMarkProps) {
+export function BrandMark({ className, compact = false, tone = "ink" }: BrandMarkProps) {
+  const light = tone === "light"
   return (
     <Link
       href="/"
       aria-label="Canary Cove home"
-      className={cn("group inline-flex items-center gap-3", className)}
+      className={cn("group focus-ring inline-flex items-center gap-2.5 rounded-full", className)}
     >
-      <span
-        aria-hidden="true"
-        className="h-2.5 w-2.5 shrink-0 rounded-full border border-primary/20 bg-primary/90 transition-transform duration-200 group-hover:scale-110"
-      />
+      <BrandGlyph tone={tone} className={compact ? "h-8 w-8" : "h-10 w-10"} />
       <span className="flex min-w-0 flex-col">
         <span
           className={cn(
-            "text-[0.7rem] font-semibold uppercase tracking-[0.36em] text-foreground",
-            compact && "text-[0.64rem] tracking-[0.32em]",
+            "font-display uppercase leading-none tracking-[0.04em]",
+            compact ? "text-[1.3rem]" : "text-[1.6rem]",
+            light ? "text-white" : "text-foreground",
           )}
         >
           Canary Cove
         </span>
-        <span className={cn("text-xs text-muted-foreground", compact ? "hidden min-[380px]:block" : "")}>
-          Ambergris Caye, Belize
+        <span
+          className={cn(
+            "mt-1 text-[9.5px] font-semibold uppercase tracking-[0.3em]",
+            light ? "text-white/70" : "text-muted-foreground",
+            compact ? "hidden min-[380px]:block" : "",
+          )}
+        >
+          Ambergris Caye · Belize
         </span>
       </span>
     </Link>

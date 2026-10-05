@@ -23,7 +23,7 @@ This document defines the production-readiness bar for the public marketing site
 - Guest quotes render byte-identical to their sources (`lib/testimonial-spotlights.ts` or the reviews guestbook); paraphrased or invented quotes must never carry guest attribution.
 - The contact form and booking form both expose a clear success state and a clear failure state.
 - Booking requests validate matching email addresses and a sensible date order before submission.
-- The homepage diving film is poster-first and starts only after a guest click; do not ship the raw autoplay MP4.
+- The homepage diving film starts only after a guest click (no `<video>` inside `[data-testid=property-film]` before play); do not ship the raw autoplay MP4. The decorative muted manta loop behind it is aria-hidden, lazy, pauses off-screen, and never plays under reduced motion.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 - `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.
 - Reef films use native controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
@@ -39,6 +39,10 @@ This document defines the production-readiness bar for the public marketing site
 
 ## Design criteria
 
+- Pages follow `docs/design-system.md` (tokens, Instrument Serif headlines, `PageHero`, `CtaLink`, motion primitives).
+- Motion is progressive: content is fully visible without JavaScript, in print, and under `prefers-reduced-motion`; reveal states never use `visibility`/`display` hiding or block pointer events.
+- Scrolling stays native window scroll (Lenis only smooths wheel input on desktop pointers), so sticky elements, anchors and IntersectionObservers behave natively.
+
 - Hero overlay copy stays readable against the rotating photography (contrast gradient plus overlay).
 - The header bar stays solid over every hero (no route-conditional transparency) and shrinks on scroll.
 - Desktop nav uses plain text links with an underlined active section; Stay and Explore open captioned dropdown panels via hover intent, chevron click, or keyboard.
@@ -46,7 +50,7 @@ This document defines the production-readiness bar for the public marketing site
 - Homepage testimonial quotes stay inside their photo cards; interior testimonial grids keep author names pinned to the bottom of equal-height cards.
 - Experiences hero tucks under the live `--site-header-height` without covering the page heading.
 - Dining hero ledger keeps exactly 4 `dining-basic` rows with visible `•` markers.
-- Critical sections maintain their spacing rhythm.
+- Homepage chapters keep the `Section padding="tight"` rhythm (64/80/96px at mobile/tablet/desktop) and the hero stays full-bleed.
 - Galleries and carousels keep their intended framing and do not regress into clipped, low-contrast, or partial-slide states.
 - Visual-regression baselines remain stable for:
   - homepage hero copy

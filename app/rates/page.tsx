@@ -1,15 +1,20 @@
 import Image from "next/image"
-import { ArrowUpRight } from "lucide-react"
+import type { CSSProperties } from "react"
 
-import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
+import { CountUp } from "@/components/motion/count-up"
+import { Marquee } from "@/components/motion/marquee"
+import { Parallax } from "@/components/motion/parallax"
+import { ScrollWordReveal } from "@/components/motion/scroll-word-reveal"
+import { PageHero } from "@/components/page-hero"
 import { RatesServicesBrowser, type RatesServiceGroup } from "@/components/rates-services-browser"
+import { Drift } from "@/components/rates/drift"
+import { SeasonLedger, type LedgerSeason } from "@/components/rates/season-ledger"
+import { SectionHeading } from "@/components/section-heading"
 import { PageStructuredData } from "@/components/structured-data"
-import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { CtaLink } from "@/components/ui/cta-link"
 import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
@@ -31,21 +36,16 @@ const VALUE_POINTS = [
   },
 ] as const
 
-type SeasonRate = {
-  label: string
-  price: string
-}
+const LOW_MONTHS = [1, 2, 5, 6, 7, 8, 9] as const
+const HIGH_MONTHS = [4, 10] as const
+const PEAK_MONTHS = [11, 0, 3] as const
 
-type Season = {
-  name: string
-  monthsShort: string
-  rates: readonly SeasonRate[]
-}
-
-const VILLA_SEASONS: readonly Season[] = [
+const VILLA_SEASONS: readonly LedgerSeason[] = [
   {
     name: "Low Season",
     monthsShort: "Feb, Mar, Jun–Oct",
+    months: LOW_MONTHS,
+    tone: "low",
     rates: [
       { label: "1–2 Suites", price: "$1,000" },
       { label: "3 Suites", price: "$1,250" },
@@ -54,6 +54,8 @@ const VILLA_SEASONS: readonly Season[] = [
   {
     name: "High Season",
     monthsShort: "May, Nov",
+    months: HIGH_MONTHS,
+    tone: "high",
     rates: [
       { label: "1–2 Suites", price: "$1,200" },
       { label: "3 Suites", price: "$1,500" },
@@ -62,6 +64,8 @@ const VILLA_SEASONS: readonly Season[] = [
   {
     name: "Peak Season",
     monthsShort: "Dec, Jan, Apr",
+    months: PEAK_MONTHS,
+    tone: "peak",
     rates: [
       { label: "1–2 Suites", price: "$1,500" },
       { label: "3 Suites", price: "$1,800" },
@@ -69,11 +73,11 @@ const VILLA_SEASONS: readonly Season[] = [
   },
 ]
 
-const MAIN_HOUSE_SEASONS: readonly Season[] = [
-  { name: "Low Season", monthsShort: "Feb, Mar, Jun–Oct", rates: [{ label: "5 Suites", price: "$2,500" }] },
-  { name: "High Season", monthsShort: "May, Nov", rates: [{ label: "5 Suites", price: "$3,000" }] },
-  { name: "Peak Season", monthsShort: "Dec, Jan, Apr", rates: [{ label: "5 Suites", price: "$3,600" }] },
-]
+const MAIN_HOUSE_SEASONS = [
+  { name: "Low Season", monthsShort: "Feb, Mar, Jun–Oct", price: "$2,500", tone: "bg-lagoon-soft" },
+  { name: "High Season", monthsShort: "May, Nov", price: "$3,000", tone: "bg-canary" },
+  { name: "Peak Season", monthsShort: "Dec, Jan, Apr", price: "$3,600", tone: "bg-coral" },
+] as const
 
 const SERVICE_GROUPS: RatesServiceGroup[] = [
   {
@@ -175,20 +179,19 @@ const SERVICE_GROUPS: RatesServiceGroup[] = [
       },
     ],
   },
+]
+
+const INCLUDED_TICKER = [
+  "Private chef",
+  "Groceries at cost",
+  "Arrival & departure boat transfers",
+  "Snorkel gear",
+  "Paddle boards & kayaks",
+  "Hobie Cat sailing",
+  "No automatic service fee",
 ] as const
 
-const RATE_PERSPECTIVES = [
-  {
-    quote: TESTIMONIAL_SPOTLIGHTS.rates[0].quote,
-    author: TESTIMONIAL_SPOTLIGHTS.rates[0].author,
-    year: TESTIMONIAL_SPOTLIGHTS.rates[0].year,
-  },
-  {
-    quote: TESTIMONIAL_SPOTLIGHTS.rates[1].quote,
-    author: TESTIMONIAL_SPOTLIGHTS.rates[1].author,
-    year: TESTIMONIAL_SPOTLIGHTS.rates[1].year,
-  },
-] as const
+const [FIRST_PERSPECTIVE, SECOND_PERSPECTIVE] = TESTIMONIAL_SPOTLIGHTS.rates
 
 const RATE_ANCHORS = [
   { label: "Villa rates", href: "#villa-accommodations" },
@@ -197,387 +200,400 @@ const RATE_ANCHORS = [
   { label: "Add-ons", href: "#additional-services" },
 ] as const
 
-function Eyebrow({ children }: { children: React.ReactNode }) {
-  return <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">{children}</p>
-}
+const priceValue = (price: string) => Number(price.replace(/[^0-9]/g, ""))
+const delay = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties
 
-function RateGlance() {
-  const rows = [
-    { label: "Villa · 1–2 suites", price: "from $1,000/night" },
-    { label: "Villa · 3 suites", price: "from $1,250/night" },
-    { label: "Main House · 5 suites", price: "from $2,500/night · repeat guests" },
-  ] as const
-
+function FromPrice({ price }: { price: string }) {
   return (
-    <dl className="border-t border-border/60">
-      {rows.map((row) => (
-        <div
-          key={row.label}
-          className="flex items-baseline justify-between gap-6 border-b border-border/60 py-3.5"
-        >
-          <dt className="text-[0.95rem] font-medium text-foreground/80">{row.label}</dt>
-          <dd className="shrink-0 text-right text-[0.95rem] font-semibold tabular-nums text-foreground">
-            {row.price}
-          </dd>
-        </div>
-      ))}
-    </dl>
+    <>
+      <span className="mr-1.5 align-middle font-sans text-[13px] text-muted-foreground">from</span>
+      {price}
+    </>
   )
 }
 
-function SeasonRateTable({ seasons, caption }: { seasons: readonly Season[]; caption: string }) {
+function AnchorIndex() {
   return (
-    <Card className="surface-panel overflow-hidden rounded-[28px] border-border/60 bg-white/95 shadow-[0_24px_70px_rgba(15,23,42,0.08)]">
-      <table className="w-full border-collapse text-left">
-        <caption className="sr-only">{caption}</caption>
-        <thead className="hidden md:table-header-group">
-          <tr className="border-b border-border/60">
-            <th scope="col" className="w-[22%] px-6 py-4 pl-8 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-              Season
-            </th>
-            <th scope="col" className="w-[34%] px-6 py-4 text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-              Travel months
-            </th>
-            <th scope="col" className="w-[22%] px-6 py-4 text-right text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-              1–2 suites
-            </th>
-            <th scope="col" className="w-[22%] px-6 py-4 pr-8 text-right text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-              3 suites
-            </th>
-          </tr>
-        </thead>
-        <tbody className="grid gap-3 p-4 sm:p-5 md:table-row-group md:p-0">
-          {seasons.map((season) => (
-            <tr
-              key={season.name}
-              className="grid gap-2 rounded-[20px] border border-border/55 bg-white/70 p-5 md:table-row md:rounded-none md:border-0 md:border-t md:border-border/55 md:bg-transparent md:p-0 md:first:border-t-0"
+    <nav aria-label="On this page" className="pt-1">
+      <ol className="grid grid-cols-2 gap-x-6 gap-y-1 sm:flex sm:flex-wrap sm:gap-x-8">
+        {RATE_ANCHORS.map((anchor, index) => (
+          <li key={anchor.href}>
+            <a
+              href={anchor.href}
+              className="focus-ring group inline-flex min-h-11 items-center gap-2.5 rounded-sm text-[15px] text-foreground/80 transition-colors hover:text-foreground"
             >
-              <th
-                scope="row"
-                className="text-lg font-semibold tracking-tight text-foreground md:px-6 md:py-5 md:pl-8 md:text-[1.05rem] md:font-semibold"
-              >
-                {season.name}
-              </th>
-              <td className="text-sm leading-6 text-muted-foreground md:px-6 md:py-5">{season.monthsShort}</td>
-              {season.rates.map((rate) => (
-                <td key={rate.label} className="md:px-6 md:py-5 md:text-right md:last:pr-8">
-                  <div className="flex items-baseline justify-between gap-4 md:block">
-                    <span className="text-sm text-muted-foreground md:hidden">{rate.label}</span>
-                    <span className="text-base font-semibold tabular-nums tracking-tight text-foreground md:text-lg">
-                      {rate.price}
-                      <span className="text-sm font-medium text-muted-foreground">/night</span>
-                    </span>
-                  </div>
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </Card>
-  )
-}
-
-function MainHouseRateRail({ seasons }: { seasons: readonly Season[] }) {
-  return (
-    <dl className="flow flow-sm">
-      {seasons.map((season) => (
-        <div
-          key={season.name}
-          className="flex items-baseline justify-between gap-4 border-b border-border/55 pb-3.5 last:border-b-0 last:pb-0"
-        >
-          <dt className="flow-xs">
-            <span className="block text-[0.95rem] font-semibold text-foreground">{season.name}</span>
-            <span className="block text-[0.82rem] leading-5 text-muted-foreground">{season.monthsShort}</span>
-          </dt>
-          <dd className="shrink-0 whitespace-nowrap text-lg font-semibold tabular-nums tracking-tight text-foreground">
-            {season.rates[0].price}
-            <span className="text-sm font-medium text-muted-foreground">/night</span>
-          </dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
-
-function PerspectiveStack({ perspectives }: { perspectives: typeof RATE_PERSPECTIVES }) {
-  const [first, second] = perspectives
-
-  return (
-    <div className="flow flow-lg">
-      <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8">
-        <blockquote className="max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10">
-          “{first.quote}”
-        </blockquote>
-        <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-          {first.author} · {first.year}
-        </figcaption>
-      </figure>
-      <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8 md:ml-16">
-        <blockquote className="max-w-2xl text-lg leading-8 text-foreground/85">{second.quote}”</blockquote>
-        <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-          {second.author} · {second.year}
-        </figcaption>
-      </figure>
-    </div>
+              <span className="font-display text-sm text-muted-foreground tabular">0{index + 1}</span>
+              <span className="link-underline">{anchor.label}</span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </nav>
   )
 }
 
 export default function Page() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
-      <PageStructuredData path="/rates" />
+    <>
       <Header />
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
+      <PageStructuredData path="/rates" />
 
-      <Section padding="tight" className="overflow-hidden">
+      <PageHero
+        variant="split"
+        eyebrow="Rates · Ambergris Caye"
+        title="One estate. One group. *Priced* by the night."
+        lede="Suites from $1,000 a night with a private chef and arrival transfers already folded in. Pick your season, count your suites, then layer reef days and boat runs below."
+        actions={
+          <>
+            <CtaLink
+              href="/book"
+              size="lg"
+              eventName="cta_click"
+              eventPayload={{ location: "rates_hero", target: "/book" }}
+            >
+              Check dates
+            </CtaLink>
+            <CtaLink
+              href="#villa-accommodations"
+              variant="text"
+              arrow="none"
+              className="px-2"
+            >
+              See the seasons
+            </CtaLink>
+          </>
+        }
+        facts={[
+          { label: "1–2 suites", value: <FromPrice price="$1,000" /> },
+          { label: "3 suites", value: <FromPrice price="$1,250" /> },
+          { label: "Main House", value: <FromPrice price="$2,500" /> },
+          { label: "Private chef", value: "Included" },
+        ]}
+        image={{ src: IMAGES.heroVillaSeating.src, alt: IMAGES.heroVillaSeating.alt, focal: { x: 60, y: 50 } }}
+        imageClassName="sm:max-w-[30rem] lg:max-w-none"
+      >
+        <AnchorIndex />
+      </PageHero>
+
+      {/* ── Villa ledger ─────────────────────────────────────────────── */}
+      <section id="villa-accommodations" className="scroll-mt-24 border-t border-border/70 py-20 sm:py-28 lg:py-32">
         <Container size="wide">
-          <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-14">
-            <div className="flow flow-md max-w-2xl">
-              <Eyebrow>Rates · Ambergris Caye</Eyebrow>
-              <h1 className="text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[3.9rem]">
-                One estate. One group. Priced by the night.
-              </h1>
-              <p className="max-w-xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-                Suites from $1,000 a night with a private chef and arrival transfers already folded in. Pick your
-                season, count your suites, then layer reef days and boat runs below.
-              </p>
-              <RateGlance />
-              <div className="flex flex-col gap-5 pt-1">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "rates_hero", target: "/book" }}>
-                    Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
-                  {RATE_ANCHORS.map((anchor, index) => (
-                    <span key={anchor.href} className="flex items-center gap-2">
-                      {index > 0 ? (
-                        <span aria-hidden="true" className="text-border">
-                          /
-                        </span>
-                      ) : null}
-                      <a
-                        href={anchor.href}
-                        className="rounded-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                      >
-                        {anchor.label}
-                      </a>
+          <div className="flow flow-xl">
+            <SectionHeading
+              titleClassName="text-section"
+              eyebrow="Villa accommodations"
+              title="Villa nights, by *season* and suite count."
+              align="split"
+              lede={
+                <div className="flow flow-sm">
+                  <p>
+                    Three seasons. Two footprints. Chef and arrival transfers already in — pick your suites, find your
+                    months, and read across.
+                  </p>
+                  <p className="text-body">
+                    New here? The villa books by the suite: take one or two, or all three. Returning groups can reserve
+                    the full{" "}
+                    <a
+                      href="#main-house-accommodations"
+                      className="focus-ring link-underline-static whitespace-nowrap rounded-sm font-medium text-foreground"
+                    >
+                      5-suite Main House
+                    </a>{" "}
+                    instead.
+                  </p>
+                </div>
+              }
+            />
+            <SeasonLedger seasons={VILLA_SEASONS} />
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Main House (reef band) ───────────────────────────────────── */}
+      <section
+        id="main-house-accommodations"
+        className="surface-reef relative isolate scroll-mt-24 overflow-hidden py-20 sm:py-28 lg:py-36"
+      >
+        {/* Ghost numeral: desktop only, parked in the band's top-right corner
+            above the price ledger so it never sits behind a number. */}
+        <Drift
+          distance={60}
+          className="absolute right-[4%] top-0 -z-10 hidden -translate-y-[12%] select-none lg:block"
+        >
+          <span className="block font-display text-[14rem] leading-none text-white/[0.06]">
+            5
+          </span>
+        </Drift>
+
+        <Container size="wide">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-20">
+            <div className="flow flow-xl">
+              <SectionHeading
+                titleClassName="text-section"
+                eyebrow="Main House · Repeat guests"
+                title="The full *5-suite* Main House, for groups coming back."
+                tone="light"
+                lede="Repeat guests only. This 5-suite Main House option is best for reunions and larger family groups that already know they want the whole estate flowing as one home base."
+              />
+
+              <div data-reveal="up" style={delay(200)} className="flow flow-md border-t border-white/15 pt-6">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-canary">
+                  Main House booking requirements
+                </p>
+                <ul className="flow flow-sm text-[15px] leading-relaxed text-white/80 sm:text-base">
+                  <li className="flex gap-3">
+                    <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 rounded-full bg-canary" />
+                    Available only to returning Canary Cove guests.
+                  </li>
+                  <li className="flex gap-3">
+                    <span aria-hidden="true" className="mt-2.5 size-1.5 shrink-0 rounded-full bg-canary" />
+                    <span>
+                      A separate <span className="font-medium text-white">$10,000 damage deposit</span> applies to every
+                      Main House stay.
                     </span>
-                  ))}
-                </nav>
+                  </li>
+                </ul>
+              </div>
+
+              <div data-reveal="up" style={delay(320)}>
+                <CtaLink
+                  href="/book?accommodation=main-house"
+                  variant="canary"
+                  size="lg"
+                  eventName="cta_click"
+                  eventPayload={{ location: "rates_main_house", target: "/book" }}
+                >
+                  Request the Main House
+                </CtaLink>
               </div>
             </div>
 
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-surface-muted shadow-[0_24px_70px_rgba(15,23,42,0.10)] lg:aspect-[4/5]">
-              <Image
-                src={IMAGES.villaPool.src}
-                alt={IMAGES.villaPool.alt}
-                fill
-                priority
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.villaPool) }}
-                sizes="(min-width: 1024px) 44vw, 100vw"
-              />
+            <div className="lg:pt-24">
+              <div data-reveal="fade" className="flex items-baseline justify-between gap-4 pb-4">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/60">5 suites · nightly</p>
+                <p className="text-[11px] font-semibold uppercase tracking-[0.24em] text-white/60">Per night</p>
+              </div>
+              <dl
+                data-reveal="stagger"
+                style={{ "--stagger-step": "140ms" } as CSSProperties}
+                className="border-t border-white/25"
+              >
+                {MAIN_HOUSE_SEASONS.map((season, index) => (
+                  <div
+                    key={season.name}
+                    style={{ "--stagger-index": index } as CSSProperties}
+                    className="flex items-end justify-between gap-6 border-b border-white/15 py-6 sm:py-8"
+                  >
+                    <dt className="flow flow-xs">
+                      <span className="flex items-center gap-2.5 text-[17px] font-medium text-white">
+                        <span aria-hidden="true" className={`size-2 rounded-full ${season.tone}`} />
+                        {season.name}
+                      </span>
+                      <span className="text-sm text-white/60">{season.monthsShort}</span>
+                    </dt>
+                    <dd className="whitespace-nowrap font-display text-5xl leading-none text-white sm:text-6xl lg:text-7xl">
+                      <CountUp value={priceValue(season.price)} prefix="$" />
+                    </dd>
+                  </div>
+                ))}
+              </dl>
             </div>
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Section id="included-costs" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
-            <div className="flow flow-md lg:sticky lg:top-28 lg:self-start">
-              <div className="flow flow-sm">
-                <Eyebrow>What&apos;s included</Eyebrow>
-                <h2 className="text-section max-w-md text-[2rem] sm:text-[2.5rem]">
-                  The nightly rate arrives with the staff, the kitchen, and the boats.
-                </h2>
-              </div>
-              <figure className="flow-xs">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
+      {/* ── What's included ──────────────────────────────────────────── */}
+      <section id="included-costs" className="scroll-mt-24 bg-surface pb-20 sm:pb-28 lg:pb-32">
+        <div className="border-b border-border/70 py-6 sm:py-8">
+          <Marquee
+            duration={48}
+            items={INCLUDED_TICKER.map((item) => (
+              <span key={item} className="px-6 font-display text-3xl italic text-foreground sm:px-10 sm:text-5xl">
+                {item}
+              </span>
+            ))}
+            separator={<span className="size-2 rounded-full bg-canary" />}
+          />
+        </div>
+
+        <Container size="wide" className="pt-20 sm:pt-28 lg:pt-32">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+            <figure className="flow flow-sm lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:self-start">
+              <div data-reveal="clip" className="media-frame relative aspect-[4/5] w-full">
+                <Parallax amount={6}>
                   <Image
                     src={IMAGES.chefMarvinPlates.src}
                     alt={IMAGES.chefMarvinPlates.alt}
                     fill
                     className="object-cover"
                     style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinPlates) }}
-                    sizes="(min-width: 1024px) 42vw, 100vw"
+                    sizes="(min-width: 1320px) 520px, (min-width: 1024px) 40vw, 100vw"
                   />
+                </Parallax>
+              </div>
+              <figcaption data-reveal="fade" className="max-w-sm text-[13px] leading-relaxed text-muted-foreground">
+                Chef Marvin plating dinner in the villa kitchen — every stay&apos;s meals are cooked to your group&apos;s
+                preferences.
+              </figcaption>
+            </figure>
+
+            <div className="flow flow-xl">
+              <SectionHeading
+                titleClassName="text-section"
+                eyebrow="What's included"
+                title="The nightly rate *arrives* with the staff, the kitchen, and the boats."
+              />
+
+              <ol data-reveal="stagger" style={{ "--stagger-step": "120ms" } as CSSProperties} className="border-t border-ink/70">
+                {VALUE_POINTS.map((point, index) => (
+                  <li
+                    key={point.title}
+                    style={{ "--stagger-index": index } as CSSProperties}
+                    className="grid grid-cols-[2.75rem_minmax(0,1fr)] gap-x-4 border-b border-border/80 py-6 sm:grid-cols-[4rem_minmax(0,0.9fr)_minmax(0,1.1fr)] sm:gap-x-6 sm:py-8"
+                  >
+                    <span className="font-display text-2xl leading-none text-muted-foreground tabular sm:text-3xl">
+                      0{index + 1}
+                    </span>
+                    <h3 className="text-title text-[1.6rem] sm:text-[1.9rem]">{point.title}</h3>
+                    <p className="text-body col-start-2 mt-2 sm:col-start-3 sm:mt-0">{point.description}</p>
+                  </li>
+                ))}
+              </ol>
+
+              <div className="flow flow-lg pt-4">
+                <ScrollWordReveal
+                  text="For repeat guests, you’ll notice that our rates have remained *unchanged* for over a decade."
+                  className="font-display text-[1.9rem] leading-[1.15] text-foreground sm:text-[2.5rem]"
+                />
+                <div data-reveal="up" className="max-w-2xl space-y-5 text-[15px] leading-[1.8] text-foreground/80 sm:text-base">
+                  <p>
+                    During that time, we&apos;ve continued to invest heavily in the property, adding ensuite bathrooms to
+                    all rooms, a hot tub, and thoughtful upgrades to elevate the experience.
+                  </p>
+                  <p>
+                    For new guests comparing costs, it&apos;s important to understand what&apos;s included. Your stay
+                    comes with a private chef who prepares meals exactly to your preferences, with no grocery markup. For a
+                    group of four, dining out for multiple meals per day quickly becomes far more expensive. We also do not
+                    add a mandatory service charge.
+                  </p>
+                  <p>
+                    While many guests choose to tip generously, gratuities are always optional and entirely at your
+                    discretion. We look forward to creating a truly special vacation for you and your guests.
+                  </p>
                 </div>
-                <figcaption className="text-[0.82rem] leading-6 text-muted-foreground">
-                  Chef Marvin plating dinner in the villa kitchen — every stay&apos;s meals are cooked to your group&apos;s
-                  preferences.
+              </div>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Add-ons ──────────────────────────────────────────────────── */}
+      <section id="additional-services" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
+        <Container size="wide">
+          <div className="flow flow-xl">
+            <SectionHeading
+              titleClassName="text-section"
+              eyebrow="Additional services & experiences"
+              title="Boats, fishing, reef days, and carts — one *searchable* list."
+              align="split"
+              lede="Boat runs, fishing charters, dive days, golf carts, and included gear all live in one place so pricing is easy to skim and easy to search."
+            />
+            <RatesServicesBrowser groups={SERVICE_GROUPS} />
+          </div>
+        </Container>
+      </section>
+
+      {/* ── Guest perspectives ───────────────────────────────────────── */}
+      <section className="border-t border-border/70 bg-surface py-20 sm:py-28 lg:py-32">
+        <Container size="wide">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.75fr)_minmax(0,1.25fr)] lg:gap-20">
+            <div className="flow flow-xl lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:self-start">
+              <SectionHeading
+                titleClassName="text-section"
+                eyebrow="Guest perspectives"
+                title="Guests do the same math — then mention how *complete* it felt."
+              />
+              <figure data-reveal="up" className="flow flow-md border-l-2 border-canary pl-6 sm:pl-8">
+                <blockquote className="text-lg leading-relaxed text-foreground/85">“{SECOND_PERSPECTIVE.quote}”</blockquote>
+                <figcaption className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                  {SECOND_PERSPECTIVE.author} · {SECOND_PERSPECTIVE.year}
                 </figcaption>
               </figure>
             </div>
-
-            <div className="flow flow-md lg:pt-2">
-              <dl className="border-t border-border/60">
-                {VALUE_POINTS.map((point) => (
-                  <div key={point.title} className="grid gap-1 border-b border-border/60 py-5 sm:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] sm:gap-6">
-                    <dt className="text-[0.98rem] font-semibold text-foreground">{point.title}</dt>
-                    <dd className="text-[0.95rem] leading-7 text-foreground/75">{point.description}</dd>
-                  </div>
-                ))}
-              </dl>
-              <div className="max-w-2xl space-y-5 text-[0.98rem] leading-8 text-foreground/82">
-                <p>
-                  For repeat guests, you&apos;ll notice that our rates have remained unchanged for over a decade. During
-                  that time, we&apos;ve continued to invest heavily in the property, adding ensuite bathrooms to all rooms,
-                  a hot tub, and thoughtful upgrades to elevate the experience.
-                </p>
-                <p>
-                  For new guests comparing costs, it&apos;s important to understand what&apos;s included. Your stay comes
-                  with a private chef who prepares meals exactly to your preferences, with no grocery markup. For a group
-                  of four, dining out for multiple meals per day quickly becomes far more expensive. We also do not add a
-                  mandatory service charge.
-                </p>
-                <p>
-                  While many guests choose to tip generously, gratuities are always optional and entirely at your
-                  discretion. We look forward to creating a truly special vacation for you and your guests.
-                </p>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </Section>
-
-      <Section id="villa-accommodations" padding="tight" className="scroll-mt-24">
-        <Container size="default">
-          <div className="flow flow-sm max-w-3xl">
-            <Eyebrow>Villa accommodations</Eyebrow>
-            <h2 className="text-section text-[2rem] sm:text-[2.5rem]">Villa nights, by season and suite count.</h2>
-            <p className="text-body max-w-2xl">
-              Three seasons. Two footprints. Chef and arrival transfers already in — pick your suites, find your months,
-              and read across.
-            </p>
-            <p className="max-w-2xl text-[0.95rem] leading-7 text-foreground/72">
-              New here? The villa books by the suite: take one or two, or all three. Returning groups can reserve the
-              full{" "}
-              <a
-                href="#main-house-accommodations"
-                className="rounded-sm font-medium whitespace-nowrap text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+            <figure className="relative flow flow-lg pt-10 lg:pt-0">
+              <span
+                aria-hidden="true"
+                className="pointer-events-none absolute -left-1 -top-6 font-display text-[8rem] leading-none text-canary sm:-left-12 sm:-top-12 sm:text-[11rem]"
               >
-                5-suite Main House
-              </a>{" "}
-              instead.
-            </p>
-          </div>
-          <div className="mt-8">
-            <SeasonRateTable seasons={VILLA_SEASONS} caption="Villa nightly rates by season and suite count" />
+                “
+              </span>
+              <blockquote
+                data-reveal="up"
+                className="relative font-display text-[1.5rem] leading-[1.28] text-foreground sm:text-[2.1rem] lg:text-[2.35rem]"
+              >
+                {FIRST_PERSPECTIVE.quote}
+              </blockquote>
+              <figcaption className="text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">
+                {FIRST_PERSPECTIVE.author} · {FIRST_PERSPECTIVE.year}
+              </figcaption>
+            </figure>
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Section id="main-house-accommodations" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <Card className="surface-panel rounded-[32px] border-border/60 bg-white/95 p-6 shadow-[0_26px_75px_rgba(15,23,42,0.10)] sm:p-8 lg:p-10">
-            <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,380px)] lg:gap-10">
-              <div className="flow flow-md">
-                <div className="flow flow-sm">
-                  <Eyebrow>Main House · Repeat guests</Eyebrow>
-                  <h2 className="text-section max-w-xl text-[2rem] sm:text-[2.5rem]">
-                    The full 5-suite Main House, for groups coming back.
-                  </h2>
-                  <p className="text-body max-w-2xl">
-                    Repeat guests only. This 5-suite Main House option is best for reunions and larger family groups
-                    that already know they want the whole estate flowing as one home base.
-                  </p>
-                </div>
-                <div className="border-l-2 border-primary/40 pl-5 sm:pl-6">
-                  <div className="flow-xs max-w-2xl">
-                    <p className="text-sm font-semibold text-foreground">Main House booking requirements</p>
-                    <p className="text-sm leading-6 text-muted-foreground">
-                      Available only to returning Canary Cove guests. A separate $10,000 damage deposit applies to
-                      every Main House stay.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="flow flow-md rounded-[24px] bg-surface-elevated/60 p-5 sm:p-6">
-                <MainHouseRateRail seasons={MAIN_HOUSE_SEASONS} />
-                <Button asChild size="lg" className="w-full">
-                  <TrackedLink
-                    href="/book?accommodation=main-house"
-                    eventName="cta_click"
-                    eventPayload={{ location: "rates_main_house", target: "/book" }}
-                  >
-                    Request the Main House
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-              </div>
-            </div>
-          </Card>
-        </Container>
-      </Section>
-
-      <Section id="additional-services" padding="tight" className="scroll-mt-24">
+      {/* ── Planning ─────────────────────────────────────────────────── */}
+      <section className="py-20 sm:py-28 lg:py-32">
         <Container size="wide">
-          <RatesServicesBrowser groups={SERVICE_GROUPS} />
-        </Container>
-      </Section>
-
-      <Section padding="tight" className="bg-surface">
-        <Container size="narrow">
-          <div className="flow flow-sm max-w-3xl">
-            <Eyebrow>Guest perspectives</Eyebrow>
-            <h2 className="text-section text-[2rem] sm:text-[2.5rem]">
-              Guests do the same math — then mention how complete it felt.
-            </h2>
-          </div>
-          <div className="mt-10">
-            <PerspectiveStack perspectives={RATE_PERSPECTIVES} />
-          </div>
-        </Container>
-      </Section>
-
-      <Section padding="tight">
-        <Container size="default">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
-              <Image
-                src={IMAGES.diningRoom.src}
-                alt={IMAGES.diningRoom.alt}
-                fill
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.diningRoom) }}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
+          <div className="grid items-center gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-20">
+            <div data-reveal="clip" className="media-frame relative aspect-[4/3] w-full lg:aspect-[5/4]">
+              <Parallax amount={8}>
+                <Image
+                  src={IMAGES.diningRoom.src}
+                  alt={IMAGES.diningRoom.alt}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(IMAGES.diningRoom) }}
+                  sizes="(min-width: 1320px) 700px, (min-width: 1024px) 55vw, 100vw"
+                />
+              </Parallax>
             </div>
-            <div className="flow flow-md">
-              <div className="flow flow-sm">
-                <Eyebrow>Planning help</Eyebrow>
-                <h2 className="text-section text-[2rem] sm:text-[2.5rem]">
-                  Send your dates. We&apos;ll price the trip straight.
-                </h2>
-                <p className="text-body max-w-xl">
-                  Share your dates, suite count, chef expectations, and likely add-ons — we&apos;ll map them into a
-                  simpler recommendation for your group.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink href="/book" eventName="cta_click" eventPayload={{ location: "rates_planning", target: "/book" }}>
+            <SectionHeading
+              titleClassName="text-section"
+              eyebrow="Planning help"
+              title="One clear quote, *chef included.*"
+              lede="Share your dates, suite count, chef expectations, and likely add-ons — we'll map them into a simpler recommendation for your group."
+              action={
+                <>
+                  <CtaLink
+                    href="/book"
+                    size="lg"
+                    className="w-full justify-between sm:w-auto sm:justify-center"
+                    eventName="cta_click"
+                    eventPayload={{ location: "rates_planning", target: "/book" }}
+                  >
                     Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="w-full border-border/70 bg-white/80 sm:w-fit">
-                  <TrackedLink href="/contact" eventName="cta_click" eventPayload={{ location: "rates_planning", target: "/contact" }}>
+                  </CtaLink>
+                  <CtaLink
+                    href="/contact"
+                    variant="outline"
+                    size="lg"
+                    arrow="none"
+                    className="w-full sm:w-auto"
+                    eventName="cta_click"
+                    eventPayload={{ location: "rates_planning", target: "/contact" }}
+                  >
                     Ask about your group
-                  </TrackedLink>
-                </Button>
-              </div>
-            </div>
+                  </CtaLink>
+                </>
+              }
+            />
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Footer />
     </main>
+      <Footer />
+    </>
   )
 }
-

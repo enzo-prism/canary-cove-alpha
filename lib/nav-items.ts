@@ -1,7 +1,11 @@
+import { IMAGES } from "@/lib/images"
+
 export type DropdownItem = {
   label: string
   href: string
   caption: string
+  /** Preview photo shown in the desktop mega panel. */
+  image?: { src: string; alt: string }
   /** Renders an external indicator; the link still navigates in the same tab. */
   external?: boolean
 }
@@ -26,14 +30,15 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Stay",
     href: "/stay",
     items: [
-      { label: "The Villa", href: "/stay", caption: "Three suites, pool, and grounds" },
+      { label: "The Villa", href: "/stay", caption: "Three suites, pool, and grounds", image: IMAGES.heroVillaSeating },
       {
         label: "Main House",
         href: "/stay/main-house",
         caption: "Returning guests",
         external: true,
+        image: IMAGES.heroBackgroundEstate,
       },
-      { label: "Rates", href: "/rates", caption: "Seasons, suites, and inclusions" },
+      { label: "Rates", href: "/rates", caption: "Seasons, suites, and inclusions", image: IMAGES.villaPool },
     ],
   },
   {
@@ -41,10 +46,10 @@ export const NAV_ITEMS: NavItem[] = [
     label: "Explore",
     href: "/experiences",
     items: [
-      { label: "Experiences", href: "/experiences", caption: "Water, land, and dock days" },
-      { label: "Dining", href: "/dining", caption: "Private chef service" },
-      { label: "Adventures", href: "/adventures", caption: "Reef, fishing, and day trips" },
-      { label: "Gallery", href: "/gallery", caption: "Every photograph of the estate" },
+      { label: "Experiences", href: "/experiences", caption: "Water, land, and dock days", image: IMAGES.waterSlide },
+      { label: "Dining", href: "/dining", caption: "Private chef service", image: IMAGES.chefMarvinPlates },
+      { label: "Adventures", href: "/adventures", caption: "Reef, fishing, and day trips", image: IMAGES.turtleDive },
+      { label: "Gallery", href: "/gallery", caption: "Every photograph of the estate", image: IMAGES.livingRoom },
     ],
   },
   { type: "link", label: "Reviews", href: "/reviews" },

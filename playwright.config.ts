@@ -7,6 +7,10 @@ const guestPasswordHash = createGuestPasswordHash(
   "00112233445566778899aabbccddeeff",
 )
 
+// PLAYWRIGHT_BASE_URL points the suite at an already-running server (for
+// example a second dev server on another port) and skips the managed one.
+const externalBaseURL = process.env.PLAYWRIGHT_BASE_URL
+
 export default defineConfig({
   testDir: "./e2e",
   timeout: 60_000,
@@ -18,22 +22,24 @@ export default defineConfig({
     },
   },
   use: {
-    baseURL: "http://localhost:3000",
+    baseURL: externalBaseURL ?? "http://localhost:3000",
     screenshot: "only-on-failure",
     trace: "on-first-retry",
     video: "retain-on-failure",
   },
-  webServer: {
-    command: "pnpm dev",
-    port: 3000,
-    reuseExistingServer: !process.env.CI,
-    timeout: 120_000,
-    env: {
-      ...process.env,
-      CANARY_GUEST_PASSWORD_HASH: guestPasswordHash,
-      CANARY_GUEST_SESSION_SECRET: "test-canary-session-secret-that-is-long-enough",
-    },
-  },
+  webServer: externalBaseURL
+    ? undefined
+    : {
+        command: "pnpm dev",
+        port: 3000,
+        reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
+        env: {
+          ...process.env,
+          CANARY_GUEST_PASSWORD_HASH: guestPasswordHash,
+          CANARY_GUEST_SESSION_SECRET: "test-canary-session-secret-that-is-long-enough",
+        },
+      },
   projects: [
     {
       name: "chromium",

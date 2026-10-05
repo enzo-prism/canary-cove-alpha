@@ -68,6 +68,12 @@ These are mostly route-local page compositions rather than a single shared page 
 
 ## Architecture map
 
+### Design system and motion
+
+- `docs/design-system.md` is the visual and motion contract. Tokens and reveal CSS live in `app/globals.css`; primitives in `components/motion/`; shared page blocks in `components/page-hero.tsx`, `components/section-heading.tsx`, `components/ui/cta-link.tsx`.
+- `app/layout.tsx` adds the `js` class before paint (gates reveal hidden states), mounts `RevealObserver` (one IntersectionObserver for every `[data-reveal]`) and `SmoothScroll` (Lenis on desktop pointers; skipped for touch, reduced motion and `navigator.webdriver`).
+- `PLAYWRIGHT_BASE_URL=http://localhost:<port>` runs the e2e suite against an already-running server instead of starting `pnpm dev` on :3000.
+
 ### App shell and global behavior
 
 - `app/layout.tsx`: fonts, canonical metadata, favicon declarations, sitewide structured data, GA scripts, Vercel Analytics, skip link, global scroll reset.
@@ -86,7 +92,8 @@ These are mostly route-local page compositions rather than a single shared page 
 - `components/hero.tsx`: first-screen heading, Book → `/book`, and See rates → `/rates`.
 - `components/hero-image-rotator.tsx`: rotating hero imagery with a stronger contrast gradient.
 - `components/model-carousel.tsx`, `components/editorial-split.tsx`, `components/property-film.tsx`, `components/testimonial-slider.tsx`, `components/process-steps.tsx`
-- `lib/homepage-content.ts`: estate spaces (`ESTATE_SPACES`, aliased as `MODEL_LINEUP`), proof points, editorial blocks, and process steps.
+- `lib/homepage-content.ts`: estate spaces (`ESTATE_SPACES`, aliased as `MODEL_LINEUP`), proof points, count-up stats (`HOME_STATS`), marquee words, the day timeline (`DAY_MOMENTS`), editorial blocks, and process steps.
+- `components/home/intro-statement.tsx` (scroll-lit statement, parallax collage, count-up stats, marquee) and `components/home/day-at-the-cove.tsx` (desktop: pinned horizontal timeline with a sun arc; touch/narrow/reduced motion: native swipe row).
 - Below-fold homepage modules are loaded with `next/dynamic`. Search is not rendered on the homepage; it opens from the header.
 
 ### Stay page

@@ -3,7 +3,7 @@
 import { trackSocialClick } from "@/lib/analytics"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 
-export function FacebookLink() {
+export function FacebookLink({ className }: { className?: string }) {
   return (
     <TooltipProvider>
       <Tooltip>
@@ -14,7 +14,7 @@ export function FacebookLink() {
             rel="noopener noreferrer"
             aria-label="Canary Cove on Facebook"
             onClick={() => trackSocialClick("facebook", "footer")}
-            className="text-sm text-muted-foreground hover:text-foreground"
+            className={className ?? "text-sm text-muted-foreground hover:text-foreground"}
           >
             Facebook
           </a>

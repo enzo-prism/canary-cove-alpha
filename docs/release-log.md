@@ -2,6 +2,19 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-10-04 — Complete design + UX overhaul ("Sand, reef, and canary") with a motion system
+
+- Commit: `PENDING_SHA`
+- Production: `https://www.canarycove.com`
+- Vercel: PENDING_DEPLOYMENT
+- New design system (`docs/design-system.md`): warm sand / reef ink / lagoon / canary palette, Instrument Serif display type over SF Pro, arched and parallax photography, dark reef bands, rolling-label CTAs (`CtaLink`), `PageHero` and `SectionHeading` building blocks.
+- Motion system (`components/motion/`): one IntersectionObserver for `data-reveal` scroll reveals (gated behind `html.js`, fully resolved under reduced motion and without JS), word-rise headlines (`SplitText`), scroll-lit statements, parallax media, marquees, count-ups, magnetic hero CTA, Lenis inertial wheel scrolling on desktop pointers, header scroll-progress line, and a 620 KB seamless manta ambient loop behind the homepage diving film.
+- Global chrome: solid sand header with canary active underline, mega-dropdowns with crossfading photo previews, full-screen serif mobile menu, live San Pedro clock; dark reef footer with giant wordmark (booking band only on pages without their own closing CTA). Header and footer now sit outside `<main>` so the skip link skips the chrome.
+- Homepage rebuilt: Ken Burns hero with a brighter lead photo, scroll-lit intro + count-up stats + marquee, redesigned estate carousel, pinned horizontal "A day at the cove" timeline, full-bleed "Below the surface" film band, editorial testimonials, drawn process route, plan-your-stay index.
+- Every public page redesigned (stay, rates, book, contact, experiences, dining, adventures, gallery, reviews, getting-here, privacy, terms, guest access) with page-specific motion moments (e.g. rates month strip + season ledger, getting-here scroll-drawn route map, stay pinned outdoor filmstrip, dining meal timeline, adventures dive log, reviews spotlight + timeline).
+- Contracts preserved: all testids, anchors, analytics events, form behavior/validation, Formspree flow, availability calendar, verbatim guest quotes, reef-film rules. Several anchors that redirects and search already pointed at (e.g. `/dining#private-chef`, `/adventures#fishing`, `/book#comfort-confidence`) now exist.
+- Tests: spacing spec now checks section padding tokens (reveal transforms made descendant-box measurement unstable) and accepts a side-by-side hero subhead/CTA row; visual baselines regenerated for the new design. `PLAYWRIGHT_BASE_URL` lets the suite target an already-running server.
+
 ## 2026-09-17 — Search upgrade, /reviews and /dining redesigns, verbatim guest quotes
 
 - Commit: `cd3d982ee711fd46ddd4556e8cf406eb573c24c8`

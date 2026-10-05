@@ -1,14 +1,18 @@
 import Image from "next/image"
-import { ArrowUpRight } from "lucide-react"
+import type { CSSProperties } from "react"
 
-import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
+import { CountIn } from "@/components/gallery/count-in"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
+import { Marquee } from "@/components/motion/marquee"
+import { Parallax } from "@/components/motion/parallax"
+import { SplitText } from "@/components/motion/split-text"
+import { PageHero } from "@/components/page-hero"
 import { ReviewsArchive } from "@/components/reviews-archive"
+import { JumpLink } from "@/components/reviews/jump-link"
 import { PageStructuredData } from "@/components/structured-data"
-import { Button } from "@/components/ui/button"
+import { CtaLink } from "@/components/ui/cta-link"
 import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
 
@@ -508,31 +512,50 @@ const extractYearNumber = (label: string) => {
 }
 
 const totalReviews = TESTIMONIALS.reduce((count, group) => count + group.entries.length, 0)
+const totalVisits = TESTIMONIALS.length
 const archiveYears = Array.from(
   new Set(TESTIMONIALS.map((group) => extractYearNumber(group.year)).filter((year) => Number.isFinite(year))),
 ).sort((a, b) => a - b)
 
 const archiveStartYear = archiveYears[0]
 const archiveEndYear = archiveYears[archiveYears.length - 1]
-
-const newestGroup = TESTIMONIALS[0]
-const newestAuthor = newestGroup?.entries[0]?.author ?? "Guest at Canary Cove"
 const archiveSpanYears = archiveEndYear - archiveStartYear + 1
 
+/**
+ * Where guests signed from, read straight off the guestbook attributions
+ * ("K., Michigan", "Pete (Michigan)", "L., Connecticut kid"). Nothing here is
+ * typed by hand, so the list can only ever repeat what guests wrote.
+ */
+const SIGNED_FROM = (() => {
+  const places: string[] = []
+  for (const group of TESTIMONIALS) {
+    for (const entry of group.entries) {
+      const author = entry.author ?? ""
+      const paren = author.match(/\(([^)]+)\)\s*$/)
+      const tail = paren ? paren[1] : author.includes(",") ? author.slice(author.lastIndexOf(",") + 1) : ""
+      const place = tail.replace(/\bkid\b/i, "").trim()
+      if (!place || place.length < 4 || /\.|&|family|crew/i.test(place)) continue
+      if (!places.includes(place)) places.push(place)
+    }
+  }
+  return places
+})()
+
+// Featured notes, verbatim from the archive above. The newest (2024) note
+// already leads /dining, so the spotlight opens on other voices.
 const REVIEW_SPOTLIGHTS = [
-  {
-    quote:
-      "What a perfect vacation! The house is wonderful, staff beyond our wildest dreams, dining like no other! Thank you for one of the most memorable vacations of our lives. We will be back for sure.",
-    author: "Bernthal/Stambaugh family",
-    year: "2024",
-    anchor: "#year-2024",
-  },
   {
     quote:
       "Such a magical spot, on so many levels - the site, the sights, the house, the team, the town, the vibe, the food, the water, the fishing - we could go on & on - your team here is really excellent, and stands as a testament to you and your vision.",
     author: "R. And family",
     year: "2017",
     anchor: "#year-2017",
+  },
+  {
+    quote: "Beautiful home; amazing, wonderful staff that I now consider friends. Hope to be back soon.",
+    author: "J., North Carolina",
+    year: "2014",
+    anchor: "#year-2014",
   },
   {
     quote: "Best trip ever! I definitely won't forget it!",
@@ -548,193 +571,217 @@ const REVIEW_ANCHORS = [
   { label: "Plan your stay", href: "#reviews-plan" },
 ] as const
 
-function ReviewGlance() {
-  const rows = [
-    { label: "Total notes", value: `${totalReviews} guestbook notes` },
-    { label: "Newest note", value: `${archiveEndYear} · ${newestAuthor}` },
-    { label: "Common themes", value: "Staff, food, reef days" },
-  ] as const
-
-  return (
-    <dl className="border-t border-border/60">
-      {rows.map((row) => (
-        <div key={row.label} className="flex items-baseline justify-between gap-6 border-b border-border/60 py-3.5">
-          <dt className="text-[0.95rem] font-medium text-foreground/80">{row.label}</dt>
-          <dd className="shrink-0 text-right text-[0.95rem] font-semibold tabular-nums text-foreground">
-            {row.value}
-          </dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
+const [leadSpotlight, ...supportingSpotlights] = REVIEW_SPOTLIGHTS
 
 export default function Page() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
-      <PageStructuredData path="/reviews" />
+    <>
       <Header />
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
+      <PageStructuredData path="/reviews" />
 
-      <Section padding="tight" className="overflow-hidden">
-        <Container size="wide">
-          <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-14">
-            <div className="flow flow-md max-w-2xl">
-              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                Reviews · Ambergris Caye
+      <PageHero
+        variant="split"
+        eyebrow={`Guestbook · ${archiveStartYear}–${archiveEndYear}`}
+        title={`${archiveSpanYears} years of *guestbook* notes.`}
+        lede={
+          <>
+            Unedited notes from the villa guestbooks, {archiveStartYear}–{archiveEndYear}. Read what stays with guests —
+            the staff by name, the chef&apos;s table, the reef days — then write your own chapter.
+          </>
+        }
+        actions={
+          <>
+            <CtaLink
+              href="/book"
+              size="lg"
+              eventName="cta_click"
+              eventPayload={{ location: "reviews_hero", target: "/book" }}
+            >
+              Check dates
+            </CtaLink>
+            <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-5 gap-y-1 pl-1 text-sm">
+              {REVIEW_ANCHORS.map((anchor) => (
+                <JumpLink
+                  key={anchor.href}
+                  href={anchor.href}
+                  className="link-underline focus-ring inline-flex min-h-11 items-center rounded-sm font-medium text-foreground/75 transition-colors hover:text-foreground"
+                >
+                  {anchor.label}
+                </JumpLink>
+              ))}
+            </nav>
+          </>
+        }
+        facts={[
+          { label: "Guestbook notes", value: <CountIn value={totalReviews} delay={700} /> },
+          { label: "Visits", value: <CountIn value={totalVisits} delay={800} duration={1800} /> },
+          { label: "Years", value: <CountIn value={archiveSpanYears} delay={900} duration={1400} /> },
+          { label: "Newest note", value: <span className="tabular">{archiveEndYear}</span> },
+        ]}
+        image={{ src: IMAGES.heroVillaSeating.src, alt: IMAGES.heroVillaSeating.alt, focal: IMAGES.heroVillaSeating.focal }}
+      />
+
+      {/* Cinematic spotlight: the strongest note lights up word by word. */}
+      <section id="start-here" className="surface-reef relative isolate scroll-mt-0 overflow-hidden">
+        <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-70" />
+        <Container size="wide" className="py-24 sm:py-32 lg:py-40">
+          <div className="grid gap-12 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,1fr)] lg:gap-16">
+            <div className="flow flow-md lg:pt-4">
+              <p data-reveal="fade" className="eyebrow">
+                Start here
               </p>
-              <h1 className="text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[3.9rem]">
-                {archiveSpanYears} years of guestbook notes.
-              </h1>
-              <p className="max-w-xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-                Unedited notes from the villa guestbooks, {archiveStartYear}–{archiveEndYear}. Read what stays with
-                guests — the staff by name, the chef&apos;s table, the reef days — then write your own chapter.
-              </p>
-              <ReviewGlance />
-              <div className="flex flex-col gap-5 pt-1">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink
-                    href="/book"
-                    eventName="cta_click"
-                    eventPayload={{ location: "reviews_hero", target: "/book" }}
-                  >
-                    Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
-                  {REVIEW_ANCHORS.map((anchor, index) => (
-                    <span key={anchor.href} className="flex items-center gap-2">
-                      {index > 0 ? (
-                        <span aria-hidden="true" className="text-border">
-                          /
-                        </span>
-                      ) : null}
-                      <a
-                        href={anchor.href}
-                        className="rounded-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                      >
-                        {anchor.label}
-                      </a>
-                    </span>
-                  ))}
-                </nav>
+              <div className="text-white">
+                <SplitText as="h2" text="Three notes that say it *best.*" className="text-title max-w-[12ch]" />
               </div>
             </div>
 
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-surface-muted shadow-[0_24px_70px_rgba(15,23,42,0.10)] lg:aspect-[4/5]">
-              <Image
-                src={IMAGES.romanticViews.src}
-                alt={IMAGES.romanticViews.alt}
-                fill
-                priority
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.romanticViews) }}
-                sizes="(min-width: 1024px) 44vw, 100vw"
-              />
-            </div>
+            <figure className="relative pt-16 sm:pt-20 lg:pt-0">
+              <span
+                aria-hidden="true"
+                data-reveal="blur"
+                className="pointer-events-none absolute -left-1 -top-2 select-none font-display text-[8rem] leading-none text-canary sm:-left-3 sm:top-[-1rem] sm:text-[10rem] lg:-left-4 lg:-top-24 lg:text-[13rem]"
+              >
+                &ldquo;
+              </span>
+              <blockquote
+                data-reveal="up"
+                className="relative max-w-[26ch] font-display text-[clamp(1.85rem,3.8vw,3.6rem)] leading-[1.08] tracking-[-0.015em] text-white text-pretty"
+              >
+                {leadSpotlight.quote}
+              </blockquote>
+              <figcaption
+                data-reveal="up"
+                className="mt-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] font-semibold uppercase tracking-[0.26em] text-white/65"
+              >
+                <span aria-hidden="true" className="h-px w-10 bg-canary" />
+                {leadSpotlight.author} ·{" "}
+                <JumpLink
+                  href={leadSpotlight.anchor}
+                  aria-label={`Read ${leadSpotlight.year} notes in the archive`}
+                  className="link-underline-static focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm text-white/90 hover:text-white"
+                >
+                  {leadSpotlight.year}
+                </JumpLink>
+              </figcaption>
+            </figure>
           </div>
-        </Container>
-      </Section>
 
-      <Section id="start-here" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="narrow">
-          <div className="flow flow-sm max-w-3xl">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-              Start here
-            </p>
-            <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-              Three notes that say it best.
-            </h2>
-          </div>
-          <div className="flow flow-lg mt-10">
-            {REVIEW_SPOTLIGHTS.map((spotlight, index) => (
+          <div className="mt-20 grid gap-12 border-t border-white/12 pt-12 sm:mt-28 md:grid-cols-2 md:gap-16 lg:ml-[calc(32%+2rem)]">
+            {supportingSpotlights.map((spotlight, index) => (
               <figure
                 key={`${spotlight.year}-${spotlight.author}`}
-                className={`border-l-2 border-primary/30 pl-6 sm:pl-8 ${index === 1 ? "md:ml-16" : ""} ${index === 2 ? "md:ml-8" : ""}`}
+                data-reveal="up"
+                style={{ "--reveal-delay": `${index * 140}ms` } as CSSProperties}
+                className="flow flow-md"
               >
-                <blockquote
-                  className={
-                    index === 0
-                      ? "max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10"
-                      : "max-w-2xl text-lg leading-8 text-foreground/85"
-                  }
-                >
+                <blockquote className="font-display text-[1.5rem] leading-[1.25] text-white/88 sm:text-[1.75rem]">
                   “{spotlight.quote}”
                 </blockquote>
-                <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+                <figcaption className="flex flex-wrap items-center gap-x-1 text-[11px] font-semibold uppercase tracking-[0.26em] text-white/60">
                   {spotlight.author} ·{" "}
-                  <a
+                  <JumpLink
                     href={spotlight.anchor}
-                    className="rounded-sm underline decoration-primary/40 underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
+                    aria-label={`Read ${spotlight.year} notes in the archive`}
+                    className="link-underline-static focus-ring inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm text-white/85 hover:text-white"
                   >
                     {spotlight.year}
-                  </a>
+                  </JumpLink>
                 </figcaption>
               </figure>
             ))}
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Section padding="tight">
-        <Container size="default">
+      {SIGNED_FROM.length > 0 ? (
+        <section aria-label="Where guests signed from" className="border-b border-border/70 py-10 sm:py-14">
+          <Container size="wide">
+            <p data-reveal="fade" className="eyebrow mb-6">
+              Guestbooks signed from
+            </p>
+          </Container>
+          <Marquee
+            duration={48}
+            items={SIGNED_FROM.map((place) => (
+              <span key={place} className="font-display text-[2.4rem] leading-none text-foreground sm:text-[3.6rem]">
+                {place}
+              </span>
+            ))}
+            itemClassName="gap-8 pr-8 sm:gap-12 sm:pr-12"
+            separator={<span className="h-2.5 w-2.5 rounded-full bg-canary" />}
+            className="[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]"
+          />
+        </section>
+      ) : null}
+
+      <section className="py-20 sm:py-28 lg:py-32">
+        <Container size="wide">
           <ReviewsArchive groups={TESTIMONIALS} />
         </Container>
-      </Section>
+      </section>
 
-      <Section id="reviews-plan" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
-              <Image
-                src={IMAGES.diningSpread.src}
-                alt={IMAGES.diningSpread.alt}
-                fill
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.diningSpread) }}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
+      <section id="reviews-plan" className="scroll-mt-0 bg-sand-light py-20 sm:py-28 lg:py-32">
+        <Container size="wide">
+          <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+            <div data-reveal="clip" className="media-frame relative aspect-[4/5] w-full max-w-md lg:max-w-none">
+              <Parallax amount={6}>
+                <Image
+                  src={IMAGES.diningRoom.src}
+                  alt={IMAGES.diningRoom.alt}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(IMAGES.diningRoom) }}
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                />
+              </Parallax>
             </div>
-            <div className="flow flow-md">
-              <div className="flow flow-sm">
-                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                  Plan your stay
-                </p>
-                <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-                  Send your dates. We&apos;ll add the next chapter.
-                </h2>
-                <p className="text-body max-w-xl">
-                  Share your dates, group size, and what a perfect week looks like — we&apos;ll map it into a stay
-                  your own guestbook note will remember.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink
-                    href="/book"
-                    eventName="cta_click"
-                    eventPayload={{ location: "reviews_plan", target: "/book" }}
-                  >
-                    Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="w-full border-border/70 bg-white/80 sm:w-fit">
-                  <TrackedLink
-                    href="/rates"
-                    eventName="cta_click"
-                    eventPayload={{ location: "reviews_plan", target: "/rates" }}
-                  >
-                    See rates
-                  </TrackedLink>
-                </Button>
+            <div className="flow flow-lg">
+              <p data-reveal="fade" className="eyebrow">
+                Plan your stay
+              </p>
+              <SplitText
+                as="h2"
+                text="Come write the *next chapter.*"
+                className="text-section max-w-[14ch]"
+              />
+              <p data-reveal="up" className="text-lede max-w-xl">
+                Share your dates, group size, and what a perfect week looks like — we&apos;ll map it into a stay your own
+                guestbook note will remember.
+              </p>
+              <div
+                data-reveal="up"
+                style={{ "--reveal-delay": "140ms" } as CSSProperties}
+                className="flex flex-wrap items-center gap-3"
+              >
+                <CtaLink
+                  href="/book"
+                  size="lg"
+                  className="w-full justify-between sm:w-auto sm:justify-center"
+                  eventName="cta_click"
+                  eventPayload={{ location: "reviews_plan", target: "/book" }}
+                >
+                  Check dates
+                </CtaLink>
+                <CtaLink
+                  href="/rates"
+                  size="lg"
+                  variant="outline"
+                  arrow="none"
+                  className="w-full sm:w-auto"
+                  eventName="cta_click"
+                  eventPayload={{ location: "reviews_plan", target: "/rates" }}
+                >
+                  See rates
+                </CtaLink>
               </div>
             </div>
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Footer />
     </main>
+      <Footer />
+    </>
   )
 }

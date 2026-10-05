@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
-import { ArrowUpRight, ChevronRight, Search } from "lucide-react"
+import type { CSSProperties } from "react"
+import { ArrowRight, ArrowUpRight, Search } from "lucide-react"
 
 import type { NavItem } from "@/lib/nav-items"
 import { trackNavClick } from "@/lib/analytics"
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
+import { LocalTime } from "@/components/motion/local-time"
 
 type MobileNavProps = {
   items: NavItem[]
@@ -16,7 +17,9 @@ type MobileNavProps = {
 
 const OPEN_SEARCH_EVENT = "canary-cove:open-search"
 
-type Row = { label: string; href: string; external?: boolean }
+type Row = { label: string; href: string; caption?: string; external?: boolean }
+
+const enter = (index: number) => ({ "--enter-delay": `${80 + Math.min(index, 12) * 40}ms` }) as CSSProperties
 
 function MenuRow({
   row,
@@ -30,10 +33,7 @@ function MenuRow({
   onNavigate?: () => void
 }) {
   return (
-    <li
-      className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-1 motion-reduce:animate-none"
-      style={{ animationDelay: `${Math.min(index, 8) * 20}ms`, animationFillMode: "both" }}
-    >
+    <li className="enter-up" style={enter(index)}>
       <Link
         href={row.href}
         aria-current={active ? "page" : undefined}
@@ -41,21 +41,34 @@ function MenuRow({
           trackNavClick("header_mobile", row.href)
           onNavigate?.()
         }}
-        className={cn(
-          "focus-ring flex min-h-[52px] items-center justify-between gap-3 rounded-2xl px-3 transition-colors duration-200 hover:bg-foreground/[0.05] motion-reduce:transition-none",
-          active ? "font-semibold text-foreground" : "font-medium text-foreground/85",
-        )}
+        className="group focus-ring flex min-h-[56px] items-center justify-between gap-3 rounded-2xl py-1.5"
       >
-        <span className="flex items-center gap-1.5 text-[15px]">
-          {row.label}
-          {row.external ? (
-            <>
-              <ArrowUpRight className="h-4 w-4 text-muted-foreground" aria-hidden="true" />
-              <span className="sr-only">(external site)</span>
-            </>
-          ) : null}
+        <span className="flex min-w-0 flex-col">
+          <span
+            className={cn(
+              "flex items-center gap-2 font-display text-[2.1rem] leading-[1.05] transition-colors duration-300",
+              active ? "text-lagoon" : "text-foreground group-hover:text-lagoon",
+            )}
+          >
+            {row.label}
+            {row.external ? (
+              <>
+                <ArrowUpRight className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                <span className="sr-only">(external site)</span>
+              </>
+            ) : null}
+          </span>
+          {row.caption ? <span className="text-xs text-muted-foreground">{row.caption}</span> : null}
         </span>
-        <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
+        <span
+          aria-hidden="true"
+          className={cn(
+            "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-colors duration-300",
+            active ? "border-lagoon bg-lagoon text-sand-light" : "border-border text-foreground group-hover:border-ink group-hover:bg-ink group-hover:text-sand-light",
+          )}
+        >
+          <ArrowRight className="h-4 w-4" />
+        </span>
       </Link>
     </li>
   )
@@ -72,45 +85,36 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
     window.dispatchEvent(new CustomEvent(OPEN_SEARCH_EVENT))
   }
 
-  // Entrance-stagger order across every row, computed once per render.
-  const staggerOrder: string[] = []
-  for (const group of groups) {
-    if (group.type === "dropdown") {
-      for (const child of group.items) staggerOrder.push(child.href)
-    }
-  }
-  for (const single of singles) {
-    if (single.type === "link") staggerOrder.push(single.href)
-  }
-  const staggerIndex = (href: string) => Math.max(0, staggerOrder.indexOf(href))
+  let order = 0
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-      <div className="min-h-0 flex-1 overflow-y-auto pb-6">
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain pb-8" data-lenis-prevent>
         <button
           type="button"
           onClick={openSearch}
-          className="focus-ring flex min-h-12 w-full items-center gap-3 rounded-2xl border border-border/70 bg-background/80 px-4 text-left text-[15px] text-muted-foreground transition-colors duration-200 hover:border-foreground/25 hover:text-foreground motion-reduce:transition-none"
+          className="enter-up focus-ring mt-2 flex min-h-12 w-full items-center gap-3 rounded-full border border-border bg-sand-light px-5 text-left text-[15px] text-muted-foreground transition-colors duration-300 hover:border-ink/40 hover:text-foreground"
+          style={enter(0)}
         >
           <Search className="h-4 w-4 shrink-0" aria-hidden="true" />
           <span>Search rates, dining, adventures…</span>
         </button>
 
-        <div className="mt-6 flex flex-col gap-6">
+        <div className="mt-8 flex flex-col gap-8">
           {groups.map((group) => {
             if (group.type !== "dropdown") return null
             return (
               <section key={group.label} aria-label={group.label}>
-                <p className="px-3 text-[11px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                <p className="eyebrow enter-fade" style={enter(order)}>
                   {group.label}
                 </p>
-                <ul className="mt-1 flex flex-col">
+                <ul className="mt-2 flex flex-col">
                   {group.items.map((child) => (
                     <MenuRow
                       key={child.href}
-                      row={{ label: child.label, href: child.href, external: child.external }}
+                      row={{ label: child.label, href: child.href, caption: child.caption, external: child.external }}
                       active={isActive(child.href)}
-                      index={staggerIndex(child.href)}
+                      index={++order}
                       onNavigate={onNavigate}
                     />
                   ))}
@@ -120,7 +124,10 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
           })}
 
           <section aria-label="More pages">
-            <ul className="flex flex-col">
+            <p className="eyebrow enter-fade" style={enter(order)}>
+              Plan
+            </p>
+            <ul className="mt-2 flex flex-col">
               {singles.map((single) => {
                 if (single.type !== "link") return null
                 return (
@@ -128,29 +135,39 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
                     key={single.href}
                     row={{ label: single.label, href: single.href }}
                     active={isActive(single.href)}
-                    index={staggerIndex(single.href)}
+                    index={++order}
                     onNavigate={onNavigate}
                   />
                 )
               })}
             </ul>
           </section>
+
+          <p className="enter-fade flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground" style={enter(order + 1)}>
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lagoon-bright" />
+            Now in San Pedro · <LocalTime className="text-foreground" />
+          </p>
         </div>
       </div>
 
-      <div className="shrink-0 border-t border-border/60 bg-background pt-4" style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}>
+      <div
+        className="shrink-0 border-t border-border bg-sand pt-4"
+        style={{ paddingBottom: "max(1rem, env(safe-area-inset-bottom))" }}
+      >
         {bookCta && bookCta.type === "link" ? (
-          <Button asChild size="lg" className="w-full rounded-full">
-            <Link
-              href={bookCta.href}
-              onClick={() => {
-                trackNavClick("header_mobile", bookCta.href)
-                onNavigate?.()
-              }}
-            >
-              Book your stay
-            </Link>
-          </Button>
+          <Link
+            href={bookCta.href}
+            onClick={() => {
+              trackNavClick("header_mobile", bookCta.href)
+              onNavigate?.()
+            }}
+            className="group focus-ring flex h-14 w-full items-center justify-between rounded-full bg-ink pl-6 pr-2 text-[15px] font-medium text-sand-light"
+          >
+            Book your stay
+            <span aria-hidden="true" className="flex h-10 w-10 items-center justify-center rounded-full bg-canary text-ink">
+              <ArrowRight className="arrow-nudge h-4 w-4" />
+            </span>
+          </Link>
         ) : null}
         <Link
           href="/contact"
@@ -158,7 +175,7 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
             trackNavClick("header_mobile", "/contact")
             onNavigate?.()
           }}
-          className="focus-ring mt-1 flex min-h-11 w-full items-center justify-center rounded-full text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground motion-reduce:transition-none"
+          className="focus-ring mt-1 flex min-h-11 w-full items-center justify-center rounded-full text-sm font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
         >
           Prefer to write? Message us
         </Link>

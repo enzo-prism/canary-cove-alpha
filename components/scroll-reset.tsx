@@ -21,6 +21,9 @@ export function ScrollReset() {
     if (pathname === settledPathname.current) return
     settledPathname.current = pathname
     window.scrollTo({ top: 0, left: 0, behavior: "auto" })
+    // Keep the smooth-scroll engine (components/motion/smooth-scroll.tsx) in
+    // sync so it does not glide back toward the previous page's position.
+    window.__lenis?.scrollTo(0, { immediate: true, force: true })
   }, [pathname])
 
   return null
