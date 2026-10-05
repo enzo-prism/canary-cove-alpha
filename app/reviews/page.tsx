@@ -623,7 +623,7 @@ export default function Page() {
       />
 
       {/* Cinematic spotlight: the strongest note lights up word by word. */}
-      <section id="start-here" className="surface-reef relative isolate scroll-mt-0 overflow-hidden">
+      <section id="start-here" className="surface-reef relative isolate overflow-hidden">
         <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-70" />
         <Container size="wide" className="py-24 sm:py-32 lg:py-40">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.32fr)_minmax(0,1fr)] lg:gap-16">
@@ -721,7 +721,7 @@ export default function Page() {
         </Container>
       </section>
 
-      <section id="reviews-plan" className="scroll-mt-0 bg-sand-light py-20 sm:py-28 lg:py-32">
+      <section id="reviews-plan" className="bg-sand-light py-20 sm:py-28 lg:py-32">
         <Container size="wide">
           <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
             <div data-reveal="clip" className="media-frame relative aspect-[4/5] w-full max-w-md lg:max-w-none">

@@ -151,7 +151,7 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
     <div
       id={id}
       ref={wrapRef}
-      className="relative scroll-mt-24"
+      className="relative"
       style={pinned ? { height: `calc(100svh - var(--site-header-height) + ${distance}px)` } : undefined}
     >
       <div

@@ -24,7 +24,7 @@ type DaysFilmstripProps = {
 }
 
 // Pin only where a 4:5 card plus the heading fit comfortably in the viewport.
-const PIN_QUERY = "(min-width: 1024px) and (min-height: 680px)"
+const PIN_QUERY = "(min-width: 1024px) and (min-height: 760px)"
 
 /**
  * A week of days as a filmstrip. On large screens the section pins under the
@@ -81,7 +81,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
     <section
       id={id}
       ref={sectionRef}
-      className="relative scroll-mt-[var(--site-header-height)]"
+      className="relative"
       style={pinned ? { height: `calc(100svh - var(--site-header-height) + ${distance}px)` } : undefined}
     >
       <div
@@ -149,7 +149,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
             {items.map((item, index) => (
               <li
                 key={item.src}
-                className="group w-[78vw] max-w-[22rem] shrink-0 snap-start sm:w-[20rem] lg:w-[clamp(17rem,25vw,23rem)] lg:max-w-none"
+                className="group w-[78vw] max-w-[22rem] shrink-0 snap-start sm:w-[20rem] lg:w-[min(clamp(17rem,25vw,23rem),calc(46svh*0.8))] lg:max-w-none"
               >
                 <figure className="flow flow-sm">
                   <div className="media-frame zoom-media relative aspect-[4/5]">
@@ -174,7 +174,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
               </li>
             ))}
             {endCard ? (
-              <li className="w-[78vw] max-w-[22rem] shrink-0 snap-start sm:w-[20rem] lg:w-[clamp(17rem,25vw,23rem)] lg:max-w-none">
+              <li className="w-[78vw] max-w-[22rem] shrink-0 snap-start sm:w-[20rem] lg:w-[min(clamp(17rem,25vw,23rem),calc(46svh*0.8))] lg:max-w-none">
                 {endCard}
               </li>
             ) : null}

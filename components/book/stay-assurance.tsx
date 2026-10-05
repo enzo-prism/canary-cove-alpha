@@ -28,7 +28,7 @@ export function StayAssurance() {
 
         <div
           id="comfort-confidence"
-          className="mt-20 scroll-mt-[calc(var(--site-header-height)+24px)] border-t border-white/15 pt-12 sm:mt-28"
+          className="mt-20 [--anchor-extra:24px] border-t border-white/15 pt-12 sm:mt-28"
         >
           <div className="grid gap-10 lg:grid-cols-[0.8fr_2fr] lg:gap-16">
             <div className="flow flow-sm">

@@ -26,7 +26,7 @@ function ReefEncounterCard({
     <article
       id={`film-${video.slug}`}
       data-testid={`reef-video-card-${video.slug}`}
-      className="min-w-0 scroll-mt-[calc(var(--site-header-height)+2rem)] overflow-hidden rounded-[var(--radius-media)] border border-white/10 bg-white/[0.04] shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
+      className="min-w-0 [--anchor-extra:2rem] overflow-hidden rounded-[var(--radius-media)] border border-white/10 bg-white/[0.04] shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
     >
       <figure>
         <div className="relative bg-black">
@@ -90,7 +90,7 @@ export function ReefEncounters() {
   return (
     <section
       id="reef-encounters"
-      className="surface-reef relative isolate scroll-mt-[var(--site-header-height)] overflow-hidden py-24 sm:py-32 lg:py-40"
+      className="surface-reef relative isolate overflow-clip py-24 sm:py-32 lg:py-40"
     >
       <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-80" />
       <div

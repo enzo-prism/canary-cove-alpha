@@ -178,7 +178,6 @@ export function RatesServicesBrowser({ groups }: RatesServicesBrowserProps) {
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <nav
             aria-label="Service groups"
-            data-lenis-prevent
             className="no-scrollbar -mx-6 flex gap-x-5 overflow-x-auto px-6 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0"
           >
             {groups.map((group) => (
@@ -232,7 +231,7 @@ export function RatesServicesBrowser({ groups }: RatesServicesBrowserProps) {
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={transition}
-                  className="grid scroll-mt-[calc(var(--site-header-height)+1.5rem)] gap-5 lg:scroll-mt-[calc(var(--site-header-height)+9rem)] lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-12"
+                  className="grid [--anchor-extra:1.5rem] gap-5 lg:[--anchor-extra:9rem] lg:grid-cols-[minmax(0,0.42fr)_minmax(0,1fr)] lg:gap-12"
                 >
                   <div className="flow flow-sm lg:sticky lg:top-[calc(var(--site-header-height)+10rem)] lg:self-start">
                     <p className="flex items-center gap-3 text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground">

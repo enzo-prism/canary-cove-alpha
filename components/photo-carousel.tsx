@@ -82,7 +82,7 @@ export function PhotoCarousel() {
     "focus-ring pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-white/35 bg-white/10 text-white backdrop-blur-md transition-[background-color,color,border-color] duration-500 ease-[var(--ease-out-expo)] hover:border-white hover:bg-white hover:text-ink"
 
   return (
-    <section id="gallery" className="scroll-mt-24 py-20 sm:py-28">
+    <section id="gallery" className="py-20 sm:py-28">
       <Container size="wide">
         <SectionHeading
           eyebrow="A week at the estate"

@@ -105,7 +105,7 @@ function LedgerRows({ rows }: { rows: LedgerRow[] }) {
  */
 export function StayAmenities() {
   return (
-    <div id="amenities" className="flex scroll-mt-24 flex-col gap-20 sm:gap-28">
+    <div id="amenities" className="flex flex-col gap-20 sm:gap-28">
       <div className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
         <SectionHeading
           align="split"

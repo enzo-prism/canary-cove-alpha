@@ -155,7 +155,7 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
                           }
                         }}
                         className={cn(
-                          "focus-ring flex h-9 w-7 items-center justify-center rounded-l-none rounded-r-full transition-colors duration-200 motion-reduce:transition-none",
+                          "focus-ring flex h-9 w-7 items-center justify-center rounded-l-none rounded-r-full pointer-coarse:h-11 pointer-coarse:w-10 transition-colors duration-200 motion-reduce:transition-none",
                           active ? "text-foreground" : "text-foreground/60 hover:text-foreground",
                         )}
                       >

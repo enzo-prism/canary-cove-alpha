@@ -67,7 +67,7 @@ export function StayGallerySection({ id, eyebrow, title, description, items }: S
   const lightboxImages = items.map((item) => ({ src: item.image.src, alt: item.image.alt, caption: item.title }))
 
   return (
-    <div id={id} className="mx-auto w-full max-w-[1320px] scroll-mt-24 px-[var(--gutter)]">
+    <div id={id} className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
       <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
         <SectionHeading eyebrow={eyebrow} title={title} lede={description} className="max-w-2xl" />
         <p

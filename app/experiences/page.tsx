@@ -171,7 +171,7 @@ function IncludedChapter() {
   return (
     <section
       id="on-the-water"
-      className="scroll-mt-[var(--site-header-height)] py-24 sm:py-32 lg:py-40"
+      className="py-24 sm:py-32 lg:py-40"
     >
       <Container size="wide">
         <div className="grid gap-16 lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:gap-20 xl:gap-28">
@@ -276,7 +276,7 @@ function AddOnChapter() {
   return (
     <section
       id="diving-fishing"
-      className="surface-reef relative isolate scroll-mt-[var(--site-header-height)] overflow-hidden py-24 sm:py-32 lg:py-40"
+      className="surface-reef relative isolate overflow-hidden py-24 sm:py-32 lg:py-40"
     >
       <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-80" />
       <Container size="wide" className="flex flex-col gap-16 sm:gap-20">

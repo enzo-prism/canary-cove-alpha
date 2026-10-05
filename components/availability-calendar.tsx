@@ -220,7 +220,7 @@ export function AvailabilityCalendar() {
     <section
       id="availability"
       aria-label="Availability"
-      className="scroll-mt-[calc(var(--site-header-height)+16px)] py-14 sm:py-20"
+      className="[--anchor-extra:16px] py-14 sm:py-20"
     >
       <Container size="wide">
         <div className="flex flex-col gap-5 border-y border-border/70 py-8 sm:flex-row sm:items-center sm:justify-between sm:gap-10">
@@ -259,7 +259,7 @@ export function AvailabilityCalendar() {
       id="availability"
       data-testid="availability-calendar"
       aria-label="Live availability"
-      className="scroll-mt-[calc(var(--site-header-height)+16px)] py-20 sm:py-28"
+      className="[--anchor-extra:16px] py-20 sm:py-28"
     >
       <Container size="wide">
         <div className="grid gap-8 lg:grid-cols-[1.2fr_1fr] lg:items-end lg:gap-16">

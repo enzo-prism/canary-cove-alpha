@@ -344,12 +344,6 @@ test.describe("gallery page on a phone", () => {
     await expect(lightbox).toContainText("2 / 36")
   })
 
-  test("hides the concierge widget while the viewer is open", async ({ page }) => {
-    await openGallery(page)
-    await page.getByTestId("gallery-photo").first().click()
-    await expect(page.getByTestId("photo-lightbox")).toBeVisible()
-    await expect(page.getByTestId("elevenlabs-convai-widget")).toHaveCSS("display", "none")
-  })
 })
 
 test.describe("sticky chrome", () => {

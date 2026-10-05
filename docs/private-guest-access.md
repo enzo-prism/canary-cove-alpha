@@ -10,7 +10,7 @@ The `/guest` route is a server-rendered, fail-closed scaffold for future guest i
 - Password verification uses scrypt against `CANARY_GUEST_PASSWORD_HASH`; plaintext passwords do not belong in Vercel configuration or source.
 - Sessions use an independent `CANARY_GUEST_SESSION_SECRET`, HMAC-SHA256 signatures, an eight-hour absolute expiry, and an `HttpOnly; Secure; SameSite=Strict; Path=/` cookie.
 - Private responses are `private, no-store`, noindex, no-referrer, nosniff, and protected from framing.
-- Google Analytics, Vercel Analytics, and the ElevenLabs widget are disabled for `/guest` through `components/public-runtime-services.tsx`.
+- Google Analytics and Vercel Analytics are disabled for `/guest` through `components/public-runtime-services.tsx`.
 - `/guest` is disallowed in `robots.txt` and remains absent from navigation, search, sitemap, and llms files. Those are discovery controls only, not authentication.
 
 ## Login rate limit

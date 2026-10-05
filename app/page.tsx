@@ -62,7 +62,7 @@ export default function Home() {
         <DayAtTheCove />
       </Section>
 
-      <section id="property-film" className="scroll-mt-24 bg-sand-light/70 pb-16 sm:pb-20 lg:pb-24">
+      <section id="property-film" className="bg-sand-light/70 pb-16 sm:pb-20 lg:pb-24">
         <PropertyFilm />
       </section>
 

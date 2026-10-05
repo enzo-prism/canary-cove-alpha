@@ -40,7 +40,7 @@ function PolicyItem({
     <AccordionPrimitive.Item
       id={id}
       value={value}
-      className="scroll-mt-[calc(var(--site-header-height)+24px)] border-t border-border/80 last:border-b"
+      className="[--anchor-extra:24px] border-t border-border/80 last:border-b"
     >
       <AccordionPrimitive.Header className="flex">
         <AccordionPrimitive.Trigger className="focus-ring group/acc flex min-h-11 flex-1 items-center gap-4 rounded-lg py-6 text-left sm:gap-5 sm:py-7">

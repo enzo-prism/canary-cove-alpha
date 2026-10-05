@@ -277,7 +277,7 @@ export default function Page() {
       </PageHero>
 
       {/* ── Villa ledger ─────────────────────────────────────────────── */}
-      <section id="villa-accommodations" className="scroll-mt-24 border-t border-border/70 py-20 sm:py-28 lg:py-32">
+      <section id="villa-accommodations" className="border-t border-border/70 py-20 sm:py-28 lg:py-32">
         <Container size="wide">
           <div className="flow flow-xl">
             <SectionHeading
@@ -313,7 +313,7 @@ export default function Page() {
       {/* ── Main House (reef band) ───────────────────────────────────── */}
       <section
         id="main-house-accommodations"
-        className="surface-reef relative isolate scroll-mt-24 overflow-hidden py-20 sm:py-28 lg:py-36"
+        className="surface-reef relative isolate overflow-hidden py-20 sm:py-28 lg:py-36"
       >
         {/* Ghost numeral: desktop only, parked in the band's top-right corner
             above the price ledger so it never sits behind a number. */}
@@ -404,7 +404,7 @@ export default function Page() {
       </section>
 
       {/* ── What's included ──────────────────────────────────────────── */}
-      <section id="included-costs" className="scroll-mt-24 bg-surface pb-20 sm:pb-28 lg:pb-32">
+      <section id="included-costs" className="bg-surface pb-20 sm:pb-28 lg:pb-32">
         <div className="border-b border-border/70 py-6 sm:py-8">
           <Marquee
             duration={48}
@@ -489,7 +489,7 @@ export default function Page() {
       </section>
 
       {/* ── Add-ons ──────────────────────────────────────────────────── */}
-      <section id="additional-services" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
+      <section id="additional-services" className="py-20 sm:py-28 lg:py-32">
         <Container size="wide">
           <div className="flow flow-xl">
             <SectionHeading

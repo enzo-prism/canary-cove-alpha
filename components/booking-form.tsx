@@ -887,7 +887,14 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
           </div>
         </form>
       </div>
-      <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md gap-6 rounded-[28px] border-border/70 bg-surface p-7 shadow-[var(--shadow-lift)] sm:rounded-[28px] sm:p-9">
+      <AlertDialogContent
+        onCloseAutoFocus={(event) => {
+          // The form has reset to a much shorter step 1; bring the guest back
+          // to it instead of leaving them ~1,000px below with focus on <body>.
+          event.preventDefault()
+          requestAnimationFrame(() => focusStepHeading(headingRefs.current[0] ?? null, cardRef.current))
+        }}
+        className="w-[calc(100%-2rem)] max-w-md gap-6 rounded-[28px] border-border/70 bg-surface p-7 shadow-[var(--shadow-lift)] sm:rounded-[28px] sm:p-9">
         <SuccessMark />
         <AlertDialogHeader className="gap-3 text-left sm:text-left">
           <AlertDialogTitle className="font-display text-[2.5rem] font-normal leading-none tracking-[-0.01em]">

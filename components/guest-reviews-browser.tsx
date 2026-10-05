@@ -128,7 +128,7 @@ type GuestReviewsBrowserProps = {
 const plural = (count: number, word: string) => `${count} ${word}${count === 1 ? "" : "s"}`
 
 /** Scroll offset for year anchors: below the header and, on phones, the sticky year strip. */
-const YEAR_SCROLL_MARGIN = "scroll-mt-[calc(var(--site-header-height)+4.75rem)] lg:scroll-mt-[calc(var(--site-header-height)+1.5rem)]"
+const YEAR_SCROLL_MARGIN = "[--anchor-extra:4.75rem] lg:[--anchor-extra:1.5rem]"
 
 export function GuestReviewsBrowser({
   groups,
@@ -319,7 +319,7 @@ export function GuestReviewsBrowser({
               id="reviews-year"
               value={selectedYear}
               onChange={(event) => handleYearChange(event.target.value)}
-              className="h-12 w-full appearance-none rounded-full bg-sand-light pl-5 pr-11 text-sm font-medium text-foreground outline-none ring-1 ring-inset ring-border transition-shadow focus-visible:ring-2 focus-visible:ring-lagoon/50 sm:w-auto"
+              className="h-12 w-full appearance-none rounded-full bg-sand-light pl-5 pr-11 text-base font-medium sm:text-sm text-foreground outline-none ring-1 ring-inset ring-border transition-shadow focus-visible:ring-2 focus-visible:ring-lagoon/50 sm:w-auto"
             >
               <option value="all">All years</option>
               {yearOptions.map((year) => (
@@ -528,9 +528,11 @@ export function GuestReviewsBrowser({
 
       <Dialog open={openNote !== null} onOpenChange={(nextOpen) => !nextOpen && setOpenNoteId(null)}>
         <DialogContent
-          className="max-h-[88dvh] gap-0 overflow-y-auto rounded-[28px] border-border/70 bg-sand-light p-7 shadow-[var(--shadow-lift)] sm:max-w-2xl sm:p-12 [&>button:last-child]:right-4 [&>button:last-child]:top-4 [&>button:last-child]:flex [&>button:last-child]:size-11 [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-sand-deep [&>button:last-child]:opacity-100 [&>button:last-child]:transition-colors [&>button:last-child]:hover:bg-ink [&>button:last-child]:hover:text-sand-light"
+          className="flex max-h-[88dvh] w-[calc(100%-2rem)] flex-col gap-0 overflow-hidden rounded-[28px] border-border/70 bg-sand-light p-0 shadow-[var(--shadow-lift)] sm:max-w-2xl [&>button:last-child]:right-4 [&>button:last-child]:top-4 [&>button:last-child]:flex [&>button:last-child]:size-11 [&>button:last-child]:items-center [&>button:last-child]:justify-center [&>button:last-child]:rounded-full [&>button:last-child]:bg-sand-deep [&>button:last-child]:opacity-100 [&>button:last-child]:transition-colors [&>button:last-child]:hover:bg-ink [&>button:last-child]:hover:text-sand-light"
           onCloseAutoFocus={handleNoteCloseAutoFocus}
         >
+          {/* The body scrolls, not the dialog box, so the close button stays put. */}
+          <div className="min-h-0 overflow-y-auto overscroll-contain p-7 sm:p-12" data-lenis-prevent>
           {openNote ? (
             <>
               <DialogHeader className="gap-3 pr-10 text-left">
@@ -580,6 +582,7 @@ export function GuestReviewsBrowser({
               ) : null}
             </>
           ) : null}
+          </div>
         </DialogContent>
       </Dialog>
     </div>

@@ -24,7 +24,7 @@ export function HeaderSearch() {
     if (wasOpen.current && !open) {
       requestAnimationFrame(() => {
         const active = document.activeElement
-        if (!active || active === document.body) triggerRef.current?.focus()
+        if (!active || active === document.body) triggerRef.current?.focus({ preventScroll: true })
       })
     }
     wasOpen.current = open

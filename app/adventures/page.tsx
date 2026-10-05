@@ -167,7 +167,7 @@ function ZoneRows() {
             key={zone.id}
             id={zone.id}
             data-reveal="group"
-            className="relative scroll-mt-[calc(var(--site-header-height)+1.5rem)] py-12 first:pt-0 sm:py-16 lg:py-20"
+            className="relative [--anchor-extra:1.5rem] py-12 first:pt-0 sm:py-16 lg:py-20"
           >
             {index > 0 ? (
               <span aria-hidden="true" className={cn("absolute inset-x-0 top-0 h-px bg-border", DRAW_X)} />
@@ -310,7 +310,7 @@ export default function Page() {
         </Container>
       </section>
 
-      <section id="diving" className="scroll-mt-[var(--site-header-height)] bg-sand-light py-24 sm:py-32 lg:py-40">
+      <section id="diving" className="bg-sand-light py-24 sm:py-32 lg:py-40">
         <Container size="wide">
           <div className="grid gap-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-center lg:gap-24">
             <div className="relative pb-[18%] pr-[14%]">
@@ -398,7 +398,7 @@ export default function Page() {
 
       <ReefEncounters />
 
-      <section id="fishing" className="scroll-mt-[var(--site-header-height)] py-24 sm:py-32 lg:py-40">
+      <section id="fishing" className="py-24 sm:py-32 lg:py-40">
         <Container size="wide" className="flex flex-col gap-14 sm:gap-20">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-end lg:gap-20">
             <div className="flow flow-xl">
@@ -449,7 +449,7 @@ export default function Page() {
         </Container>
       </section>
 
-      <section id="boats-crew" className="scroll-mt-[var(--site-header-height)]">
+      <section id="boats-crew" className="">
         <Container size="wide">
           <div className="grid gap-12 border-t border-border pt-16 sm:pt-20 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16 lg:pt-24">
             <div className="flow flow-xl">

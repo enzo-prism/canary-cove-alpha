@@ -177,7 +177,7 @@ export default function Page() {
       />
 
       {/* ── The route ────────────────────────────────────────────────── */}
-      <section id="arrival-steps" className="scroll-mt-24 border-t border-border/70 py-20 sm:py-28 lg:py-32">
+      <section id="arrival-steps" className="border-t border-border/70 py-20 sm:py-28 lg:py-32">
         <Container size="wide">
           <div className="flow flow-xl">
             <SectionHeading
@@ -268,7 +268,7 @@ export default function Page() {
       </section>
 
       {/* ── Getting around ───────────────────────────────────────────── */}
-      <section id="getting-around" className="scroll-mt-24 py-20 sm:py-28 lg:py-32">
+      <section id="getting-around" className="py-20 sm:py-28 lg:py-32">
         <Container size="wide">
           <div className="grid items-start gap-14 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-20">
             <div className="flow flow-xl lg:sticky lg:top-[calc(var(--site-header-height)+2rem)]">

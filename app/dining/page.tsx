@@ -304,7 +304,7 @@ export default function Page() {
 
       <section
         id="how-dining-works"
-        className="scroll-mt-[var(--site-header-height)] bg-sand-light py-24 sm:py-32 lg:py-36"
+        className="bg-sand-light py-24 sm:py-32 lg:py-36"
       >
         <Container size="wide">
           <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
@@ -349,7 +349,7 @@ export default function Page() {
         </Container>
       </section>
 
-      <section id="the-table" className="scroll-mt-[var(--site-header-height)] pb-24 sm:pb-32 lg:pb-40">
+      <section id="the-table" className="pb-24 sm:pb-32 lg:pb-40">
         <Container size="wide" className="flex flex-col gap-14 sm:gap-20">
           <div className="flow flow-lg">
             <ChapterMark index="02" label="The table" />
@@ -363,7 +363,7 @@ export default function Page() {
         </Container>
       </section>
 
-      <section id="dining-gallery" className="scroll-mt-[var(--site-header-height)] bg-sand-light py-24 sm:py-32">
+      <section id="dining-gallery" className="bg-sand-light py-24 sm:py-32">
         <Container size="wide" className="flex flex-col gap-16 sm:gap-24">
           <div className="flow flow-lg">
             <ChapterMark index="03" label="Photo gallery" />
@@ -400,7 +400,7 @@ export default function Page() {
 
       <section
         id="dining-notes"
-        className="surface-reef relative isolate scroll-mt-[var(--site-header-height)] overflow-hidden py-24 sm:py-32 lg:py-40"
+        className="surface-reef relative isolate overflow-hidden py-24 sm:py-32 lg:py-40"
       >
         <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-60" />
         <Container size="wide" className="flex flex-col gap-14 sm:gap-20">

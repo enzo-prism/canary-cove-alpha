@@ -32,11 +32,11 @@ When you add or rename a section `id`, review:
 - buttons/links that point to that hash
 - `lib/search/search-index.ts`
 - `next.config.mjs` redirect fragments
-- any `scroll-mt-*` classes or manual scroll offsets
+- the global `[id]` scroll-margin rule in `app/globals.css` (header height + 12px) and any per-target `--anchor-extra`
 
 Examples:
 
-- `/stay`, `/rates`, `/reviews`, and `/dining` use plain anchor links with `scroll-mt-*` offsets on section wrappers (no JS smooth scrolling)
+- In-page anchor links are plain `href="#id"` links; every `[id]` gets a header-aware `scroll-margin-top` globally, and Lenis (desktop pointers only) smooth-scrolls same-page anchor clicks
 - `/book` uses section IDs such as `#comfort-confidence`
 - search answers and results link directly into anchored sections
 

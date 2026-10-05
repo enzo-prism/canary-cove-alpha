@@ -195,7 +195,7 @@ This repo has hidden coupling around anchors. Check these files together:
 - CTA/button/link components that target the hash
 - `lib/search/search-index.ts`
 - `next.config.mjs` redirect fragments
-- any `scroll-mt-*` classes or manual scroll offsets
+- the global `[id]` scroll-margin rule in `app/globals.css` and any per-target `--anchor-extra`
 
 The stay page is the clearest example: in-page buttons scroll to hash targets, and those targets are also referenced by redirects and search.
 

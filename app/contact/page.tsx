@@ -51,7 +51,7 @@ export default function Page() {
       <section
         id="contact-form"
         aria-label="Contact form"
-        className="scroll-mt-[calc(var(--site-header-height)+16px)] pb-20 sm:pb-28"
+        className="[--anchor-extra:16px] pb-20 sm:pb-28"
       >
         <Container size="wide">
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.3fr)_minmax(0,0.7fr)] lg:gap-12 xl:gap-16">

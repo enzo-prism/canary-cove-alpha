@@ -135,8 +135,8 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
                 type="button"
                 onClick={() => api?.scrollTo(index)}
                 className={cn(
-                  "focus-ring relative h-[3px] rounded-full transition-[width,background-color] duration-700 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-1 after:-inset-y-5 after:content-[''] motion-reduce:transition-none",
-                  selectedIndex === index ? "w-10 bg-foreground" : "w-4 bg-ink/20 hover:bg-ink/45",
+                  "focus-ring relative h-[3px] rounded-full transition-[width,background-color] duration-700 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-[5px] after:-inset-y-5 after:content-[''] motion-reduce:transition-none",
+                  selectedIndex === index ? "w-12 bg-foreground" : "w-7 bg-ink/20 hover:bg-ink/45",
                 )}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={selectedIndex === index ? "true" : undefined}
