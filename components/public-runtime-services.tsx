@@ -3,7 +3,6 @@
 import { useLayoutEffect } from "react"
 import { usePathname } from "next/navigation"
 
-import { ElevenLabsConvaiWidget } from "@/components/elevenlabs-convai-widget"
 import { GoogleAnalyticsPageviews } from "@/components/google-analytics-pageviews"
 import { GoogleAnalyticsScripts } from "@/components/google-analytics-scripts"
 import { VercelAnalytics } from "@/components/vercel-analytics"
@@ -12,10 +11,8 @@ import { GOOGLE_ANALYTICS_ID } from "@/lib/google-analytics"
 const PRIVATE_RUNTIME_SELECTOR = [
   'script[src*="googletagmanager.com"]',
   "script#google-analytics",
-  'script[src*="elevenlabs"]',
   'script[src*="/_vercel/insights"]',
   'script[src*="va.vercel-scripts.com"]',
-  "elevenlabs-convai",
 ].join(",")
 
 const isPrivatePath = () => window.location.pathname === "/guest" || window.location.pathname.startsWith("/guest/")
@@ -27,7 +24,6 @@ const isPrivateTrackerRequest = (input: RequestInfo | URL) => {
     url.pathname.startsWith("/_vercel/insights") ||
     url.hostname.includes("google-analytics.com") ||
     url.hostname.includes("googletagmanager.com") ||
-    url.hostname.includes("elevenlabs") ||
     url.hostname.includes("vercel-insights.com") ||
     url.hostname.includes("vercel-scripts.com")
   )
@@ -126,7 +122,6 @@ export default function PublicRuntimeServices() {
       <GoogleAnalyticsScripts />
       <GoogleAnalyticsPageviews />
       <VercelAnalytics />
-      <ElevenLabsConvaiWidget />
     </>
   )
 }

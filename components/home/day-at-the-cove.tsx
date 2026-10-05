@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type CSSProperties } from "react"
 import Image from "next/image"
-import { motion, useScroll, useSpring, useTransform } from "motion/react"
+import { motion, useScroll, useTransform } from "motion/react"
 
 import { CtaLink } from "@/components/ui/cta-link"
 import { useMotionOk } from "@/components/motion/use-motion-ok"
@@ -102,7 +102,9 @@ export function DayAtTheCove() {
   }, [pinned])
 
   const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start start", "end end"] })
-  const smooth = useSpring(scrollYProgress, { stiffness: 120, damping: 30, restDelta: 0.0005 })
+  // Driven straight from scroll (Lenis already smooths wheel input); a spring
+  // here lagged behind fast flicks, so the pin released mid-slide.
+  const smooth = scrollYProgress
   const x = useTransform(smooth, [0, 1], [0, -distance])
   const sunX = useTransform(smooth, [0, 1], ["0%", "100%"])
   // Follows the dashed quadratic arc below: y(t) = 10 − 36t + 36t² in a 0–10 viewBox.

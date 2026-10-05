@@ -222,14 +222,17 @@ export function SiteSearch({
             id={dialogId}
             data-slot="dialog-content"
             data-testid="search-modal"
-            className="cc-search-sheet fixed inset-x-0 bottom-0 z-[90] flex max-h-[92dvh] flex-col overflow-hidden rounded-t-[28px] bg-sand-light text-foreground shadow-[var(--shadow-lift)] outline-none ring-1 ring-ink/10 sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-[9vh] sm:max-h-[min(82vh,46rem)] sm:w-[min(44rem,calc(100vw-3rem))] sm:-translate-x-1/2 sm:rounded-[28px] max-sm:pb-[env(safe-area-inset-bottom)]"
+            onCloseAutoFocus={(event) => {
+              // HeaderSearch restores focus to its trigger with preventScroll;
+              // Radix's default focus() would scroll the page on close.
+              event.preventDefault()
+            }}
+            className="cc-search-sheet fixed inset-0 z-[90] flex h-[100dvh] flex-col overflow-hidden bg-sand-light pt-[env(safe-area-inset-top)] text-foreground shadow-[var(--shadow-lift)] outline-none ring-1 ring-ink/10 sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-[9vh] sm:h-auto sm:pt-0 sm:max-h-[min(82vh,46rem)] sm:w-[min(44rem,calc(100vw-3rem))] sm:-translate-x-1/2 sm:rounded-[28px] max-sm:pb-[env(safe-area-inset-bottom)]"
           >
             <DialogHeader className="sr-only">
               <DialogTitle>Site search</DialogTitle>
               <DialogDescription>Search the Canary Cove site for rates, logistics, dining, and adventure details.</DialogDescription>
             </DialogHeader>
-            {/* Grab handle on the phone sheet. */}
-            <span aria-hidden="true" className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-ink/15 sm:hidden" />
             <Command loop shouldFilter={false} className="min-h-0 flex-1 rounded-none bg-transparent text-foreground">
               <div className="flex shrink-0 items-center gap-3 border-b border-border/80 py-1.5 pl-5 pr-3 sm:py-2 sm:pl-6 sm:pr-4">
                 <Search className="h-[18px] w-[18px] shrink-0 text-foreground/60" aria-hidden="true" />
@@ -249,14 +252,14 @@ export function SiteSearch({
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="focus-ring hidden h-8 items-center rounded-md px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground ring-1 ring-inset ring-border transition-colors hover:bg-ink hover:text-sand-light hover:ring-ink sm:inline-flex"
+                  className="focus-ring hidden h-8 items-center rounded-md px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground ring-1 ring-inset ring-border transition-colors hover:bg-ink hover:text-sand-light hover:ring-ink sm:pointer-fine:inline-flex"
                 >
                   esc
                 </button>
                 <button
                   type="button"
                   onClick={() => setOpen(false)}
-                  className="focus-ring min-h-11 shrink-0 rounded-full px-3 text-sm font-medium text-foreground sm:hidden"
+                  className="focus-ring min-h-11 shrink-0 rounded-full px-3 text-sm font-medium text-foreground sm:pointer-fine:hidden"
                 >
                   Cancel
                 </button>

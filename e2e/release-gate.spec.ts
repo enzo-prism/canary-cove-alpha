@@ -135,17 +135,6 @@ test.describe("release gate smoke coverage", () => {
     await expect(page).toHaveURL(/\/terms$/)
   })
 
-  test("sitewide guest concierge widget renders from the shared layout", async ({ page }) => {
-    for (const route of ["/", "/book"]) {
-      await page.goto(route)
-      await waitForPageReady(page)
-
-      const conciergeWidget = page.getByTestId("elevenlabs-convai-widget")
-      await expect(conciergeWidget).toBeVisible()
-      await expect(conciergeWidget).toHaveAttribute("variant", "tiny")
-    }
-  })
-
   test("reef encounter films are accessible and load on demand", async ({ page }) => {
     await page.goto("/adventures#reef-encounters")
     await waitForPageReady(page)

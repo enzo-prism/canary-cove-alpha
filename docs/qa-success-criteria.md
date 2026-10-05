@@ -17,7 +17,6 @@ This document defines the production-readiness bar for the public marketing site
 - Every public route returns `2xx` and renders a visible `h1`.
 - Desktop navigation, mobile navigation, footer links, and homepage CTAs all land on the correct route.
 - The `/book` request-to-book Formspree form is present. There is no Bookingmood or third-party calendar embed. A first-party per-unit availability calendar may render when Google Calendar credentials are configured; the form stays if that fetch fails.
-- The ElevenLabs concierge widget is present on public pages where the shared layout renders.
 - Site search opens from the header (button or Cmd/Ctrl+K) on any public page and gives guests a useful fallback state when a query has no results.
 - Search results stay bounded (per-group and total caps), intent expansion only rescores existing matches, and instant answers link into the anchored section they describe.
 - Guest quotes render byte-identical to their sources (`lib/testimonial-spotlights.ts` or the reviews guestbook); paraphrased or invented quotes must never carry guest attribution.
@@ -69,6 +68,7 @@ This document defines the production-readiness bar for the public marketing site
 - `e2e/responsive.spec.ts`, `e2e/spacing.spec.ts`, `e2e/hero-contrast.spec.ts`: layout rhythm and readability checks
 - `e2e/design-layout.spec.ts`: dropdown alignment/panels, active-section underline, solid-bar/shrink behavior, Getting Here badges, testimonial clipping, Experiences hero offset, dining bullets
 - `e2e/design-visual.spec.ts`: Chromium-only visual baselines
+- `e2e/smooth-scroll.spec.ts`: Lenis-on wheel scrolling, mid-glide hand-off to programmatic scrolls, and dialog scroll locking (Chromium)
 - `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`: slider interaction quality
 
 ## Notes

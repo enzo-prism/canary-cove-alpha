@@ -20,7 +20,7 @@ export function LocalTime({ className }: { className?: string }) {
   return (
     <span className={className} data-volatile="" suppressHydrationWarning>
       {/* Fixed-width box: the label beside it must not shift as the time changes. */}
-      <span className="tabular inline-block min-w-[4.6em] text-left">{time ?? "—:—"}</span>
+      <span className="tabular inline-block min-w-[7.2em] text-left">{time ?? "—:—"}</span>
     </span>
   )
 }

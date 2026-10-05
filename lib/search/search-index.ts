@@ -229,6 +229,17 @@ export const SEARCH_ITEMS: SearchItem[] = [
     type: "section",
   },
   {
+    id: "villa-amenities",
+    title: "Amenities included with your stay",
+    description:
+      "Central air conditioning, daily housekeeping with laundry, robes, in-room safes, coffee and espresso setup, fiber internet, and purified water across the estate.",
+    href: "/stay#amenities",
+    group: "Villa, amenities & comfort",
+    keywords: ["amenities", "amenity", "included", "housekeeping", "laundry", "air conditioning", "robes", "toiletries", "coffee", "espresso", "safe", "hairdryer", "towels"],
+    intent: "amenities",
+    type: "section",
+  },
+  {
     id: "villa-outdoors",
     title: "Pool, docks, and outdoor spaces",
     description:

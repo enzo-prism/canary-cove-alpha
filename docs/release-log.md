@@ -2,6 +2,17 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-10-04 — Scrolling fix, ElevenLabs widget removed, UX bug pass
+
+- Commit: see the `main` push that follows `baeb889` ("Fix scrolling…")
+- Production: `https://www.canarycove.com`
+- Desktop wheel scrolling was broken: Lenis 1.3 needs `autoRaf: true` (or a manual rAF loop); without it, it swallowed wheel input and the page never moved. Automated runs skip Lenis, so the suite missed it — `e2e/smooth-scroll.spec.ts` now re-enables Lenis and drives real wheel input (verified to fail without the fix).
+- Lenis now halts its glide on any click or keypress (programmatic `focus`/`scrollTo` after a flick were being overwritten: hidden form errors, dead "Back to top", gallery filter jumps), passes Shift+wheel to horizontal rails, and no longer skips dropdown panels.
+- Android Chrome: the header's 72→60px shrink fought scroll anchoring in an endless jitter loop near the top. The header now gains a matching bottom margin while it shrinks (constant layout footprint) plus 32/8px hysteresis.
+- Anchor offsets moved from `html { scroll-padding-top }` to a global `[id] { scroll-margin-top }` (header + 12px + `--anchor-extra`): the page-wide padding made focusing header buttons (menu close, Shift+Tab) scroll the page up ~430px. Duplicate per-section `scroll-mt-*` offsets removed.
+- Removed the ElevenLabs concierge widget site-wide (component, embed script, CSS hooks, privacy-policy mention, e2e assertions).
+- Other fixes: full-screen phone search sheet (no resizing under the keyboard) with a touch Cancel on tablets; dialogs restore focus without scrolling; booking success returns to step 1 in view; review-note dialog scrolls its body so close stays visible; 16px reviews year select (no iOS zoom); 44px touch targets for footer links, nav chevrons and gallery dots on touch screens; `/adventures` dive-log rail sticks again (`overflow-clip`); `/experiences` week filmstrip only pins when it fits; mosaic tiles clickable during their reveal; homepage day timeline no longer releases mid-slide; "amenities" now finds `/stay#amenities`; balanced card titles; 13px form helpers.
+
 ## 2026-10-04 — Complete design + UX overhaul ("Sand, reef, and canary") with a motion system
 
 - Commit: `0e1df4f` (overhaul) plus a follow-up that swaps the split-headline `text-shadow` for a `drop-shadow` filter (per-word mask boxes were clipping the blur into visible rectangles)

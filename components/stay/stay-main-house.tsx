@@ -14,7 +14,7 @@ export function StayMainHouse() {
   return (
     <section
       id="main-house-stay"
-      className="surface-reef relative scroll-mt-24 overflow-clip py-24 text-white sm:py-32 lg:py-40"
+      className="surface-reef relative overflow-clip py-24 text-white sm:py-32 lg:py-40"
     >
       <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 opacity-80" />
       <div className="relative mx-auto flex w-full max-w-[1320px] flex-col gap-12 px-[var(--gutter)] sm:gap-16">

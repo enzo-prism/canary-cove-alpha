@@ -30,6 +30,7 @@ export function Header() {
   const [mobileOpen, setMobileOpen] = useState(false)
   const headerRef = useRef<HTMLElement | null>(null)
   const closeRef = useRef<HTMLButtonElement | null>(null)
+  const menuTriggerRef = useRef<HTMLButtonElement | null>(null)
   const mobileSheetId = "mobile-nav-sheet"
   const bookCta = NAV_ITEMS.find((item) => item.type === "link" && item.cta)
 
@@ -43,7 +44,8 @@ export function Header() {
   )
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24)
+    // Hysteresis: shrink past 32px, expand again below 8px.
+    const onScroll = () => setScrolled((prev) => (prev ? window.scrollY > 8 : window.scrollY > 32))
     onScroll()
     window.addEventListener("scroll", onScroll, { passive: true })
     return () => window.removeEventListener("scroll", onScroll)
@@ -99,7 +101,15 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-50 border-b border-border/70 bg-sand-light/95 backdrop-blur-xl backdrop-saturate-150"
+      // The bar shrinks 12px after scrolling, and the header gains a matching
+      // 12px bottom margin on the same curve, so its layout footprint never
+      // changes. Without this, page content shifted under the user's finger
+      // and Chrome's scroll anchoring fought the shrink in an endless
+      // shrink/grow loop near the top of the page.
+      className={cn(
+        "sticky top-0 z-50 border-b border-border/70 bg-sand-light/95 backdrop-blur-xl backdrop-saturate-150 transition-[margin] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+        scrolled ? "mb-3" : "mb-0",
+      )}
     >
       <div
         className={cn(
@@ -145,6 +155,7 @@ export function Header() {
             <Sheet open={mobileOpen} onOpenChange={handleMobileOpenChange}>
               <SheetTrigger asChild>
                 <Button
+                  ref={menuTriggerRef}
                   aria-controls={mobileSheetId}
                   aria-expanded={mobileOpen}
                   aria-label="Open navigation menu"
@@ -165,9 +176,16 @@ export function Header() {
                 hideClose
                 id={mobileSheetId}
                 aria-label="Site navigation"
+                aria-describedby={undefined}
                 onOpenAutoFocus={(event) => {
                   event.preventDefault()
                   closeRef.current?.focus()
+                }}
+                onCloseAutoFocus={(event) => {
+                  // Radix's default restore calls focus() without
+                  // preventScroll, which scrolled the page up on close.
+                  event.preventDefault()
+                  menuTriggerRef.current?.focus({ preventScroll: true })
                 }}
                 className="gap-0 bg-sand px-5 pb-0 pt-0 sm:px-8"
               >

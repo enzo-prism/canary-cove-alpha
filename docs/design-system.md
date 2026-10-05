@@ -72,7 +72,7 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 | `AmbientVideo` | Muted decorative loop (aria-hidden, lazy, pauses off-screen, poster-only for reduced motion). Never on `/adventures` (its tests count exactly 3 `<video>` elements) and never inside `[data-testid=property-film]`. |
 | `LocalTime` | Live San Pedro clock (placeholder until mounted). |
 | `ScrollProgress` | Header hairline that fills with page progress. |
-| `SmoothScroll` | Lenis inertial wheel scrolling on desktop pointers; drives the real window scroll (sticky/anchors/IO unaffected). Off for touch, reduced motion and automation. Add `data-lenis-prevent` to nested scroll areas. |
+| `SmoothScroll` | Lenis inertial wheel scrolling on desktop pointers (`autoRaf: true` is required in Lenis 1.3). Drives the real window scroll (sticky/anchors/IO unaffected). Off for touch, reduced motion and automation (`e2e/smooth-scroll.spec.ts` re-enables it). Halts its glide on any click/keypress so programmatic scrolls win; Shift+wheel passes through to horizontal rails. Add `data-lenis-prevent` only to areas that genuinely scroll on their own. |
 | Load entrances | `.enter-up`, `.enter-fade`, `.enter-clip` (CSS keyframes with `--enter-delay`). Use only above the fold. |
 | Hover | `.link-underline` (draw-in underline), `.zoom-media` inside a `.group` (slow image zoom), `.arrow-nudge`, `.roll` (rolling label). |
 
@@ -84,6 +84,10 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 - Don't animate `<header>`; keep page-content section headers as `div`s (the site header is the first `<header>`).
 - `prefers-reduced-motion`: CSS resolves every reveal to its final state; JS motion checks `useMotionOk()`.
 - Keep motion JS off the critical path: scroll-linked components are small client islands; pages stay server components.
+
+## Anchors
+
+- Every element with an `id` gets `scroll-margin-top: header + 12px + var(--anchor-extra)` (app/globals.css). Don't add `scroll-mt-*` utilities or an `html` scroll-padding; for extra room under a sticky sub-bar, set `[--anchor-extra:4.75rem]` on the target.
 
 ## Accessibility and content guardrails
 

@@ -133,13 +133,13 @@ export default function Page() {
         </div>
       </section>
 
-      <div id="villa" className="scroll-mt-28">
+      <div id="villa" className="">
         <section className="bg-surface py-20 sm:py-28 lg:py-36">
           <StayVillaGallery />
         </section>
       </div>
 
-      <div id="outside" className="scroll-mt-28">
+      <div id="outside" className="">
         <StayOutdoorGallery />
       </div>
 
@@ -158,13 +158,13 @@ export default function Page() {
         />
       </div>
 
-      <div id="services" className="scroll-mt-28">
+      <div id="services" className="">
         <section className="py-20 sm:py-28 lg:py-36">
           <StayAmenities />
         </section>
       </div>
 
-      <section id="guest-experience" className="scroll-mt-24 bg-surface py-20 sm:py-28 lg:py-36">
+      <section id="guest-experience" className="bg-surface py-20 sm:py-28 lg:py-36">
         <StayGuestExperience testimonials={TESTIMONIAL_SPOTLIGHTS.stay.slice(1)} />
       </section>
 

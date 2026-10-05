@@ -61,7 +61,7 @@ export function MealTimeline({ stops }: { stops: MealStop[] }) {
               key={stop.title}
               id={stop.id}
               data-reveal="group"
-              className="relative grid scroll-mt-[calc(var(--site-header-height)+2rem)] gap-6 pl-12 lg:grid-cols-2 lg:items-center lg:gap-24 lg:pl-0"
+              className="relative grid [--anchor-extra:2rem] gap-6 pl-12 lg:grid-cols-2 lg:items-center lg:gap-24 lg:pl-0"
             >
               <span
                 aria-hidden="true"

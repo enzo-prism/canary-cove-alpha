@@ -30,7 +30,7 @@ export function ExploreClosingCta({ id, eyebrow, title, lede, image, actions, no
     <section
       id={id}
       className={cn(
-        "relative isolate overflow-hidden bg-ink text-white scroll-mt-[var(--site-header-height)]",
+        "relative isolate overflow-hidden bg-ink text-white",
         className,
       )}
     >

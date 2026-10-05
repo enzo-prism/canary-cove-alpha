@@ -38,7 +38,7 @@ export function PriceLedger({ rows, tone = "default", className }: PriceLedgerPr
             key={row.category}
             id={row.id}
             data-reveal="group"
-            className="relative grid scroll-mt-[calc(var(--site-header-height)+1.5rem)] gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)] lg:gap-12"
+            className="relative grid [--anchor-extra:1.5rem] gap-6 py-8 sm:py-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,2fr)] lg:gap-12"
             style={{ "--row": rowIndex } as CSSProperties}
           >
             <dt>

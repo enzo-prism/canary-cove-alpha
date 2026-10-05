@@ -58,11 +58,11 @@ export default async function Page({ searchParams }: BookPageProps) {
       <section
         id="booking-form"
         aria-label="Booking request form"
-        className="scroll-mt-[calc(var(--site-header-height)+16px)] pb-8"
+        className="[--anchor-extra:16px] pb-8"
       >
         <Container size="wide">
           <div className="grid gap-12 lg:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] lg:gap-14 xl:gap-20">
-            <div id="form" className="order-1 min-w-0 scroll-mt-[calc(var(--site-header-height)+16px)] lg:order-2">
+            <div id="form" className="order-1 min-w-0 [--anchor-extra:16px] lg:order-2">
               <BookingForm defaultAccommodation={defaultAccommodation} defaultReturningGuest={defaultReturningGuest} />
             </div>
             <aside

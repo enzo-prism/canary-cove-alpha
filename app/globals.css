@@ -3,17 +3,6 @@
 
 @custom-variant dark (&:is(.dark *));
 
-body[data-mobile-nav-open="true"] elevenlabs-convai {
-  display: none !important;
-}
-
-/* Radix dialogs (e.g. the photo lightbox) set data-scroll-locked on <body>;
-   hide the concierge widget so it neither floats over fullscreen content nor
-   dismisses the dialog (a tap on it is a pointerdown outside DialogContent). */
-body[data-scroll-locked] elevenlabs-convai {
-  display: none !important;
-}
-
 /* Overlay z-index scale (single source of truth):
    page content 0–10 · sticky page rails 20 · site header 50 ·
    desktop dropdown panels (popover) 60 · mobile nav overlay (sheet) 80 ·
@@ -245,7 +234,16 @@ body[data-scroll-locked] elevenlabs-convai {
 
   html {
     overflow-x: clip;
-    scroll-padding-top: calc(var(--site-header-height) + 12px);
+  }
+
+  /* Anchor targets land 12px below the live sticky header. This lives on the
+     targets (scroll-margin), not on <html> (scroll-padding): a page-wide
+     scroll-padding made the browser treat the sticky header's own buttons as
+     hidden, so focusing them (Shift+Tab, dialog focus restore) scrolled the
+     page up by hundreds of pixels. Sections that need extra room set
+     --anchor-extra. */
+  [id] {
+    scroll-margin-top: calc(var(--site-header-height) + 12px + var(--anchor-extra, 0px));
   }
 
   ::selection {
@@ -436,6 +434,7 @@ body[data-scroll-locked] elevenlabs-convai {
     font-size: clamp(1.6rem, 2.3vw, 2.25rem);
     line-height: 1.05;
     letter-spacing: -0.01em;
+    text-wrap: balance;
   }
 
   :where(.text-lede) {
@@ -537,7 +536,7 @@ body[data-scroll-locked] elevenlabs-convai {
   }
 
   .form-helper {
-    @apply text-xs leading-5 text-muted-foreground;
+    @apply text-[13px] leading-5 text-muted-foreground;
   }
 
   .form-error {

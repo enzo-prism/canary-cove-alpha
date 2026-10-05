@@ -35,7 +35,7 @@ const FOOTER_GROUPS = [
 ] as const
 
 const linkClass =
-  "link-underline inline-flex min-h-11 items-center text-[15px] text-reef-foreground/75 transition-colors duration-300 hover:text-reef-foreground sm:min-h-0"
+  "link-underline inline-flex min-h-11 items-center text-[15px] text-reef-foreground/75 transition-colors duration-300 hover:text-reef-foreground pointer-fine:min-h-0"
 
 type FooterProps = {
   /**
@@ -163,14 +163,14 @@ export function Footer({ cta = false }: FooterProps) {
         </p>
       </div>
 
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-[var(--gutter)] pb-28 pt-6 text-xs text-reef-foreground/55 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-[var(--gutter)] pb-10 pt-6 text-xs text-reef-foreground/55 sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
         <div className="flex gap-5">
           <TrackedLink
             href="/privacy"
             eventName="nav_click"
             eventPayload={{ surface: "footer_legal", destination: "/privacy" }}
-            className="link-underline inline-flex min-h-11 items-center hover:text-white sm:min-h-0"
+            className="link-underline inline-flex min-h-11 items-center hover:text-white pointer-fine:min-h-0"
           >
             Privacy
           </TrackedLink>
@@ -178,7 +178,7 @@ export function Footer({ cta = false }: FooterProps) {
             href="/terms"
             eventName="nav_click"
             eventPayload={{ surface: "footer_legal", destination: "/terms" }}
-            className="link-underline inline-flex min-h-11 items-center hover:text-white sm:min-h-0"
+            className="link-underline inline-flex min-h-11 items-center hover:text-white pointer-fine:min-h-0"
           >
             Terms
           </TrackedLink>

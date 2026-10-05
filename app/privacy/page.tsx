@@ -32,8 +32,7 @@ const SECTIONS: LegalSection[] = [
     title: "Third-party services",
     body: (
       <p>
-        Canary Cove uses Formspree to receive submitted forms, ElevenLabs to power the on-site voice concierge,
-        Cloudinary to serve media, and Google Analytics plus Vercel Analytics to understand site usage. Those providers
+        Canary Cove uses Formspree to receive submitted forms, Cloudinary to serve media, and Google Analytics plus Vercel Analytics to understand site usage. Those providers
         may process information according to their own policies.
       </p>
     ),

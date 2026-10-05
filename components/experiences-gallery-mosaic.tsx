@@ -56,7 +56,7 @@ export function ExperiencesGalleryMosaic({ items, id = "activity-gallery" }: Exp
   return (
     <section
       id={id}
-      className="flow flow-xl scroll-mt-[calc(var(--site-header-height)+1.5rem)]"
+      className="flow flow-xl [--anchor-extra:1.5rem]"
       data-testid="experiences-gallery-mosaic"
     >
       <div className="flow flow-lg">
@@ -79,12 +79,15 @@ export function ExperiencesGalleryMosaic({ items, id = "activity-gallery" }: Exp
               key={item.src}
               className={cn(
                 "group @container relative overflow-hidden rounded-[var(--radius-media)] bg-sand-deep",
-                CLIP_UP,
                 item.className ?? LAYOUT[index % LAYOUT.length],
               )}
-              style={{ transitionDelay: `${(index % 8) * 90}ms` } as CSSProperties}
             >
-              <div className="zoom-media absolute inset-0">
+              {/* The wipe lives on the media layer, not the figure: a clip-path
+                  on the clickable tile blocks clicks while it animates. */}
+              <div
+                className={cn("zoom-media absolute inset-0", CLIP_UP)}
+                style={{ transitionDelay: `${(index % 8) * 90}ms` } as CSSProperties}
+              >
                 <Image
                   src={item.src}
                   alt={item.alt}

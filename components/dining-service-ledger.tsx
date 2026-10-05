@@ -56,7 +56,7 @@ export function DiningServiceLedger() {
             key={row.title}
             id={row.id}
             data-reveal="group"
-            className="group relative grid scroll-mt-[calc(var(--site-header-height)+1.5rem)] grid-cols-[minmax(0,1fr)_5.5rem] items-start gap-x-5 gap-y-3 py-7 sm:grid-cols-[3.5rem_minmax(0,1fr)_10rem] sm:items-center sm:gap-x-7 sm:py-9"
+            className="group relative grid [--anchor-extra:1.5rem] grid-cols-[minmax(0,1fr)_5.5rem] items-start gap-x-5 gap-y-3 py-7 sm:grid-cols-[3.5rem_minmax(0,1fr)_10rem] sm:items-center sm:gap-x-7 sm:py-9"
           >
             <span aria-hidden="true" className={cn("absolute inset-x-0 top-0 h-px bg-border", DRAW_X)} />
             <span
