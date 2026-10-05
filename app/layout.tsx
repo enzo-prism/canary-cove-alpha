@@ -78,27 +78,17 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
+  // Favicons use the canary from the official logo (the full lockup is
+  // illegible at tab size); the Apple icon sits on reef ink because iOS
+  // renders transparent touch icons on black.
   icons: {
     icon: [
-      {
-        url: "/favicon-small.png",
-        sizes: "32x32",
-        type: "image/png",
-      },
-      {
-        url: "/favicon-large.png",
-        sizes: "256x256",
-        type: "image/png",
-      },
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon-small.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-large.png", sizes: "256x256", type: "image/png" },
     ],
     shortcut: "/favicon-small.png",
-    apple: [
-      {
-        url: "/favicon-large.png",
-        sizes: "256x256",
-        type: "image/png",
-      },
-    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
   },
 }
 

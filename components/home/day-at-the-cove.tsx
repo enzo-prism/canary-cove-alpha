@@ -149,7 +149,7 @@ export function DayAtTheCove() {
               <path d="M0 10 Q50 -8 100 10" fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="2 5" className="text-ink/35" vectorEffect="non-scaling-stroke" />
             </svg>
             <motion.span
-              className="absolute -ml-2 -mt-2 h-4 w-4 rounded-full bg-canary shadow-[0_0_24px_6px_rgba(244,198,61,0.45)]"
+              className="absolute -ml-2 -mt-2 h-4 w-4 rounded-full bg-canary shadow-[0_0_24px_6px_rgba(255,228,26,0.45)]"
               style={{ left: sunX, top: sunY }}
             />
           </div>

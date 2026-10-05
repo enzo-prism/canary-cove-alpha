@@ -69,7 +69,7 @@ export function MealTimeline({ stops }: { stops: MealStop[] }) {
                 className={cn(
                   "absolute left-[1.1rem] top-1 flex h-9 w-9 -translate-x-1/2 items-center justify-center rounded-full border transition-[background-color,color,border-color,box-shadow] duration-700 lg:left-1/2 lg:top-1/2 lg:h-11 lg:w-11 lg:-translate-y-1/2",
                   !ok || index < reached
-                    ? "border-canary-deep bg-canary text-ink shadow-[0_0_0_6px_rgba(244,198,61,0.18)]"
+                    ? "border-canary-deep bg-canary text-ink shadow-[0_0_0_6px_rgba(255,228,26,0.18)]"
                     : "border-border bg-background text-muted-foreground",
                 )}
               >

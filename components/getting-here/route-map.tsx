@@ -203,7 +203,7 @@ export function RouteMap({ flight, walk, boat, reached, animate, className }: Ro
                 cx={stop.x}
                 cy={stop.y}
                 r={lit ? 14 : 6}
-                fill="#f4c63d"
+                fill="#ffe41a"
                 className={cn("transition-[r,opacity] duration-1000 ease-[var(--ease-out-expo)]", lit ? "opacity-35" : "opacity-0")}
               />
             ) : null}
@@ -211,7 +211,7 @@ export function RouteMap({ flight, walk, boat, reached, animate, className }: Ro
               cx={stop.x}
               cy={stop.y}
               r={final ? 6 : index === 2 ? 3 : 4.5}
-              fill={lit ? (final ? "#f4c63d" : "#0d2327") : "#f7f2e9"}
+              fill={lit ? (final ? "#ffe41a" : "#0d2327") : "#f7f2e9"}
               stroke="#0d2327"
               strokeWidth={final ? 1.6 : 1.4}
               className="transition-[fill] duration-500"
@@ -247,8 +247,8 @@ export function RouteMap({ flight, walk, boat, reached, animate, className }: Ro
       {/* Traveller */}
       {animate ? (
         <g>
-          <motion.circle cx={travellerX} cy={travellerY} r={9} fill="#f4c63d" fillOpacity={0.35} />
-          <motion.circle cx={travellerX} cy={travellerY} r={4} fill="#f4c63d" stroke="#0d2327" strokeWidth={1.4} />
+          <motion.circle cx={travellerX} cy={travellerY} r={9} fill="#ffe41a" fillOpacity={0.35} />
+          <motion.circle cx={travellerX} cy={travellerY} r={4} fill="#ffe41a" stroke="#0d2327" strokeWidth={1.4} />
         </g>
       ) : null}
     </svg>

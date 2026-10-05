@@ -1,7 +1,7 @@
 import type { CSSProperties } from "react"
 
 import { TrackedLink } from "@/components/analytics/tracked-link"
-import { BrandGlyph } from "@/components/brand-glyph"
+import { BrandMark } from "@/components/brand-mark"
 import { FacebookLink } from "@/components/facebook-link"
 import { LocalTime } from "@/components/motion/local-time"
 import { CtaLink } from "@/components/ui/cta-link"
@@ -92,10 +92,7 @@ export function Footer({ cta = false }: FooterProps) {
 
         <div className="grid gap-12 py-14 sm:grid-cols-2 lg:grid-cols-[1.3fr_repeat(3,0.7fr)] lg:gap-10">
           <div className="flow flow-md text-[15px] text-reef-foreground/75">
-            <div className="flex items-center gap-3 text-white">
-              <BrandGlyph tone="light" className="h-10 w-10" />
-              <span className="font-display text-2xl uppercase tracking-[0.04em]">Canary Cove</span>
-            </div>
+            <BrandMark tone="light" height={120} className="h-[104px] self-start sm:h-[120px]" />
             <p className="max-w-sm leading-relaxed">
               A fully staffed beachfront estate on Ambergris Caye, Belize. One private booking at a time.
             </p>
@@ -149,21 +146,16 @@ export function Footer({ cta = false }: FooterProps) {
         </div>
       </div>
 
-      <div aria-hidden="true" className="pointer-events-none select-none overflow-hidden px-[var(--gutter)]">
-        <p
-          data-reveal="words"
-          className="mx-auto max-w-[1440px] whitespace-nowrap text-center font-display text-[clamp(4.5rem,17.5vw,17rem)] uppercase leading-[0.8] tracking-[-0.01em] text-white/[0.07]"
-        >
-          <span className="split-word">
-            <span style={{ "--word-index": 0 } as CSSProperties}>Canary</span>
-          </span>{" "}
-          <span className="split-word">
-            <span style={{ "--word-index": 1 } as CSSProperties}>Cove</span>
-          </span>
-        </p>
+      {/* The canary from the official logo, as a faint silhouette perched on
+          the footer's lower edge. */}
+      <div aria-hidden="true" className="pointer-events-none absolute -bottom-6 right-[-4vw] w-[min(560px,62vw)] select-none sm:-bottom-10">
+        <div data-reveal="up" style={{ "--reveal-delay": "200ms" } as CSSProperties}>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/brand/canary-cove-bird-silhouette-light.svg" alt="" className="w-full opacity-[0.06]" />
+        </div>
       </div>
 
-      <div className="mx-auto flex max-w-[1440px] flex-col gap-3 px-[var(--gutter)] pb-10 pt-6 text-xs text-reef-foreground/55 sm:flex-row sm:items-center sm:justify-between">
+      <div className="relative z-10 mx-auto flex max-w-[1440px] flex-col gap-3 px-[var(--gutter)] pb-10 pt-6 text-xs text-reef-foreground/55 sm:flex-row sm:items-center sm:justify-between">
         <p>© {new Date().getFullYear()} Canary Cove. All rights reserved.</p>
         <div className="flex gap-5">
           <TrackedLink

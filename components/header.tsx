@@ -101,32 +101,38 @@ export function Header() {
   return (
     <header
       ref={headerRef}
-      // The bar shrinks 12px after scrolling, and the header gains a matching
-      // 12px bottom margin on the same curve, so its layout footprint never
+      // The bar shrinks 12px (16px on desktop) after scrolling, and the header
+      // gains a matching bottom margin on the same curve, so its layout footprint never
       // changes. Without this, page content shifted under the user's finger
       // and Chrome's scroll anchoring fought the shrink in an endless
       // shrink/grow loop near the top of the page.
       className={cn(
         "sticky top-0 z-50 border-b border-border/70 bg-sand-light/95 backdrop-blur-xl backdrop-saturate-150 transition-[margin] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
-        scrolled ? "mb-3" : "mb-0",
+        scrolled ? "mb-3 lg:mb-4" : "mb-0",
       )}
     >
       <div
         className={cn(
           "mx-auto flex max-w-[1440px] items-center gap-3 px-4 transition-[min-height] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none sm:px-6 lg:gap-6 lg:px-10",
-          scrolled ? "min-h-[60px]" : "min-h-[72px]",
+          scrolled ? "min-h-[60px] lg:min-h-[64px]" : "min-h-[72px] lg:min-h-[80px]",
         )}
       >
-        <div data-testid="site-brand" className="shrink-0">
-          <BrandMark compact />
+        <div
+          data-testid="site-brand"
+          className={cn(
+            "shrink-0 transition-[height] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+            scrolled ? "h-[46px] lg:h-[50px]" : "h-[54px] lg:h-[62px]",
+          )}
+        >
+          <BrandMark height={62} priority className="h-full" />
         </div>
         <DesktopNav items={NAV_ITEMS} isActive={isActive} pathname={pathname} />
 
         <div className="ml-auto flex items-center gap-2">
           <p className="mr-2 hidden items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground 2xl:flex">
             <span aria-hidden="true" className="relative flex h-1.5 w-1.5">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-lagoon-bright/60 motion-reduce:hidden" />
-              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-lagoon-bright" />
+              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-lime/60 motion-reduce:hidden" />
+              <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-lime" />
             </span>
             San Pedro <LocalTime className="text-foreground" />
           </p>
@@ -190,7 +196,7 @@ export function Header() {
                 className="gap-0 bg-sand px-5 pb-0 pt-0 sm:px-8"
               >
                 <SheetHeader className="flex h-[72px] shrink-0 flex-row items-center justify-between gap-3 p-0">
-                  <BrandMark compact />
+                  <BrandMark height={50} className="h-[50px]" />
                   <SheetClose asChild>
                     <Button
                       ref={closeRef}

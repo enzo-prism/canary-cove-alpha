@@ -1,11 +1,10 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import Link from "next/link"
 import { LogOut } from "lucide-react"
 
 import { logoutGuest } from "@/app/guest/actions"
 import { enterDelay } from "@/app/guest/_components/guest-shell"
-import { BrandGlyph } from "@/components/brand-glyph"
+import { BrandMark } from "@/components/brand-mark"
 import { requireGuestSession } from "@/lib/guest-auth-dal"
 import { IMAGES } from "@/lib/images"
 
@@ -28,10 +27,7 @@ export default async function GuestGuidePage() {
   return (
     <main className="min-h-[100dvh] bg-background text-foreground">
       <div className="mx-auto flex w-full max-w-[1200px] items-center justify-between gap-4 px-6 py-6 sm:px-8 lg:px-12">
-        <Link href="/" aria-label="Canary Cove home" className="focus-ring enter-fade inline-flex items-center gap-2.5 rounded-full">
-          <BrandGlyph className="h-9 w-9" />
-          <span className="font-display text-[1.35rem] uppercase leading-none tracking-[0.04em]">Canary Cove</span>
-        </Link>
+        <BrandMark height={48} className="h-12 enter-fade" />
         <form action={logoutGuest}>
           <button
             type="submit"

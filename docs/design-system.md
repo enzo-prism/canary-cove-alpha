@@ -12,6 +12,28 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 6. **Less chrome.** Fewer boxed cards and borders; use hairlines (`.hairline`, `border-border`), whitespace and type scale to structure content. Cards only where they are clickable or hold a form.
 7. **Motion has meaning.** Entrances reveal content in reading order; scroll-linked effects add depth (parallax) or progress (word reveal, drawn route lines). Everything respects `prefers-reduced-motion`.
 
+## Brand mark (official logo)
+
+The official Canary Cove logo is a yellow canary (green outline) perched on a heavy condensed slab-serif "Canary / Cove" wordmark, sipping through a straw from a lime-garnished cocktail glass. The master lives in Figma (file `3VZQifFoz4F92HnQfNOePV`, "Canary Cove") as a 394×351 raster with a white wordmark; it is archived at `public/brand/canary-cove-logo-official.png`. The site uses vector traces of it in `public/brand/`:
+
+| Asset | Use |
+| --- | --- |
+| `canary-cove-logo.svg` | Full lockup, ink wordmark — light surfaces (header, mobile menu, guest pages) |
+| `canary-cove-logo-light.svg` | Full lockup, white wordmark (the logo's native form) — dark surfaces (footer, reef bands) |
+| `canary-cove-mark.svg` | Canary + glass without the wordmark |
+| `canary-cove-bird.svg` | The canary alone — favicons (`/icon.svg`, PNG favicons, Apple icon on reef ink) and small accents (`BrandBird`) |
+| `canary-cove-bird-silhouette-light.svg` | Single-color canary for faint decorative watermarks |
+| `canary-cove-wordmark-light.svg` | Wordmark only, white |
+
+Components: `BrandMark` (lockup as the home link; `tone="ink" | "light"`, `height`), `BrandLogo` (lockup image only), `BrandBird` (the canary) in `components/brand-mark.tsx`.
+
+Rules:
+- Never recolor the canary (`#FFEB00`) or the glass/lime (`#6EB53E`); only the wordmark switches between ink (`#0d2327`) and white.
+- Don't re-set the wordmark in Instrument Serif or any other face, stretch it, rotate it, or add shadows/effects. Don't rearrange the stacked lockup.
+- Minimum size: 44px tall for the full lockup; below that use the canary alone.
+- Clear space: at least the canary's head height (~15% of the lockup height) on every side.
+- Don't place the lockup directly on busy photography; use it on sand, sand-light, or reef surfaces.
+
 ## Tokens (app/globals.css)
 
 | Token / class | Value / use |
@@ -23,7 +45,8 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 | `text-muted-foreground` | `#52625f` (≥5.5:1 on sand) |
 | `text-lagoon` / `bg-lagoon` | `#155e62` lagoon teal: links, active states, hover of ink buttons |
 | `bg-lagoon-bright`, `text-lagoon-soft` | `#1f8a8a`, `#7cc8c2` accents on dark |
-| `bg-canary`, `text-canary`, `decoration-canary-deep` | `#f4c63d` / `#ebb420` |
+| `bg-canary`, `text-canary`, `decoration-canary-deep` | `#ffe41a` / `#f2c900` — the logo's canary (`#FFEB00`), a hair softer for large fills |
+| `bg-lime`, `text-lime-deep` | `#6eb53e` / `#3f7f22` — the logo's lime; live-status dots and small brand accents (use `lime-deep` for text) |
 | `text-coral` / `bg-coral` | `#e8957f` villa pink (rare) |
 | `.surface-reef` | dark reef section (bg `#0c2428` + lagoon glows + grain), text auto-lightens for `.text-muted-foreground`, `.eyebrow`, `.text-lede`, `.text-body` |
 | `--radius-media` / `rounded-[var(--radius-media)]` / `.media-frame` | 20px media radius, overflow hidden |
@@ -56,7 +79,7 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 | `SectionHeading` (`components/section-heading.tsx`) | Eyebrow + serif title (word reveal on scroll) + lede + action. `align="split"` puts the lede right on desktop. `tone="light"` on reef sections. |
 | `CtaLink` (`components/ui/cta-link.tsx`) | Primary CTA. Pill with rolling label and arrow chip. Variants `solid`, `canary`, `light`, `outline`, `outline-light`, `text`, `text-light`; sizes `md`/`lg`; `arrow` `right`/`diag`/`none`; pass `eventName`/`eventPayload` for analytics (uses `TrackedLink`). |
 | `Button` (`components/ui/button.tsx`) | Form and UI buttons (submit, toggles). Variants include `canary`. |
-| `BrandMark`, `BrandGlyph` | Wordmark + canary-sun-over-swells glyph. |
+| `BrandMark`, `BrandLogo`, `BrandBird` | Official logo lockup / canary (see Brand mark). |
 
 ## Motion primitives (`components/motion/`)
 

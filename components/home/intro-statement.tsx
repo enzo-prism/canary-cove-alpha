@@ -1,6 +1,7 @@
 import Image from "next/image"
 import type { CSSProperties } from "react"
 
+import { BrandBird } from "@/components/brand-mark"
 import { CountUp } from "@/components/motion/count-up"
 import { Marquee } from "@/components/motion/marquee"
 import { Parallax } from "@/components/motion/parallax"
@@ -61,8 +62,8 @@ export function IntroStatement() {
               <text className="fill-ink text-[9.5px] font-semibold uppercase tracking-[0.3em]">
                 <textPath href="#intro-ring">Ambergris Caye · Belize ·</textPath>
               </text>
-              <circle cx="50" cy="50" r="9" className="fill-canary" />
             </svg>
+            <BrandBird height={26} className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2" />
           </div>
         </div>
       </div>

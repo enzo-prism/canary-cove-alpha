@@ -13,7 +13,7 @@ import {
   type CSSProperties,
 } from "react"
 
-import { BrandGlyph } from "@/components/brand-glyph"
+import { BrandBird } from "@/components/brand-mark"
 import { Chip, ChipRail } from "@/components/gallery/chip-rail"
 import { SplitText } from "@/components/motion/split-text"
 import { PhotoLightbox } from "@/components/photo-lightbox"
@@ -579,7 +579,7 @@ export function GalleryBrowser() {
             ) : (
               <div className="flex flex-col items-center gap-5 pt-16 text-center sm:pt-24">
                 <span aria-hidden="true" className="hairline mb-4 w-full max-w-md" />
-                <BrandGlyph className="h-12 w-12" />
+                <BrandBird height={44} />
                 <p
                   className="max-w-[22ch] font-display text-[1.9rem] leading-[1.05] text-foreground sm:text-[2.5rem]"
                   data-testid="gallery-end"
@@ -614,7 +614,7 @@ export function GalleryBrowser() {
             )}
             data-testid="gallery-empty"
           >
-            <BrandGlyph className="h-11 w-11 opacity-80" />
+            <BrandBird height={40} className="opacity-90" />
             <p className="font-display text-[1.9rem] leading-tight text-foreground sm:text-[2.4rem]">
               No photos match that search yet.
             </p>
