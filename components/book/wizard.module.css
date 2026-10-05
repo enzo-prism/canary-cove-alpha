@@ -1,0 +1,249 @@
+/*
+ * Motion for the conversion wizards (/book, /contact) and the availability
+ * calendar. Everything here is CSS keyframes/transitions on purpose: /book is
+ * exercised under Playwright's fake clock, so nothing may wait on JS timers or
+ * requestAnimationFrame to become visible. Panels are interactive from the
+ * first frame (only opacity/transform/clip-path animate).
+ */
+
+/* Step panels slide in from the direction of travel. */
+.stepForward,
+.stepBack {
+  animation: step-in-forward 620ms var(--ease-out-expo) both;
+}
+
+.stepBack {
+  animation-name: step-in-back;
+}
+
+/* Children of a fresh step settle in a short cascade. */
+.cascade > * {
+  animation: cascade-in 720ms var(--ease-out-expo) both;
+  animation-delay: 60ms;
+}
+
+.cascade > *:nth-child(2) {
+  animation-delay: 110ms;
+}
+
+.cascade > *:nth-child(3) {
+  animation-delay: 160ms;
+}
+
+.cascade > *:nth-child(4) {
+  animation-delay: 210ms;
+}
+
+.cascade > *:nth-child(5) {
+  animation-delay: 260ms;
+}
+
+.cascade > *:nth-child(n + 6) {
+  animation-delay: 310ms;
+}
+
+@keyframes step-in-forward {
+  from {
+    opacity: 0;
+    transform: translate3d(28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes step-in-back {
+  from {
+    opacity: 0;
+    transform: translate3d(-28px, 0, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes cascade-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Segmented progress: each segment's fill grows from the left. */
+.segmentFill {
+  transform-origin: left center;
+  transition: transform 900ms var(--ease-out-expo), background-color 600ms var(--ease-out-expo);
+}
+
+/* Soft shimmer that travels across the active segment once it fills. */
+.segmentActive::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  transform: translateX(-100%);
+  animation: segment-sheen 1400ms var(--ease-in-out-quart) 380ms both;
+}
+
+@keyframes segment-sheen {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+/* Selection check pops in. */
+.checkPop {
+  animation: check-pop 520ms var(--ease-out-expo) both;
+}
+
+@keyframes check-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.4) rotate(-20deg);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Inline chips/notes that appear in place (nights summary, eligibility). */
+.popIn {
+  animation: pop-in 560ms var(--ease-out-expo) both;
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 8px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Error shake is a single short nudge, never a loop. */
+.nudge {
+  animation: nudge 420ms var(--ease-out-quart) both;
+}
+
+@keyframes nudge {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+  25% {
+    transform: translate3d(-6px, 0, 0);
+  }
+  55% {
+    transform: translate3d(5px, 0, 0);
+  }
+  80% {
+    transform: translate3d(-2px, 0, 0);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+/* Success moment: a ring draws, then the check strokes in. */
+.successRing {
+  stroke-dasharray: 152;
+  stroke-dashoffset: 152;
+  animation: draw 900ms var(--ease-in-out-quart) 120ms forwards;
+}
+
+.successCheck {
+  stroke-dasharray: 40;
+  stroke-dashoffset: 40;
+  animation: draw 520ms var(--ease-out-expo) 760ms forwards;
+}
+
+.successBloom {
+  animation: bloom 1400ms var(--ease-out-expo) 200ms both;
+}
+
+@keyframes draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes bloom {
+  from {
+    opacity: 0.55;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.9);
+  }
+}
+
+/* Calendar month swap. */
+.monthIn {
+  animation: month-in 560ms var(--ease-out-expo) both;
+}
+
+@keyframes month-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 6px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* Live dot for "the team is around". */
+.liveDot::after {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 999px;
+  border: 1px solid currentColor;
+  animation: live-ring 2.4s var(--ease-out-quart) infinite;
+}
+
+@keyframes live-ring {
+  from {
+    opacity: 0.7;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 0;
+    transform: scale(1.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stepForward,
+  .stepBack,
+  .cascade > *,
+  .checkPop,
+  .popIn,
+  .nudge,
+  .monthIn,
+  .successBloom,
+  .segmentActive::after,
+  .liveDot::after {
+    animation: none !important;
+  }
+
+  .successRing,
+  .successCheck {
+    animation: none !important;
+    stroke-dashoffset: 0;
+  }
+
+  .segmentFill {
+    transition: none;
+  }
+}

@@ -14,11 +14,13 @@ type PageShellProps = {
 
 export function PageShell({ path, children, className, wash = false }: PageShellProps) {
   return (
-    <main id="main-content" className={cn("min-h-screen bg-background", wash && "page-wash", className)}>
-      <PageStructuredData path={path} />
+    <>
       <Header />
+      <main tabIndex={-1} id="main-content" className={cn("outline-none", "min-h-screen bg-background", wash && "page-wash", className)}>
+      <PageStructuredData path={path} />
       {children}
-      <Footer />
     </main>
+      <Footer />
+    </>
   )
 }

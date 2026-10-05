@@ -1,15 +1,7 @@
-"use client"
+import { useMemo, type CSSProperties } from "react"
 
-import { useMemo, useState } from "react"
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog"
 import type { Testimonial } from "@/lib/testimonial-spotlights"
+import { cn } from "@/lib/utils"
 
 type TestimonialEntry = {
   quote: string
@@ -28,9 +20,15 @@ type TestimonialWithYear = TestimonialEntry & {
 type TestimonialsGridProps = {
   groups?: TestimonialGroup[]
   testimonials?: Testimonial[]
+  /** `light` for use on `.surface-reef` bands. */
+  tone?: "default" | "light"
 }
 
-export function TestimonialsGrid({ groups, testimonials: testimonialsProp }: TestimonialsGridProps) {
+/**
+ * Guestbook notes as large serif quote cards. Every note is shown in full and
+ * verbatim — never clipped mid-word.
+ */
+export function TestimonialsGrid({ groups, testimonials: testimonialsProp, tone = "default" }: TestimonialsGridProps) {
   const testimonials = useMemo<TestimonialWithYear[]>(
     () =>
       testimonialsProp ??
@@ -42,53 +40,52 @@ export function TestimonialsGrid({ groups, testimonials: testimonialsProp }: Tes
       ),
     [groups, testimonialsProp],
   )
-  const [active, setActive] = useState<TestimonialWithYear | null>(null)
-  const [open, setOpen] = useState(false)
-
-  const handleOpen = (testimonial: TestimonialWithYear) => {
-    setActive(testimonial)
-    setOpen(true)
-  }
+  const light = tone === "light"
 
   return (
-    <>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {testimonials.map((testimonial, index) => (
-          <button
-            key={`${testimonial.year}-${index}`}
-            type="button"
-            onClick={() => handleOpen(testimonial)}
-            className="group flex h-full min-h-[220px] flex-col gap-3 rounded-2xl border border-border/60 bg-white/90 p-5 text-left shadow-sm shadow-black/5 transition-[transform,box-shadow,border-color] duration-200 ease-out hover:-translate-y-0.5 hover:border-foreground/10 hover:shadow-[0_14px_30px_rgba(15,23,42,0.12)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 motion-reduce:transition-none"
-            aria-label={`Open testimonial from ${testimonial.author ?? "guest"} (${testimonial.year})`}
-          >
-            <span className="text-xs uppercase tracking-[0.3em] text-muted-foreground">{testimonial.year}</span>
-            <p className="line-clamp-5 text-sm leading-relaxed text-foreground">"{testimonial.quote}"</p>
-            {testimonial.author ? (
-              <span className="mt-auto pt-2 text-xs font-semibold text-foreground">- {testimonial.author}</span>
-            ) : (
-              <span className="mt-auto pt-2 text-xs font-semibold text-muted-foreground">- Guest</span>
+    <div
+      data-reveal="stagger"
+      style={{ "--stagger-step": "120ms" } as CSSProperties}
+      className={cn("grid items-start gap-4 sm:gap-5", testimonials.length > 1 && "md:grid-cols-2", testimonials.length > 2 && "xl:grid-cols-3")}
+    >
+      {testimonials.map((testimonial, index) => (
+        <figure
+          key={`${testimonial.year}-${index}`}
+          style={{ "--stagger-index": index } as CSSProperties}
+          className={cn(
+            "flex h-full flex-col gap-6 rounded-[var(--radius-media)] border p-6 sm:p-8",
+            light ? "border-white/15 bg-white/[0.04]" : "border-border/80 bg-surface",
+          )}
+        >
+          <span className="flex items-center justify-between gap-4">
+            <span
+              aria-hidden="true"
+              className={cn("font-display text-6xl leading-[0.6]", light ? "text-canary" : "text-lagoon")}
+            >
+              “
+            </span>
+            <span
+              className={cn(
+                "text-[11px] font-semibold uppercase tracking-[0.24em] tabular",
+                light ? "text-white/65" : "text-muted-foreground",
+              )}
+            >
+              {testimonial.year}
+            </span>
+          </span>
+          <blockquote
+            className={cn(
+              "font-display text-[1.3rem] leading-[1.32] sm:text-[1.5rem]",
+              light ? "text-white" : "text-foreground",
             )}
-          </button>
-        ))}
-      </div>
-
-      <Dialog
-        open={open}
-        onOpenChange={(nextOpen) => {
-          setOpen(nextOpen)
-          if (!nextOpen) setActive(null)
-        }}
-      >
-        <DialogContent className="max-w-3xl">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-semibold text-foreground">
-              {active?.author ?? "Guest testimonial"}
-            </DialogTitle>
-            {active ? <DialogDescription>{active.year}</DialogDescription> : null}
-          </DialogHeader>
-          {active ? <p className="text-base leading-relaxed text-foreground">"{active.quote}"</p> : null}
-        </DialogContent>
-      </Dialog>
-    </>
+          >
+            {testimonial.quote}
+          </blockquote>
+          <figcaption className={cn("mt-auto pt-2 text-sm font-medium", light ? "text-white/80" : "text-foreground")}>
+            {testimonial.author ?? "Guest"}
+          </figcaption>
+        </figure>
+      ))}
+    </div>
   )
 }

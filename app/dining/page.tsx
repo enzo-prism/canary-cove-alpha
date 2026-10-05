@@ -1,17 +1,25 @@
+import type { CSSProperties } from "react"
 import Image from "next/image"
-import { ArrowUpRight } from "lucide-react"
+import { CakeSlice, Coffee, Martini, Moon, Ship, Utensils } from "lucide-react"
 
-import { TrackedLink } from "@/components/analytics/tracked-link"
 import { DiningServiceLedger } from "@/components/dining-service-ledger"
+import { ChapterMark } from "@/components/explore/chapter-mark"
+import { ExploreClosingCta } from "@/components/explore/explore-closing-cta"
+import { ExploreHeading } from "@/components/explore/explore-heading"
+import { MealTimeline, type MealStop } from "@/components/explore/meal-timeline"
+import { RISE } from "@/components/explore/reveal-classes"
 import { Footer } from "@/components/footer"
 import { GalleryGrid } from "@/components/gallery-grid"
 import { Header } from "@/components/header"
 import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
+import { Parallax } from "@/components/motion/parallax"
+import { ScrollWordReveal } from "@/components/motion/scroll-word-reveal"
+import { SplitText } from "@/components/motion/split-text"
 import { PageStructuredData } from "@/components/structured-data"
-import { Button } from "@/components/ui/button"
+import { CtaLink } from "@/components/ui/cta-link"
 import { IMAGES, imageObjectPosition } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
+import { cn } from "@/lib/utils"
 
 export const metadata = PAGE_METADATA.dining
 
@@ -30,80 +38,100 @@ const DINING_BASICS = [
   { label: "Drinks", value: "Rum punch & Lava Cake fame" },
 ] as const
 
-const TABLE_MATRIX = [
+const DAY_AT_THE_TABLE: MealStop[] = [
   {
-    lead: "Private chef",
-    text: "Chef-prepared lunches and dinners served daily, with cleanup handled by staff.",
+    // Redirect target: /dining/breakfast → /dining#breakfast-snacks
+    id: "breakfast-snacks",
+    time: "Morning",
+    title: "Breakfasts & snacks",
+    body: "The kitchen arrives stocked for self-serve mornings and grazing between meals.",
+    image: IMAGES.viewFromKitchen,
+    icon: <Coffee className="h-4 w-4" strokeWidth={1.75} />,
   },
   {
-    lead: "Groceries at cost",
-    text: "No pantry markup, so provisioning stays straightforward.",
+    time: "Midday",
+    title: "Lunch, wherever you land",
+    body: "Cooked by the chef and served in the villa dining room, on the pool deck, at the dock, or packed for the boat.",
+    image: IMAGES.diningSpread,
+    icon: <Utensils className="h-4 w-4" strokeWidth={1.75} />,
   },
   {
-    lead: "Guest favorites",
-    text: "Lava Cake and dockside rum punch — both remembered by name in the guestbooks.",
+    time: "Golden hour",
+    title: "Sundowners by the pool",
+    body: "Cold drinks and rum punch without leaving the water. The dockside rum punch is remembered by name in the guestbooks.",
+    image: IMAGES.logoDrink,
+    icon: <Martini className="h-4 w-4" strokeWidth={1.75} />,
   },
   {
-    lead: "Where you'll eat",
-    text: "The villa dining room, the pool deck, the dock, or packed for the boat.",
+    time: "Evening",
+    title: "Dinner where the day lands",
+    body: "Long villa table, dock at sunset, or barefoot on the sand — the setting follows the mood, and staff handle the cleanup.",
+    image: IMAGES.shrimpDinner,
+    icon: <Moon className="h-4 w-4" strokeWidth={1.75} />,
   },
   {
-    lead: "Breakfasts & snacks",
-    text: "The kitchen arrives stocked for self-serve mornings and grazing between meals.",
+    // Redirect target: /dining/special-moments → /dining#special-moments
+    id: "special-moments",
+    time: "Any night",
+    title: "Celebrations",
+    body: "Milestone dinners for birthdays, anniversaries, and reunions. Save room: the Lava Cake is the dessert guests remember by name.",
+    image: IMAGES.diningTable,
+    icon: <CakeSlice className="h-4 w-4" strokeWidth={1.75} />,
   },
   {
-    lead: "Celebrations",
-    text: "Milestone dinners for birthdays, anniversaries, and reunions.",
+    // Redirect target: /dining/eating-out → /dining#eating-out
+    id: "eating-out",
+    time: "Night out",
+    title: "Dinner in San Pedro",
+    body: "When the group wants a night in town, our 30-foot boat runs you in and back ($75 round-trip), and water taxis leave from the dock every two hours.",
+    image: IMAGES.drinksBar,
+    icon: <Ship className="h-4 w-4" strokeWidth={1.75} />,
   },
-] as const
+]
 
+// Chef Marvin appears twice on this page (hero inset + "How dining works"),
+// so the gallery sticks to the kitchen, the food and the bar. Wide editorial
+// slots (the full-width closer, the 2-column tiles) get the sharpest files.
 const DINING_GALLERY_GROUPS = [
   {
     eyebrow: "Group one",
-    heading: "Kitchen & chef",
+    heading: "Kitchen & table",
     photos: [
-      { ...IMAGES.chefMarvinPortrait, caption: "Chef Marvin" },
-      { ...IMAGES.chefMarvinPlates, caption: "Plated and served" },
-      { ...IMAGES.chefMarvinKitchen, caption: "At the range" },
       { ...IMAGES.viewFromKitchen, caption: "Kitchen island" },
-    ],
-  },
-  {
-    eyebrow: "Group two",
-    heading: "Table & gatherings",
-    photos: [
-      { ...IMAGES.diningRoom, caption: "Dining room" },
       { ...IMAGES.diningSpread, caption: "The full spread" },
       { ...IMAGES.diningFoodDetail, caption: "Dinner details" },
       { ...IMAGES.diningDetailTwo, caption: "From the kitchen" },
       { ...IMAGES.diningDetailThree, caption: "Plated for guests" },
-      { ...IMAGES.romanticViews, caption: "Golden hour" },
+      { ...IMAGES.diningRoom, caption: "The dining room" },
     ],
   },
   {
-    eyebrow: "Group three",
+    eyebrow: "Group two",
     heading: "From the pass",
     photos: [
       { ...IMAGES.dinnerPlated, caption: "Plated dinner" },
       { ...IMAGES.dinnerAlt, caption: "Dinner service" },
       { ...IMAGES.shrimpDinner, caption: "Shrimp dinner" },
       { ...IMAGES.diningPlatter, caption: "Chef's platter" },
-      { ...IMAGES.tacosAlt, caption: "Taco spread" },
       { ...IMAGES.saladAlt, caption: "Fresh salad" },
+      { ...IMAGES.tacosAlt, caption: "Taco spread" },
       { ...IMAGES.caramba, caption: "Caramba night" },
       { ...IMAGES.diningTable, caption: "Mini cheesecakes" },
     ],
   },
   {
-    eyebrow: "Group four",
+    eyebrow: "Group three",
     heading: "Sundowners",
     photos: [
-      { ...IMAGES.chipsAndDrinks, caption: "Poolside snacks" },
-      { ...IMAGES.logoDrink, caption: "House pour" },
+      { ...IMAGES.logoDrink, focal: { x: 84, y: 50 }, caption: "House pour" },
+      { ...IMAGES.romanticViews, caption: "Golden hour" },
       { ...IMAGES.drinksBar, caption: "Night out in town" },
+      { ...IMAGES.chipsAndDrinks, caption: "Poolside snacks" },
     ],
   },
 ]
+
+const GALLERY_PHOTO_COUNT = DINING_GALLERY_GROUPS.reduce((total, group) => total + group.photos.length, 0)
 
 const DINING_NOTES = [
   {
@@ -126,22 +154,30 @@ const DINING_NOTES = [
   },
 ] as const
 
+const enter = (ms: number) => ({ "--enter-delay": `${ms}ms` }) as CSSProperties
+
 function DiningBasics() {
   return (
-    <dl className="border-t border-border/60">
-      {DINING_BASICS.map((row) => (
+    <dl className="border-t border-border">
+      {DINING_BASICS.map((row, index) => (
         <div
           key={row.label}
           data-testid="dining-basic"
-          className="flex items-baseline justify-between gap-6 border-b border-border/60 py-3.5"
+          className="enter-up flex flex-col gap-1 border-b border-border py-3.5 sm:flex-row sm:items-baseline sm:justify-between sm:gap-6"
+          style={enter(520 + index * 90)}
         >
-          <dt className="text-[0.95rem] font-medium text-foreground/80">
-            <span aria-hidden="true" className="mr-2 text-muted-foreground">
-              •
+          <dt className="flex items-baseline gap-3 text-[0.95rem] font-medium text-foreground/80">
+            <span aria-hidden="true" className="w-6 font-display text-base italic text-lagoon tabular">
+              {String(index + 1).padStart(2, "0")}
             </span>
-            {row.label}
+            <span>
+              <span aria-hidden="true" className="mr-2 text-canary-deep">
+                •
+              </span>
+              {row.label}
+            </span>
           </dt>
-          <dd className="shrink-0 text-right text-[0.95rem] font-semibold tabular-nums text-foreground">
+          <dd className="pl-9 font-display text-[1.3rem] leading-tight text-foreground sm:pl-0 sm:text-right">
             {row.value}
           </dd>
         </div>
@@ -150,245 +186,304 @@ function DiningBasics() {
   )
 }
 
-export default function Page() {
+function DiningHero() {
+  const room = IMAGES.diningRoom
+  const portrait = IMAGES.chefMarvinPortrait
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
-      <PageStructuredData path="/dining" />
-      <Header />
-
-      <Section padding="tight" className="overflow-hidden">
-        <Container size="wide">
-          <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1.08fr)_minmax(0,0.92fr)] lg:gap-14">
-            <div className="flow flow-md max-w-2xl">
-              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+    <section className="relative overflow-hidden pb-20 pt-10 sm:pb-28 sm:pt-16 lg:pb-32 lg:pt-20">
+      <Container size="wide">
+        <div className="grid items-center gap-14 lg:grid-cols-[minmax(0,1.05fr)_minmax(0,0.95fr)] lg:gap-20">
+          <div className="flow flow-xl min-w-0">
+            <div className="flow flow-lg">
+              <p className="eyebrow enter-fade" style={enter(80)}>
                 Dining · Ambergris Caye
               </p>
-              <h1 className="text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[3.9rem]">
-                A private chef, cooking to your table.
-              </h1>
-              <p className="max-w-xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
+              <SplitText
+                as="h1"
+                mode="enter"
+                delay={140}
+                text="A private chef, cooking to your *table.*"
+                className="text-display max-w-[13ch] text-balance"
+              />
+              <p className="text-lede enter-up max-w-xl" style={enter(420)}>
                 Lunches and dinners cooked in the villa kitchen, groceries at cost, and a table that moves from the
                 dining room to the dock. Tell us what you love — the menus follow.
               </p>
-              <DiningBasics />
-              <div className="flex flex-col gap-5 pt-1">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink
-                    href="/book"
-                    eventName="cta_click"
-                    eventPayload={{ location: "dining_hero", target: "/book" }}
-                  >
-                    Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
-                  {DINING_ANCHORS.map((anchor, index) => (
-                    <span key={anchor.href} className="flex items-center gap-2">
-                      {index > 0 ? (
-                        <span aria-hidden="true" className="text-border">
-                          /
-                        </span>
-                      ) : null}
-                      <a
-                        href={anchor.href}
-                        className="rounded-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                      >
-                        {anchor.label}
-                      </a>
-                    </span>
-                  ))}
-                </nav>
-              </div>
             </div>
-
-            <div className="relative aspect-[16/10] overflow-hidden rounded-[28px] bg-surface-muted shadow-[0_24px_70px_rgba(15,23,42,0.10)] lg:aspect-[4/5]">
-              <Image
-                src={IMAGES.villaPool.src}
-                alt={IMAGES.villaPool.alt}
-                fill
-                priority
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.villaPool) }}
-                sizes="(min-width: 1024px) 44vw, 100vw"
-              />
+            <DiningBasics />
+            <div className="enter-up flex flex-col gap-6" style={enter(900)}>
+              <div>
+                <CtaLink
+                  href="/book"
+                  size="lg"
+                  className="w-full justify-between sm:w-auto"
+                  eventName="cta_click"
+                  eventPayload={{ location: "dining_hero", target: "/book" }}
+                >
+                  Check dates
+                </CtaLink>
+              </div>
+              {/* Phones: one swipeable row of 44px chips; desktop: a quiet text index. */}
+              <nav
+                aria-label="On this page"
+                className="no-scrollbar -mx-6 flex gap-2 overflow-x-auto px-6 text-sm sm:mx-0 sm:flex-wrap sm:gap-x-5 sm:gap-y-1 sm:overflow-visible sm:px-0"
+              >
+                {DINING_ANCHORS.map((anchor) => (
+                  <a
+                    key={anchor.href}
+                    href={anchor.href}
+                    className="focus-ring inline-flex min-h-11 shrink-0 items-center whitespace-nowrap rounded-full border border-ink/15 px-4 font-medium text-foreground transition-colors hover:border-ink sm:rounded-none sm:border-0 sm:px-0 sm:text-foreground/80 sm:hover:text-foreground"
+                  >
+                    <span className="link-underline">{anchor.label}</span>
+                  </a>
+                ))}
+              </nav>
             </div>
           </div>
-        </Container>
-      </Section>
 
-      <Section id="how-dining-works" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
-            <div className="flow flow-md lg:sticky lg:top-28 lg:self-start">
-              <div className="flow flow-sm">
-                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                  How dining works
-                </p>
-                <h2 className="text-section max-w-md text-[2rem] text-foreground sm:text-[2.5rem]">
-                  The kitchen moves around your group&apos;s tastes.
-                </h2>
+          <div className="relative mx-auto w-full max-w-[34rem] pb-[14%] lg:max-w-none lg:pb-[12%]">
+            <div className="media-frame arch enter-clip relative aspect-[4/5] w-[88%]" style={enter(240)}>
+              <Parallax amount={6}>
+                <Image
+                  src={room.src}
+                  alt={room.alt}
+                  fill
+                  sizes="(min-width: 1320px) 520px, (min-width: 1024px) 40vw, (min-width: 640px) 30rem, 82vw"
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(room) ?? "50% 50%" }}
+                />
+              </Parallax>
+            </div>
+            {/* Chef portrait is a 960px phone shot: kept at inset size. */}
+            <figure
+              className="enter-up absolute bottom-0 right-0 w-[42%] max-w-[15rem]"
+              style={enter(620)}
+            >
+              <div className="media-frame relative aspect-[4/5] shadow-[var(--shadow-lift)] ring-[6px] ring-background sm:ring-8">
+                <Image
+                  src={portrait.src}
+                  alt={portrait.alt}
+                  fill
+                  sizes="(min-width: 640px) 240px, 42vw"
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(portrait) }}
+                />
               </div>
-              <figure className="flow-xs">
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
-                  <Image
-                    src={IMAGES.chefMarvinPortrait.src}
-                    alt={IMAGES.chefMarvinPortrait.alt}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinPortrait) }}
-                    sizes="(min-width: 1024px) 42vw, 100vw"
-                  />
+              <figcaption className="mt-3 text-[13px] text-muted-foreground">Chef Marvin</figcaption>
+            </figure>
+            <span
+              aria-hidden="true"
+              className="enter-fade absolute -left-3 bottom-[22%] h-28 w-28 sm:-left-8 sm:h-36 sm:w-36"
+              style={enter(1100)}
+            >
+              <svg viewBox="0 0 100 100" className="spin-scroll h-full w-full">
+                <defs>
+                  <path id="dining-ring" d="M50,50 m-37,0 a37,37 0 1,1 74,0 a37,37 0 1,1 -74,0" />
+                </defs>
+                <circle cx="50" cy="50" r="49" className="fill-canary" />
+                <text className="fill-ink text-[9px] font-semibold uppercase tracking-[0.16em]">
+                  <textPath href="#dining-ring">Chef Marvin · lunch & dinner ·</textPath>
+                </text>
+              </svg>
+              <Utensils className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 text-ink" strokeWidth={1.5} />
+            </span>
+          </div>
+        </div>
+      </Container>
+    </section>
+  )
+}
+
+export default function Page() {
+  return (
+    <>
+      <Header />
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
+      <PageStructuredData path="/dining" />
+      <DiningHero />
+
+      <section
+        id="how-dining-works"
+        className="bg-sand-light py-24 sm:py-32 lg:py-36"
+      >
+        <Container size="wide">
+          <div className="grid gap-14 lg:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] lg:gap-20">
+            <div className="flow flow-xl lg:sticky lg:top-[calc(var(--site-header-height)+2.5rem)] lg:self-start">
+              <ChapterMark index="01" label="How dining works" />
+              <SplitText
+                as="h2"
+                text="The kitchen moves around your group's *tastes.*"
+                className="text-section max-w-[14ch] text-balance"
+              />
+              <figure className="flow flow-sm">
+                <div data-reveal="clip" className="media-frame relative aspect-[4/5] w-full max-w-md sm:aspect-[5/4] lg:aspect-[4/5]">
+                  <Parallax amount={6}>
+                    <Image
+                      src={IMAGES.chefMarvinKitchen.src}
+                      alt={IMAGES.chefMarvinKitchen.alt}
+                      fill
+                      sizes="(min-width: 480px) 448px, 92vw"
+                      className="object-cover"
+                      style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinKitchen) }}
+                    />
+                  </Parallax>
                 </div>
-                <figcaption className="text-[0.82rem] leading-6 text-muted-foreground">
+                <figcaption data-reveal="fade" className="max-w-md text-[13px] leading-6 text-muted-foreground">
                   Chef Marvin — every lunch and dinner is cooked in the villa kitchen to your group&apos;s preferences.
                 </figcaption>
               </figure>
             </div>
-
-            <div className="lg:pt-2">
+            <div className="lg:pt-24">
               <DiningServiceLedger />
             </div>
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Section id="the-table" padding="tight" className="scroll-mt-24">
-        <Container size="default">
-          <div className="flow flow-sm max-w-2xl">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">The table</p>
-            <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-              What dinner at Canary Cove actually looks like.
-            </h2>
-          </div>
-          <dl className="mt-8 border-t border-border/60">
-            {TABLE_MATRIX.map((row) => (
-              <div
-                key={row.lead}
-                className="grid gap-1 border-b border-border/60 py-5 sm:grid-cols-[minmax(0,0.6fr)_minmax(0,1.4fr)] sm:gap-6"
-              >
-                <dt className="text-[0.98rem] font-semibold text-foreground">{row.lead}</dt>
-                <dd className="max-w-3xl text-[0.95rem] leading-7 text-foreground/75">{row.text}</dd>
-              </div>
-            ))}
-          </dl>
-        </Container>
-      </Section>
-
-      <Section id="dining-gallery" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <div className="flow flow-md">
-            <div className="flow flow-sm max-w-2xl">
-              <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                Photo gallery
-              </p>
-              <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-                From the kitchen, the table, and the bar.
-              </h2>
-              <p className="text-body">Twenty-one frames across four groups — select any photo to open the viewer.</p>
-            </div>
-            {DINING_GALLERY_GROUPS.map((group) => (
-              <div key={group.heading} className="flow flow-sm">
-                <div className="flow-xs">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-                    {group.eyebrow}
-                  </p>
-                  <h3 className="text-xl font-semibold text-foreground">{group.heading}</h3>
-                </div>
-                <GalleryGrid items={group.photos} />
-              </div>
-            ))}
-          </div>
-        </Container>
-      </Section>
-
-      <Section id="dining-notes" padding="tight" className="scroll-mt-24">
+      <section className="py-24 sm:py-32 lg:py-40">
         <Container size="narrow">
-          <div className="flow flow-sm max-w-3xl">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-              Guest notes on the food
-            </p>
-            <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-              Dessert gets its own thank-you notes.
-            </h2>
+          <ScrollWordReveal
+            text="No pantry markup. The chef cooks what your group loves, and the table follows the day — *dining room, dock, beach or boat.*"
+            className="font-display text-[clamp(2rem,4.4vw,3.6rem)] leading-[1.1] text-balance text-foreground"
+          />
+        </Container>
+      </section>
+
+      <section id="the-table" className="pb-24 sm:pb-32 lg:pb-40">
+        <Container size="wide" className="flex flex-col gap-14 sm:gap-20">
+          <div className="flow flow-lg">
+            <ChapterMark index="02" label="The table" />
+            <ExploreHeading
+              title="A day at the *table*"
+              align="split"
+              lede="What dinner at Canary Cove actually looks like, from the first coffee to the last rum punch."
+            />
           </div>
-          <div className="flow flow-lg mt-10">
-            {DINING_NOTES.map((note, index) => (
+          <MealTimeline stops={DAY_AT_THE_TABLE} />
+        </Container>
+      </section>
+
+      <section id="dining-gallery" className="bg-sand-light py-24 sm:py-32">
+        <Container size="wide" className="flex flex-col gap-16 sm:gap-24">
+          <div className="flow flow-lg">
+            <ChapterMark index="03" label="Photo gallery" />
+            <ExploreHeading
+              title="From the kitchen, the table, and the *bar.*"
+              align="split"
+              lede={`${GALLERY_PHOTO_COUNT} frames across ${DINING_GALLERY_GROUPS.length} groups. Select any photo to open the viewer.`}
+            />
+          </div>
+          {DINING_GALLERY_GROUPS.map((group, index) => (
+            <div key={group.heading} className="grid gap-6 lg:grid-cols-[14rem_minmax(0,1fr)] lg:gap-12">
+              <div
+                data-reveal="group"
+                className="flex items-baseline gap-4 border-t border-border pt-4 lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:flex-col lg:gap-2 lg:self-start"
+              >
+                <p className={cn("text-[11px] font-semibold uppercase tracking-[0.24em] text-muted-foreground", RISE)}>
+                  <span className="sr-only">{group.eyebrow}: </span>
+                  <span aria-hidden="true" className="tabular">
+                    {String(index + 1).padStart(2, "0")} / {String(DINING_GALLERY_GROUPS.length).padStart(2, "0")}
+                  </span>
+                </p>
+                <h3 className={cn("font-display text-[1.75rem] leading-none text-foreground sm:text-[2rem]", RISE)}>
+                  {group.heading}
+                </h3>
+                <p className={cn("ml-auto text-[13px] text-muted-foreground tabular lg:ml-0", RISE)}>
+                  {group.photos.length} photos
+                </p>
+              </div>
+              <GalleryGrid items={group.photos} layout="editorial" />
+            </div>
+          ))}
+        </Container>
+      </section>
+
+      <section
+        id="dining-notes"
+        className="surface-reef relative isolate overflow-hidden py-24 sm:py-32 lg:py-40"
+      >
+        <div aria-hidden="true" className="caustics pointer-events-none absolute inset-0 -z-10 opacity-60" />
+        <Container size="wide" className="flex flex-col gap-14 sm:gap-20">
+          <div className="flow flow-lg">
+            <ChapterMark index="04" label="Guest notes on the food" tone="light" />
+            <ExploreHeading title="Dessert gets its own *thank-you* notes." tone="light" />
+          </div>
+
+          <figure data-reveal="group" className="grid gap-8 lg:grid-cols-[6rem_minmax(0,1fr)] lg:gap-10">
+            <span aria-hidden="true" className={cn("font-display text-[7rem] leading-[0.7] text-canary lg:text-[10rem]", RISE)}>
+              &ldquo;
+            </span>
+            <div className="flow flow-lg">
+              <blockquote
+                className={cn("max-w-4xl font-display text-[1.85rem] leading-[1.2] text-white sm:text-[2.6rem] lg:text-[3.1rem]", RISE)}
+                style={{ transitionDelay: "120ms" }}
+              >
+                <p>{DINING_NOTES[0].quote}</p>
+              </blockquote>
+              <figcaption
+                className={cn("text-[11px] font-semibold uppercase tracking-[0.26em] text-white/65", RISE)}
+                style={{ transitionDelay: "240ms" }}
+              >
+                {DINING_NOTES[0].author} · {DINING_NOTES[0].year}
+              </figcaption>
+            </div>
+          </figure>
+
+          <div className="grid gap-10 border-t border-white/15 pt-12 md:grid-cols-2 md:gap-16 lg:ml-[8rem]">
+            {DINING_NOTES.slice(1).map((note, index) => (
               <figure
                 key={`${note.year}-${note.author}`}
-                className={`border-l-2 border-primary/30 pl-6 sm:pl-8 ${index === 1 ? "md:ml-16" : ""} ${index === 2 ? "md:ml-8" : ""}`}
+                data-reveal="group"
+                className={cn("flow flow-md", index === 1 && "md:mt-16")}
               >
-                <blockquote
-                  className={
-                    index === 0
-                      ? "max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10"
-                      : "max-w-2xl text-lg leading-8 text-foreground/85"
-                  }
-                >
-                  “{note.quote}”
+                <blockquote className={cn("font-display text-[1.5rem] leading-[1.3] text-white sm:text-[1.8rem]", RISE)}>
+                  <p>&ldquo;{note.quote}&rdquo;</p>
                 </blockquote>
-                <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+                <figcaption
+                  className={cn("text-[11px] font-semibold uppercase tracking-[0.26em] text-white/65", RISE)}
+                  style={{ transitionDelay: "140ms" }}
+                >
                   {note.author} · {note.year}
                 </figcaption>
               </figure>
             ))}
           </div>
         </Container>
-      </Section>
+      </section>
 
-      <Section id="dining-plan" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-14">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
-              <Image
-                src={IMAGES.villaLawn.src}
-                alt={IMAGES.villaLawn.alt}
-                fill
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.villaLawn) }}
-                sizes="(min-width: 1024px) 50vw, 100vw"
-              />
-            </div>
-            <div className="flow flow-md">
-              <div className="flow flow-sm">
-                <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                  Plan your stay
-                </p>
-                <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">
-                  Hungry? Send your dates.
-                </h2>
-                <p className="text-body max-w-xl">
-                  Tell us your dates, your group, and what you love to eat — the chef plans the week around your
-                  table.
-                </p>
-              </div>
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Button asChild size="lg" className="w-full sm:w-fit">
-                  <TrackedLink
-                    href="/book"
-                    eventName="cta_click"
-                    eventPayload={{ location: "dining_plan", target: "/book" }}
-                  >
-                    Check dates
-                    <ArrowUpRight className="size-4" />
-                  </TrackedLink>
-                </Button>
-                <Button asChild size="lg" variant="outline" className="w-full border-border/70 bg-white/80 sm:w-fit">
-                  <TrackedLink
-                    href="/rates"
-                    eventName="cta_click"
-                    eventPayload={{ location: "dining_plan", target: "/rates" }}
-                  >
-                    See rates
-                  </TrackedLink>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </Container>
-      </Section>
+      <ExploreClosingCta
+        id="dining-plan"
+        eyebrow="Plan your stay"
+        title="Hungry? Send your *dates.*"
+        lede="Tell us your dates, your group, and what you love to eat — the chef plans the week around your table."
+        image={IMAGES.heroVillaSeating}
+        actions={
+          <>
+            <CtaLink
+              href="/book"
+              variant="canary"
+              size="lg"
+              eventName="cta_click"
+              eventPayload={{ location: "dining_plan", target: "/book" }}
+            >
+              Check dates
+            </CtaLink>
+            <CtaLink
+              href="/rates"
+              variant="outline-light"
+              size="lg"
+              arrow="none"
+              eventName="cta_click"
+              eventPayload={{ location: "dining_plan", target: "/rates" }}
+            >
+              See rates
+            </CtaLink>
+          </>
+        }
+      />
 
-      <Footer />
     </main>
+      <Footer />
+    </>
   )
 }

@@ -26,7 +26,6 @@ test.describe("private guest area", () => {
       if (
         hostname.includes("google-analytics.com") ||
         hostname.includes("googletagmanager.com") ||
-        hostname.includes("elevenlabs") ||
         hostname.includes("vercel-insights.com")
       ) {
         thirdPartyRequests.push(request.url())
@@ -45,7 +44,6 @@ test.describe("private guest area", () => {
     await expect(page.getByRole("heading", { name: "Canary Cove guest guide", level: 1 })).toBeVisible()
     await expect(page.getByText("Don's guest details will appear here after the final sketch is approved.")).toBeVisible()
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0)
-    await expect(page.getByTestId("elevenlabs-convai-widget")).toHaveCount(0)
     await page.waitForLoadState("networkidle")
     expect(thirdPartyRequests).toEqual([])
 
@@ -102,8 +100,7 @@ test.describe("private guest area", () => {
       if (
         url.includes("googletagmanager.com") ||
         url.includes("google-analytics.com") ||
-        url.includes("/_vercel/insights") ||
-        url.includes("elevenlabs")
+        url.includes("/_vercel/insights")
       ) {
         privateNavigationRequests.push(url)
       }
@@ -111,9 +108,8 @@ test.describe("private guest area", () => {
 
     await page.goto("/", { waitUntil: "domcontentloaded" })
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(1)
-    await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(1)
     // Let public scripts finish their initial requests before measuring the
-    // private navigation boundary. Otherwise a slow ElevenLabs download that
+    // private navigation boundary. Otherwise a slow tracker download that
     // started on `/` can be misattributed to `/guest` after pushState.
     await page.waitForLoadState("networkidle")
 
@@ -136,7 +132,6 @@ test.describe("private guest area", () => {
     expect(blockedAnalyticsStatus).toBe(204)
 
     await expect(page.locator('script[src*="googletagmanager.com"]')).toHaveCount(0)
-    await expect(page.locator('script[src*="elevenlabs"]')).toHaveCount(0)
     await expect(page.locator('script[src*="/_vercel/insights"]')).toHaveCount(0)
     await page.waitForTimeout(1_000)
     expect(privateNavigationRequests).toEqual([])

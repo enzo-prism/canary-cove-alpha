@@ -2,6 +2,41 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-10-04 — Official Canary Cove logo across the site
+
+- Commit: see the `main` push that follows `d597ab0` ("Use the official Canary Cove logo…")
+- Production: `https://www.canarycove.com`
+- The official logo (Figma `3VZQifFoz4F92HnQfNOePV`) replaces the interim sun-over-swells glyph and text wordmark. The 394×351 raster master was traced into clean SVG layers (potrace on soft coverage masks; exact brand colors `#FFEB00` canary, `#6EB53E` glass/lime, gradient glass highlight) with ink and white wordmark variants, plus canary-only and silhouette marks (`public/brand/`).
+- Header (taller on desktop, 80→64px, logo 62→50px), mobile menu, and guest pages use the ink lockup; the footer shows the logo in its native white-wordmark form and a faint canary silhouette replaces the serif "Canary Cove" watermark; gallery end/empty states and the homepage ring badge use the canary.
+- Favicons rebuilt from the canary alone (legible at 32px); Apple touch icon on reef ink (was a transparent PNG); `/canary-cove-logo.png` (structured-data logo) is now an 800px ink-wordmark render that is visible on white.
+- Palette aligned to the logo: canary tokens shifted to the logo's lemon yellow; the logo's lime added as `lime` (live-status dots).
+
+## 2026-10-04 — Scrolling fix, ElevenLabs widget removed, UX bug pass
+
+- Commit: see the `main` push that follows `baeb889` ("Fix scrolling…")
+- Production: `https://www.canarycove.com`
+- Desktop wheel scrolling was broken: Lenis 1.3 needs `autoRaf: true` (or a manual rAF loop); without it, it swallowed wheel input and the page never moved. Automated runs skip Lenis, so the suite missed it — `e2e/smooth-scroll.spec.ts` now re-enables Lenis and drives real wheel input (verified to fail without the fix).
+- Lenis now halts its glide on any click or keypress (programmatic `focus`/`scrollTo` after a flick were being overwritten: hidden form errors, dead "Back to top", gallery filter jumps), passes Shift+wheel to horizontal rails, and no longer skips dropdown panels.
+- Android Chrome: the header's 72→60px shrink fought scroll anchoring in an endless jitter loop near the top. The header now gains a matching bottom margin while it shrinks (constant layout footprint) plus 32/8px hysteresis.
+- Anchor offsets moved from `html { scroll-padding-top }` to a global `[id] { scroll-margin-top }` (header + 12px + `--anchor-extra`): the page-wide padding made focusing header buttons (menu close, Shift+Tab) scroll the page up ~430px. Duplicate per-section `scroll-mt-*` offsets removed.
+- Removed the ElevenLabs concierge widget site-wide (component, embed script, CSS hooks, privacy-policy mention, e2e assertions).
+- Other fixes: full-screen phone search sheet (no resizing under the keyboard) with a touch Cancel on tablets; dialogs restore focus without scrolling; booking success returns to step 1 in view; review-note dialog scrolls its body so close stays visible; 16px reviews year select (no iOS zoom); 44px touch targets for footer links, nav chevrons and gallery dots on touch screens; `/adventures` dive-log rail sticks again (`overflow-clip`); `/experiences` week filmstrip only pins when it fits; mosaic tiles clickable during their reveal; homepage day timeline no longer releases mid-slide; "amenities" now finds `/stay#amenities`; balanced card titles; 13px form helpers.
+
+## 2026-10-04 — Complete design + UX overhaul ("Sand, reef, and canary") with a motion system
+
+- Commit: `0e1df4f` (overhaul) plus a follow-up that swaps the split-headline `text-shadow` for a `drop-shadow` filter (per-word mask boxes were clipping the blur into visible rectangles)
+- Production: `https://www.canarycove.com`
+- Vercel: `Ready` for `v0-canary-cove-navbar-structure` (`dpl_26j6X5AnsC28zNhVq33KSDMi2y6Y`), aliased to `www.canarycove.com` and `canarycove.com`, auto-deployed from the `main` push
+- New design system (`docs/design-system.md`): warm sand / reef ink / lagoon / canary palette, Instrument Serif display type over SF Pro, arched and parallax photography, dark reef bands, rolling-label CTAs (`CtaLink`), `PageHero` and `SectionHeading` building blocks.
+- Motion system (`components/motion/`): one IntersectionObserver for `data-reveal` scroll reveals (gated behind `html.js`, fully resolved under reduced motion and without JS), word-rise headlines (`SplitText`), scroll-lit statements, parallax media, marquees, count-ups, magnetic hero CTA, Lenis inertial wheel scrolling on desktop pointers, header scroll-progress line, and a 620 KB seamless manta ambient loop behind the homepage diving film.
+- Global chrome: solid sand header with canary active underline, mega-dropdowns with crossfading photo previews, full-screen serif mobile menu, live San Pedro clock; dark reef footer with giant wordmark (booking band only on pages without their own closing CTA). Header and footer now sit outside `<main>` so the skip link skips the chrome.
+- Homepage rebuilt: Ken Burns hero with a brighter lead photo, scroll-lit intro + count-up stats + marquee, redesigned estate carousel, pinned horizontal "A day at the cove" timeline, full-bleed "Below the surface" film band, editorial testimonials, drawn process route, plan-your-stay index.
+- Every public page redesigned (stay, rates, book, contact, experiences, dining, adventures, gallery, reviews, getting-here, privacy, terms, guest access) with page-specific motion moments (e.g. rates month strip + season ledger, getting-here scroll-drawn route map, stay pinned outdoor filmstrip, dining meal timeline, adventures dive log, reviews spotlight + timeline).
+- Contracts preserved: all testids, anchors, analytics events, form behavior/validation, Formspree flow, availability calendar, verbatim guest quotes, reef-film rules. Several anchors that redirects and search already pointed at (e.g. `/dining#private-chef`, `/adventures#fishing`, `/book#comfort-confidence`) now exist.
+- Verified live: all 13 public routes plus sitemap/robots/llms return `200`; apex 307-redirects to www; `/stay/main-house` 307s to the microsite; live HTML carries the new hero, timeline and film-band markup; the ambient loop serves `video/mp4` with `206` range responses.
+- Release gate before push: typecheck, lint, 128 unit tests, production build, and 396/396 Playwright tests across Chromium, Firefox and WebKit (12 designed skips). Chromium darwin visual baselines regenerated; linux baselines still need a refresh from a Linux runner.
+- Tests: spacing spec now checks section padding tokens (reveal transforms made descendant-box measurement unstable) and accepts a side-by-side hero subhead/CTA row; visual baselines regenerated for the new design. `PLAYWRIGHT_BASE_URL` lets the suite target an already-running server.
+
 ## 2026-09-17 — Search upgrade, /reviews and /dining redesigns, verbatim guest quotes
 
 - Commit: `cd3d982ee711fd46ddd4556e8cf406eb573c24c8`

@@ -1,13 +1,15 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
-- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage sections (hero overlay, proof row, estate spaces, editorial splits, poster-first diving film, testimonials, process steps).
-- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs; `components/hero-image-rotator.tsx` supplies the rotating background imagery.
-- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, ReefEncounters).
+- Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage chapters (hero, intro statement + count-up stats + marquee, estate spaces carousel, editorial splits, pinned "A day at the cove" timeline, "Below the surface" diving-film band, testimonials, process route, plan-your-stay).
+- **Brand:** the official logo (canary + cocktail + slab wordmark) lives in `public/brand/` as vector traces of the Figma master; use `BrandMark` / `BrandLogo` / `BrandBird` from `components/brand-mark.tsx` and follow the usage rules in `docs/design-system.md` (never re-typeset or recolor it).
+- **Design system:** read `docs/design-system.md` before any UI work. It defines the "Sand, reef, and canary" tokens, the Instrument Serif type scale, `PageHero` / `SectionHeading` / `CtaLink`, and the motion primitives in `components/motion/` (scroll reveals via `data-reveal`, `SplitText`, `ScrollWordReveal`, `Parallax`, `Marquee`, `CountUp`, `Magnetic`, `AmbientVideo`, Lenis `SmoothScroll`).
+- Hero UI: `components/hero.tsx` owns the overlay copy/CTAs and info rail; `components/hero-image-rotator.tsx` supplies the rotating Ken Burns imagery and scroll-linked depth. Homepage-only sections live in `components/home/`.
+- Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, ReefEncounters). Interior pages open with `components/page-hero.tsx`.
 - Layout primitives live in `components/layout/` (`container.tsx`, `section.tsx`, `page-shell.tsx`) and should be used to keep spacing consistent.
 - UI primitives live in `components/ui/` (shadcn-style wrappers).
 - Shared data lives in `lib/`: `images.ts`, `videos.ts`, `homepage-content.ts`, `testimonial-spotlights.ts`, `nav-items.ts`, `emoji.ts`, `utils.ts`.
-- Global styles live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
+- Global styles (tokens, type, reveal/motion CSS) live in `app/globals.css`. `styles/globals.css` is legacy and not imported by the App Router.
 - Future-session docs live in `docs/`. Start with `docs/codex-playbook.md` for architecture, integrations, QA expectations, and deploy workflow. `docs/qa-success-criteria.md` is the release bar.
 
 ## Build, Test, and Development Commands
@@ -24,7 +26,8 @@
 
 ## Coding Style & Naming Conventions
 - Use TypeScript, functional React components, and the App Router paradigm.
-- Tailwind CSS v4 powers styling. Prefer tokens from `app/globals.css` (`bg-surface`, `text-muted-foreground`, `bg-primary`, etc.) and shared utilities (`frosted-panel`, `focus-ring`).
+- Tailwind CSS v4 powers styling. Prefer tokens from `app/globals.css` (`bg-sand`, `bg-ink`, `text-lagoon`, `bg-canary`, `text-muted-foreground`, `.surface-reef`, etc.) and shared utilities (`.text-display`, `.text-section`, `.eyebrow`, `.media-frame`, `focus-ring`). Typography classes use zero-specificity `:where()` selectors so Tailwind utilities can override them.
+- Motion: reveal states only use opacity/transform/clip-path behind `html.js`; never hide content with `visibility`/`display`. Every animation must resolve under `prefers-reduced-motion`. Don't put reveal transforms on elements the e2e suite measures at load (hero box, `homepage-intro`, carousel viewports, form cards, reef-film cards, sticky gallery bar).
 - File names are kebab-case (`hero.tsx`), components PascalCase, and props camelCase. Import aliases (`@/components`, `@/lib`) are configured via `tsconfig.json`.
 
 ## Testing Guidelines
@@ -57,16 +60,16 @@
 - Desktop nav uses plain text links plus controlled Radix `Popover` dropdowns with split link/chevron triggers in `components/navigation/desktop-nav.tsx`. Mobile nav is a full-screen `Sheet` overlay (`side="full"`) with grouped links and a sticky Book footer in `components/navigation/mobile-nav.tsx`.
 - Overlay z-index scale: header 50, dropdown panels 60, mobile nav overlay 80, dialogs (incl. site search) 90, skip link 100. Documented in `app/globals.css`.
 - `components/header.tsx` composes the nav, site search trigger, and sticky scroll state. Be mindful when adjusting padding/height so the shrink animation and `--site-header-height` stay in sync.
-- Immersive header (`/` and `/experiences` until `window.scrollY > 40`) inverts `BrandMark` and wraps it in a frosted chip so the wordmark stays readable over photography. Do not leave the default dark wordmark on a translucent bar.
+- The header is a solid sand bar on every route (no transparent/immersive variant) with a canary scroll-progress hairline, a live San Pedro clock on very wide screens, and a canary-chip Book CTA. It shrinks from 72px to 60px after scrolling.
 - `/experiences` hero should tuck under the sticky header with `-mt-[var(--site-header-height)]` and matching padding. Do not hardcode pixel header offsets.
 - Getting Here step numbers are absolutely positioned. The parent `li` must be `relative` or every badge stacks on the `ol`.
 
 ## Assets, Fonts & Media
-- SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx` (Regular, Medium, Semibold, Bold subset woff2s). Do not add the unused Light face back.
+- SF Pro fonts live under `font/` and are registered via `next/font/local` in `app/layout.tsx` (Regular, Medium, Semibold, Bold subset woff2s). Do not add the unused Light face back. Headlines use Instrument Serif via `next/font/google` (`--font-serif` → `--font-display`); it has one weight, so never bold it.
 - Hero imagery is defined in `components/hero-image-rotator.tsx` as Cloudinary URLs; keep these high-resolution to avoid blur.
 - Image registry lives in `lib/images.ts`; remove low-resolution assets rather than letting them slip into galleries.
 - `lib/cloudinary-loader.ts` resizes Cloudinary assets on their CDN and caps requested width at 2560.
-- The homepage diving film lives in `components/property-film.tsx`: poster-first, user-started playback, compressed Cloudinary derivative. Do not restore the raw autoplay MP4.
+- The homepage diving film lives in `components/property-film.tsx`: user-started playback, compressed Cloudinary derivative. Do not restore the raw autoplay MP4. Behind it (outside `[data-testid=property-film]`) plays a decorative, muted 9.8s manta loop (`public/videos/ambient/manta-loop.mp4`, ~620 KB, cut from the manta-ray-rollover film) via `components/motion/ambient-video.tsx`; it lazy-loads near the viewport, pauses off-screen, and stays a still poster for reduced-motion visitors. Never put an ambient video on `/adventures` (its tests count exactly three videos).
 - The Adventures reef-film gallery lives in `components/reef-encounters.tsx`; its copy and asset paths live in `lib/videos.ts`, with optimized MP4s and posters under `public/videos/reef-encounters/`.
 - `components/photo-carousel.tsx` wraps Embla and is used by interior galleries such as `/book`.
 - Remote images are allowed from `res.cloudinary.com` (see `next.config.mjs`). Add new domains to `images.remotePatterns` before using them.

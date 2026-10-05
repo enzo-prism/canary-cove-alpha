@@ -1,8 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type CSSProperties } from "react"
+import { ArrowDownRight } from "lucide-react"
 
 import { countMatches, GuestReviewsBrowser, type TestimonialGroup } from "@/components/guest-reviews-browser"
+import { SplitText } from "@/components/motion/split-text"
+import { cn } from "@/lib/utils"
 
 const THEMES = [
   {
@@ -43,38 +46,96 @@ export function ReviewsArchive({ groups }: { groups: TestimonialGroup[] }) {
   }
 
   return (
-    <div className="flow flow-lg">
-      <div className="max-w-2xl flow flow-sm">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-          Browse by theme
-        </p>
-        <h2 className="text-section text-[1.7rem] text-foreground sm:text-[2.1rem]">
-          Fourteen years, four obsessions.
-        </h2>
-      </div>
-      <div className="grid gap-3 sm:grid-cols-2">
-        {THEMES.map((theme) => {
-          const count = countMatches(groups, [...theme.words])
-          const active = themeLabel === theme.label
-          return (
-            <button
-              key={theme.label}
-              type="button"
-              onClick={() => handleThemeSelect(theme.label)}
-              aria-pressed={active}
-              className="group rounded-[24px] border border-border/60 bg-white/80 px-5 py-5 text-left transition-colors hover:border-border focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring aria-pressed:border-primary/50 aria-pressed:bg-white"
-            >
-              <span className="flex items-baseline justify-between gap-4">
-                <span className="text-base font-semibold tracking-tight text-foreground">{theme.label}</span>
-                <span className="shrink-0 text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                  {count} note{count === 1 ? "" : "s"}
+    <div className="flex flex-col gap-24 sm:gap-32">
+      <div className="flow flow-xl">
+        <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.8fr)] lg:items-end lg:gap-16">
+          <div className="flow flow-md">
+            <p data-reveal="fade" className="eyebrow">
+              Browse by theme
+            </p>
+            <SplitText as="h2" text="Fourteen years, four *obsessions.*" className="text-section max-w-[14ch]" />
+          </div>
+          <p data-reveal="up" className="text-lede max-w-md lg:justify-self-end">
+            Pick a thread and the archive below narrows to every note that mentions it. Pick it again to let go.
+          </p>
+        </div>
+
+        <div data-reveal="stagger" className="grid border-t border-border sm:grid-cols-2">
+          {THEMES.map((theme, index) => {
+            const count = countMatches(groups, [...theme.words])
+            const active = themeLabel === theme.label
+            return (
+              <button
+                key={theme.label}
+                type="button"
+                onClick={() => handleThemeSelect(theme.label)}
+                aria-pressed={active}
+                style={{ "--stagger-index": index } as CSSProperties}
+                className={cn(
+                  "focus-ring group relative isolate flex min-h-[9.5rem] flex-col justify-between gap-6 overflow-hidden border-b border-border px-1 py-7 text-left sm:px-7 sm:py-8 sm:[&:nth-child(odd)]:border-r",
+                  active ? "text-sand-light" : "text-foreground",
+                )}
+              >
+                {/* Ink fill that wipes up behind the pressed theme. */}
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute inset-0 -z-10 origin-bottom bg-ink transition-transform duration-700 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+                    active ? "scale-y-100" : "scale-y-0",
+                  )}
+                />
+                <span
+                  aria-hidden="true"
+                  className="absolute inset-0 -z-20 bg-sand-light opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                />
+                <span className="flex items-center justify-between gap-4">
+                  <span
+                    className={cn(
+                      "tabular text-[11px] font-semibold tracking-[0.24em]",
+                      active ? "text-canary" : "text-muted-foreground",
+                    )}
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span
+                    className={cn(
+                      "text-[11px] font-semibold uppercase tracking-[0.2em] transition-colors",
+                      active ? "text-sand-light/70" : "text-muted-foreground",
+                    )}
+                  >
+                    {count} note{count === 1 ? "" : "s"}
+                  </span>
                 </span>
-              </span>
-              <span className="mt-1.5 block text-sm leading-6 text-muted-foreground">{theme.blurb}</span>
-            </button>
-          )
-        })}
+                <span className="flex items-end justify-between gap-4">
+                  <span className="flow flow-xs">
+                    <span className="font-display text-[2rem] leading-none sm:text-[2.6rem]">{theme.label}</span>
+                    <span
+                      className={cn(
+                        "block text-sm leading-6 transition-colors",
+                        active ? "text-sand-light/70" : "text-muted-foreground",
+                      )}
+                    >
+                      {theme.blurb}
+                    </span>
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "flex h-11 w-11 shrink-0 items-center justify-center rounded-full transition-[background-color,color,transform] duration-500 ease-[var(--ease-out-expo)]",
+                      active
+                        ? "rotate-45 bg-canary text-ink"
+                        : "bg-ink/[0.06] text-foreground group-hover:bg-ink group-hover:text-sand-light",
+                    )}
+                  >
+                    <ArrowDownRight className="h-4 w-4" />
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
       </div>
+
       <GuestReviewsBrowser
         groups={groups}
         query={query}

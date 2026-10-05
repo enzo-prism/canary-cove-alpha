@@ -329,7 +329,7 @@ export function VideoPlayer({
             onClick={togglePlay}
             aria-label={`Play ${title}`}
             data-testid={`${testId}-play`}
-            className="focus-ring pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-white/95 text-[#0B1F24] shadow-[0_16px_50px_rgba(0,0,0,0.35)] motion-safe:transition-transform motion-safe:duration-200 hover:scale-105 active:scale-95 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
+            className="focus-ring pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-canary text-ink shadow-[0_0_60px_rgba(255,228,26,0.35)] motion-safe:transition-transform motion-safe:duration-200 hover:scale-105 active:scale-95 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
           >
             <Play className="ml-1 h-7 w-7 fill-current min-[420px]:h-8 min-[420px]:w-8 sm:h-9 sm:w-9" aria-hidden />
           </button>
@@ -422,7 +422,7 @@ export function VideoPlayer({
         <div className="relative flex h-11 min-w-0 flex-1 items-center px-1">
           <div aria-hidden className="absolute inset-x-1 h-1 overflow-hidden rounded-full bg-white/25">
             <div className="absolute inset-y-0 left-0 rounded-full bg-white/45" style={{ width: `${buffered}%` }} />
-            <div className="absolute inset-y-0 left-0 rounded-full bg-white" style={{ width: `${progress}%` }} />
+            <div className="absolute inset-y-0 left-0 rounded-full bg-canary" style={{ width: `${progress}%` }} />
           </div>
           <input
             type="range"

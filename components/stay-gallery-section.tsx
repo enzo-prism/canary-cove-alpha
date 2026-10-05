@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type CSSProperties } from "react"
 import Image from "next/image"
 
+import { Parallax } from "@/components/motion/parallax"
 import { PhotoLightbox } from "@/components/photo-lightbox"
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card, CardContent } from "@/components/ui/card"
+import { SectionHeading } from "@/components/section-heading"
 import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
 import { imageObjectPosition, type ImageFocal } from "@/lib/images"
 import { cn } from "@/lib/utils"
@@ -20,109 +20,110 @@ export type StayGalleryFeature = {
   image: GalleryImage
   title: string
   detail: string
-  ratio?: number
-  className?: string
 }
 
 type StayGallerySectionProps = {
   id: string
   eyebrow: string
+  /** Wrap words in *asterisks* for the italic accent. */
   title: string
   description: string
-  primaryItems: StayGalleryFeature[]
-  secondaryItems: StayGalleryFeature[]
+  items: StayGalleryFeature[]
 }
 
-export function StayGallerySection({
-  id,
-  eyebrow,
-  title,
-  description,
-  primaryItems,
-  secondaryItems,
-}: StayGallerySectionProps) {
+// Rendered widths at each breakpoint (1320px column, 12-col grid on desktop).
+const BIG = "(min-width: 1320px) 810px, (min-width: 1024px) 62vw, 100vw"
+const THIRD = "(min-width: 1320px) 390px, (min-width: 1024px) 30vw, 50vw"
+const HALF = "(min-width: 1320px) 600px, (min-width: 1024px) 46vw, 50vw"
+// Rows that pair a wide and a narrow tile share one fixed height on desktop.
+const ROW_H = "lg:aspect-auto lg:h-[clamp(380px,35vw,500px)]"
+
+/**
+ * Editorial mosaic slots, in display order. Every row is even: phones pair
+ * tiles 2-up after a full-width lead, desktop runs 8+4 / 4+4+4 / 4+8 / 6+6.
+ * Tiles render in the same order as the lightbox, so "View photo" N opens
+ * photo N.
+ */
+const SLOTS: { tile: string; frame: string; sizes: string; parallax?: boolean; compact?: boolean }[] = [
+  { tile: "col-span-2 lg:col-span-8", frame: `aspect-[16/11] ${ROW_H}`, sizes: BIG, parallax: true },
+  { tile: "col-span-1 lg:col-span-4", frame: `aspect-[4/5] ${ROW_H}`, sizes: THIRD, compact: true },
+  { tile: "col-span-1 lg:col-span-4", frame: "aspect-[4/5] lg:aspect-square", sizes: THIRD, compact: true },
+  { tile: "col-span-1 lg:col-span-4", frame: "aspect-square", sizes: THIRD, compact: true },
+  { tile: "col-span-1 lg:col-span-4", frame: "aspect-square", sizes: THIRD, compact: true },
+  { tile: "col-span-1 lg:col-span-4", frame: `aspect-[4/5] ${ROW_H}`, sizes: THIRD, compact: true },
+  {
+    tile: "col-span-1 lg:col-span-8",
+    frame: `aspect-[4/5] ${ROW_H}`,
+    sizes: "(min-width: 1320px) 810px, (min-width: 1024px) 62vw, 50vw",
+    parallax: true,
+    compact: true,
+  },
+  { tile: "col-span-1 lg:col-span-6", frame: "aspect-square lg:aspect-[3/2]", sizes: HALF, compact: true },
+  { tile: "col-span-1 lg:col-span-6", frame: "aspect-square lg:aspect-[3/2]", sizes: HALF, compact: true },
+]
+
+export function StayGallerySection({ id, eyebrow, title, description, items }: StayGallerySectionProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null)
-  // One lightbox per section: primary images first, then secondary, matching
-  // the display order.
-  const lightboxImages = [...primaryItems, ...secondaryItems].map((item) => ({
-    src: item.image.src,
-    alt: item.image.alt,
-    caption: item.title,
-  }))
+  const lightboxImages = items.map((item) => ({ src: item.image.src, alt: item.image.alt, caption: item.title }))
 
   return (
-    <div id={id} className="scroll-mt-24 flow flow-lg">
-      <div className="max-w-2xl flow flow-sm">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</p>
-        <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">{title}</h2>
-        <p className="text-body">{description}</p>
+    <div id={id} className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
+      <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+        <SectionHeading eyebrow={eyebrow} title={title} lede={description} className="max-w-2xl" />
+        <p
+          data-reveal="fade"
+          className="tabular hidden shrink-0 text-xs font-medium uppercase tracking-[0.24em] text-muted-foreground lg:block"
+        >
+          {String(items.length).padStart(2, "0")} photographs · tap to enlarge
+        </p>
       </div>
 
-      <div className="grid gap-5 lg:grid-cols-4">
-        {primaryItems.map((item, index) => {
+      <div className="mt-12 grid grid-cols-2 gap-x-3 gap-y-10 sm:mt-16 sm:gap-x-5 sm:gap-y-14 lg:grid-cols-12 lg:gap-x-8 lg:gap-y-20">
+        {items.map((item, index) => {
+          const slot = SLOTS[index % SLOTS.length]
           const blurDataURL = cloudinaryBlurDataUrl(item.image.src)
-          return (
-            <Card
-              key={item.title}
-              className={cn("surface-panel overflow-hidden rounded-[32px] border-border/60 bg-surface/95", item.className)}
-            >
-              <CardContent className="flow flow-sm p-4">
-                <button
-                  type="button"
-                  onClick={() => setOpenIndex(index)}
-                  aria-label={`View photo: ${item.image.alt}`}
-                  className="block w-full cursor-zoom-in overflow-hidden rounded-[24px] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
-                >
-                  <AspectRatio ratio={item.ratio ?? 4 / 3} className="relative bg-surface-elevated">
-                    <Image
-                      src={item.image.src}
-                      alt={item.image.alt}
-                      fill
-                      className="object-cover"
-                      style={{ objectPosition: imageObjectPosition(item.image) }}
-                      sizes="(min-width: 1280px) 420px, (min-width: 1024px) 33vw, 100vw"
-                      placeholder={blurDataURL ? "blur" : "empty"}
-                      blurDataURL={blurDataURL}
-                    />
-                  </AspectRatio>
-                </button>
-                <div className="flow flow-xs px-1 pb-1">
-                  <h3 className="text-lg font-semibold text-foreground">{item.title}</h3>
-                  <p className="text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
-                </div>
-              </CardContent>
-            </Card>
+          const image = (
+            <Image
+              src={item.image.src}
+              alt={item.image.alt}
+              fill
+              className="object-cover"
+              style={{ objectPosition: imageObjectPosition(item.image) }}
+              sizes={slot.sizes}
+              placeholder={blurDataURL ? "blur" : "empty"}
+              blurDataURL={blurDataURL}
+            />
           )
-        })}
-      </div>
-
-      <div className="grid gap-x-4 gap-y-8 sm:grid-cols-2 xl:grid-cols-3">
-        {secondaryItems.map((item, index) => {
-          const blurDataURL = cloudinaryBlurDataUrl(item.image.src)
           return (
-            <figure key={item.title} className="flow flow-sm">
+            <figure key={item.title} className={cn("group flow flow-sm", slot.tile)}>
               <button
                 type="button"
-                onClick={() => setOpenIndex(primaryItems.length + index)}
+                onClick={() => setOpenIndex(index)}
                 aria-label={`View photo: ${item.image.alt}`}
-                className="block w-full cursor-zoom-in overflow-hidden rounded-[24px] border border-border/55 bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50"
+                className="relative block w-full cursor-zoom-in rounded-[var(--radius-media)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 focus-visible:ring-offset-4 focus-visible:ring-offset-surface"
               >
-                <AspectRatio ratio={4 / 3} className="relative">
-                  <Image
-                    src={item.image.src}
-                    alt={item.image.alt}
-                    fill
-                    className="object-cover"
-                    style={{ objectPosition: imageObjectPosition(item.image) }}
-                    sizes="(min-width: 1280px) 360px, (min-width: 768px) 50vw, 100vw"
-                    placeholder={blurDataURL ? "blur" : "empty"}
-                    blurDataURL={blurDataURL}
-                  />
-                </AspectRatio>
+                <span
+                  data-reveal="clip"
+                  style={{ "--reveal-delay": `${(index % 3) * 90}ms` } as CSSProperties}
+                  className={cn("media-frame zoom-media relative block w-full", slot.frame)}
+                >
+                  {slot.parallax ? <Parallax amount={5}>{image}</Parallax> : image}
+                </span>
               </button>
-              <figcaption className="flow flow-xs px-1">
-                <h3 className="text-base font-semibold text-foreground">{item.title}</h3>
-                <p className="text-sm leading-relaxed text-muted-foreground">{item.detail}</p>
+              <figcaption
+                data-reveal="up"
+                style={{ "--reveal-delay": `${120 + (index % 3) * 90}ms` } as CSSProperties}
+                className="grid grid-cols-[auto_1fr] gap-x-3 gap-y-1 sm:gap-x-4"
+              >
+                <span aria-hidden="true" className="tabular pt-[0.35em] text-[11px] text-muted-foreground">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <span className="flow flow-xs">
+                  <h3 className="text-title text-foreground">{item.title}</h3>
+                  <p className={cn("max-w-md text-muted-foreground", slot.compact ? "text-[13px] leading-5 sm:text-sm sm:leading-6" : "text-sm leading-6")}>
+                    {item.detail}
+                  </p>
+                </span>
               </figcaption>
             </figure>
           )

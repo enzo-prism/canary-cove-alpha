@@ -2,37 +2,39 @@
 
 import { useCallback, useEffect, useState } from "react"
 import Image from "next/image"
+import { ArrowLeft, ArrowRight, Expand } from "lucide-react"
 
 import { PhotoLightbox } from "@/components/photo-lightbox"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from "@/components/ui/carousel"
-import { IMAGES } from "@/lib/images"
+import { Carousel, CarouselContent, CarouselItem, type CarouselApi } from "@/components/ui/carousel"
+import { IMAGES, imageObjectPosition, type ImageFocal } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
 type GalleryItem = {
   src: string
   alt: string
   caption?: string
+  focal?: ImageFocal
 }
 
-const miniPhotos = [
+const miniPhotos: GalleryItem[] = [
   { ...IMAGES.heroVillaSeating, caption: "Pool deck with shaded loungers" },
   { ...IMAGES.villaPool, caption: "Infinity pool and waterfront deck" },
   { ...IMAGES.villaInteriorWide, caption: "Open-air great room and kitchen" },
   { ...IMAGES.villaMasterBedroom, caption: "Primary suite with airy views" },
-  { ...IMAGES.mainDock, caption: "Private dock for reef departures" },
+  { ...IMAGES.scubaPhoto, caption: "Reef days off the dock" },
 ]
 
 type StayMiniGalleryProps = {
   items?: GalleryItem[]
 }
 
+const pad = (n: number) => String(n).padStart(2, "0")
+
+/**
+ * The stay "photo tour": a wide Embla filmstrip with a peek of the next frame,
+ * a caption that rolls with the selection, and quiet ink controls. Built on
+ * components/ui/carousel (keyboard arrows, wheel, drag-snap).
+ */
 export function StayMiniGallery({ items }: StayMiniGalleryProps) {
   const galleryItems = items ?? miniPhotos
   const [api, setApi] = useState<CarouselApi | null>(null)
@@ -42,13 +44,6 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
   const onSelect = useCallback((carouselApi: CarouselApi) => {
     setSelectedIndex(carouselApi.selectedScrollSnap())
   }, [])
-
-  const scrollTo = useCallback(
-    (index: number) => {
-      api?.scrollTo(index)
-    },
-    [api],
-  )
 
   useEffect(() => {
     if (!api) return
@@ -61,70 +56,114 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
     }
   }, [api, onSelect])
 
+  const current = galleryItems[selectedIndex]
+
   return (
-    <div
-      className="surface-panel relative overflow-hidden rounded-[32px] bg-white/95 p-3 sm:p-4"
-      data-testid="stay-mini-gallery"
-    >
-      <div className="space-y-4">
-        <Carousel opts={{ align: "start", loop: true }} setApi={setApi} aria-label="Stay photo tour">
-          <CarouselContent>
-            {galleryItems.map((photo, index) => (
-              <CarouselItem key={photo.src}>
+    <div className="relative" data-testid="stay-mini-gallery">
+      <Carousel
+        opts={{ align: "start", loop: true }}
+        setApi={setApi}
+        aria-label="Stay photo tour"
+        className="focus-ring rounded-[var(--radius-media)]"
+      >
+        <CarouselContent>
+          {galleryItems.map((photo, index) => {
+            const active = index === selectedIndex
+            return (
+              <CarouselItem key={photo.src} className="mr-3 basis-[88%] sm:mr-5 sm:basis-[80%] lg:basis-[74%]">
                 <button
                   type="button"
                   onClick={() => setOpenIndex(index)}
                   aria-label={`View photo: ${photo.alt}`}
-                  className="relative block aspect-[4/3] w-full cursor-zoom-in overflow-hidden rounded-[24px] border border-border/40 bg-surface-elevated focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:aspect-[21/9]"
+                  className="group media-frame block aspect-[4/5] w-full cursor-zoom-in focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 sm:aspect-[16/10] lg:aspect-[16/9]"
                 >
                   <Image
                     src={photo.src}
                     alt={photo.alt}
                     fill
-                    priority={index === 0}
-                    decoding="async"
-                    loading={index === 0 ? "eager" : "lazy"}
-                    sizes="(min-width: 1024px) 1000px, 100vw"
-                    className="object-cover"
+                    sizes="(min-width: 1320px) 940px, (min-width: 640px) 80vw, 88vw"
+                    className={cn(
+                      "object-cover transition-[transform,filter] duration-[1600ms] ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+                      active ? "scale-100" : "scale-[1.08] brightness-[0.82]",
+                    )}
+                    style={{ objectPosition: imageObjectPosition(photo) }}
                   />
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-ink/45 to-transparent"
+                  />
+                  <span
+                    aria-hidden="true"
+                    className="absolute right-4 top-4 flex size-10 items-center justify-center rounded-full bg-sand-light/85 text-ink opacity-0 backdrop-blur transition-opacity duration-500 group-hover:opacity-100 group-focus-visible:opacity-100"
+                  >
+                    <Expand className="size-4" />
+                  </span>
+                  <span
+                    aria-hidden="true"
+                    className="font-display absolute bottom-4 left-5 text-[clamp(1.5rem,2.2vw,2rem)] leading-none text-white sm:bottom-6 sm:left-7"
+                  >
+                    {pad(index + 1)}
+                  </span>
                 </button>
               </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious
-            variant="ghost"
-            aria-label="Previous photo"
-            className="left-3 size-11 border border-border/60 bg-white/92 text-foreground shadow-[0_10px_20px_rgba(15,23,42,0.12)] hover:bg-white sm:left-4"
-          />
-          <CarouselNext
-            variant="ghost"
-            aria-label="Next photo"
-            className="right-3 size-11 border border-border/60 bg-white/92 text-foreground shadow-[0_10px_20px_rgba(15,23,42,0.12)] hover:bg-white sm:right-4"
-          />
-        </Carousel>
-        <div className="flex flex-col items-center gap-2">
-          <div className="flex flex-wrap justify-center gap-2">
+            )
+          })}
+        </CarouselContent>
+      </Carousel>
+
+      <div className="mt-6 flex flex-wrap items-center justify-between gap-x-8 gap-y-4 sm:mt-8">
+        <div className="flex min-w-0 items-baseline gap-4">
+          <span className="tabular shrink-0 text-xs font-medium tracking-[0.2em] text-muted-foreground">
+            {pad(selectedIndex + 1)} / {pad(galleryItems.length)}
+          </span>
+          {current?.caption ? (
+            <p
+              key={selectedIndex}
+              aria-live="polite"
+              className="font-display enter-up truncate text-xl leading-tight text-foreground sm:text-2xl"
+            >
+              {current.caption}
+            </p>
+          ) : null}
+        </div>
+
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-2.5 px-1">
             {galleryItems.map((_, index) => (
               <button
                 key={index}
                 type="button"
-                onClick={() => scrollTo(index)}
+                onClick={() => api?.scrollTo(index)}
                 className={cn(
-                  "relative h-2 rounded-full transition-all after:absolute after:-inset-2 after:content-[''] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/60 motion-reduce:transition-none motion-safe:hover:scale-110 motion-safe:active:scale-100",
-                  selectedIndex === index ? "w-10 bg-foreground" : "w-2 bg-muted-foreground/40 hover:bg-foreground/55",
+                  "focus-ring relative h-[3px] rounded-full transition-[width,background-color] duration-700 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-[5px] after:-inset-y-5 after:content-[''] motion-reduce:transition-none",
+                  selectedIndex === index ? "w-12 bg-foreground" : "w-7 bg-ink/20 hover:bg-ink/45",
                 )}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={selectedIndex === index ? "true" : undefined}
               />
             ))}
           </div>
-          {galleryItems[selectedIndex]?.caption ? (
-            <p className="text-center text-xs uppercase tracking-[0.28em] text-muted-foreground">
-              {galleryItems[selectedIndex].caption}
-            </p>
-          ) : null}
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => api?.scrollPrev()}
+              aria-label="Previous photo"
+              className="focus-ring flex size-11 items-center justify-center rounded-full border border-ink/20 text-ink transition-colors duration-500 hover:border-ink hover:bg-ink hover:text-sand-light"
+            >
+              <ArrowLeft className="size-4" />
+            </button>
+            <button
+              type="button"
+              onClick={() => api?.scrollNext()}
+              aria-label="Next photo"
+              className="focus-ring flex size-11 items-center justify-center rounded-full border border-ink/20 text-ink transition-colors duration-500 hover:border-ink hover:bg-ink hover:text-sand-light"
+            >
+              <ArrowRight className="size-4" />
+            </button>
+          </div>
         </div>
       </div>
+
       <PhotoLightbox
         images={galleryItems.map((photo) => ({ src: photo.src, alt: photo.alt, caption: photo.caption }))}
         openIndex={openIndex}

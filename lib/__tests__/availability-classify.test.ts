@@ -7,15 +7,15 @@ import { SAMPLE_CALENDAR_EVENTS } from "@/lib/availability/sample-events"
 
 const classified = classifyCalendarEvents(SAMPLE_CALENDAR_EVENTS)
 const byTitle = Object.fromEntries(classified.map((event) => [event.title, event]))
-const checkedAt = new Date("2030-10-02T18:00:00Z")
+const checkedAt = new Date("2042-02-03T18:00:00Z")
 const publicAvailability = toPublicAvailability(SAMPLE_CALENDAR_EVENTS, checkedAt)
 
 describe("guest name tokens", () => {
   test("strips unit and stay-marker words so overlapping titles can match", () => {
-    expect(guestNameTokens("Guest B Arrival Main House")).toEqual(["b"])
-    expect(guestNameTokens("Guest B")).toEqual(["b"])
+    expect(guestNameTokens("Theo Cloudberry Arrival Main House")).toEqual(["theo", "cloudberry"])
+    expect(guestNameTokens("Theo Cloudberry")).toEqual(["theo", "cloudberry"])
     expect(guestNameTokens("Ada Meridian")).toEqual(["ada", "meridian"])
-    expect(guestNameTokens("Arrival 4 persons")).toEqual([])
+    expect(guestNameTokens("Arrival 3 persons")).toEqual([])
     expect(guestNameTokens("Villa")).toEqual([])
   })
 })
@@ -23,7 +23,7 @@ describe("guest name tokens", () => {
 describe("sample event classification", () => {
   test("recognizes common Main House title formats", () => {
     for (const title of ["Guest MainHouse", "Guest Main-House", "Guest Main House"]) {
-      expect(classifyCalendarEvents([{ id: title, title, start: "2030-10-10", end: "2030-10-12" }])[0].unit).toBe("main-house")
+      expect(classifyCalendarEvents([{ id: title, title, start: "2042-02-09", end: "2042-02-10" }])[0].unit).toBe("main-house")
     }
   })
   test("maps each sample event to a unit with a reason", () => {
@@ -39,18 +39,18 @@ describe("sample event classification", () => {
       })),
     ).toEqual([
       {
-        title: "Guest A Trip",
-        start: "2030-10-13",
-        end: "2030-10-24",
+        title: "Mira Paperkite Trip",
+        start: "2042-02-11",
+        end: "2042-02-16",
         unit: "both",
         source: "untagged",
         flagged: true,
         reason: "Untagged; no overlapping tagged event shares a guest name.",
       },
       {
-        title: "Arrival 4 persons",
-        start: "2030-10-13",
-        end: "2030-10-14",
+        title: "Arrival 3 persons",
+        start: "2042-02-11",
+        end: "2042-02-12",
         unit: "both",
         source: "untagged",
         flagged: true,
@@ -58,71 +58,71 @@ describe("sample event classification", () => {
       },
       {
         title: "Villa",
-        start: "2030-10-13",
-        end: "2030-10-14",
+        start: "2042-02-11",
+        end: "2042-02-12",
         unit: "villa",
         source: "title",
         flagged: false,
         reason: "Title contains 'villa'.",
       },
       {
-        title: "Guest A Departure",
-        start: "2030-10-23",
-        end: "2030-10-24",
+        title: "Mira Paperkite Departure",
+        start: "2042-02-15",
+        end: "2042-02-16",
         unit: "both",
         source: "untagged",
         flagged: true,
         reason: "Untagged; no overlapping tagged event shares a guest name.",
       },
       {
-        title: "Guest B",
-        start: "2030-11-28",
-        end: "2030-12-07",
+        title: "Theo Cloudberry",
+        start: "2042-03-07",
+        end: "2042-03-11",
         unit: "main-house",
         source: "inherited",
         flagged: false,
-        reason: "Inherited Main House from overlapping 'Guest B Arrival Main House'.",
+        reason: "Inherited Main House from overlapping 'Theo Cloudberry Arrival Main House'.",
       },
       {
-        title: "Guest B Arrival Main House",
-        start: "2030-11-28",
-        end: "2030-11-29",
+        title: "Theo Cloudberry Arrival Main House",
+        start: "2042-03-07",
+        end: "2042-03-08",
         unit: "main-house",
         source: "title",
         flagged: false,
         reason: "Title contains 'main house'.",
       },
       {
-        title: "Guest B Departure",
-        start: "2030-12-06",
-        end: "2030-12-07",
+        title: "Theo Cloudberry Departure",
+        start: "2042-03-10",
+        end: "2042-03-11",
         unit: "main-house",
         source: "inherited",
         flagged: false,
-        reason: "Inherited Main House from overlapping 'Guest B'.",
+        reason: "Inherited Main House from overlapping 'Theo Cloudberry'.",
       },
       {
-        title: "Guest C villa 6 pax",
-        start: "2030-12-28",
-        end: "2031-01-06",
+        title: "Lena Starfern villa 5 pax",
+        start: "2042-04-19",
+        end: "2042-04-24",
         unit: "villa",
         source: "title",
         flagged: false,
         reason: "Title contains 'villa'.",
       },
       {
-        title: "Guest D villa",
-        start: "2031-02-20",
-        end: "2031-02-28",
+        title: "Noah Pebblewing villa",
+        start: "2042-05-04",
+        end: "2042-05-07",
         unit: "villa",
         source: "title",
         flagged: false,
         reason: "Title contains 'villa'.",
       },
       {
-        title: "Guest E Villa",
-        start: "2031-03-28",
-        end: "2031-04-04",
+        title: "Iris Moonquill Villa",
+        start: "2042-07-18",
+        end: "2042-07-20",
         unit: "villa",
         source: "title",
         flagged: false,
@@ -132,46 +132,46 @@ describe("sample event classification", () => {
   })
 
   test("does not let a villa-only stay block the Main House", () => {
-    expect(byTitle["Guest C villa 6 pax"].unit).toBe("villa")
+    expect(byTitle["Lena Starfern villa 5 pax"].unit).toBe("villa")
     expect(publicAvailability.units["main-house"].booked).not.toContainEqual({
-      start: "2030-12-28",
-      end: "2031-01-06",
+      start: "2042-04-19",
+      end: "2042-04-24",
     })
-    expect(isDateBooked("2030-12-28", publicAvailability.units.villa.booked)).toBe(true)
-    expect(isDateBooked("2030-12-28", publicAvailability.units["main-house"].booked)).toBe(false)
+    expect(isDateBooked("2042-04-19", publicAvailability.units.villa.booked)).toBe(true)
+    expect(isDateBooked("2042-04-19", publicAvailability.units["main-house"].booked)).toBe(false)
   })
 
-  test("inherits Guest B onto Main House and leaves Villa open those nights", () => {
-    expect(byTitle["Guest B"].unit).toBe("main-house")
-    expect(isDateBooked("2030-11-28", publicAvailability.units["main-house"].booked)).toBe(true)
-    expect(isDateBooked("2030-12-06", publicAvailability.units["main-house"].booked)).toBe(true)
-    expect(isDateBooked("2030-12-07", publicAvailability.units["main-house"].booked)).toBe(false)
-    expect(isDateBooked("2030-11-28", publicAvailability.units.villa.booked)).toBe(false)
+  test("inherits Theo Cloudberry onto Main House and leaves Villa open those nights", () => {
+    expect(byTitle["Theo Cloudberry"].unit).toBe("main-house")
+    expect(isDateBooked("2042-03-07", publicAvailability.units["main-house"].booked)).toBe(true)
+    expect(isDateBooked("2042-03-10", publicAvailability.units["main-house"].booked)).toBe(true)
+    expect(isDateBooked("2042-03-11", publicAvailability.units["main-house"].booked)).toBe(false)
+    expect(isDateBooked("2042-03-07", publicAvailability.units.villa.booked)).toBe(false)
   })
 
-  test("treats untagged Guest A events as blocking both units and flags them", () => {
-    expect(byTitle["Guest A Trip"].flagged).toBe(true)
-    expect(byTitle["Guest A Trip"].unit).toBe("both")
-    expect(isDateBooked("2030-10-13", publicAvailability.units.villa.booked)).toBe(true)
-    expect(isDateBooked("2030-10-23", publicAvailability.units.villa.booked)).toBe(true)
-    expect(isDateBooked("2030-10-24", publicAvailability.units.villa.booked)).toBe(false)
-    expect(isDateBooked("2030-10-13", publicAvailability.units["main-house"].booked)).toBe(true)
-    expect(isDateBooked("2030-10-23", publicAvailability.units["main-house"].booked)).toBe(true)
+  test("treats untagged Mira Paperkite events as blocking both units and flags them", () => {
+    expect(byTitle["Mira Paperkite Trip"].flagged).toBe(true)
+    expect(byTitle["Mira Paperkite Trip"].unit).toBe("both")
+    expect(isDateBooked("2042-02-11", publicAvailability.units.villa.booked)).toBe(true)
+    expect(isDateBooked("2042-02-15", publicAvailability.units.villa.booked)).toBe(true)
+    expect(isDateBooked("2042-02-16", publicAvailability.units.villa.booked)).toBe(false)
+    expect(isDateBooked("2042-02-11", publicAvailability.units["main-house"].booked)).toBe(true)
+    expect(isDateBooked("2042-02-15", publicAvailability.units["main-house"].booked)).toBe(true)
   })
 
-  test("uses exclusive end dates so Oct 13-24 blocks through Oct 23", () => {
+  test("uses exclusive end dates so Feb 11-16 blocks through Feb 15", () => {
     const nights = [
-      "2030-10-13",
-      "2030-10-14",
-      "2030-10-23",
-      "2030-11-28",
-      "2030-12-06",
-      "2030-12-28",
-      "2031-01-05",
-      "2031-02-20",
-      "2031-02-27",
-      "2031-03-28",
-      "2031-04-03",
+      "2042-02-11",
+      "2042-02-12",
+      "2042-02-15",
+      "2042-03-07",
+      "2042-03-10",
+      "2042-04-19",
+      "2042-04-23",
+      "2042-05-04",
+      "2042-05-06",
+      "2042-07-18",
+      "2042-07-19",
     ]
     for (const night of nights) {
       const villa = isDateBooked(night, publicAvailability.units.villa.booked)
@@ -179,31 +179,31 @@ describe("sample event classification", () => {
       expect(villa || mainHouse).toBe(true)
     }
 
-    expect(isDateBooked("2030-10-24", publicAvailability.units.villa.booked)).toBe(false)
-    expect(isDateBooked("2030-12-07", publicAvailability.units["main-house"].booked)).toBe(false)
-    expect(isDateBooked("2031-01-06", publicAvailability.units.villa.booked)).toBe(false)
+    expect(isDateBooked("2042-02-16", publicAvailability.units.villa.booked)).toBe(false)
+    expect(isDateBooked("2042-03-11", publicAvailability.units["main-house"].booked)).toBe(false)
+    expect(isDateBooked("2042-04-24", publicAvailability.units.villa.booked)).toBe(false)
   })
 
   test("public payload is dates only", () => {
     const serialized = JSON.stringify(publicAvailability)
-    expect(serialized).not.toMatch(/Guest [A-E]|Arrival|Departure|persons|pax/i)
+    expect(serialized).not.toMatch(/Paperkite|Cloudberry|Starfern|Pebblewing|Moonquill|Arrival|Departure|persons|pax/i)
     expect(publicAvailability).toEqual({
       timezone: "America/Belize",
-      window: { start: "2030-10-02", end: "2032-04-02" },
+      window: { start: "2042-02-03", end: "2043-08-05" },
       updatedAt: checkedAt.toISOString(),
       units: {
         villa: {
           booked: [
-            { start: "2030-10-13", end: "2030-10-24" },
-            { start: "2030-12-28", end: "2031-01-06" },
-            { start: "2031-02-20", end: "2031-02-28" },
-            { start: "2031-03-28", end: "2031-04-04" },
+            { start: "2042-02-11", end: "2042-02-16" },
+            { start: "2042-04-19", end: "2042-04-24" },
+            { start: "2042-05-04", end: "2042-05-07" },
+            { start: "2042-07-18", end: "2042-07-20" },
           ],
         },
         "main-house": {
           booked: [
-            { start: "2030-10-13", end: "2030-10-24" },
-            { start: "2030-11-28", end: "2030-12-07" },
+            { start: "2042-02-11", end: "2042-02-16" },
+            { start: "2042-03-07", end: "2042-03-11" },
           ],
         },
       },
@@ -215,10 +215,10 @@ describe("range merge", () => {
   test("merges overlapping and adjacent exclusive ranges", () => {
     expect(
       mergeRanges([
-        { start: "2030-10-13", end: "2030-10-14" },
-        { start: "2030-10-13", end: "2030-10-24" },
-        { start: "2030-10-23", end: "2030-10-24" },
+        { start: "2042-02-11", end: "2042-02-12" },
+        { start: "2042-02-11", end: "2042-02-16" },
+        { start: "2042-02-15", end: "2042-02-16" },
       ]),
-    ).toEqual([{ start: "2030-10-13", end: "2030-10-24" }])
+    ).toEqual([{ start: "2042-02-11", end: "2042-02-16" }])
   })
 })

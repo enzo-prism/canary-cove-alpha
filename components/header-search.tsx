@@ -1,7 +1,7 @@
 "use client"
 
 import dynamic from "next/dynamic"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { Search } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -14,6 +14,21 @@ export function HeaderSearch() {
   const [ready, setReady] = useState(false)
   const [open, setOpen] = useState(false)
   const [shortcutHint, setShortcutHint] = useState("Ctrl K")
+  const triggerRef = useRef<HTMLButtonElement | null>(null)
+  const wasOpen = useRef(false)
+
+  // The dialog's trigger lives outside the Radix Dialog, so Radix cannot
+  // restore focus on close. Return it to the header button ourselves (unless
+  // a result navigation already moved focus somewhere meaningful).
+  useEffect(() => {
+    if (wasOpen.current && !open) {
+      requestAnimationFrame(() => {
+        const active = document.activeElement
+        if (!active || active === document.body) triggerRef.current?.focus({ preventScroll: true })
+      })
+    }
+    wasOpen.current = open
+  }, [open])
 
   const openSearch = () => {
     setReady(true)
@@ -48,6 +63,7 @@ export function HeaderSearch() {
       <Button
         type="button"
         variant="ghost"
+        ref={triggerRef}
         aria-label="Open site search"
         data-testid="search-open-button"
         onClick={openSearch}

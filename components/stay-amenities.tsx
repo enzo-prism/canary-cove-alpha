@@ -1,10 +1,9 @@
-"use client"
-
-import { useState } from "react"
+import type { CSSProperties } from "react"
 import Image from "next/image"
 
-import { PhotoLightbox } from "@/components/photo-lightbox"
-import { cloudinaryBlurDataUrl } from "@/lib/cloudinary-blur"
+import { Parallax } from "@/components/motion/parallax"
+import { SectionHeading } from "@/components/section-heading"
+import { ServiceStrip } from "@/components/stay/service-strip"
 import { IMAGES, imageObjectPosition } from "@/lib/images"
 
 type LedgerRow = {
@@ -60,149 +59,120 @@ const comfortGroups = [
   },
 ]
 
-const servicePhotos = [IMAGES.chefMarvinPlates, IMAGES.logoDrink, IMAGES.diningFoodDetail, IMAGES.diningSpread]
+const delay = (ms: number) => ({ "--reveal-delay": `${ms}ms` }) as CSSProperties
+
+function ChapterHeading({ index, title, note }: { index: string; title: string; note?: string }) {
+  return (
+    <div className="flow flow-xs" data-reveal="up">
+      <div className="flex items-baseline gap-4">
+        <span aria-hidden="true" className="italic-accent text-2xl leading-none text-lagoon">
+          {index}
+        </span>
+        <h3 className="text-title text-foreground">{title}</h3>
+      </div>
+      {note ? <p className="text-body max-w-lg sm:pl-[3.1rem]">{note}</p> : null}
+    </div>
+  )
+}
 
 function LedgerRows({ rows }: { rows: LedgerRow[] }) {
   return (
-    <dl className="border-t border-border/60">
-      {rows.map((row) => (
+    <dl data-reveal="stagger" style={{ "--stagger-step": "70ms" } as CSSProperties} className="border-t border-ink/15">
+      {rows.map((row, index) => (
         <div
           key={row.lead}
-          className="grid gap-1 border-b border-border/60 py-4 sm:grid-cols-[minmax(0,0.8fr)_minmax(0,1.2fr)] sm:gap-6"
+          style={{ "--stagger-index": index } as CSSProperties}
+          className="group/row relative grid gap-1 border-b border-ink/15 py-4 sm:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] sm:gap-8 sm:py-5"
         >
-          <dt className="text-[0.95rem] font-semibold text-foreground">{row.lead}</dt>
-          <dd className="text-[0.95rem] leading-7 text-foreground/75">{row.text}</dd>
+          <dt className="flex items-center gap-3 text-[15px] font-medium text-foreground">
+            <span
+              aria-hidden="true"
+              className="block size-1.5 shrink-0 rounded-full bg-canary-deep transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover/row:scale-[1.8]"
+            />
+            {row.lead}
+          </dt>
+          <dd className="pl-[1.125rem] text-[15px] leading-7 text-muted-foreground sm:pl-0">{row.text}</dd>
         </div>
       ))}
     </dl>
   )
 }
 
-function ServiceStrip() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null)
-
-  return (
-    <div className="flow flow-sm">
-      <div className="flow-xs">
-        <h3 className="text-lg font-semibold text-foreground">From the kitchen</h3>
-        <p className="text-sm leading-6 text-muted-foreground">
-          Frames from the service side of the stay — select any photo to open the viewer.
-        </p>
-      </div>
-      <div className="-mx-6 overflow-x-auto px-6 pb-2 snap-x snap-mandatory sm:mx-0 sm:px-0">
-        <div className="flex w-max gap-3">
-          {servicePhotos.map((photo, index) => {
-            const blurDataURL = cloudinaryBlurDataUrl(photo.src)
-            return (
-              <button
-                key={photo.src}
-                type="button"
-                onClick={() => setOpenIndex(index)}
-                aria-label={`View photo: ${photo.alt}`}
-                className="relative aspect-[4/3] w-60 shrink-0 cursor-zoom-in snap-start overflow-hidden rounded-[20px] border border-border/55 bg-surface-muted focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/50 sm:w-72"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.alt}
-                  fill
-                  className="object-cover"
-                  style={{ objectPosition: imageObjectPosition(photo) }}
-                  sizes="(min-width: 640px) 288px, 240px"
-                  placeholder={blurDataURL ? "blur" : "empty"}
-                  blurDataURL={blurDataURL}
-                />
-              </button>
-            )
-          })}
-        </div>
-      </div>
-      <PhotoLightbox
-        images={servicePhotos.map((photo) => ({ src: photo.src, alt: photo.alt, caption: photo.alt }))}
-        openIndex={openIndex}
-        onClose={() => setOpenIndex(null)}
-      />
-    </div>
-  )
-}
-
+/**
+ * "Included with your stay": an editorial ledger beside a sticky chef
+ * portrait, the in-room/extras columns, the kitchen strip, and a scroll-lit
+ * statement to close.
+ */
 export function StayAmenities() {
   return (
-    <div id="amenities" className="scroll-mt-24 flow flow-lg">
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,0.9fr)_minmax(0,1.1fr)] lg:gap-14">
-        <div className="flow flow-md lg:sticky lg:top-28 lg:self-start">
-          <div className="flow flow-sm">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-              Included with your stay
-            </p>
-            <h2 className="text-section max-w-md text-[2rem] text-foreground sm:text-[2.5rem]">
-              Arrive to everything handled.
-            </h2>
-          </div>
-          <figure className="flow-xs">
-            <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted">
-              <Image
-                src={IMAGES.chefMarvinKitchen.src}
-                alt={IMAGES.chefMarvinKitchen.alt}
-                fill
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinKitchen) }}
-                sizes="(min-width: 1024px) 42vw, 100vw"
-              />
+    <div id="amenities" className="flex flex-col gap-20 sm:gap-28">
+      <div className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
+        <SectionHeading
+          align="split"
+          eyebrow="Included with your stay"
+          title="Arrive to *everything* handled."
+          lede="Arrival, meals, and daily support are already folded into the rhythm of the estate — pool days, dock departures, and easy evenings outdoors are built into the property itself."
+        />
+
+        <div className="mt-14 grid gap-14 sm:mt-20 lg:grid-cols-12 lg:gap-16">
+          <figure className="flow flow-sm lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:col-span-5 lg:self-start">
+            <div data-reveal="clip" className="media-frame relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5]">
+              <Parallax amount={6}>
+                <Image
+                  src={IMAGES.chefMarvinKitchen.src}
+                  alt={IMAGES.chefMarvinKitchen.alt}
+                  fill
+                  className="object-cover"
+                  style={{ objectPosition: imageObjectPosition(IMAGES.chefMarvinKitchen) }}
+                  sizes="(min-width: 1024px) 40vw, 100vw"
+                />
+              </Parallax>
             </div>
-            <figcaption className="text-[0.82rem] leading-6 text-muted-foreground">
+            <figcaption className="text-[13px] leading-6 text-muted-foreground" data-reveal="fade" style={delay(300)}>
               Chef Marvin at the villa range — lunches and dinners are cooked to your group&apos;s preferences.
             </figcaption>
           </figure>
+
+          <div className="flex flex-col gap-16 sm:gap-20 lg:col-span-7">
+            <div className="flow flow-lg">
+              <ChapterHeading index="01" title="Arrival, meals, daily support" />
+              <LedgerRows rows={arrivalRows} />
+            </div>
+
+            <div className="flow flow-lg">
+              <ChapterHeading index="02" title="Pool, docks, grounds" />
+              <LedgerRows rows={outdoorRows} />
+            </div>
+
+            <div className="flow flow-lg">
+              <ChapterHeading index="03" title="Comfort, rooms, extras" />
+              <div className="grid gap-10 border-t border-ink/15 pt-8 sm:grid-cols-3 sm:gap-8">
+                {comfortGroups.map((group, groupIndex) => (
+                  <div key={group.label} className="flow flow-sm" data-reveal="up" style={delay(groupIndex * 110)}>
+                    <p className="eyebrow eyebrow-plain text-foreground">{group.label}</p>
+                    <ul className="flow flow-sm text-[15px] leading-6 text-muted-foreground">
+                      {group.items.map((item) => (
+                        <li key={item}>{item}</li>
+                      ))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
 
-        <div className="flow flow-md lg:pt-2">
-          <div className="flow flow-sm">
-            <div className="flow-xs">
-              <h3 className="text-xl font-semibold text-foreground">Arrival, meals, daily support</h3>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Arrival, meals, and daily support are already folded into the rhythm of the estate.
-              </p>
-            </div>
-            <LedgerRows rows={arrivalRows} />
-          </div>
+      <ServiceStrip />
 
-          <div className="flow flow-sm">
-            <div className="flow-xs">
-              <h3 className="text-xl font-semibold text-foreground">Pool, docks, grounds</h3>
-              <p className="text-sm leading-6 text-muted-foreground">
-                Pool days, dock departures, and easy evenings outdoors are all built into the property itself.
-              </p>
-            </div>
-            <LedgerRows rows={outdoorRows} />
-          </div>
-
-          <div className="flow flow-sm">
-            <h3 className="text-xl font-semibold text-foreground">Comfort, rooms, extras</h3>
-            <div className="grid gap-6">
-              {comfortGroups.map((group) => (
-                <div key={group.label} className="flow flow-xs">
-                  <p className="text-[11px] font-medium uppercase tracking-[0.24em] text-muted-foreground">
-                    {group.label}
-                  </p>
-                  <ul className="grid gap-2.5 border-t border-border/60 pt-4 text-[0.95rem] leading-7 text-foreground/78">
-                    {group.items.map((item) => (
-                      <li key={item} className="border-b border-border/60 pb-2.5 last:border-b-0 last:pb-0">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <ServiceStrip />
-
-          <p className="max-w-2xl text-[0.98rem] leading-8 text-foreground/82">
-            An all-inclusive stay with private chef service and on-site staff means less logistics and more time in the
-            water, by the pool, or around the table with your group.
-          </p>
-        </div>
+      <div className="mx-auto w-full max-w-[1100px] px-[var(--gutter)]">
+        <p
+          data-reveal="up"
+          className="font-display text-balance text-center text-[clamp(1.9rem,3.6vw,3.4rem)] leading-[1.08] text-foreground"
+        >
+          An all-inclusive stay with private chef service and on-site staff means less logistics and{" "}
+          <em className="italic-accent">more time</em> in the water, by the pool, or around the table with your group.
+        </p>
       </div>
     </div>
   )

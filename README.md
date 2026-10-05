@@ -39,6 +39,11 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Project map
 
+- `docs/design-system.md`: the visual + motion contract (tokens, type scale, components, motion primitives). Read it before UI work.
+- `components/motion/`: motion primitives (scroll reveals, split text, parallax, marquee, count-up, smooth scroll, ambient video).
+- `components/page-hero.tsx`, `components/section-heading.tsx`, `components/ui/cta-link.tsx`: shared page-opening, heading and CTA building blocks.
+- `components/home/`: homepage-only sections (intro statement, pinned day timeline).
+
 - `app/page.tsx`: Homepage composition and section order (hero overlay, proof row, estate spaces, editorial splits, poster-first film, testimonials, process steps).
 - `components/hero.tsx`: Hero overlay copy and Book / See rates CTAs.
 - `components/hero-image-rotator.tsx`: Rotating hero background images (high-res only).

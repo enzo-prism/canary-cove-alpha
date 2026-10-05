@@ -1,181 +1,179 @@
-import { ArrowRight, ArrowUpRight } from "lucide-react"
-
-import { TrackedLink } from "@/components/analytics/tracked-link"
 import { Footer } from "@/components/footer"
 import { Header } from "@/components/header"
-import { Container } from "@/components/layout/container"
-import { Section } from "@/components/layout/section"
+import { Marquee } from "@/components/motion/marquee"
+import { ScrollWordReveal } from "@/components/motion/scroll-word-reveal"
+import { PageHero } from "@/components/page-hero"
 import { StayAmenities } from "@/components/stay-amenities"
 import { StayClosingCta } from "@/components/stay-closing-cta"
 import { StayGuestExperience } from "@/components/stay-guest-experience"
 import { StayMiniGallery } from "@/components/stay-mini-gallery"
 import { StayOutdoorGallery } from "@/components/stay-outdoor-gallery"
 import { StayVillaGallery } from "@/components/stay-villa-gallery"
+import { StayMainHouse } from "@/components/stay/stay-main-house"
 import { PageStructuredData } from "@/components/structured-data"
-import { Button } from "@/components/ui/button"
+import { CtaLink } from "@/components/ui/cta-link"
+import { IMAGES } from "@/lib/images"
 import { PAGE_METADATA } from "@/lib/seo"
 import { TESTIMONIAL_SPOTLIGHTS } from "@/lib/testimonial-spotlights"
 
 export const metadata = PAGE_METADATA.stay
 
 const STAY_ANCHORS = [
-  { label: "Inside the villa", href: "#inside-the-villa" },
+  { label: "Inside", href: "#inside-the-villa" },
   { label: "Outside", href: "#outside-the-villa" },
   { label: "Included", href: "#amenities" },
   { label: "Guest notes", href: "#guest-experience" },
+  { label: "Main House", href: "#main-house-stay" },
 ] as const
 
-function StayGlance() {
-  const rows = [
-    { label: "The villa · 3 king suites", value: "Sleeps up to 10" },
-    { label: "Meals", value: "Chef-led, served daily" },
-    { label: "Waterfront", value: "2 docks, boats on site" },
-    { label: "Booking", value: "One booking at a time" },
-  ] as const
+const HERO_FACTS = [
+  { label: "Sleeps", value: "Up to 10" },
+  { label: "King suites", value: "3" },
+  { label: "Docks", value: "2" },
+  { label: "Chef", value: "Daily" },
+]
 
-  return (
-    <dl className="border-t border-border/60">
-      {rows.map((row) => (
-        <div key={row.label} className="flex items-baseline justify-between gap-6 border-b border-border/60 py-3.5">
-          <dt className="text-[0.95rem] font-medium text-foreground/80">{row.label}</dt>
-          <dd className="shrink-0 text-right text-[0.95rem] font-semibold tabular-nums text-foreground">{row.value}</dd>
-        </div>
-      ))}
-    </dl>
-  )
-}
+// Every word here is an amenity listed in components/stay-amenities.tsx.
+const AMENITY_WORDS = [
+  "Infinity pool",
+  "Swim-up bar",
+  "Hot tub",
+  "Private dock",
+  "Chef-led meals",
+  "Paddleboards",
+  "Airport pickup",
+  "Daily housekeeping",
+  "Beach bikes",
+  "Outdoor shower",
+  "Snorkeling gear",
+  "Private gardens",
+]
 
 export default function Page() {
   return (
-    <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
-      <PageStructuredData path="/stay" />
+    <>
       <Header />
+      <main id="main-content" tabIndex={-1} className="min-h-screen bg-background outline-none">
+      <PageStructuredData path="/stay" />
 
-      <Section padding="tight" className="overflow-hidden">
-        <Container size="wide">
-          <div className="flow flow-md mx-auto max-w-3xl">
-            <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-              Stay · Ambergris Caye
-            </p>
-            <h1 className="text-balance text-[2.75rem] font-semibold leading-[1.05] tracking-tight text-foreground sm:text-[3.9rem]">
-              One estate. Your group. Nothing shared.
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-foreground/72 sm:text-lg sm:leading-8">
-              Three king suites, a pool deck made for all-day lounging, two docks with boats on site, and a chef-led
-              table — one private booking at a time.
-            </p>
-            <p className="max-w-2xl text-[0.95rem] leading-7 text-foreground/72">
-              The villa sleeps up to 10 across its suites. Returning groups can take the{" "}
-              <a
-                href="#main-house-stay"
-                className="rounded-sm font-medium whitespace-nowrap text-foreground underline underline-offset-4 transition-colors hover:text-foreground/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-              >
-                5-suite Main House
-              </a>{" "}
-              instead.
-            </p>
-            <StayGlance />
-            <div className="flex flex-col gap-5 pt-1">
-              <Button asChild size="lg" className="w-full sm:w-fit">
-                <TrackedLink
-                  href="/book"
-                  eventName="cta_click"
-                  eventPayload={{ location: "stay_hero_book", target: "/book" }}
+      <PageHero
+        variant="split"
+        eyebrow="Stay · Ambergris Caye"
+        title="One estate. Your group. *Nothing* shared."
+        lede={
+          <p>
+            Three king suites, a pool deck made for all-day lounging, two docks with boats on site, and a chef-led
+            table — one private booking at a time. The villa sleeps up to 10; returning groups can take the{" "}
+            <a
+              href="#main-house-stay"
+              className="link-underline-static focus-ring whitespace-nowrap rounded-sm text-foreground"
+            >
+              5-suite Main House
+            </a>{" "}
+            instead.
+          </p>
+        }
+        actions={
+          <>
+            <CtaLink
+              href="/book"
+              size="lg"
+              arrow="diag"
+              eventName="cta_click"
+              eventPayload={{ location: "stay_hero_book", target: "/book" }}
+            >
+              Check dates
+            </CtaLink>
+            <CtaLink
+              href="/rates"
+              variant="text"
+              eventName="cta_click"
+              eventPayload={{ location: "stay_hero_rates", target: "/rates" }}
+            >
+              See rates
+            </CtaLink>
+          </>
+        }
+        facts={HERO_FACTS}
+        image={{ src: IMAGES.heroVillaDining.src, alt: IMAGES.heroVillaDining.alt, focal: { x: 38, y: 50 } }}
+        imageClassName="sm:max-w-[34rem] lg:max-w-none"
+      >
+        <nav aria-label="On this page" className="-mx-[var(--gutter)] sm:mx-0 sm:-ml-2">
+          <ul className="no-scrollbar flex w-0 min-w-full gap-2 overflow-x-auto px-[var(--gutter)] py-1 text-sm sm:w-auto sm:flex-wrap sm:gap-0 sm:overflow-visible sm:px-0 sm:py-0">
+            {STAY_ANCHORS.map((anchor, index) => (
+              <li key={anchor.href} className="shrink-0">
+                <a
+                  href={anchor.href}
+                  className="focus-ring inline-flex min-h-11 items-center gap-1.5 whitespace-nowrap rounded-full border border-ink/15 px-4 text-foreground/80 transition-colors hover:border-ink/40 hover:text-foreground sm:border-transparent sm:px-2 sm:hover:border-transparent"
                 >
-                  Check dates
-                  <ArrowUpRight className="size-4" />
-                </TrackedLink>
-              </Button>
-              <nav aria-label="On this page" className="flex flex-wrap items-center gap-x-2 gap-y-2 text-sm">
-                {STAY_ANCHORS.map((anchor, index) => (
-                  <span key={anchor.href} className="flex items-center gap-2">
-                    {index > 0 ? (
-                      <span aria-hidden="true" className="text-border">
-                        /
-                      </span>
-                    ) : null}
-                    <a
-                      href={anchor.href}
-                      className="rounded-sm font-medium text-foreground/70 underline-offset-4 transition-colors hover:text-foreground hover:underline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                    >
-                      {anchor.label}
-                    </a>
+                  <span aria-hidden="true" className="tabular text-[10px] text-muted-foreground">
+                    {String(index + 1).padStart(2, "0")}
                   </span>
-                ))}
-              </nav>
-            </div>
+                  <span className="link-underline">{anchor.label}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </PageHero>
+
+      {/* Photo tour: a wide, swipeable filmstrip right under the hero. */}
+      <section aria-labelledby="stay-tour-heading" className="pb-20 sm:pb-24 lg:pb-32">
+        <div className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
+          <div className="mb-8 grid gap-5 sm:mb-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-end lg:gap-16">
+            <h2 id="stay-tour-heading" className="eyebrow" data-reveal="fade">
+              A first walk through
+            </h2>
+            <ScrollWordReveal
+              text="Morning swims, reef days off the dock, *long* dinners at the chef’s table — and three quiet suites to come back to."
+              className="font-display max-w-[28ch] text-[clamp(1.65rem,2.7vw,2.5rem)] leading-[1.1] text-foreground lg:justify-self-end"
+            />
           </div>
-          <div className="mx-auto mt-10 max-w-6xl">
-            <StayMiniGallery />
-          </div>
-        </Container>
-      </Section>
+          <StayMiniGallery />
+        </div>
+      </section>
 
-      <div id="villa" className="scroll-mt-28">
-        <Section padding="tight" className="bg-surface">
-          <Container size="default">
-            <StayVillaGallery />
-          </Container>
-        </Section>
+      <div id="villa" className="">
+        <section className="bg-surface py-20 sm:py-28 lg:py-36">
+          <StayVillaGallery />
+        </section>
       </div>
 
-      <div id="outside" className="scroll-mt-28">
-        <Section padding="tight">
-          <Container size="default">
-            <StayOutdoorGallery />
-          </Container>
-        </Section>
+      <div id="outside" className="">
+        <StayOutdoorGallery />
       </div>
 
-      <div id="services" className="scroll-mt-28">
-        <Section padding="tight" className="bg-surface">
-          <Container size="default">
-            <StayAmenities />
-          </Container>
-        </Section>
-      </div>
-
-      <Section id="guest-experience" padding="tight" className="scroll-mt-24">
-        <Container size="default">
-          <StayGuestExperience testimonials={TESTIMONIAL_SPOTLIGHTS.stay} />
-        </Container>
-      </Section>
-
-      <Section id="main-house-stay" padding="tight" className="scroll-mt-24 bg-surface">
-        <Container size="default">
-          <TrackedLink
-            href="/stay/main-house"
-            eventName="cta_click"
-            eventPayload={{ location: "stay_hero", target: "/stay/main-house" }}
-            className="surface-panel group grid gap-6 rounded-[32px] border-border/60 bg-white/95 p-6 shadow-[0_26px_75px_rgba(15,23,42,0.10)] transition-colors hover:border-border sm:p-8 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-10 lg:p-10"
-          >
-            <span className="flow flow-sm">
-              <span className="block text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                Main House · Returning guests
-              </span>
-              <span className="text-section block text-[1.9rem] text-foreground sm:text-[2.3rem]">
-                Main House · 5 suites
-              </span>
-              <span className="text-body block max-w-2xl">
-                The full estate as one home base, from $2,500 a night in low season. A separate $10,000 damage deposit
-                applies.
-              </span>
+      <div aria-hidden="true" className="border-y border-border/70 bg-surface py-6 sm:py-8">
+        <Marquee
+          duration={60}
+          items={AMENITY_WORDS.map((word) => (
+            <span
+              key={word}
+              className="font-display px-6 text-[clamp(1.85rem,3.4vw,3.25rem)] leading-none text-foreground sm:px-10"
+            >
+              {word}
             </span>
-            <span className="inline-flex w-fit shrink-0 items-center gap-2 rounded-full bg-primary px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform motion-safe:group-active:scale-[0.98]">
-              Tour the Main House
-              <ArrowRight className="size-4" />
-            </span>
-          </TrackedLink>
-        </Container>
-      </Section>
+          ))}
+          separator={<span className="block size-2 rounded-full bg-canary" />}
+        />
+      </div>
 
-      <Section padding="tight">
-        <Container size="default">
-          <StayClosingCta />
-        </Container>
-      </Section>
+      <div id="services" className="">
+        <section className="py-20 sm:py-28 lg:py-36">
+          <StayAmenities />
+        </section>
+      </div>
 
-      <Footer />
+      <section id="guest-experience" className="bg-surface py-20 sm:py-28 lg:py-36">
+        <StayGuestExperience testimonials={TESTIMONIAL_SPOTLIGHTS.stay.slice(1)} />
+      </section>
+
+      <StayMainHouse />
+
+      <StayClosingCta />
+
     </main>
+      <Footer />
+    </>
   )
 }

@@ -63,7 +63,7 @@ test.describe("design layout regressions", () => {
       await waitForPageReady(page)
 
       const header = page.locator("header").first()
-      const wordmark = page.getByTestId("site-brand").locator("span.uppercase").first()
+      const logo = page.getByTestId("site-brand").getByRole("img", { name: "Canary Cove" })
       await expect(header).toBeVisible()
 
       const background = await header.evaluate((el) => getComputedStyle(el).backgroundColor)
@@ -79,14 +79,11 @@ test.describe("design layout regressions", () => {
       })()
       expect(alpha).toBeGreaterThanOrEqual(0.9)
 
-      const color = await wordmark.evaluate((el) => getComputedStyle(el).color)
-      const isDark = (() => {
-        const lab = color.match(/^lab\(\s*([\d.]+)/)
-        if (lab) return Number(lab[1]) < 40
-        const rgb = (color.match(/\d+/g) ?? []).map(Number)
-        return rgb.length >= 3 && rgb[0] < 120 && rgb[1] < 120 && rgb[2] < 120
-      })()
-      expect(isDark).toBe(true)
+      // The official logo renders in its ink-wordmark variant on the light
+      // bar (the white-wordmark variant would vanish against the sand).
+      await expect(logo).toBeVisible()
+      await expect(logo).toHaveAttribute("src", /\/brand\/canary-cove-logo\.svg/)
+      await expect.poll(() => logo.evaluate((el) => (el as HTMLImageElement).naturalWidth)).toBeGreaterThan(0)
     }
 
     const header = page.locator("header").first()

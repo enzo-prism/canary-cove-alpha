@@ -268,11 +268,11 @@ export const IMAGES: Record<string, ImageRecord> = {
   },
   fishingTrophy: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059667/AndrewWithTrophy_r1ubw6.webp",
-    alt: "Guest holding a trophy catch",
+    alt: "Guest holding up a lionfish catch",
   },
   lionFishCatch: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059647/Don-Gill-Lion-Fish_800x532-768x511_ziyqmz.webp",
-    alt: "Lionfish catch on the boat",
+    alt: "Divers hunting lionfish on the reef",
   },
   landAdventure: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059646/land_qmx9ht.webp",
@@ -294,11 +294,11 @@ export const IMAGES: Record<string, ImageRecord> = {
   },
   adventureGroup: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059631/IMG_1127_ytzxff.webp",
-    alt: "Guests enjoying an island outing on the water",
+    alt: "Bartender mixing drinks at an island bar",
   },
   jungleAdventure: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059628/IMG_2121_jntwjo.webp",
-    alt: "Guests on a Belize jungle excursion",
+    alt: "Two guests swimming off the Canary Cove dock",
   },
   villaMasterBedroom: {
     src: "https://res.cloudinary.com/dhqpqfw6w/image/upload/v1761059661/canarycove-haydeelustudio-22-scaled_j6fxkl.webp",
