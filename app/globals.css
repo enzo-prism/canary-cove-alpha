@@ -28,8 +28,12 @@
   --lagoon-700: #155e62;
   --lagoon-500: #1f8a8a;
   --lagoon-300: #7cc8c2;
-  --canary-400: #f4c63d;
-  --canary-500: #ebb420;
+  /* Canary and lime come straight from the official logo (#FFEB00 / #6EB53E);
+     the UI canary is a hair softer so large fills don't glare. */
+  --canary-400: #ffe41a;
+  --canary-500: #f2c900;
+  --lime-500: #6eb53e;
+  --lime-700: #3f7f22;
   --coral-400: #e8957f;
   --reef-950: #081a1d;
   --reef-900: #0c2428;
@@ -94,7 +98,7 @@
   /* Live height of the sticky site header, republished by components/header.tsx
      on every resize. This value is the pre-hydration fallback, so anything
      pinned below the header never overlaps it on the first paint. */
-  --site-header-height: 72px;
+  --site-header-height: 73px;
   --shadow-soft: 0 30px 80px -20px rgba(13, 35, 39, 0.18);
   --shadow-subtle: 0 14px 40px -12px rgba(13, 35, 39, 0.14);
   --shadow-lift: 0 40px 100px -30px rgba(13, 35, 39, 0.35);
@@ -199,6 +203,8 @@
   --color-canary-deep: var(--canary-500);
   --color-canary-foreground: var(--canary-foreground);
   --color-coral: var(--coral);
+  --color-lime: var(--lime-500);
+  --color-lime-deep: var(--lime-700);
   --color-reef: var(--reef);
   --color-reef-deep: var(--reef-950);
   --color-reef-foreground: var(--reef-foreground);
@@ -903,7 +909,7 @@
 
   .caustics {
     background-image: radial-gradient(60% 40% at 30% 30%, rgba(124, 200, 194, 0.18), transparent 70%),
-      radial-gradient(50% 50% at 70% 60%, rgba(244, 198, 61, 0.08), transparent 70%);
+      radial-gradient(50% 50% at 70% 60%, rgba(255, 228, 26, 0.08), transparent 70%);
     background-size: 200% 200%, 220% 220%;
     animation: caustics 18s ease-in-out infinite alternate;
   }

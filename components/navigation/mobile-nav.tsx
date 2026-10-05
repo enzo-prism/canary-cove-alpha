@@ -144,7 +144,7 @@ export function MobileNav({ items, isActive, onNavigate }: MobileNavProps) {
           </section>
 
           <p className="enter-fade flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground" style={enter(order + 1)}>
-            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lagoon-bright" />
+            <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lime" />
             Now in San Pedro · <LocalTime className="text-foreground" />
           </p>
         </div>

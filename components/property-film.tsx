@@ -76,7 +76,7 @@ export function PropertyFilm() {
                       <textPath href="#film-ring">Play the film · Watch the reef ·</textPath>
                     </text>
                   </svg>
-                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-canary text-ink shadow-[0_0_60px_rgba(244,198,61,0.35)] transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-110 sm:h-20 sm:w-20">
+                  <span className="flex h-16 w-16 items-center justify-center rounded-full bg-canary text-ink shadow-[0_0_60px_rgba(255,228,26,0.35)] transition-transform duration-500 ease-[var(--ease-out-expo)] group-hover:scale-110 sm:h-20 sm:w-20">
                     <Play className="ml-1 h-6 w-6 fill-current" />
                   </span>
                   <span className="sr-only">Play diving film</span>

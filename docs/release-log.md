@@ -2,6 +2,15 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-10-04 — Official Canary Cove logo across the site
+
+- Commit: see the `main` push that follows `d597ab0` ("Use the official Canary Cove logo…")
+- Production: `https://www.canarycove.com`
+- The official logo (Figma `3VZQifFoz4F92HnQfNOePV`) replaces the interim sun-over-swells glyph and text wordmark. The 394×351 raster master was traced into clean SVG layers (potrace on soft coverage masks; exact brand colors `#FFEB00` canary, `#6EB53E` glass/lime, gradient glass highlight) with ink and white wordmark variants, plus canary-only and silhouette marks (`public/brand/`).
+- Header (taller on desktop, 80→64px, logo 62→50px), mobile menu, and guest pages use the ink lockup; the footer shows the logo in its native white-wordmark form and a faint canary silhouette replaces the serif "Canary Cove" watermark; gallery end/empty states and the homepage ring badge use the canary.
+- Favicons rebuilt from the canary alone (legible at 32px); Apple touch icon on reef ink (was a transparent PNG); `/canary-cove-logo.png` (structured-data logo) is now an 800px ink-wordmark render that is visible on white.
+- Palette aligned to the logo: canary tokens shifted to the logo's lemon yellow; the logo's lime added as `lime` (live-status dots).
+
 ## 2026-10-04 — Scrolling fix, ElevenLabs widget removed, UX bug pass
 
 - Commit: see the `main` push that follows `baeb889` ("Fix scrolling…")

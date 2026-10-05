@@ -329,7 +329,7 @@ export function VideoPlayer({
             onClick={togglePlay}
             aria-label={`Play ${title}`}
             data-testid={`${testId}-play`}
-            className="focus-ring pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-canary text-ink shadow-[0_0_60px_rgba(244,198,61,0.35)] motion-safe:transition-transform motion-safe:duration-200 hover:scale-105 active:scale-95 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
+            className="focus-ring pointer-events-auto flex h-16 w-16 items-center justify-center rounded-full bg-canary text-ink shadow-[0_0_60px_rgba(255,228,26,0.35)] motion-safe:transition-transform motion-safe:duration-200 hover:scale-105 active:scale-95 min-[420px]:h-20 min-[420px]:w-20 sm:h-24 sm:w-24"
           >
             <Play className="ml-1 h-7 w-7 fill-current min-[420px]:h-8 min-[420px]:w-8 sm:h-9 sm:w-9" aria-hidden />
           </button>

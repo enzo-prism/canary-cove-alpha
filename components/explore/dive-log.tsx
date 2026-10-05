@@ -65,7 +65,7 @@ export function DiveLog({ stops, children, className }: DiveLogProps) {
             </div>
             <motion.span
               aria-hidden="true"
-              className="absolute left-[7px] h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-canary shadow-[0_0_0_6px_rgba(244,198,61,0.18),0_0_24px_rgba(244,198,61,0.55)]"
+              className="absolute left-[7px] h-3.5 w-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full bg-canary shadow-[0_0_0_6px_rgba(255,228,26,0.18),0_0_24px_rgba(255,228,26,0.55)]"
               style={{ top: beadTop }}
             />
             <ol className="absolute inset-0">

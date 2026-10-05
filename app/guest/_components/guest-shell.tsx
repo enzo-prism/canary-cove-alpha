@@ -1,8 +1,7 @@
 import Image from "next/image"
-import Link from "next/link"
 import type { CSSProperties, ReactNode } from "react"
 
-import { BrandGlyph } from "@/components/brand-glyph"
+import { BrandLogo, BrandMark } from "@/components/brand-mark"
 import { IMAGES } from "@/lib/images"
 
 /*
@@ -37,20 +36,13 @@ export function GuestShell({ children, footnote }: { children: ReactNode; footno
               For the guests already on their way.
             </p>
           </div>
-          <BrandGlyph tone="light" className="enter-fade h-14 w-14" />
+          <BrandLogo tone="light" height={72} className="enter-fade h-[72px] w-auto" />
         </div>
       </div>
 
       <div className="relative flex min-h-[100dvh] flex-col px-6 pb-8 pt-6 sm:px-12 sm:pt-10 lg:px-16 xl:px-24">
         <div className="enter-fade flex items-center justify-between gap-4" style={enterDelay(120)}>
-          <Link
-            href="/"
-            aria-label="Canary Cove home"
-            className="focus-ring group inline-flex items-center gap-2.5 rounded-full"
-          >
-            <BrandGlyph className="h-9 w-9" />
-            <span className="font-display text-[1.35rem] uppercase leading-none tracking-[0.04em]">Canary Cove</span>
-          </Link>
+          <BrandMark height={48} className="h-12" />
           <span className="inline-flex items-center gap-2 rounded-full bg-sand-light px-3 py-1.5 text-[10.5px] font-semibold uppercase tracking-[0.2em] text-muted-foreground ring-1 ring-inset ring-border">
             <span aria-hidden="true" className="h-1.5 w-1.5 rounded-full bg-lagoon" />
             Private

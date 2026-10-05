@@ -2,6 +2,7 @@
 
 ## Project Structure & Module Organization
 - Application code lives in `app/` (Next.js App Router). `app/page.tsx` composes the homepage chapters (hero, intro statement + count-up stats + marquee, estate spaces carousel, editorial splits, pinned "A day at the cove" timeline, "Below the surface" diving-film band, testimonials, process route, plan-your-stay).
+- **Brand:** the official logo (canary + cocktail + slab wordmark) lives in `public/brand/` as vector traces of the Figma master; use `BrandMark` / `BrandLogo` / `BrandBird` from `components/brand-mark.tsx` and follow the usage rules in `docs/design-system.md` (never re-typeset or recolor it).
 - **Design system:** read `docs/design-system.md` before any UI work. It defines the "Sand, reef, and canary" tokens, the Instrument Serif type scale, `PageHero` / `SectionHeading` / `CtaLink`, and the motion primitives in `components/motion/` (scroll reveals via `data-reveal`, `SplitText`, `ScrollWordReveal`, `Parallax`, `Marquee`, `CountUp`, `Magnetic`, `AmbientVideo`, Lenis `SmoothScroll`).
 - Hero UI: `components/hero.tsx` owns the overlay copy/CTAs and info rail; `components/hero-image-rotator.tsx` supplies the rotating Ken Burns imagery and scroll-linked depth. Homepage-only sections live in `components/home/`.
 - Shared sections live in `components/` (ModelCarousel, EditorialSplit, ProcessSteps, PropertyFilm, TestimonialSlider, ReefEncounters). Interior pages open with `components/page-hero.tsx`.
