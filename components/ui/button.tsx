@@ -5,26 +5,27 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  "inline-flex touch-manipulation items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-300 ease-out motion-safe:active:scale-[0.98] motion-safe:active:duration-100 active:brightness-[0.96] motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50 disabled:active:scale-100 disabled:active:brightness-100 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/40 focus-visible:ring-[2px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
+  "inline-flex touch-manipulation items-center justify-center gap-2 whitespace-nowrap rounded-full text-sm font-medium transition-[color,background-color,border-color,box-shadow,transform] duration-500 ease-[cubic-bezier(0.16,1,0.3,1)] motion-safe:active:scale-[0.97] motion-safe:active:duration-100 active:brightness-[0.96] motion-reduce:transition-none disabled:pointer-events-none disabled:opacity-50 disabled:active:scale-100 disabled:active:brightness-100 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/40 focus-visible:ring-[2px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
   {
     variants: {
       variant: {
         default:
-          'bg-primary text-primary-foreground hover:bg-primary/90',
+          'bg-primary text-primary-foreground hover:bg-lagoon',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60',
         outline:
-          'border border-border bg-transparent text-foreground hover:bg-foreground hover:text-background dark:border-border',
+          'border border-ink/20 bg-transparent text-foreground hover:border-ink hover:bg-ink hover:text-sand-light dark:border-border',
         secondary:
-          'bg-secondary text-secondary-foreground hover:bg-secondary/80',
+          'bg-secondary text-secondary-foreground hover:bg-[var(--sand-300)]',
         ghost:
-          'hover:bg-foreground/5 hover:text-foreground dark:hover:bg-foreground/10',
+          'hover:bg-ink/6 hover:text-foreground dark:hover:bg-foreground/10',
+        canary: 'bg-canary text-ink hover:bg-canary-deep',
         link: 'text-foreground underline-offset-4 hover:underline',
       },
       size: {
-        default: 'h-9 px-4 py-2 has-[>svg]:px-3',
-        sm: 'h-8 gap-1.5 px-3 has-[>svg]:px-2.5',
-        lg: 'h-11 px-6 has-[>svg]:px-4',
+        default: 'h-10 px-5 py-2 has-[>svg]:px-4',
+        sm: 'h-9 gap-1.5 px-4 has-[>svg]:px-3',
+        lg: 'h-12 px-7 text-[15px] has-[>svg]:px-5',
         icon: 'size-9',
         'icon-sm': 'size-8',
         'icon-lg': 'size-10',

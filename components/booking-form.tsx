@@ -10,8 +10,8 @@ import {
   House,
   Mail,
   Minus,
+  MoonStar,
   Plus,
-  Send,
   ShieldCheck,
   Sparkles,
   Sunrise,
@@ -31,22 +31,23 @@ import {
 import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
 import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
 import { cn } from "@/lib/utils"
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   ChipOption,
   FieldLabel,
   focusStepError,
+  focusStepHeading,
   FormStepIndicator,
   OptionCard,
   StepError,
   StepHeading,
   StepPanel,
   WizardNav,
+  wizardFieldClass,
+  wizardTextareaClass,
+  type WizardDirection,
   type WizardStepMeta,
 } from "@/components/form-wizard"
+import { SuccessMark } from "@/components/book/success-mark"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import {
@@ -59,6 +60,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
 import { Textarea } from "@/components/ui/textarea"
+import styles from "@/components/book/wizard.module.css"
 
 const FORM_ENDPOINT = "/api/forms"
 const FORM_KEY = "booking"
@@ -75,15 +77,15 @@ const ACCOMMODATION_OPTIONS = [
   {
     value: "villa",
     title: "Villa (1–3 suites)",
-    description: "Private villa with plunge pool, ideal for first stays and smaller groups.",
-    meta: "Most first stays choose the Villa",
+    description: "Private villa with infinity pool, ideal for first stays and smaller groups.",
+    meta: "From $1,000 a night · most first stays",
     icon: BedDouble,
   },
   {
     value: "main-house",
     title: "Main House (5 suites)",
     description: "The full 5-suite Main House for larger groups, reserved for returning guests.",
-    meta: "Whole-estate buyout",
+    meta: "From $2,500 a night · whole-estate buyout",
     icon: House,
   },
 ] as const
@@ -166,6 +168,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
     emptyValues({ accommodation: defaultAccommodation ?? "", returningGuest: defaultReturningGuest ?? "" }),
   )
   const [stepIndex, setStepIndex] = useState(0)
+  const [direction, setDirection] = useState<WizardDirection>(null)
   const [visitedCount, setVisitedCount] = useState(1)
   const [status, setStatus] = useState<"idle" | "sending" | "success" | "error">("idle")
   const [alertOpen, setAlertOpen] = useState(false)
@@ -173,6 +176,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
   const [stepErrorTestId, setStepErrorTestId] = useState("booking-validation-error")
   const [invalidFields, setInvalidFields] = useState<Set<string>>(new Set())
   const headingRefs = useRef<Array<HTMLHeadingElement | null>>([])
+  const cardRef = useRef<HTMLDivElement | null>(null)
 
   const today = new Date().toISOString().slice(0, 10)
   const nights = countNights(values.arrival, values.departure)
@@ -190,13 +194,14 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
   }
 
   const focusHeading = (index: number) => {
-    requestAnimationFrame(() => headingRefs.current[index]?.focus({ preventScroll: true }))
+    requestAnimationFrame(() => focusStepHeading(headingRefs.current[index] ?? null, cardRef.current))
   }
 
   const goToStep = (index: number) => {
     const clamped = Math.max(0, Math.min(index, STEPS.length - 1))
     setStepError(null)
     setInvalidFields(new Set())
+    if (clamped !== stepIndex) setDirection(clamped > stepIndex ? "forward" : "back")
     setStepIndex(clamped)
     setVisitedCount((current) => Math.max(current, clamped + 1))
     focusHeading(clamped)
@@ -325,6 +330,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
       if (response.ok) {
         setValues(emptyValues({ accommodation: defaultAccommodation ?? "", returningGuest: defaultReturningGuest ?? "" }))
         setStepIndex(0)
+        setDirection(null)
         setVisitedCount(1)
         setStepError(null)
         setInvalidFields(new Set())
@@ -360,11 +366,6 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
     if (values.requests.includes(text)) return
     setValue("requests", values.requests.trim() ? `${values.requests.trim()} ${text}` : text)
   }
-
-  const fieldClassName =
-    "min-h-12 rounded-2xl border-border/80 bg-background/85 px-4 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
-  const textareaClassName =
-    "min-h-[140px] rounded-3xl border-border/80 bg-background/85 px-4 py-3 shadow-inner shadow-primary/5 focus-visible:ring-primary/30"
 
   const reviewRows: Array<{ icon: LucideIcon; label: string; value: string; step: number }> = [
     {
@@ -403,44 +404,48 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
 
   return (
     <AlertDialog open={alertOpen} onOpenChange={handleAlertChange}>
-      <Card
+      <div
+        ref={cardRef}
         data-testid="booking-form-card"
         className={cn(
-          "form-shell relative space-y-6 rounded-[32px] p-5 shadow-[0_24px_70px_rgba(15,23,42,0.12)] sm:p-6",
+          "relative overflow-hidden rounded-[28px] border border-border/70 bg-surface shadow-[var(--shadow-soft)]",
           className,
         )}
       >
-        <form onSubmit={handleSubmit} noValidate>
-          <CardHeader className="space-y-4 p-0">
-            <div className="space-y-2">
-              <Badge
-                variant="secondary"
-                className="w-fit gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-[0.18em] text-black"
-              >
-                <Send className="h-3.5 w-3.5" aria-hidden />
-                Request to book
-              </Badge>
-              <CardTitle className="text-2xl font-semibold tracking-tight text-foreground text-balance">
-                Tell us about your stay.
-              </CardTitle>
-              <CardDescription className="text-sm leading-6 text-muted-foreground">
-                Five short steps. We confirm availability personally and reply within one business day.
-              </CardDescription>
+        {/* A thin canary horizon along the top edge: the card's one spark. */}
+        <span
+          aria-hidden
+          className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-canary-deep/70 to-transparent"
+        />
+        <form onSubmit={handleSubmit} noValidate className="p-5 sm:p-8 lg:p-10">
+          <div className="flex items-start justify-between gap-6">
+            <div className="space-y-3">
+              <p className="eyebrow eyebrow-plain">Request to book</p>
+              <h2 className="font-display text-[2.25rem] leading-[1.02] tracking-[-0.015em] text-foreground sm:text-[2.75rem]">
+                Tell us about your <span className="italic-accent">stay.</span>
+              </h2>
             </div>
-            <FormStepIndicator
-              steps={STEPS}
-              currentIndex={stepIndex}
-              visitedCount={visitedCount}
-              onSelectStep={(index) => {
-                if (index < visitedCount) goToStep(index)
-              }}
-            />
-          </CardHeader>
+            <ul className="hidden shrink-0 space-y-1.5 pt-1 text-right text-xs leading-5 text-muted-foreground sm:block">
+              <li>About two minutes</li>
+              <li>No payment taken here</li>
+            </ul>
+          </div>
 
-          <CardContent className="space-y-6 p-0 pt-6">
+          <FormStepIndicator
+            className="mt-7"
+            steps={STEPS}
+            currentIndex={stepIndex}
+            visitedCount={visitedCount}
+            hint="Reply within one business day"
+            onSelectStep={(index) => {
+              if (index < visitedCount) goToStep(index)
+            }}
+          />
+
+          <div className="mt-8 space-y-6">
             <StepError id="booking-step-error" message={stepError} testId={stepErrorTestId} />
 
-            <StepPanel stepId="booking-step-stay" active={stepIndex === 0} labelledBy="booking-stay-heading">
+            <StepPanel stepId="booking-step-stay" active={stepIndex === 0} labelledBy="booking-stay-heading" direction={direction}>
               <StepHeading
                 id="booking-stay-heading"
                 ref={(node) => {
@@ -468,11 +473,28 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   ))}
                 </div>
               </fieldset>
+              {values.accommodation === "main-house" ? (
+                <div
+                  className={cn(
+                    styles.popIn,
+                    "flex items-start gap-3.5 rounded-[20px] border border-lagoon/20 bg-lagoon/[0.06] px-4 py-4 sm:px-5",
+                  )}
+                >
+                  <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-lagoon" strokeWidth={1.6} aria-hidden />
+                  <div className="space-y-1">
+                    <p className="text-sm font-medium text-foreground">Main House eligibility</p>
+                    <p className="text-sm leading-6 text-foreground/80">
+                      The full 5-suite Main House is reserved for returning guests and carries a separate $10,000 damage
+                      deposit.
+                    </p>
+                  </div>
+                </div>
+              ) : null}
               <fieldset aria-describedby={invalidFields.has("returningGuest") ? "booking-step-error" : undefined}>
-                <legend className="text-[15px] font-semibold text-foreground">
-                  Have you stayed at Canary Cove before? <span aria-hidden className="text-destructive">*</span>
+                <legend className="text-[15px] font-medium text-foreground">
+                  Have you stayed at Canary Cove before? <span aria-hidden className="text-canary-deep">*</span>
                 </legend>
-                <div className="mt-3 flex flex-wrap gap-2.5">
+                <div className="mt-3 grid gap-2.5 sm:flex sm:flex-wrap">
                   {RETURNING_GUEST_OPTIONS.map((option) => (
                     <ChipOption
                       key={option.value}
@@ -482,24 +504,21 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                       checked={values.returningGuest === option.value}
                       onChange={(value) => setValue("returningGuest", value)}
                       label={option.label}
+                      className="justify-center sm:justify-start"
                     />
                   ))}
                 </div>
               </fieldset>
-              {values.accommodation === "main-house" ? (
-                <Alert className="rounded-3xl border-primary/25 bg-primary/5">
-                  <ShieldCheck className="h-4 w-4" aria-hidden />
-                  <AlertTitle>Main House eligibility</AlertTitle>
-                  <AlertDescription>
-                    The full 5-suite Main House is reserved for returning guests and carries a separate $10,000 damage
-                    deposit.
-                  </AlertDescription>
-                </Alert>
-              ) : null}
-              <WizardNav onNext={handleNext} showBack={false} nextLabel="Continue" nextTestId="booking-next" />
+              <WizardNav
+                onNext={handleNext}
+                showBack={false}
+                nextLabel="Continue"
+                nextTestId="booking-next"
+                note="A person confirms every request personally. Nothing is charged here."
+              />
             </StepPanel>
 
-            <StepPanel stepId="booking-step-dates" active={stepIndex === 1} labelledBy="booking-dates-heading">
+            <StepPanel stepId="booking-step-dates" active={stepIndex === 1} labelledBy="booking-dates-heading" direction={direction}>
               <StepHeading
                 id="booking-dates-heading"
                 ref={(node) => {
@@ -510,7 +529,9 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               />
               <div className="grid gap-4 sm:grid-cols-2">
                 <div className="space-y-2">
-                  <Label htmlFor="arrival">Preferred Arrival Date</Label>
+                  <Label htmlFor="arrival" className="text-[13px] font-medium leading-5 text-foreground/85">
+                    Preferred Arrival Date
+                  </Label>
                   <Input
                     id="arrival"
                     name="arrival"
@@ -519,13 +540,15 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     autoComplete="off"
                     value={values.arrival}
                     onChange={(event) => setValue("arrival", event.target.value)}
-                    className={fieldClassName}
+                    className={cn(wizardFieldClass, "tabular-nums")}
                     aria-invalid={invalidFields.has("departure") ? true : undefined}
                     aria-describedby={invalidFields.has("departure") ? "booking-step-error" : undefined}
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="departure">Preferred Departure Date</Label>
+                  <Label htmlFor="departure" className="text-[13px] font-medium leading-5 text-foreground/85">
+                    Preferred Departure Date
+                  </Label>
                   <Input
                     id="departure"
                     name="departure"
@@ -534,23 +557,41 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     autoComplete="off"
                     value={values.departure}
                     onChange={(event) => setValue("departure", event.target.value)}
-                    className={fieldClassName}
+                    className={cn(wizardFieldClass, "tabular-nums")}
                     aria-invalid={invalidFields.has("departure") ? true : undefined}
                     aria-describedby={invalidFields.has("departure") ? "booking-step-error" : undefined}
                   />
                 </div>
               </div>
-              {nights !== null && nights > 0 && values.arrival && values.departure ? (
-                <p className="inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/[0.07] px-4 py-2 text-sm font-medium text-foreground" aria-live="polite">
-                  <CalendarDays className="h-4 w-4 text-primary" aria-hidden />
-                  {formatIsoDate(values.arrival)} → {formatIsoDate(values.departure)} · {nights} night
-                  {nights === 1 ? "" : "s"}
-                </p>
-              ) : null}
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-3">
+                {nights !== null && nights > 0 && values.arrival && values.departure ? (
+                  <p
+                    key={`${values.arrival}-${values.departure}`}
+                    className={cn(
+                      styles.popIn,
+                      "inline-flex items-center gap-2.5 rounded-full bg-ink px-4 py-2.5 text-sm font-medium text-sand-light",
+                    )}
+                    aria-live="polite"
+                  >
+                    <MoonStar className="h-4 w-4 text-canary" aria-hidden />
+                    <span className="tabular-nums">
+                      {formatIsoDate(values.arrival)} → {formatIsoDate(values.departure)} · {nights} night
+                      {nights === 1 ? "" : "s"}
+                    </span>
+                  </p>
+                ) : null}
+                <a
+                  href="#availability"
+                  className="link-underline inline-flex min-h-11 items-center gap-2 text-sm font-medium text-lagoon"
+                >
+                  <CalendarDays className="h-4 w-4" aria-hidden />
+                  See open nights on the calendar
+                </a>
+              </div>
               <WizardNav onBack={handleBack} onNext={handleNext} showBack nextLabel="Continue" nextTestId="booking-next" />
             </StepPanel>
 
-            <StepPanel stepId="booking-step-party" active={stepIndex === 2} labelledBy="booking-party-heading">
+            <StepPanel stepId="booking-step-party" active={stepIndex === 2} labelledBy="booking-party-heading" direction={direction}>
               <StepHeading
                 id="booking-party-heading"
                 ref={(node) => {
@@ -560,19 +601,19 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                 helper="Adults first — then add children under 21 with their ages so we can plan rooms."
               />
               <div className="space-y-2">
-                <Label htmlFor="adultGuests">Number of Adult Guests</Label>
-                <div className="flex items-center gap-3">
-                  <Button
+                <Label htmlFor="adultGuests" className="text-[13px] font-medium leading-5 text-foreground/85">
+                  Number of Adult Guests
+                </Label>
+                <div className="flex items-center gap-2 rounded-[22px] border border-border/80 bg-white/55 p-2">
+                  <button
                     type="button"
-                    variant="outline"
-                    size="icon"
                     aria-label="Fewer adults"
                     onClick={() => adjustAdults(-1)}
                     disabled={values.adultGuests === "" || values.adultGuests === "1"}
-                    className="h-12 w-12 shrink-0 rounded-full"
+                    className="focus-ring flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-sand-deep text-foreground transition-colors duration-300 hover:bg-ink hover:text-sand-light disabled:pointer-events-none disabled:opacity-40"
                   >
                     <Minus className="h-4 w-4" aria-hidden />
-                  </Button>
+                  </button>
                   <Input
                     id="adultGuests"
                     name="adultGuests"
@@ -583,24 +624,24 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     placeholder="2"
                     value={values.adultGuests}
                     onChange={(event) => setValue("adultGuests", event.target.value)}
-                    className={cn(fieldClassName, "wizard-number text-center text-lg font-semibold tabular-nums")}
+                    className="wizard-number h-12 min-h-12 border-0 bg-transparent text-center font-display text-[2rem] leading-none tabular-nums shadow-none focus-visible:ring-2 focus-visible:ring-lagoon/25 focus-visible:ring-offset-0 sm:text-[2rem]"
                     aria-invalid={invalidFields.has("adultGuests") ? true : undefined}
                     aria-describedby={invalidFields.has("adultGuests") ? "booking-step-error" : undefined}
                   />
-                  <Button
+                  <button
                     type="button"
-                    variant="outline"
-                    size="icon"
                     aria-label="More adults"
                     onClick={() => adjustAdults(1)}
-                    className="h-12 w-12 shrink-0 rounded-full"
+                    className="focus-ring flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-ink text-sand-light transition-colors duration-300 hover:bg-lagoon"
                   >
                     <Plus className="h-4 w-4" aria-hidden />
-                  </Button>
+                  </button>
                 </div>
               </div>
               <div className="space-y-2">
-                <Label htmlFor="childGuests">Children under 21 and ages</Label>
+                <Label htmlFor="childGuests" className="text-[13px] font-medium leading-5 text-foreground/85">
+                  Children under 21 and ages
+                </Label>
                 <Input
                   id="childGuests"
                   name="childGuests"
@@ -608,14 +649,17 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   placeholder="2 children, ages 8 and 10…"
                   value={values.childGuests}
                   onChange={(event) => setValue("childGuests", event.target.value)}
-                  className={fieldClassName}
+                  className={wizardFieldClass}
+                  aria-describedby="childGuests-note"
                 />
-                <p className="form-helper">Leave blank if no children are traveling.</p>
+                <p id="childGuests-note" className="form-helper">
+                  Leave blank if no children are traveling.
+                </p>
               </div>
               <WizardNav onBack={handleBack} onNext={handleNext} showBack nextLabel="Continue" nextTestId="booking-next" />
             </StepPanel>
 
-            <StepPanel stepId="booking-step-contact" active={stepIndex === 3} labelledBy="booking-contact-heading">
+            <StepPanel stepId="booking-step-contact" active={stepIndex === 3} labelledBy="booking-contact-heading" direction={direction}>
               <StepHeading
                 id="booking-contact-heading"
                 ref={(node) => {
@@ -634,7 +678,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     placeholder="Alexandra…"
                     value={values.firstName}
                     onChange={(event) => setValue("firstName", event.target.value)}
-                    className={fieldClassName}
+                    className={wizardFieldClass}
                     aria-required
                     aria-invalid={invalidFields.has("firstName") ? true : undefined}
                     aria-describedby={invalidFields.has("firstName") ? "booking-step-error" : undefined}
@@ -649,7 +693,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     placeholder="Martin…"
                     value={values.lastName}
                     onChange={(event) => setValue("lastName", event.target.value)}
-                    className={fieldClassName}
+                    className={wizardFieldClass}
                     aria-required
                     aria-invalid={invalidFields.has("lastName") ? true : undefined}
                     aria-describedby={invalidFields.has("lastName") ? "booking-step-error" : undefined}
@@ -667,7 +711,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   placeholder="+501 610-5121…"
                   value={values.phone}
                   onChange={(event) => setValue("phone", event.target.value)}
-                  className={fieldClassName}
+                  className={wizardFieldClass}
                   aria-required
                   aria-invalid={invalidFields.has("phone") ? true : undefined}
                   aria-describedby={invalidFields.has("phone") ? "booking-step-error" : "phone-note"}
@@ -689,7 +733,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     placeholder="alex@example.com…"
                     value={values.email}
                     onChange={(event) => setValue("email", event.target.value)}
-                    className={fieldClassName}
+                    className={wizardFieldClass}
                     aria-required
                     aria-invalid={invalidFields.has("email") ? true : undefined}
                     aria-describedby={invalidFields.has("email") ? "booking-step-error" : undefined}
@@ -707,7 +751,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     placeholder="Confirm your email…"
                     value={values.confirmEmail}
                     onChange={(event) => setValue("confirmEmail", event.target.value)}
-                    className={fieldClassName}
+                    className={wizardFieldClass}
                     aria-required
                     aria-invalid={invalidFields.has("confirmEmail") ? true : undefined}
                     aria-describedby={invalidFields.has("confirmEmail") ? "booking-step-error" : "confirmEmail-note"}
@@ -720,7 +764,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               <WizardNav onBack={handleBack} onNext={handleNext} showBack nextLabel="Continue" nextTestId="booking-next" />
             </StepPanel>
 
-            <StepPanel stepId="booking-step-finish" active={stepIndex === 4} labelledBy="booking-finish-heading">
+            <StepPanel stepId="booking-step-finish" active={stepIndex === 4} labelledBy="booking-finish-heading" direction={direction}>
               <StepHeading
                 id="booking-finish-heading"
                 ref={(node) => {
@@ -729,24 +773,31 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                 title="Anything we should plan around?"
                 helper="A line or two on the nature of this request — celebrations, pace, reef days, or dining."
               />
-              <div className="space-y-2">
-                <Label htmlFor="requests">
+              <div className="space-y-3">
+                <Label htmlFor="requests" className="text-[13px] font-medium leading-5 text-foreground/85">
                   Nature of inquiry <span className="font-normal text-muted-foreground">(optional)</span>
                 </Label>
                 <div className="flex flex-wrap gap-2" role="group" aria-label="Suggested trip details">
-                  {REQUEST_STARTERS.map((starter) => (
-                    <Button
-                      key={starter.label}
-                      type="button"
-                      variant="outline"
-                      size="sm"
-                      onClick={() => addRequestStarter(starter.text)}
-                      className="gap-1.5 rounded-full"
-                    >
-                      <starter.icon className="h-3.5 w-3.5" aria-hidden />
-                      {starter.label}
-                    </Button>
-                  ))}
+                  {REQUEST_STARTERS.map((starter) => {
+                    const added = values.requests.includes(starter.text)
+                    return (
+                      <button
+                        key={starter.label}
+                        type="button"
+                        onClick={() => addRequestStarter(starter.text)}
+                        aria-pressed={added}
+                        className={cn(
+                          "focus-ring inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium transition-colors duration-500",
+                          added
+                            ? "border-lagoon/30 bg-lagoon/10 text-lagoon"
+                            : "border-border/90 bg-white/55 text-foreground hover:border-ink/40 hover:bg-white",
+                        )}
+                      >
+                        <starter.icon className="h-3.5 w-3.5" aria-hidden />
+                        {starter.label}
+                      </button>
+                    )
+                  })}
                 </div>
                 <Textarea
                   id="requests"
@@ -756,7 +807,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   placeholder="Tell us about the trip you have in mind…"
                   value={values.requests}
                   onChange={(event) => setValue("requests", event.target.value)}
-                  className={textareaClassName}
+                  className={wizardTextareaClass}
                   aria-describedby="requests-helper"
                 />
                 <p id="requests-helper" className="form-helper">
@@ -764,11 +815,11 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                 </p>
               </div>
               <fieldset>
-                <legend className="text-[15px] font-semibold text-foreground">
+                <legend className="text-[15px] font-medium text-foreground">
                   How did you hear about Canary Cove?{" "}
                   <span className="font-normal text-muted-foreground">(optional)</span>
                 </legend>
-                <div className="mt-3 flex flex-wrap gap-2.5">
+                <div className="mt-3 flex flex-wrap gap-2">
                   {REFERRAL_OPTIONS.map((option) => (
                     <ChipOption
                       key={option.value}
@@ -782,43 +833,44 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   ))}
                 </div>
               </fieldset>
-              <div className="space-y-3 rounded-3xl border border-border/60 bg-surface-elevated/80 p-4 sm:p-5">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                  Review your request
-                </p>
-                <dl className="divide-y divide-border/60">
+              <div className="rounded-[22px] bg-sand-deep/60 p-4 sm:p-6">
+                <p className="eyebrow eyebrow-plain">Your request</p>
+                <dl className="mt-3 divide-y divide-border/80">
                   {reviewRows.map((row) => (
-                    <div key={row.label} className="flex items-start justify-between gap-3 py-2.5 first:pt-0 last:pb-0">
-                      <div className="flex min-w-0 items-start gap-2.5">
-                        <row.icon className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
+                    <div key={row.label} className="flex items-center justify-between gap-3 py-2.5 first:pt-1 last:pb-0">
+                      <div className="flex min-w-0 items-start gap-3">
+                        <row.icon className="mt-1 h-4 w-4 shrink-0 text-lagoon" strokeWidth={1.75} aria-hidden />
                         <div className="min-w-0">
-                          <dt className="text-xs font-medium text-muted-foreground">{row.label}</dt>
+                          <dt className="text-xs text-muted-foreground">{row.label}</dt>
                           <dd className="truncate text-sm font-medium text-foreground">{row.value}</dd>
                         </div>
                       </div>
-                      <Button
+                      <button
                         type="button"
-                        variant="ghost"
-                        size="sm"
                         onClick={() => goToStep(row.step)}
                         aria-label={`Edit ${row.label.toLowerCase()}`}
-                        className="shrink-0"
+                        className="focus-ring min-h-11 shrink-0 rounded-full px-3 text-[13px] font-medium text-lagoon transition-colors hover:bg-white/70"
                       >
                         Edit
-                      </Button>
+                      </button>
                     </div>
                   ))}
                 </dl>
               </div>
-              <div className="flex items-start gap-3 rounded-3xl border border-primary/25 bg-primary/5 px-4 py-3.5">
-                <ShieldCheck className="mt-0.5 h-4 w-4 shrink-0 text-primary" aria-hidden />
-                <p className="text-sm leading-5 text-foreground/90">
+              <div className="flex items-start gap-3 text-sm leading-6 text-foreground/80">
+                <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-lagoon" aria-hidden />
+                <p>
                   Sending places a tentative hold while we confirm availability, pricing, and next steps with you
                   directly. Chef service included.
                 </p>
               </div>
               {status === "error" ? (
-                <p className="form-error" role="alert" aria-live="polite" data-testid="booking-error">
+                <p
+                  className={cn(styles.nudge, "rounded-2xl border border-destructive/25 bg-destructive/[0.06] px-4 py-3 text-sm text-destructive")}
+                  role="alert"
+                  aria-live="polite"
+                  data-testid="booking-error"
+                >
                   Something went wrong. Please try again or email us directly.
                 </p>
               ) : null}
@@ -832,18 +884,33 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                 submitTestId="booking-submit"
               />
             </StepPanel>
-          </CardContent>
+          </div>
         </form>
-      </Card>
-      <AlertDialogContent className="max-w-md">
-        <AlertDialogHeader>
-          <AlertDialogTitle>Request received</AlertDialogTitle>
-          <AlertDialogDescription>
+      </div>
+      <AlertDialogContent className="w-[calc(100%-2rem)] max-w-md gap-6 rounded-[28px] border-border/70 bg-surface p-7 shadow-[var(--shadow-lift)] sm:rounded-[28px] sm:p-9">
+        <SuccessMark />
+        <AlertDialogHeader className="gap-3 text-left sm:text-left">
+          <AlertDialogTitle className="font-display text-[2.5rem] font-normal leading-none tracking-[-0.01em]">
+            Request received
+          </AlertDialogTitle>
+          <AlertDialogDescription className="text-[15px] leading-6 text-muted-foreground">
             Thanks for sharing your dates. Our team will confirm availability and follow up with next steps shortly.
           </AlertDialogDescription>
         </AlertDialogHeader>
+        <ol className="space-y-3 border-t border-border/70 pt-5 text-sm text-foreground/85">
+          {[
+            "We check the calendar for your dates",
+            "A tailored quote, usually within one business day",
+            "A 50% deposit secures your stay",
+          ].map((line, index) => (
+            <li key={line} className="flex items-baseline gap-3">
+              <span aria-hidden="true" className="font-display text-lg leading-none text-lagoon tabular-nums">0{index + 1}</span>
+              {line}
+            </li>
+          ))}
+        </ol>
         <AlertDialogFooter>
-          <AlertDialogAction>Got it</AlertDialogAction>
+          <AlertDialogAction className="h-12 w-full px-7 text-[15px] sm:w-auto">Got it</AlertDialogAction>
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>

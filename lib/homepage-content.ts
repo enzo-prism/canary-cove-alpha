@@ -116,6 +116,59 @@ export const HOME_PROOF_POINTS = [
 
 export const BENTO_METRICS = HOME_PROOF_POINTS
 
+/** Count-up figures for the homepage intro. Facts mirror HOME_PROOF_POINTS and ESTATE_SPACES. */
+export const HOME_STATS = [
+  { value: 1, label: "Group at a time", note: "Private booking only" },
+  { value: 3, label: "King suites", note: "Ensuite baths" },
+  { value: 2, label: "Private docks", note: "Boats ready for reef days" },
+  { value: 10, label: "Guests", note: "The villa sleeps up to 10" },
+] as const
+
+export const HOME_MARQUEE = [
+  "Private chef",
+  "Infinity pool",
+  "Swim-up bar",
+  "Two private docks",
+  "Belize Barrier Reef",
+  "Three king suites",
+  "Hot tub",
+  "One group at a time",
+] as const
+
+/** "A day at the cove" timeline. Copy restates facts from ESTATE_SPACES and EDITORIAL_SECTIONS. */
+export const DAY_MOMENTS = [
+  {
+    time: "Wake",
+    title: "Wake to the water",
+    description: "King suites with ensuite baths, blackout curtains, and direct access to the grounds.",
+    image: IMAGES.villaBedroom,
+  },
+  {
+    time: "Morning",
+    title: "Straight off the dock",
+    description: "Two private docks and boats on site. Launch for the reef and come back on your schedule.",
+    image: IMAGES.mainDock,
+  },
+  {
+    time: "Midday",
+    title: "Lunch, made here",
+    description: "Your private chef serves lunch and dinner daily, so the schedule stays yours.",
+    image: { ...IMAGES.chipsAndDrinks, focal: { x: 64, y: 62 } },
+  },
+  {
+    time: "Afternoon",
+    title: "Infinity pool hours",
+    description: "A swim-up bar, shaded loungers, and all-day sun on the pool deck.",
+    image: IMAGES.heroVillaInterior,
+  },
+  {
+    time: "Evening",
+    title: "Dinner at the villa",
+    description: "Sit down to a chef-prepared dinner, then let the hot tub reset the day.",
+    image: IMAGES.diningRoom,
+  },
+] as const
+
 export const HOMEPAGE_TESTIMONIALS = [
   {
     ...TESTIMONIAL_SPOTLIGHTS.home[0],

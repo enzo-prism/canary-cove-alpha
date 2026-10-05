@@ -1,38 +1,35 @@
-import { StayGallerySection, type StayGalleryFeature } from "@/components/stay-gallery-section"
+import { type StayGalleryFeature } from "@/components/stay-gallery-section"
+import { OutdoorFilmstrip } from "@/components/stay/outdoor-filmstrip"
 import { IMAGES } from "@/lib/images"
 
-const primaryGalleryItems: StayGalleryFeature[] = [
+const galleryItems: StayGalleryFeature[] = [
   {
     image: IMAGES.heroVillaSeating,
     title: "Pool deck at the center",
     detail: "The loungers, umbrellas, and shallow entry create an all-day basecamp for your group between meals and water departures.",
-    ratio: 16 / 11,
-    className: "lg:col-span-2 lg:row-span-2",
   },
   {
     image: IMAGES.mainDock,
     title: "Private dock access",
     detail: "Your reef days begin right at the property, with boats ready and no transfer across a public marina.",
-    // Landscape shot: a portrait frame would crop the boats at the edges.
-    ratio: 3 / 2,
   },
   {
-    image: IMAGES.villaLawn,
+    image: IMAGES.heroBackgroundLawn,
     title: "Waterfront lawn",
     detail: "The estate opens out toward the water with room to spread out, reset, and catch the breeze.",
-    // Landscape shot: a portrait frame would crop away half the view.
-    ratio: 3 / 2,
   },
-]
-
-const secondaryGalleryItems: StayGalleryFeature[] = [
   {
     image: IMAGES.villaPool,
     title: "Infinity-edge pool",
     detail: "A long pool deck makes it easy for the whole group to settle in at once.",
   },
   {
-    image: IMAGES.heroVillaDetail,
+    // The palapa swim-up bar sits at the right edge of this frame.
+    image: {
+      src: IMAGES.heroVillaInterior.src,
+      alt: "Infinity pool running to the thatched swim-up bar",
+      focal: { x: 88, y: 50 },
+    },
     title: "Swim-up bar",
     detail: "The pool-side bar keeps afternoons social without anyone needing to leave the water.",
   },
@@ -60,13 +57,12 @@ const secondaryGalleryItems: StayGalleryFeature[] = [
 
 export function StayOutdoorGallery() {
   return (
-    <StayGallerySection
+    <OutdoorFilmstrip
       id="outside-the-villa"
       eyebrow="Outside the villa"
-      title="Pool, palms, dock. Repeat."
+      title="Pool, palms, dock. *Repeat.*"
       description="From the pool terrace to the dock and shoreline, the estate gives your group a private outdoor rhythm with space to lounge, swim, launch, and stay outside for hours."
-      primaryItems={primaryGalleryItems}
-      secondaryItems={secondaryGalleryItems}
+      items={galleryItems}
     />
   )
 }

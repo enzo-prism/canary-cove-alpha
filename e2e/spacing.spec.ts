@@ -4,22 +4,13 @@ import { CORE_VIEWPORTS, waitForPageReady } from "./helpers"
 
 const MIN_HEADING_STACK_GAP = 8
 
+// Vertical padding tokens of the homepage chapters (Section padding="tight":
+// py-16 / sm:py-20 / lg:py-24). Measured from computed padding rather than
+// descendant boxes so scroll-reveal transforms cannot skew the result.
 const HOMEPAGE_RHYTHM = {
-  mobile: {
-    introTop: [32, 40],
-    introBottom: [60, 72],
-    sectionInset: [60, 72],
-  },
-  tablet: {
-    introTop: [40, 48],
-    introBottom: [76, 88],
-    sectionInset: [76, 88],
-  },
-  desktop: {
-    introTop: [48, 56],
-    introBottom: [92, 104],
-    sectionInset: [92, 104],
-  },
+  mobile: 64,
+  tablet: 80,
+  desktop: 96,
 } as const
 
 const getGap = async (first: Locator, second: Locator) => {
@@ -31,46 +22,25 @@ const getGap = async (first: Locator, second: Locator) => {
   return secondBox.y - (firstBox.y + firstBox.height)
 }
 
-const getSectionInsets = async (page: Page) => {
+const getSectionMetrics = async (page: Page) => {
   return page.evaluate(() => {
     return Array.from(document.querySelectorAll("main > section")).map((section, index) => {
-      const sectionRect = section.getBoundingClientRect()
-
-      const descendants = Array.from(section.querySelectorAll("*"))
-        .map((element) => {
-          const style = getComputedStyle(element)
-          const rect = element.getBoundingClientRect()
-          const area = rect.width * rect.height
-
-          return {
-            top: rect.top,
-            bottom: rect.bottom,
-            area,
-            display: style.display,
-            visibility: style.visibility,
-            opacity: Number(style.opacity),
-          }
-        })
-        .filter(
-          (entry) =>
-            entry.area > 400 &&
-            entry.display !== "none" &&
-            entry.visibility !== "hidden" &&
-            entry.opacity !== 0 &&
-            entry.bottom > sectionRect.top &&
-            entry.top < sectionRect.bottom,
-        )
-
-      const firstTop = descendants.length ? Math.min(...descendants.map((entry) => entry.top)) : sectionRect.top
-      const lastBottom = descendants.length
-        ? Math.max(...descendants.map((entry) => entry.bottom))
-        : sectionRect.bottom
-
+      const rect = section.getBoundingClientRect()
+      const style = getComputedStyle(section)
+      const hasContent = Array.from(section.querySelectorAll("*")).some((element) => {
+        const box = element.getBoundingClientRect()
+        const elementStyle = getComputedStyle(element)
+        return box.width * box.height > 400 && elementStyle.display !== "none" && elementStyle.visibility !== "hidden"
+      })
       return {
         index,
         id: section.id || null,
-        topInset: Math.round(firstTop - sectionRect.top),
-        bottomInset: Math.round(sectionRect.bottom - lastBottom),
+        left: Math.round(rect.left),
+        width: Math.round(rect.width),
+        height: Math.round(rect.height),
+        paddingTop: Math.round(parseFloat(style.paddingTop)),
+        paddingBottom: Math.round(parseFloat(style.paddingBottom)),
+        hasContent,
       }
     })
   })
@@ -93,10 +63,16 @@ test.describe("spacing rhythm", () => {
     await expect(cta).toBeVisible()
 
     const gapHeadlineSubhead = await getGap(headline, subhead)
-    const gapSubheadCta = await getGap(subhead, cta)
-
     expect(gapHeadlineSubhead).toBeGreaterThanOrEqual(10)
-    expect(gapSubheadCta).toBeGreaterThanOrEqual(12)
+
+    // The subhead and CTAs may stack or sit side by side; either way they
+    // keep at least 12px of clear space between them.
+    const subheadBox = await subhead.boundingBox()
+    const ctaBox = await cta.boundingBox()
+    if (!subheadBox || !ctaBox) throw new Error("Unable to read intro boxes.")
+    const verticalGap = ctaBox.y - (subheadBox.y + subheadBox.height)
+    const horizontalGap = ctaBox.x - (subheadBox.x + subheadBox.width)
+    expect(Math.max(verticalGap, horizontalGap)).toBeGreaterThanOrEqual(12)
   })
 
   test("model card stack avoids tight collisions", async ({ page }) => {
@@ -132,38 +108,24 @@ test.describe("homepage section rhythm", () => {
       await page.goto("/")
       await waitForPageReady(page)
 
-      const sections = await getSectionInsets(page)
+      const sections = await getSectionMetrics(page)
       expect(sections.length).toBeGreaterThanOrEqual(6)
 
+      // The hero is full-bleed photography that fills most of the first screen.
       const hero = sections[0]
-      const intro = sections[1]
-      const rhythm = HOMEPAGE_RHYTHM[viewport.name]
+      expect(hero.left).toBe(0)
+      expect(hero.width).toBeGreaterThanOrEqual(viewport.width - 2)
+      expect(hero.height).toBeGreaterThanOrEqual(viewport.height * 0.75)
 
-      expect(Math.abs(hero.topInset)).toBe(0)
-      expect(Math.abs(hero.bottomInset)).toBe(0)
-
-      expect(intro.topInset).toBeGreaterThanOrEqual(rhythm.introTop[0])
-      expect(intro.topInset).toBeLessThanOrEqual(rhythm.introTop[1])
-      expect(intro.bottomInset).toBeGreaterThanOrEqual(rhythm.introBottom[0])
-      expect(intro.bottomInset).toBeLessThanOrEqual(rhythm.introBottom[1])
-
-      for (const section of sections.slice(2)) {
-        expect(
-          section.topInset,
-          `Expected section ${section.index} (${section.id ?? "no-id"}) top inset to stay within the homepage rhythm band.`,
-        ).toBeGreaterThanOrEqual(rhythm.sectionInset[0])
-        expect(
-          section.topInset,
-          `Expected section ${section.index} (${section.id ?? "no-id"}) top inset to stay within the homepage rhythm band.`,
-        ).toBeLessThanOrEqual(rhythm.sectionInset[1])
-        expect(
-          section.bottomInset,
-          `Expected section ${section.index} (${section.id ?? "no-id"}) bottom inset to stay within the homepage rhythm band.`,
-        ).toBeGreaterThanOrEqual(rhythm.sectionInset[0])
-        expect(
-          section.bottomInset,
-          `Expected section ${section.index} (${section.id ?? "no-id"}) bottom inset to stay within the homepage rhythm band.`,
-        ).toBeLessThanOrEqual(rhythm.sectionInset[1])
+      const band = HOMEPAGE_RHYTHM[viewport.name]
+      for (const section of sections.slice(1)) {
+        expect(section.hasContent, `Section ${section.index} (${section.id ?? "no-id"}) renders content.`).toBe(true)
+        // The diving-film band runs full bleed into the section above it, so
+        // only its bottom edge follows the rhythm.
+        if (section.id !== "property-film") {
+          expect(section.paddingTop, `Section ${section.index} (${section.id ?? "no-id"}) top padding`).toBe(band)
+        }
+        expect(section.paddingBottom, `Section ${section.index} (${section.id ?? "no-id"}) bottom padding`).toBe(band)
       }
     })
   }

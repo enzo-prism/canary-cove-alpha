@@ -7,11 +7,11 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 export function NitroxPopover() {
   return (
     <Popover>
-      <PopoverTrigger className="inline-flex min-h-6 min-w-6 items-center justify-center gap-1 rounded-sm px-1 font-semibold text-foreground underline-offset-4 hover:underline">
+      <PopoverTrigger className="focus-ring inline-flex min-h-11 touch-manipulation items-center justify-center gap-2 rounded-full border border-border bg-surface px-4 text-sm font-medium text-foreground transition-colors hover:border-ink/40 data-[state=open]:border-ink data-[state=open]:bg-ink data-[state=open]:text-sand-light">
         Nitrox
-        <Info className="h-3 w-3 text-muted-foreground" />
+        <Info aria-hidden="true" className="size-3.5 opacity-70" />
       </PopoverTrigger>
-      <PopoverContent className="w-64 text-xs text-muted-foreground">
+      <PopoverContent className="w-64 rounded-2xl border-border/80 bg-surface p-4 text-[13px] leading-relaxed text-muted-foreground shadow-[var(--shadow-soft)]">
         Optional nitrox fills are available for certified divers and are billed per tank.
       </PopoverContent>
     </Popover>

@@ -1,8 +1,11 @@
 import type { ReactNode } from "react"
 import type { Metadata, Viewport } from "next"
 import localFont from "next/font/local"
+import { Instrument_Serif } from "next/font/google"
 import "./globals.css"
 import PublicRuntimeServices from "@/components/public-runtime-services"
+import { RevealObserver } from "@/components/motion/reveal-observer"
+import { SmoothScroll } from "@/components/motion/smooth-scroll"
 import { ScrollReset } from "@/components/scroll-reset"
 import { SiteStructuredData } from "@/components/structured-data"
 import { IMAGES } from "@/lib/images"
@@ -24,6 +27,21 @@ const sfPro = localFont({
     { path: "../font/subset/SF-Pro-Display-Bold.subset.woff2", weight: "700", style: "normal" },
   ],
 })
+
+// Display face for headlines (one weight, roman + italic). Body and UI stay in
+// SF Pro. Exposed as --font-serif and consumed by --font-display.
+const instrumentSerif = Instrument_Serif({
+  variable: "--font-serif",
+  weight: "400",
+  style: ["normal", "italic"],
+  subsets: ["latin"],
+  display: "swap",
+})
+
+// Runs before first paint: marks the document as scripted so scroll-reveal
+// hidden states (app/globals.css, html.js [data-reveal]) only ever apply when
+// the observer that reveals them will also run.
+const BOOT_SCRIPT = "document.documentElement.classList.add('js')"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
@@ -85,7 +103,7 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#faf7f0",
+  themeColor: "#f7f2e9",
 }
 
 export default function RootLayout({
@@ -96,20 +114,23 @@ export default function RootLayout({
   return (
     // overflow-x-clip, not -hidden: see the note in app/globals.css. `hidden`
     // makes html/body scroll containers and breaks every `position: sticky`.
-    <html lang="en" className={`${sfPro.variable} overflow-x-clip`}>
+    <html lang="en" className={`${sfPro.variable} ${instrumentSerif.variable} overflow-x-clip`} suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         <SiteStructuredData />
       </head>
       <body
-        className={`${sfPro.className} overflow-x-clip font-sans antialiased selection:bg-foreground/10 selection:text-foreground`}
+        className={`${sfPro.className} overflow-x-clip font-sans antialiased `}
       >
         <a
           href="#main-content"
-          className="sr-only fixed left-4 top-4 z-[100] rounded-full bg-foreground px-4 py-2 text-sm font-medium text-background focus:not-sr-only focus:outline-none focus-visible:ring-2 focus-visible:ring-primary/30"
+          className="sr-only fixed left-4 top-4 z-[100] rounded-full bg-canary px-5 py-2.5 text-sm font-semibold text-ink focus:not-sr-only focus:outline-none focus-visible:ring-2 focus-visible:ring-ink/40"
         >
           Skip to content
         </a>
         <ScrollReset />
+        <RevealObserver />
+        <SmoothScroll />
         <div className="min-h-screen">{children}</div>
         <PublicRuntimeServices />
       </body>

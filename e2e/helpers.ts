@@ -98,7 +98,8 @@ export const hideDevArtifactsForVisuals = async (page: Page) => {
       elevenlabs-convai,
       nextjs-portal,
       [data-testid="elevenlabs-convai-widget"],
-      [aria-label="Open Next.js Dev Tools"] {
+      [aria-label="Open Next.js Dev Tools"],
+      [data-volatile] {
         visibility: hidden !important;
       }
 

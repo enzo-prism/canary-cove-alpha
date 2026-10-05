@@ -22,9 +22,10 @@ export function Highlight({ text, tokens }: HighlightProps) {
     <>
       {parts.map((part, index) =>
         part && lowered.has(part.toLowerCase()) ? (
+          // A canary marker stroke under the lower part of the word.
           <mark
             key={`${part}-${index}`}
-            className="bg-transparent font-semibold text-foreground underline decoration-primary/40 underline-offset-2"
+            className="rounded-[2px] bg-[linear-gradient(transparent_58%,rgb(244_198_61/0.6)_58%,rgb(244_198_61/0.6)_92%,transparent_92%)] text-inherit [box-decoration-break:clone]"
           >
             {part}
           </mark>

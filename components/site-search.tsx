@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useMemo, useState } from "react"
+import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { useRouter } from "next/navigation"
 import { ArrowUpRight, Check, Clock, Search, X } from "lucide-react"
 
@@ -10,7 +11,6 @@ import { POPULAR_QUESTIONS, RECOMMENDED_CHIPS } from "@/lib/search/search-index"
 import { readRecentSearches, recordRecentSearch, removeRecentSearch } from "@/lib/search/recent-searches"
 import { findSuggestion, getAskUsAnswer, runSearch } from "@/lib/search/search"
 import { Highlight } from "@/components/search-highlight"
-import { Button } from "@/components/ui/button"
 import {
   Command,
   CommandGroup,
@@ -18,8 +18,48 @@ import {
   CommandItem,
   CommandList,
 } from "@/components/ui/command"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { Card, CardContent } from "@/components/ui/card"
+import {
+  Dialog,
+  DialogDescription,
+  DialogHeader,
+  DialogOverlay,
+  DialogPortal,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+
+/*
+ * Sheet motion: a soft drop-and-settle on desktop, a slide-up sheet on phones.
+ * Radix keeps the content mounted until the exit animation ends. Rows rise in
+ * with a short stagger when the palette opens.
+ */
+const SHEET_STYLES = `
+@keyframes cc-search-in { from { opacity: 0; transform: translate3d(0, -14px, 0) scale(0.975); } to { opacity: 1; transform: none; } }
+@keyframes cc-search-out { to { opacity: 0; transform: translate3d(0, -8px, 0) scale(0.985); } }
+@keyframes cc-search-up { from { transform: translate3d(0, 100%, 0); } to { transform: none; } }
+@keyframes cc-search-down { to { transform: translate3d(0, 100%, 0); } }
+@keyframes cc-search-rise { from { opacity: 0; transform: translate3d(0, 10px, 0); } to { opacity: 1; transform: none; } }
+.cc-search-sheet[data-state="open"] { animation: cc-search-up 520ms cubic-bezier(0.16, 1, 0.3, 1); }
+.cc-search-sheet[data-state="closed"] { animation: cc-search-down 260ms cubic-bezier(0.76, 0, 0.24, 1) forwards; }
+@media (min-width: 640px) {
+  .cc-search-sheet[data-state="open"] { animation: cc-search-in 460ms cubic-bezier(0.16, 1, 0.3, 1); }
+  .cc-search-sheet[data-state="closed"] { animation: cc-search-out 180ms ease-in forwards; }
+}
+.cc-search-rise { animation: cc-search-rise 620ms cubic-bezier(0.16, 1, 0.3, 1) both; }
+@media (prefers-reduced-motion: reduce) {
+  .cc-search-sheet[data-state], .cc-search-rise { animation: none !important; }
+}
+`
+
+/** Serif group titles; cmdk renders the heading itself. */
+const GROUP_CLASS =
+  "px-3 pt-4 sm:px-4 [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:pb-2 [&_[cmdk-group-heading]]:pt-0 [&_[cmdk-group-heading]]:font-display [&_[cmdk-group-heading]]:text-[1.3rem] [&_[cmdk-group-heading]]:font-normal [&_[cmdk-group-heading]]:leading-tight [&_[cmdk-group-heading]]:text-foreground"
+
+const ITEM_CLASS =
+  "group/item relative flex cursor-pointer items-center gap-3 rounded-2xl px-3 py-3 text-foreground outline-none transition-colors duration-200 aria-selected:bg-sand aria-selected:text-foreground aria-selected:before:absolute aria-selected:before:inset-y-3 aria-selected:before:left-0 aria-selected:before:w-[3px] aria-selected:before:rounded-full aria-selected:before:bg-canary"
+
+const KBD_CLASS =
+  "inline-flex h-5 min-w-5 items-center justify-center rounded-[5px] px-1 text-[10px] font-semibold text-foreground/70 ring-1 ring-inset ring-border"
 
 type SiteSearchProps = {
   className?: string
@@ -154,13 +194,15 @@ export function SiteSearch({
 
   return (
     <div className={cn(variant === "header" ? "contents" : "w-full max-w-xl", className)}>
+      <style href="cc-search-sheet" precedence="default">
+        {SHEET_STYLES}
+      </style>
       <Dialog open={open} onOpenChange={handleOpenChange}>
         {hideTrigger ? null : (
         <DialogTrigger asChild aria-controls={dialogId}>
-          <Button
+          <button
             type="button"
-            variant="outline"
-            className="flex min-h-11 w-full items-center justify-between gap-3 rounded-full border-border bg-transparent px-4 py-3 text-base text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground"
+            className="focus-ring group flex min-h-12 w-full items-center justify-between gap-3 rounded-full bg-sand-light px-5 py-3 text-base text-muted-foreground ring-1 ring-inset ring-border transition-colors duration-500 hover:text-foreground hover:ring-ink/30"
             aria-label="Open site search"
             data-testid="search-open-button"
           >
@@ -168,286 +210,282 @@ export function SiteSearch({
               <Search className="h-5 w-5 shrink-0" />
               <span className="truncate text-left">{placeholder}</span>
             </span>
-            <span className="hidden items-center gap-1 rounded-full border border-border px-2 py-1 text-[11px] uppercase tracking-[0.2em] text-muted-foreground sm:inline-flex">
+            <span className="hidden items-center rounded-md px-2 py-1 text-[11px] font-medium tracking-[0.12em] text-muted-foreground ring-1 ring-inset ring-border sm:inline-flex">
               {shortcutLabel}
             </span>
-          </Button>
+          </button>
         </DialogTrigger>
         )}
-        <DialogContent
-          id={dialogId}
-          className="gap-0 overflow-hidden rounded-[28px] border-border/60 bg-surface p-0 shadow-[0_26px_75px_rgba(15,23,42,0.12)] duration-150 max-sm:bottom-0 max-sm:left-0 max-sm:right-0 max-sm:top-auto max-sm:max-h-[92dvh] max-sm:max-w-none max-sm:translate-x-0 max-sm:translate-y-0 max-sm:rounded-b-none max-sm:rounded-t-[28px] max-sm:duration-200 max-sm:data-[state=open]:slide-in-from-bottom max-sm:data-[state=open]:slide-in-from-left-0 sm:max-w-2xl motion-reduce:animate-none"
-          data-testid="search-modal"
-        >
-          <DialogHeader className="sr-only">
-            <DialogTitle>Site search</DialogTitle>
-            <DialogDescription>Search the Canary Cove site for rates, logistics, dining, and adventure details.</DialogDescription>
-          </DialogHeader>
-          <Command loop shouldFilter={false}>
-            <div className="flex items-center gap-3 border-b border-border/70 py-1 pl-4 pr-12">
-              <Search className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-              <CommandInput
-                value={query}
-                onValueChange={(value) => {
-                  setQuery(value)
-                  setSearchSource("input")
-                }}
-                placeholder={placeholder}
-                className="h-13 flex-1 rounded-none border-0 px-0 text-base focus-visible:ring-0"
-                autoFocus
-                data-testid="search-input"
-                aria-label="Search Canary Cove"
-                enterKeyHint="search"
-              />
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="hidden rounded-sm text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring sm:block"
-              >
-                esc
-              </button>
-              <button
-                type="button"
-                onClick={() => setOpen(false)}
-                className="shrink-0 rounded-full px-2 py-2 text-sm font-medium text-foreground sm:hidden"
-              >
-                Cancel
-              </button>
-            </div>
-            {trimmedQuery.length === 0 ? (
-              <>
-                <div
-                  className="space-y-4 border-b border-border/70 px-4 py-4"
-                  data-testid="search-empty"
+        <DialogPortal>
+          <DialogOverlay className="bg-ink/40 backdrop-blur-[6px] duration-300 motion-reduce:animate-none" />
+          <DialogPrimitive.Content
+            id={dialogId}
+            data-slot="dialog-content"
+            data-testid="search-modal"
+            className="cc-search-sheet fixed inset-x-0 bottom-0 z-[90] flex max-h-[92dvh] flex-col overflow-hidden rounded-t-[28px] bg-sand-light text-foreground shadow-[var(--shadow-lift)] outline-none ring-1 ring-ink/10 sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-[9vh] sm:max-h-[min(82vh,46rem)] sm:w-[min(44rem,calc(100vw-3rem))] sm:-translate-x-1/2 sm:rounded-[28px] max-sm:pb-[env(safe-area-inset-bottom)]"
+          >
+            <DialogHeader className="sr-only">
+              <DialogTitle>Site search</DialogTitle>
+              <DialogDescription>Search the Canary Cove site for rates, logistics, dining, and adventure details.</DialogDescription>
+            </DialogHeader>
+            {/* Grab handle on the phone sheet. */}
+            <span aria-hidden="true" className="mx-auto mt-2.5 h-1 w-10 shrink-0 rounded-full bg-ink/15 sm:hidden" />
+            <Command loop shouldFilter={false} className="min-h-0 flex-1 rounded-none bg-transparent text-foreground">
+              <div className="flex shrink-0 items-center gap-3 border-b border-border/80 py-1.5 pl-5 pr-3 sm:py-2 sm:pl-6 sm:pr-4">
+                <Search className="h-[18px] w-[18px] shrink-0 text-foreground/60" aria-hidden="true" />
+                <CommandInput
+                  value={query}
+                  onValueChange={(value) => {
+                    setQuery(value)
+                    setSearchSource("input")
+                  }}
+                  placeholder={placeholder}
+                  className="h-14 flex-1 rounded-none border-0 px-0 text-[17px] text-foreground placeholder:text-muted-foreground/75 focus-visible:ring-0 sm:text-lg"
+                  autoFocus
+                  data-testid="search-input"
+                  aria-label="Search Canary Cove"
+                  enterKeyHint="search"
+                />
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="focus-ring hidden h-8 items-center rounded-md px-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground ring-1 ring-inset ring-border transition-colors hover:bg-ink hover:text-sand-light hover:ring-ink sm:inline-flex"
                 >
-                  <div className="space-y-2.5">
-                    <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                      Recommended searches
-                    </p>
-                    <div className="flex flex-wrap gap-2">
-                      {RECOMMENDED_CHIPS.map((chip) => (
-                        <Button
-                          key={chip.label}
-                          type="button"
-                          variant="outline"
-                          size="sm"
-                          className="min-h-11 rounded-full border-border text-foreground hover:bg-surface-muted hover:text-foreground"
-                          onClick={() => handleChipClick(chip.label, chip.query)}
-                          data-testid="search-chip"
-                        >
-                          {chip.label}
-                        </Button>
-                      ))}
-                    </div>
-                  </div>
-                  {recents.length > 0 ? (
-                    <div className="space-y-1" data-testid="search-recent">
-                      <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
-                        <Clock className="h-3.5 w-3.5" aria-hidden="true" />
-                        Recent
-                      </p>
-                      <div className="divide-y divide-border/50">
-                        {recents.map((recent) => (
-                          <div key={recent} className="flex items-center gap-1">
-                            <button
-                              type="button"
-                              onClick={() => handleRecentClick(recent)}
-                              data-testid="search-recent-item"
-                              className="flex min-h-11 flex-1 items-center rounded-lg px-2 text-left text-sm text-foreground/80 transition-colors hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-                            >
-                              <span className="truncate">{recent}</span>
-                            </button>
-                            <button
-                              type="button"
-                              onClick={() => handleRecentRemove(recent)}
-                              aria-label={`Remove recent search ${recent}`}
-                              className="inline-flex size-9 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-surface-muted hover:text-foreground focus-visible:outline-2 focus-visible:outline-ring"
-                            >
-                              <X className="h-3.5 w-3.5" />
-                            </button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ) : null}
-                </div>
-                <CommandList className="max-h-[50dvh] overscroll-contain sm:max-h-[360px]">
-                  <CommandGroup
-                    heading="Popular questions"
-                    data-testid="search-group"
-                  >
-                    {POPULAR_QUESTIONS.map((question) => (
-                      <CommandItem
-                        key={question.question}
-                        value={question.question}
-                        onSelect={() => handleQuestionClick(question.question, question.query)}
-                        className="mx-2 flex cursor-pointer items-center justify-between gap-3 rounded-xl px-3 py-3 text-sm text-foreground outline-none aria-selected:bg-surface-muted"
-                        data-testid="search-question"
-                      >
-                        <span>{question.question}</span>
-                        <ArrowUpRight className="h-4 w-4 shrink-0 text-muted-foreground" aria-hidden="true" />
-                      </CommandItem>
-                    ))}
-                  </CommandGroup>
-                </CommandList>
-              </>
-            ) : (
-              <>
-                <CommandList className="max-h-[50dvh] overscroll-contain sm:max-h-[420px]">
-                  {answer ? (
-                    <div className="px-4 pb-2 pt-4" data-testid="search-answer">
-                      <div className="rounded-[20px] border border-border/60 bg-white/80 p-4">
-                        <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
-                          <Check className="h-3.5 w-3.5" aria-hidden="true" />
-                          Instant answer
-                        </p>
-                        <p className="mt-2.5 text-base font-semibold text-foreground">{answer.title}</p>
-                        <ul className="mt-2 space-y-1.5 text-sm leading-6 text-foreground/75">
-                          {answer.bullets.map((bullet) => (
-                            <li key={bullet} className="flex gap-2.5">
-                              <span aria-hidden="true" className="text-muted-foreground">
-                                –
-                              </span>
-                              <span>{bullet}</span>
-                            </li>
-                          ))}
-                        </ul>
-                        <div className="mt-3 flex flex-wrap gap-x-5 gap-y-2">
-                          {answer.links.map((link) => (
-                            <a
-                              key={link.href}
-                              href={link.href}
-                              onClick={(event) => handleAnswerLinkClick(event, "instant_answer", link.href)}
-                              className="inline-flex items-center gap-1 rounded-sm text-sm font-medium text-foreground underline decoration-primary/40 underline-offset-4 transition-colors hover:decoration-foreground focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring"
-                            >
-                              {link.label}
-                              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden="true" />
-                            </a>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : null}
-
-                  {groups.length > 0 ? (
-                    <>
-                      {groups.map((group) => (
-                        <CommandGroup
-                          key={group.group}
-                          heading={group.group}
-                          data-testid="search-group"
-                        >
-                          {group.items.map((item) => (
-                            <CommandItem
-                              key={item.id}
-                              value={`${item.title} ${item.description ?? ""} ${item.keywords.join(" ")}`}
-                              onSelect={() => handleResultSelect(group.group, item.href)}
-                              aria-label={`${item.title}, ${item.group}`}
-                              className="relative mx-2 flex min-h-12 cursor-pointer flex-col gap-0.5 rounded-xl px-3 py-3 text-sm outline-none aria-selected:bg-surface-muted aria-selected:before:absolute aria-selected:before:inset-y-2 aria-selected:before:left-0 aria-selected:before:w-[2px] aria-selected:before:bg-primary"
-                              data-testid="search-item"
-                            >
-                              <span className="flex items-center gap-2">
-                                <span className="rounded-full border border-border/60 px-1.5 py-px text-[10px] font-medium uppercase tracking-[0.14em] text-muted-foreground">
-                                  {item.type}
-                                </span>
-                                <span className="truncate font-medium text-foreground">
-                                  <Highlight text={item.title} tokens={highlightTokens} />
-                                </span>
-                              </span>
-                              {item.description ? (
-                                <span className="line-clamp-1 pl-0 text-xs text-muted-foreground">
-                                  <Highlight text={item.description} tokens={highlightTokens} />
-                                </span>
-                              ) : null}
-                            </CommandItem>
-                          ))}
-                        </CommandGroup>
-                      ))}
-                    </>
-                  ) : (
-                    <div className="space-y-4 px-4 py-6" data-testid="search-no-results">
-                      <div className="space-y-1 text-center">
-                        <p className="text-sm font-semibold text-foreground">No matches for “{trimmedQuery}”</p>
-                        <p className="text-xs text-muted-foreground">
-                          Try searching for rates, chef, airport transfers, or cancellation policy.
-                        </p>
-                      </div>
-                      {suggestion ? (
-                        <div className="flex justify-center">
+                  esc
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setOpen(false)}
+                  className="focus-ring min-h-11 shrink-0 rounded-full px-3 text-sm font-medium text-foreground sm:hidden"
+                >
+                  Cancel
+                </button>
+              </div>
+              {trimmedQuery.length === 0 ? (
+                <>
+                  <div className="flow flow-lg shrink-0 border-b border-border/80 px-5 py-5 sm:px-6" data-testid="search-empty">
+                    <div className="flow flow-sm">
+                      <p className="eyebrow eyebrow-plain">Recommended searches</p>
+                      <div className="flex flex-wrap gap-2">
+                        {RECOMMENDED_CHIPS.map((chip, index) => (
                           <button
-                            type="button"
-                            onClick={() => {
-                              setQuery(suggestion)
-                              setSearchSource("input")
-                            }}
-                            data-testid="search-suggestion"
-                            className="rounded-full border border-border/70 bg-white/90 px-4 py-2 text-sm text-foreground transition-colors hover:bg-surface-muted focus-visible:outline-2 focus-visible:outline-ring"
-                          >
-                            Did you mean “{suggestion}”?
-                          </button>
-                        </div>
-                      ) : null}
-                      <div className="flex flex-wrap justify-center gap-2">
-                        {RECOMMENDED_CHIPS.map((chip) => (
-                          <Button
                             key={chip.label}
                             type="button"
-                            variant="outline"
-                            size="sm"
-                            className="min-h-11 rounded-full border-border/70 bg-white/90 text-foreground hover:bg-white"
+                            className="cc-search-rise focus-ring inline-flex min-h-11 items-center rounded-full bg-sand px-4 text-sm font-medium text-foreground ring-1 ring-inset ring-border transition-colors duration-300 hover:bg-ink hover:text-sand-light hover:ring-ink"
+                            style={{ animationDelay: `${120 + index * 60}ms` }}
                             onClick={() => handleChipClick(chip.label, chip.query)}
                             data-testid="search-chip"
                           >
                             {chip.label}
-                          </Button>
+                          </button>
                         ))}
                       </div>
-                      <Card className="rounded-2xl border border-border/70 bg-background">
-                        <CardContent className="space-y-3 p-4 text-center">
-                          <p className="text-sm font-semibold text-foreground">{fallbackAnswer.title}</p>
-                          <p className="text-xs text-muted-foreground">{fallbackAnswer.bullets[0]}</p>
-                          <div className="flex flex-wrap justify-center gap-2">
-                            {fallbackAnswer.links.map((link) => (
-                              <Button
-                                key={link.href}
-                                asChild
-                                variant="outline"
-                                size="sm"
-                                className="rounded-full"
+                    </div>
+                    {recents.length > 0 ? (
+                      <div className="flow flow-xs" data-testid="search-recent">
+                        <p className="eyebrow eyebrow-plain flex items-center gap-2">
+                          <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+                          Recent
+                        </p>
+                        <div className="divide-y divide-border/70">
+                          {recents.map((recent) => (
+                            <div key={recent} className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                onClick={() => handleRecentClick(recent)}
+                                data-testid="search-recent-item"
+                                className="focus-ring flex min-h-11 flex-1 items-center rounded-lg px-1 text-left text-[15px] text-foreground/80 transition-colors hover:text-foreground"
                               >
-                                <a
-                                  href={link.href}
-                                  onClick={(event) => handleAnswerLinkClick(event, "fallback_answer", link.href)}
-                                >
-                                  {link.label}
-                                  <ArrowUpRight className="h-3 w-3" />
-                                </a>
-                              </Button>
+                                <span className="truncate">{recent}</span>
+                              </button>
+                              <button
+                                type="button"
+                                onClick={() => handleRecentRemove(recent)}
+                                aria-label={`Remove recent search ${recent}`}
+                                className="focus-ring inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-ink hover:text-sand-light"
+                              >
+                                <X className="h-3.5 w-3.5" />
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ) : null}
+                  </div>
+                  <CommandList className="min-h-0 max-h-none flex-1 overscroll-contain pb-3" data-lenis-prevent>
+                    <CommandGroup heading="Popular questions" data-testid="search-group" className={GROUP_CLASS}>
+                      {POPULAR_QUESTIONS.map((question, index) => (
+                        <CommandItem
+                          key={question.question}
+                          value={question.question}
+                          onSelect={() => handleQuestionClick(question.question, question.query)}
+                          className={cn(ITEM_CLASS, "cc-search-rise justify-between text-[15px]")}
+                          style={{ animationDelay: `${200 + Math.min(index, 8) * 35}ms` }}
+                          data-testid="search-question"
+                        >
+                          <span>{question.question}</span>
+                          <span
+                            aria-hidden="true"
+                            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors group-aria-selected/item:bg-ink group-aria-selected/item:text-sand-light"
+                          >
+                            <ArrowUpRight className="h-4 w-4" />
+                          </span>
+                        </CommandItem>
+                      ))}
+                    </CommandGroup>
+                  </CommandList>
+                </>
+              ) : (
+                <>
+                  <CommandList className="min-h-0 max-h-none flex-1 overscroll-contain pb-3" data-lenis-prevent>
+                    {answer ? (
+                      <div className="cc-search-rise px-4 pb-2 pt-4 sm:px-5" data-testid="search-answer">
+                        <div className="surface-reef overflow-hidden rounded-[20px] p-5 sm:p-6">
+                          <p className="flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.26em] text-white/70">
+                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-canary text-ink">
+                              <Check className="h-3 w-3" aria-hidden="true" />
+                            </span>
+                            Instant answer
+                          </p>
+                          <p className="mt-3 font-display text-[1.6rem] leading-[1.1] text-white">{answer.title}</p>
+                          <ul className="mt-3 space-y-1.5 text-sm leading-6 text-white/75">
+                            {answer.bullets.map((bullet) => (
+                              <li key={bullet} className="flex gap-2.5">
+                                <span aria-hidden="true" className="mt-[0.6rem] h-1 w-1 shrink-0 rounded-full bg-canary" />
+                                <span>{bullet}</span>
+                              </li>
+                            ))}
+                          </ul>
+                          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+                            {answer.links.map((link) => (
+                              <a
+                                key={link.href}
+                                href={link.href}
+                                onClick={(event) => handleAnswerLinkClick(event, "instant_answer", link.href)}
+                                className="focus-ring group inline-flex min-h-9 items-center gap-1.5 rounded-sm text-sm font-medium text-canary"
+                              >
+                                <span className="link-underline">{link.label}</span>
+                                <ArrowUpRight className="arrow-nudge arrow-nudge-diag h-3.5 w-3.5" aria-hidden="true" />
+                              </a>
                             ))}
                           </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  )}
-                </CommandList>
-                <div className="flex items-center justify-between gap-3 border-t border-border/60 px-4 py-2.5">
-                  <p role="status" className="text-[11px] font-medium uppercase tracking-[0.2em] text-muted-foreground">
-                    {totalResults === 0
-                      ? "No results"
-                      : visibleCount === totalResults
-                        ? `${totalResults} result${totalResults === 1 ? "" : "s"}`
-                        : `Showing ${visibleCount} of ${totalResults}`}
-                  </p>
-                  <p className="hidden items-center gap-3 text-[11px] text-muted-foreground sm:flex" aria-hidden="true">
-                    <span>↑↓ navigate</span>
-                    <span>↵ open</span>
-                    <span>esc close</span>
-                  </p>
-                </div>
-              </>
-            )}
-          </Command>
-        </DialogContent>
+                        </div>
+                      </div>
+                    ) : null}
+
+                    {groups.length > 0 ? (
+                      <>
+                        {groups.map((group) => (
+                          <CommandGroup
+                            key={group.group}
+                            heading={group.group}
+                            data-testid="search-group"
+                            className={GROUP_CLASS}
+                          >
+                            {group.items.map((item) => (
+                              <CommandItem
+                                key={item.id}
+                                value={`${item.title} ${item.description ?? ""} ${item.keywords.join(" ")}`}
+                                onSelect={() => handleResultSelect(group.group, item.href)}
+                                aria-label={`${item.title}, ${item.group}`}
+                                className={cn(ITEM_CLASS, "min-h-12 flex-col items-stretch gap-1")}
+                                data-testid="search-item"
+                              >
+                                <span className="flex items-center gap-2.5">
+                                  <span className="shrink-0 rounded-full bg-sand-deep px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
+                                    {item.type}
+                                  </span>
+                                  <span className="truncate text-[15px] font-medium text-foreground">
+                                    <Highlight text={item.title} tokens={highlightTokens} />
+                                  </span>
+                                </span>
+                                {item.description ? (
+                                  <span className="line-clamp-1 text-[13px] text-muted-foreground">
+                                    <Highlight text={item.description} tokens={highlightTokens} />
+                                  </span>
+                                ) : null}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        ))}
+                      </>
+                    ) : (
+                      <div className="flow flow-lg px-5 py-8 sm:px-6" data-testid="search-no-results">
+                        <div className="flow flow-xs text-center">
+                          <p className="font-display text-[1.75rem] leading-tight text-foreground">
+                            No matches for “{trimmedQuery}”
+                          </p>
+                          <p className="text-sm text-muted-foreground">
+                            Try searching for rates, chef, airport transfers, or cancellation policy.
+                          </p>
+                        </div>
+                        {suggestion ? (
+                          <div className="flex justify-center">
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setQuery(suggestion)
+                                setSearchSource("input")
+                              }}
+                              data-testid="search-suggestion"
+                              className="focus-ring min-h-11 rounded-full bg-canary px-5 text-sm font-medium text-ink transition-colors hover:bg-ink hover:text-sand-light"
+                            >
+                              Did you mean “{suggestion}”?
+                            </button>
+                          </div>
+                        ) : null}
+                        <div className="flex flex-wrap justify-center gap-2">
+                          {RECOMMENDED_CHIPS.map((chip) => (
+                            <button
+                              key={chip.label}
+                              type="button"
+                              className="focus-ring inline-flex min-h-11 items-center rounded-full bg-sand px-4 text-sm font-medium text-foreground ring-1 ring-inset ring-border transition-colors duration-300 hover:bg-ink hover:text-sand-light hover:ring-ink"
+                              onClick={() => handleChipClick(chip.label, chip.query)}
+                              data-testid="search-chip"
+                            >
+                              {chip.label}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="flow flow-sm rounded-[20px] bg-sand p-5 text-center ring-1 ring-inset ring-border/80">
+                          <p className="font-display text-[1.35rem] leading-tight text-foreground">{fallbackAnswer.title}</p>
+                          <p className="text-[13px] text-muted-foreground">{fallbackAnswer.bullets[0]}</p>
+                          <div className="flex flex-wrap justify-center gap-2">
+                            {fallbackAnswer.links.map((link) => (
+                              <a
+                                key={link.href}
+                                href={link.href}
+                                onClick={(event) => handleAnswerLinkClick(event, "fallback_answer", link.href)}
+                                className="focus-ring group inline-flex min-h-10 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-sand-light transition-colors hover:bg-lagoon"
+                              >
+                                {link.label}
+                                <ArrowUpRight className="arrow-nudge arrow-nudge-diag h-3.5 w-3.5" aria-hidden="true" />
+                              </a>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </CommandList>
+                  <div className="flex shrink-0 items-center justify-between gap-3 border-t border-border/80 px-5 py-3 sm:px-6">
+                    <p role="status" className="tabular text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
+                      {totalResults === 0
+                        ? "No results"
+                        : visibleCount === totalResults
+                          ? `${totalResults} result${totalResults === 1 ? "" : "s"}`
+                          : `Showing ${visibleCount} of ${totalResults}`}
+                    </p>
+                    <p className="hidden items-center gap-3 text-[11px] text-muted-foreground sm:flex" aria-hidden="true">
+                      <span className="flex items-center gap-1.5"><kbd className={KBD_CLASS}>↑↓</kbd> navigate</span>
+                      <span className="flex items-center gap-1.5"><kbd className={KBD_CLASS}>↵</kbd> open</span>
+                      <span className="flex items-center gap-1.5"><kbd className={KBD_CLASS}>esc</kbd> close</span>
+                    </p>
+                  </div>
+                </>
+              )}
+            </Command>
+          </DialogPrimitive.Content>
+        </DialogPortal>
       </Dialog>
     </div>
   )

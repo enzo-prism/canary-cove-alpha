@@ -1,7 +1,9 @@
 import Image from "next/image"
+import type { CSSProperties } from "react"
 
-import { TrackedLink } from "@/components/analytics/tracked-link"
-import { Button } from "@/components/ui/button"
+import { Parallax } from "@/components/motion/parallax"
+import { SplitText } from "@/components/motion/split-text"
+import { CtaLink } from "@/components/ui/cta-link"
 import { cn } from "@/lib/utils"
 
 type EditorialSplitProps = {
@@ -12,6 +14,7 @@ type EditorialSplitProps = {
   href: string
   cta: string
   reverse?: boolean
+  index?: number
 }
 
 export function EditorialSplit({
@@ -22,25 +25,56 @@ export function EditorialSplit({
   href,
   cta,
   reverse = false,
+  index,
 }: EditorialSplitProps) {
   return (
-    <div className="grid items-center gap-8 lg:grid-cols-2 lg:gap-12">
-      <div className={cn("flow flow-md", reverse ? "lg:order-2" : "lg:order-1")}>
-        <p className="text-[11px] uppercase tracking-[0.4em] text-muted-foreground">{eyebrow}</p>
-        <h3 className="text-section">{title}</h3>
-        <p className="text-body text-foreground/80">{description}</p>
-        <Button asChild variant="outline" size="sm" className="w-fit">
-          <TrackedLink
+    <div className="grid items-center gap-10 lg:grid-cols-12 lg:gap-0">
+      <div
+        className={cn(
+          "relative lg:col-span-7",
+          reverse ? "lg:order-2 lg:col-start-6" : "lg:order-1",
+        )}
+      >
+        <div data-reveal="clip" className="media-frame relative aspect-[4/5] w-full sm:aspect-[5/4]">
+          <Parallax amount={9}>
+            <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 58vw, 100vw" className="object-cover" />
+          </Parallax>
+        </div>
+        {typeof index === "number" ? (
+          <span
+            aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute -top-10 hidden font-display text-[9rem] leading-none text-ink/[0.07] lg:block",
+              reverse ? "-left-4" : "-right-6",
+            )}
+          >
+            {String(index + 1).padStart(2, "0")}
+          </span>
+        ) : null}
+      </div>
+      <div
+        className={cn(
+          "flow flow-lg lg:col-span-4",
+          reverse ? "lg:order-1 lg:col-start-1 lg:pr-6" : "lg:order-2 lg:col-start-9 lg:pl-2",
+        )}
+      >
+        <p data-reveal="fade" className="eyebrow">
+          {eyebrow}
+        </p>
+        <SplitText as="h3" text={title} className="text-section" />
+        <p data-reveal="up" style={{ "--reveal-delay": "200ms" } as CSSProperties} className="text-lede">
+          {description}
+        </p>
+        <div data-reveal="up" style={{ "--reveal-delay": "300ms" } as CSSProperties}>
+          <CtaLink
             href={href}
+            variant="text"
             eventName="cta_click"
             eventPayload={{ location: "editorial_split", target: href, label: title }}
           >
             {cta}
-          </TrackedLink>
-        </Button>
-      </div>
-      <div className={cn("relative aspect-[4/3] overflow-hidden rounded-[28px] bg-surface-muted", reverse ? "lg:order-1" : "lg:order-2")}>
-        <Image src={image.src} alt={image.alt} fill sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
+          </CtaLink>
+        </div>
       </div>
     </div>
   )

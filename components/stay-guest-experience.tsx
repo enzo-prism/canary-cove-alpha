@@ -1,19 +1,21 @@
-import Image from "next/image"
+import type { CSSProperties } from "react"
 
-import { IMAGES, imageObjectPosition } from "@/lib/images"
+import { SectionHeading } from "@/components/section-heading"
+import { StayChapters, type StayChapter } from "@/components/stay/stay-chapters"
+import { IMAGES } from "@/lib/images"
 import type { Testimonial } from "@/lib/testimonial-spotlights"
 
-const experienceRows = [
+const experienceRows: StayChapter[] = [
   {
     title: "Arrival and hosting",
     detail: "From the San Pedro pickup to the welcome at the dock, the stay starts smoothly and stays personal.",
-    image: IMAGES.gilBoat,
+    image: IMAGES.heroBackgroundEstate,
   },
   {
     title: "Chef-led dining",
     detail:
       "Private lunches and dinners are served at the estate so your group never has to work around a restaurant schedule.",
-    image: IMAGES.chefMarvinPortrait,
+    image: IMAGES.shrimpDinner,
   },
   {
     title: "Quiet private suites",
@@ -23,7 +25,7 @@ const experienceRows = [
   {
     title: "Waterfront downtime",
     detail: "Hammocks, loungers, and the dock keep the estate feeling calm even on the fullest itinerary.",
-    image: IMAGES.romanticViews,
+    image: IMAGES.heroBackgroundPool,
   },
 ]
 
@@ -35,19 +37,29 @@ function PerspectiveStack({ perspectives }: { perspectives: Testimonial[] }) {
   const [first, second] = perspectives
 
   return (
-    <div className="flow flow-lg">
-      <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8">
-        <blockquote className="max-w-3xl text-balance text-xl font-medium leading-9 tracking-tight text-foreground sm:text-2xl sm:leading-10">
-          “{first.quote}”
+    <div className="grid gap-14 lg:grid-cols-12 lg:gap-16">
+      <figure className="relative pt-14 sm:pt-[4.5rem] lg:col-span-8" data-reveal="blur">
+        <span
+          aria-hidden="true"
+          className="font-display pointer-events-none absolute -left-1 -top-1 select-none text-[6rem] leading-[0.8] text-canary sm:-left-2 sm:text-[7.5rem]"
+        >
+          “
+        </span>
+        <blockquote className="font-display relative text-balance text-[clamp(1.7rem,3vw,2.75rem)] leading-[1.15] text-foreground">
+          {first.quote}
         </blockquote>
-        <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+        <figcaption className="eyebrow mt-8">
           {first.author} · {first.year}
         </figcaption>
       </figure>
       {second ? (
-        <figure className="border-l-2 border-primary/30 pl-6 sm:pl-8 md:ml-16">
-          <blockquote className="max-w-2xl text-lg leading-8 text-foreground/85">“{second.quote}”</blockquote>
-          <figcaption className="mt-4 text-[11px] font-medium uppercase tracking-[0.28em] text-muted-foreground">
+        <figure
+          className="border-t border-ink/15 pt-8 lg:col-span-4 lg:self-end lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0"
+          data-reveal="up"
+          style={{ "--reveal-delay": "200ms" } as CSSProperties}
+        >
+          <blockquote className="text-lg leading-8 text-foreground/85">“{second.quote}”</blockquote>
+          <figcaption className="eyebrow eyebrow-plain mt-5">
             {second.author} · {second.year}
           </figcaption>
         </figure>
@@ -58,41 +70,18 @@ function PerspectiveStack({ perspectives }: { perspectives: Testimonial[] }) {
 
 export function StayGuestExperience({ testimonials }: StayGuestExperienceProps) {
   return (
-    <div className="flow flow-xl">
-      <div className="max-w-2xl flow flow-sm">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">The guest experience</p>
-        <h2 className="text-section text-[2rem] text-foreground sm:text-[2.5rem]">How the stay feels once you arrive.</h2>
-      </div>
+    <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-14 px-[var(--gutter)] sm:gap-20 lg:gap-12">
+      <SectionHeading
+        align="split"
+        eyebrow="The guest experience"
+        title="How the stay feels *once you arrive.*"
+        lede="From the dock welcome to the quiet hours on the waterfront, the estate runs at your group’s pace."
+      />
 
-      <ol className="border-t border-border/60">
-        {experienceRows.map((row, index) => (
-          <li
-            key={row.title}
-            className="flex items-center gap-5 border-b border-border/60 py-5 sm:gap-7 sm:py-6"
-          >
-            <span aria-hidden="true" className="w-8 shrink-0 text-sm font-semibold tabular-nums text-muted-foreground">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="relative hidden aspect-square w-24 shrink-0 overflow-hidden rounded-[20px] border border-border/55 bg-surface-muted sm:block">
-              <Image
-                src={row.image.src}
-                alt=""
-                fill
-                className="object-cover"
-                style={{ objectPosition: imageObjectPosition(row.image) }}
-                sizes="96px"
-              />
-            </span>
-            <span className="flow-xs">
-              <h3 className="text-lg font-semibold text-foreground">{row.title}</h3>
-              <p className="max-w-2xl text-[0.95rem] leading-7 text-foreground/75">{row.detail}</p>
-            </span>
-          </li>
-        ))}
-      </ol>
+      <StayChapters chapters={experienceRows} />
 
-      <div className="flow flow-md pt-2">
-        <p className="text-[11px] font-medium uppercase tracking-[0.32em] text-muted-foreground">
+      <div className="flex flex-col gap-12 pt-6 sm:pt-10 lg:pt-16">
+        <p className="eyebrow" data-reveal="fade">
           What guests say about the stay
         </p>
         <PerspectiveStack perspectives={testimonials.slice(0, 2)} />
