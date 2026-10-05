@@ -88,6 +88,7 @@ The October 2026 overhaul replaced the beige SF-Pro card template with an editor
 ## Accessibility and content guardrails
 
 - One visible h1 per page. Headline split spans keep textContent byte-identical.
+- Never put `text-shadow` on a `SplitText` headline: each word is a clipped mask box, so the blur renders as rectangles. Use a `filter: drop-shadow(...)` on the heading instead.
 - Contrast: body text on sand uses `text-foreground` or `text-muted-foreground`; on reef use white at ≥70% opacity.
 - Touch targets ≥44px on mobile.
 - Guest quotes stay byte-identical to `lib/testimonial-spotlights.ts` or the guestbook. Never paraphrase or invent attributed quotes.

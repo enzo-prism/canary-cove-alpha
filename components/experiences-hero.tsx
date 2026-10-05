@@ -73,7 +73,7 @@ export function ExperiencesHero() {
             mode="enter"
             delay={160}
             text="*Belize* experiences at Canary Cove"
-            className="text-display max-w-[13ch] text-balance [text-shadow:0_2px_40px_rgba(8,26,29,0.45)] sm:text-[clamp(3.75rem,8.6vw,7.25rem)]"
+            className="text-display max-w-[13ch] text-balance [filter:drop-shadow(0_2px_22px_rgba(8,26,29,0.5))] sm:text-[clamp(3.75rem,8.6vw,7.25rem)]"
           />
           <p className="text-lede enter-up max-w-xl !text-white [text-shadow:0_1px_18px_rgba(8,26,29,0.6)]" style={delay(460)}>
             Calm mornings, adrenaline afternoons, and sunset cruises all planned around the tides and your pace.

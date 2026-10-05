@@ -55,7 +55,7 @@ export function Hero() {
                   step={80}
                   data-testid="homepage-intro-heading"
                   text="Private estate on *Ambergris Caye*"
-                  className="text-hero text-balance [text-shadow:0_2px_40px_rgba(8,26,29,0.35)] lg:max-w-[13ch]"
+                  className="text-hero text-balance [filter:drop-shadow(0_2px_22px_rgba(8,26,29,0.4))] lg:max-w-[13ch]"
                 />
                 <div className="grid gap-6 border-t border-white/25 pt-6 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
                   <p
