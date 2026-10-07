@@ -8,6 +8,7 @@ import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, t
 import { isBlank, isValidEmail } from "@/lib/booking-validation"
 import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
 import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
+import { PRIMARY_CONTACT_PHONE } from "@/lib/site-config"
 import {
   ChipOption,
   FieldLabel,
@@ -433,7 +434,10 @@ export function ContactForm() {
                     aria-live="polite"
                     data-testid="contact-error"
                   >
-                    Something went wrong. Please try again or email us directly.
+                    Something went wrong. Please try again or call us at{" "}
+                    <a href={`tel:${PRIMARY_CONTACT_PHONE}`} className="focus-ring underline underline-offset-4">
+                      +501 610-5121
+                    </a>.
                   </p>
                 ) : null}
                 <p className="flex items-center gap-2 text-xs leading-5 text-muted-foreground">
