@@ -17,6 +17,12 @@ const dragToNextSlide = async (page: Page, viewport: Locator) => {
 }
 
 const wheelToNextSlide = async (page: Page, viewport: Locator) => {
+  // The first active dot is server-rendered. Wait for font layout and
+  // Embla's track initialization before testing its client-side wheel handler.
+  await page.evaluate(() => document.fonts.ready)
+  await expect(viewport.locator(".carousel-track")).toHaveCSS("transform", /matrix/)
+  await viewport.scrollIntoViewIfNeeded()
+  await expect(viewport).toBeInViewport()
   const box = await viewport.boundingBox()
   if (!box) {
     throw new Error("Unable to read carousel bounding box.")
@@ -138,6 +144,13 @@ test.describe("desktop carousel gestures", () => {
     await wheelToNextSlide(page, viewport)
     await expect(page).toHaveURL(stayUrl)
     await expect(dotTwo).toHaveClass(/bg-foreground/)
+    await expect(dotTwo).toHaveAttribute("aria-current", "true")
+    await expect.poll(async () => {
+      const viewportBox = await viewport.boundingBox()
+      const slideBox = await carousel.locator('[aria-roledescription="slide"]').nth(1).boundingBox()
+      if (!viewportBox || !slideBox) return Number.POSITIVE_INFINITY
+      return Math.abs(slideBox.x - viewportBox.x)
+    }).toBeLessThanOrEqual(2)
 
     await page.goto("/book")
     await page.waitForLoadState("domcontentloaded")

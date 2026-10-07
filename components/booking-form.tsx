@@ -30,6 +30,7 @@ import {
 } from "@/lib/booking-validation"
 import { appendFormspreeOpsMetadata } from "@/lib/formspree-ops"
 import { LEAD_FORM_CONFIG } from "@/lib/lead-forms"
+import { BOOKING_CONTACT_PHONE } from "@/lib/site-config"
 import { cn } from "@/lib/utils"
 import {
   ChipOption,
@@ -860,8 +861,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               <div className="flex items-start gap-3 text-sm leading-6 text-foreground/80">
                 <ShieldCheck className="mt-1 h-4 w-4 shrink-0 text-lagoon" aria-hidden />
                 <p>
-                  Sending places a tentative hold while we confirm availability, pricing, and next steps with you
-                  directly. Chef service included.
+                  This sends an inquiry and does not automatically hold dates. Our team will confirm availability,
+                  pricing, and next steps with you directly. Chef service included.
                 </p>
               </div>
               {status === "error" ? (
@@ -871,7 +872,10 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   aria-live="polite"
                   data-testid="booking-error"
                 >
-                  Something went wrong. Please try again or email us directly.
+                  Something went wrong. Please try again or call us at{" "}
+                  <a href={`tel:${BOOKING_CONTACT_PHONE}`} className="focus-ring underline underline-offset-4">
+                    +501 626-7534
+                  </a>.
                 </p>
               ) : null}
               <WizardNav
@@ -901,12 +905,12 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
             Request received
           </AlertDialogTitle>
           <AlertDialogDescription className="text-[15px] leading-6 text-muted-foreground">
-            Thanks for sharing your dates. Our team will confirm availability and follow up with next steps shortly.
+            Thanks for your inquiry. Our team will confirm availability and follow up with next steps shortly.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <ol className="space-y-3 border-t border-border/70 pt-5 text-sm text-foreground/85">
           {[
-            "We check the calendar for your dates",
+            "We discuss your dates and confirm availability",
             "A tailored quote, usually within one business day",
             "A 50% deposit secures your stay",
           ].map((line, index) => (

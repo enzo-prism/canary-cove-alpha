@@ -106,6 +106,12 @@ const completeBookingStepFour = async (
 }
 
 test.describe("forms and interactive inquiries", () => {
+  test.beforeEach(async ({ page }) => {
+    // Fail closed: all submissions must be explicitly mocked by the test.
+    await page.route("**/formspree.io/**", (route) => route.abort())
+    await page.route(FORM_API_ROUTE, (route) => route.abort())
+  })
+
   test("contact form handles success and failure states", async ({ page }) => {
     await page.route(FORM_API_ROUTE, async (route) => {
       await route.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true }) })
@@ -136,6 +142,8 @@ test.describe("forms and interactive inquiries", () => {
     await completeContactStepTwo(page, "Alex Martin", "alex@example.com")
 
     await expect(page.getByTestId("contact-error")).toContainText("Something went wrong")
+    await expect(page.getByTestId("contact-error").getByRole("link", { name: "+501 610-5121" }))
+      .toHaveAttribute("href", "tel:+5016105121")
     expect(await getGenerateLeadEvents(page)).toEqual([])
   })
 
@@ -231,6 +239,7 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByTestId("booking-submit").click()
 
     await expect(page.getByRole("alertdialog")).toContainText("Request received")
+    await expect(page.getByRole("alertdialog")).toContainText("Thanks for your inquiry")
     await expect.poll(async () => (await getGenerateLeadEvents(page)).length).toBe(1)
     expect(await getGenerateLeadEvents(page)).toEqual([
       ["event", "generate_lead", { form_name: "booking", lead_source: "booking_request" }],
@@ -258,8 +267,69 @@ test.describe("forms and interactive inquiries", () => {
     await page.getByTestId("booking-submit").click()
 
     await expect(page.getByTestId("booking-error")).toContainText("Something went wrong")
+    await expect(page.getByTestId("booking-error").getByRole("link", { name: "+501 626-7534" }))
+      .toHaveAttribute("href", "tel:+5016267534")
     expect(await getGenerateLeadEvents(page)).toEqual([])
   })
+
+  for (const width of [390, 1440]) {
+    test(`optional dates and party size remain an inquiry at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      let requests = 0
+      let responseStatus = 200
+      await page.route(FORM_API_ROUTE, async (route) => {
+        requests += 1
+        const payload = route.request().postData() ?? ""
+        for (const field of ["arrival", "departure", "adultGuests", "childGuests"]) {
+          expect(payload).toContain(`name="${field}"\r\n\r\n\r\n`)
+        }
+        await route.fulfill({ status: responseStatus, contentType: "application/json", body: "{}" })
+      })
+
+      await page.goto("/book")
+      await waitForPageReady(page)
+      for (const result of ["success", "error"] as const) {
+        await completeBookingStepOne(page, "Villa (1–3 suites)", "No, this would be my first stay")
+        await page.getByTestId("booking-next").click()
+        await completeBookingStepThree(page)
+        await completeBookingStepFour(page, {
+          firstName: "Alex", lastName: "Martin", phone: "+1 555 123 1234",
+          email: "alex@example.com", confirmEmail: "alex@example.com",
+        })
+        await expect(bookingCard(page)).toContainText("does not automatically hold dates")
+        await expect(bookingCard(page)).toContainText("Flexible dates")
+        await page.getByTestId("booking-submit").click()
+        if (result === "success") {
+          await expect(page.getByRole("alertdialog")).toContainText("Thanks for your inquiry")
+          await expect(page.getByRole("alertdialog")).not.toContainText("Thanks for sharing your dates")
+          await page.getByRole("button", { name: "Got it" }).click()
+          responseStatus = 503
+        } else {
+          const fallback = page.getByTestId("booking-error").getByRole("link", { name: "+501 626-7534" })
+          await expect(fallback).toBeVisible()
+          await expect(fallback).toHaveAttribute("href", "tel:+5016267534")
+          expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+        }
+      }
+      expect(requests).toBe(2)
+    })
+
+    test(`contact network failure exposes a public fallback at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.goto("/contact")
+      await waitForPageReady(page)
+      // The server renders editable fields before React owns their values.
+      // A topic-dependent prompt proves the form's client handlers are ready.
+      await contactCard(page).getByText("Dates & pricing", { exact: true }).click()
+      await expect(page.getByRole("textbox", { name: "Nature of inquiry" })).toHaveAttribute("placeholder", /My travel window/)
+      await completeContactStepOne(page, "A synthetic inquiry used only in a mocked browser test.")
+      await completeContactStepTwo(page, "Alex Martin", "alex@example.com")
+      const fallback = page.getByTestId("contact-error").getByRole("link", { name: "+501 610-5121" })
+      await expect(fallback).toBeVisible()
+      await expect(fallback).toHaveAttribute("href", "tel:+5016105121")
+      expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+    })
+  }
 
   test("booking wizard keeps entries when moving back and forth", async ({ page }) => {
     await page.goto("/book")
