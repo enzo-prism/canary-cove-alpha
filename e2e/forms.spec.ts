@@ -318,6 +318,10 @@ test.describe("forms and interactive inquiries", () => {
       await page.setViewportSize({ width, height: 900 })
       await page.goto("/contact")
       await waitForPageReady(page)
+      // The server renders editable fields before React owns their values.
+      // A topic-dependent prompt proves the form's client handlers are ready.
+      await contactCard(page).getByText("Dates & pricing", { exact: true }).click()
+      await expect(page.getByRole("textbox", { name: "Nature of inquiry" })).toHaveAttribute("placeholder", /My travel window/)
       await completeContactStepOne(page, "A synthetic inquiry used only in a mocked browser test.")
       await completeContactStepTwo(page, "Alex Martin", "alex@example.com")
       const fallback = page.getByTestId("contact-error").getByRole("link", { name: "+501 610-5121" })
