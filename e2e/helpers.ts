@@ -24,6 +24,17 @@ export const CORE_VIEWPORTS = [
 export const waitForPageReady = async (page: Page) => {
   await page.waitForLoadState("domcontentloaded")
   await page.evaluate(() => document.fonts.ready)
+  // Header hydration/ResizeObserver replaces the server's height estimate.
+  // Wait for that measured layout before testing geometry or pointer targets.
+  await expect.poll(() => page.evaluate(() => {
+    const header = document.querySelector("header")
+    if (!header) return 0
+    const publishedHeight = Number.parseFloat(
+      getComputedStyle(document.documentElement).getPropertyValue("--site-header-height"),
+    )
+    if (!Number.isFinite(publishedHeight)) return Number.POSITIVE_INFINITY
+    return Math.abs(header.getBoundingClientRect().height - publishedHeight)
+  })).toBeLessThanOrEqual(1)
 }
 
 export const installErrorCollectors = (page: Page) => {
