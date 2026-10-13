@@ -41,7 +41,7 @@ export function Hero() {
         className="min-h-[86svh] sm:min-h-[calc(100svh-var(--site-header-height))] lg:min-h-[max(640px,calc(100svh-var(--site-header-height)))]"
         chrome={<HeroRail />}
       >
-        <div className="absolute inset-0 flex items-end">
+        <div className="flex w-full items-end">
           <ScrollFade className="w-full">
             <div className="w-full px-[var(--gutter)] pb-10 pt-24 sm:pb-14 md:pb-28">
               <div data-testid="homepage-intro" className="flow flow-lg w-full text-white">

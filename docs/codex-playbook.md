@@ -359,6 +359,7 @@ pnpm test:e2e
 ### Browser policy
 
 - Functional coverage runs in Chromium, Firefox, and WebKit.
+- Run one Playwright command at a time when using the shared test-results and HTML-report directories. Complete focused checks before starting the full gate.
 - Visual-regression snapshots are intentionally Chromium-only to avoid cross-engine baseline churn.
 - Linux and Darwin Chromium snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`. Update the OS you actually ran; a Linux agent cannot refresh Darwin baselines.
 - If a visual change is intentional, update the snapshot files and mention it in the commit or PR notes.
@@ -392,6 +393,11 @@ Useful production-sensitive checks:
 - local video assets return the expected content type and support byte-range requests (`206`) so playback can seek and stream efficiently.
 
 ## Codex operating advice
+
+- The October 13 responsive/keyboard/motion audit is documented in `docs/ux-audit-2026-10-13.md`. Run its expanded route/window and button-hit-box suites when changing shared chrome or galleries.
+- For a compiled-site release check, build first, start that build on an isolated port, and set `PLAYWRIGHT_BASE_URL` for the suite. Health checks mock only the localhost Vercel Insights endpoint and ignore cancelled speculative RSC prefetches; actual document, application, and non-cancelled request failures still fail.
+- Keep checkbox/radio/date inputs and focus restoration under regression coverage. Safari's native page-link traversal uses Option+Tab; the open navigation disclosure explicitly traverses its links on Tab.
+- If macOS marks a temporary Documents checkout `dataless`, preserve the edits and recreate the worktree under the project's local worktree directory before trusting source reads or compiler errors.
 
 - Prefer changing data sources (`lib/*`) before duplicating content in JSX.
 - Be careful when touching `components/ui/carousel.tsx`; it affects hero-adjacent carousels, interior galleries, and slider tests.

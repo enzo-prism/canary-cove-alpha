@@ -1,0 +1,110 @@
+import { expect, test } from "@playwright/test"
+
+import { waitForPageReady } from "./helpers"
+
+const searchShortcut = process.platform === "darwin" ? "Meta+K" : "Control+K"
+
+test.describe("navigation accessibility and viewport changes", () => {
+  test.beforeEach(async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.goto("/contact")
+    await waitForPageReady(page)
+  })
+
+  test("Tab visits every dropdown link and resumes the header order", async ({ page }) => {
+    const nav = page.getByRole("navigation", { name: "Primary navigation" })
+    const toggle = nav.getByTestId("desktop-nav-stay")
+    const panel = page.locator('[data-slot="popover-content"]')
+    await toggle.focus()
+    await page.keyboard.press("Enter")
+    await expect(panel.getByRole("link", { name: /^The Villa/ })).toBeFocused()
+    await page.keyboard.press("Tab")
+    await expect(panel.getByRole("link", { name: /^Main House/ })).toBeFocused()
+    await page.keyboard.press("Tab")
+    await expect(panel.getByRole("link", { name: /^Rates/ })).toBeFocused()
+    await page.keyboard.press("Shift+Tab")
+    await expect(panel.getByRole("link", { name: /^Main House/ })).toBeFocused()
+    await page.keyboard.press("Tab")
+    await page.keyboard.press("Tab")
+    await expect(nav.getByRole("link", { name: "Explore", exact: true })).toBeFocused()
+    await expect(panel).toBeHidden()
+
+    await toggle.focus()
+    await page.keyboard.press("ArrowDown")
+    await expect(panel.getByRole("link", { name: /^The Villa/ })).toBeFocused()
+    await page.keyboard.press("Shift+Tab")
+    await expect(toggle).toBeFocused()
+    await expect(panel).toBeHidden()
+  })
+
+  test("hover preserves focus and the first chevron click keeps its panel open", async ({ page }) => {
+    const search = page.getByTestId("search-open-button")
+    const toggle = page.getByTestId("desktop-nav-stay")
+    const panel = page.locator('[data-slot="popover-content"]')
+    await search.focus()
+    await toggle.hover()
+    await expect(panel).toBeVisible()
+    await expect(search).toBeFocused()
+    await toggle.click()
+    await expect(panel).toBeVisible()
+    await page.keyboard.press("Tab")
+    await expect(panel.getByRole("link", { name: /^The Villa/ })).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(toggle).toBeFocused()
+    await expect(panel).toBeHidden()
+  })
+
+  test("crossing the navigation breakpoint closes portals and preserves visible focus", async ({ page }) => {
+    await page.getByTestId("desktop-nav-explore").focus()
+    await page.keyboard.press("ArrowDown")
+    await expect(page.locator('[data-slot="popover-content"]')).toBeVisible()
+    await page.setViewportSize({ width: 1023, height: 700 })
+    const mobileTrigger = page.getByRole("button", { name: "Open navigation menu" })
+    await expect(page.locator('[data-slot="popover-content"]')).toBeHidden()
+    await expect(mobileTrigger).toBeFocused()
+
+    await mobileTrigger.click()
+    await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeFocused()
+    await page.setViewportSize({ width: 1024, height: 700 })
+    await expect(page.getByRole("button", { name: "Close navigation menu" })).toBeHidden()
+    await expect(page.getByTestId("search-open-button")).toBeFocused()
+    await expect(page.locator("body[data-mobile-nav-open]")).toHaveCount(0)
+    await expect.poll(() => page.locator("body").evaluate((body) => body.style.overflow)).not.toBe("hidden")
+  })
+
+  test("search restores the actual opener after its exit animation", async ({ page }) => {
+    const search = page.getByTestId("search-open-button")
+    await search.click()
+    await expect(page.getByTestId("search-input")).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(page.getByTestId("search-modal")).toHaveCount(0)
+    await expect(search).toBeFocused()
+
+    const message = page.getByLabel("Nature of inquiry", { exact: false })
+    await message.focus()
+    const scrollY = await page.evaluate(() => window.scrollY)
+    await page.keyboard.press(searchShortcut)
+    await expect(page.getByTestId("search-input")).toBeFocused()
+    await page.keyboard.press("Escape")
+    await expect(page.getByTestId("search-modal")).toHaveCount(0)
+    await expect(message).toBeFocused()
+    await expect.poll(() => page.evaluate(() => Math.abs(window.scrollY - scrollY))).toBeLessThanOrEqual(1)
+  })
+
+  test("search recents and questions remain reachable in a short landscape window", async ({ page }) => {
+    await page.setViewportSize({ width: 667, height: 375 })
+    await page.evaluate(() => localStorage.setItem("cc-search-recent", JSON.stringify(["rates", "dining", "airport", "wifi", "cancellation"])))
+    await page.getByTestId("search-open-button").click()
+    await expect(page.getByTestId("search-recent-item")).toHaveCount(5)
+    const lastQuestion = page.getByTestId("search-question").last()
+    await lastQuestion.scrollIntoViewIfNeeded()
+    const questionBox = await lastQuestion.boundingBox()
+    const inputBox = await page.getByTestId("search-input").boundingBox()
+    expect(questionBox).not.toBeNull()
+    expect(inputBox).not.toBeNull()
+    expect(questionBox!.y).toBeGreaterThanOrEqual(inputBox!.y + inputBox!.height)
+    expect(questionBox!.y + questionBox!.height).toBeLessThanOrEqual(375)
+    await lastQuestion.click()
+    await expect(page.getByTestId("search-input")).toHaveValue("payment terms cancellation policy refund")
+  })
+})

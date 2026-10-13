@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import * as DialogPrimitive from "@radix-ui/react-dialog"
 import useEmblaCarousel from "embla-carousel-react"
@@ -32,6 +32,7 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
   const open = openIndex !== null
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true, startIndex: openIndex ?? 0 })
   const [selectedIndex, setSelectedIndex] = useState(openIndex ?? 0)
+  const openerRef = useRef<HTMLElement | null>(null)
 
   const scrollPrev = useCallback(() => emblaApi?.scrollPrev(), [emblaApi])
   const scrollNext = useCallback(() => emblaApi?.scrollNext(), [emblaApi])
@@ -88,6 +89,14 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
           data-testid="photo-lightbox"
           aria-label="Photo gallery viewer"
           className="fixed inset-0 z-[90] flex flex-col outline-none"
+          onOpenAutoFocus={() => {
+            openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+          }}
+          onCloseAutoFocus={(event) => {
+            if (!openerRef.current?.isConnected) return
+            event.preventDefault()
+            openerRef.current.focus({ preventScroll: true })
+          }}
         >
           <DialogPrimitive.Title className="sr-only">Photo gallery</DialogPrimitive.Title>
           <DialogPrimitive.Description className="sr-only">
@@ -95,7 +104,7 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
           </DialogPrimitive.Description>
 
           <div className="pointer-events-none absolute inset-x-0 top-0 z-20 flex items-center justify-between p-3 sm:p-4">
-            <span className="rounded-full border border-white/20 bg-black/50 px-3 py-1 text-xs font-medium tracking-[0.2em] text-white/90 tabular-nums">
+            <span role="status" aria-live="polite" aria-atomic="true" className="rounded-full border border-white/20 bg-black/50 px-3 py-1 text-xs font-medium tracking-[0.2em] text-white/90 tabular-nums">
               {images.length > 0 ? `${selectedIndex + 1} / ${images.length}` : "0 / 0"}
             </span>
             <DialogPrimitive.Close
@@ -119,6 +128,8 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
                     role="group"
                     aria-roledescription="slide"
                     aria-label={`Photo ${index + 1} of ${images.length}`}
+                    aria-hidden={index !== selectedIndex || undefined}
+                    inert={index !== selectedIndex}
                     className="relative min-w-0 flex-[0_0_100%]"
                   >
                     <Image
@@ -149,7 +160,7 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
             type="button"
             onClick={scrollPrev}
             aria-label="Previous photo"
-            className="absolute left-3 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/90 transition-colors hover:bg-white hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:flex"
+            className="absolute left-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/90 transition-colors hover:bg-white hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           >
             <ChevronLeft className="h-5 w-5" />
           </button>
@@ -157,7 +168,7 @@ export function PhotoLightbox({ images, openIndex, onClose }: PhotoLightboxProps
             type="button"
             onClick={scrollNext}
             aria-label="Next photo"
-            className="absolute right-3 top-1/2 z-20 hidden h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/90 transition-colors hover:bg-white hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60 sm:flex"
+            className="absolute right-3 top-1/2 z-20 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/20 bg-black/50 text-white/90 transition-colors hover:bg-white hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
           >
             <ChevronRight className="h-5 w-5" />
           </button>

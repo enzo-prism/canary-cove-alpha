@@ -451,8 +451,8 @@ export default function Page() {
 
       <section id="boats-crew" className="">
         <Container size="wide">
-          <div className="grid gap-12 border-t border-border pt-16 sm:pt-20 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16 lg:pt-24">
-            <div className="flow flow-xl">
+          <div className="grid grid-cols-1 gap-12 border-t border-border pt-16 sm:pt-20 md:grid-cols-[minmax(0,1fr)_auto] md:items-end md:gap-16 lg:pt-24">
+            <div className="flow flow-xl min-w-0">
               <ChapterMark index="05" label="Boats & crew" />
               <SplitText as="h2" text="The dock is where every day *begins*" className="text-section max-w-[12ch] text-balance" />
               <p data-reveal="up" className="text-lede max-w-xl">
@@ -461,7 +461,7 @@ export default function Page() {
               </p>
             </div>
             {/* gilBoat is a soft snapshot: never wider than ~460px. */}
-            <figure data-reveal="clip" className="flow flow-sm w-full max-w-[28rem] md:w-[clamp(18rem,32vw,28rem)]">
+            <figure data-reveal="clip" className="flow flow-sm min-w-0 w-full max-w-[28rem] md:w-[clamp(18rem,32vw,28rem)]">
               <MediaFrame image={IMAGES.gilBoat} className="aspect-[4/5]" sizes="(min-width: 768px) 448px, 92vw" amount={5} />
               <figcaption className="text-[13px] leading-5 text-muted-foreground">Gil at the bow, heading out</figcaption>
             </figure>

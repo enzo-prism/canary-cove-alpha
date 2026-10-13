@@ -53,16 +53,16 @@ export function StayMainHouse() {
             </span>
 
             <span className="flex flex-col justify-between gap-10 lg:col-span-5">
-              <span className="grid grid-cols-3 border-t border-white/15 lg:grid-cols-1">
-                <span className="flex flex-col gap-2 border-white/15 py-5 pr-3 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:pr-0">
+              <span className="grid grid-cols-1 border-t border-white/15 sm:grid-cols-3 lg:grid-cols-1">
+                <span className="flex flex-row items-baseline justify-between gap-2 border-b border-white/15 py-5 sm:flex-col sm:items-stretch sm:border-b-0 sm:pr-3 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:pr-0">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">Suites</span>
                   <CountUp value={5} className="font-display text-3xl leading-none text-white sm:text-4xl" />
                 </span>
-                <span className="flex flex-col gap-2 border-l border-white/15 py-5 pl-4 pr-3 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:border-l-0 lg:pl-0 lg:pr-0">
+                <span className="flex flex-row items-baseline justify-between gap-2 border-b border-white/15 py-5 sm:flex-col sm:items-stretch sm:border-b-0 sm:border-l sm:pl-4 sm:pr-3 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:border-l-0 lg:pl-0 lg:pr-0">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">From</span>
                   <CountUp value={2500} prefix="$" className="font-display text-3xl leading-none text-white sm:text-4xl" />
                 </span>
-                <span className="flex flex-col gap-2 border-l border-white/15 py-5 pl-4 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:border-l-0 lg:pl-0">
+                <span className="flex flex-row items-baseline justify-between gap-2 border-b border-white/15 py-5 sm:flex-col sm:items-stretch sm:border-b-0 sm:border-l sm:pl-4 lg:flex-row lg:items-baseline lg:justify-between lg:border-b lg:border-l-0 lg:pl-0">
                   <span className="text-[11px] font-semibold uppercase tracking-[0.22em] text-white/60">Deposit</span>
                   <CountUp value={10000} prefix="$" className="font-display text-3xl leading-none text-white sm:text-4xl" />
                 </span>

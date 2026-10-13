@@ -1,8 +1,9 @@
 import { expect, test } from "@playwright/test"
+import { waitForPageReady } from "./helpers"
 
 test("hero keeps readable overlay copy and a rotating background", async ({ page }) => {
   await page.goto("/")
-  await page.waitForLoadState("domcontentloaded")
+  await waitForPageReady(page)
 
   const hero = page.getByTestId("hero-visual")
   await expect(hero).toBeVisible()
@@ -33,6 +34,8 @@ test("hero keeps readable overlay copy and a rotating background", async ({ page
     const styles = getComputedStyle(overlay)
     const progressStyles = getComputedStyle(activeProgress)
     const initialTransform = progressStyles.transform
+    const activeAnimationName = progressStyles.animationName
+    const activeAnimationDuration = progressStyles.animationDuration
 
     return await new Promise<{
       overlayBackground: string
@@ -43,12 +46,15 @@ test("hero keeps readable overlay copy and a rotating background", async ({ page
       laterTransform: string
     }>((resolve) => {
       window.setTimeout(() => {
-        const laterProgressStyles = getComputedStyle(activeProgress)
+        // Hydration/pause resets replace the countdown node. Inspect the
+        // currently displayed countdown rather than a detached old element.
+        const currentProgress = document.querySelector<HTMLElement>('[data-testid="hero-rotate-indicator"] span > span')!
+        const laterProgressStyles = getComputedStyle(currentProgress)
         resolve({
           overlayBackground: styles.backgroundImage,
           overlayOpacity: styles.opacity,
-          activeAnimationName: progressStyles.animationName,
-          activeAnimationDuration: progressStyles.animationDuration,
+          activeAnimationName,
+          activeAnimationDuration,
           initialTransform,
           laterTransform: laterProgressStyles.transform,
         })

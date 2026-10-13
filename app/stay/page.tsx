@@ -143,8 +143,9 @@ export default function Page() {
         <StayOutdoorGallery />
       </div>
 
-      <div aria-hidden="true" className="border-y border-border/70 bg-surface py-6 sm:py-8">
+      <div className="border-y border-border/70 bg-surface py-6 sm:py-8">
         <Marquee
+          contentHidden
           duration={60}
           items={AMENITY_WORDS.map((word) => (
             <span

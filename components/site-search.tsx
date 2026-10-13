@@ -68,6 +68,7 @@ type SiteSearchProps = {
   hideTrigger?: boolean
   open?: boolean
   onOpenChange?: (open: boolean) => void
+  onCloseAutoFocus?: (event: Event) => void
 }
 
 type SearchSource = "input" | "chip" | "question" | null
@@ -79,6 +80,7 @@ export function SiteSearch({
   hideTrigger = false,
   open: openProp,
   onOpenChange,
+  onCloseAutoFocus,
 }: SiteSearchProps) {
   const router = useRouter()
   const [query, setQuery] = useState("")
@@ -222,11 +224,7 @@ export function SiteSearch({
             id={dialogId}
             data-slot="dialog-content"
             data-testid="search-modal"
-            onCloseAutoFocus={(event) => {
-              // HeaderSearch restores focus to its trigger with preventScroll;
-              // Radix's default focus() would scroll the page on close.
-              event.preventDefault()
-            }}
+            onCloseAutoFocus={onCloseAutoFocus}
             className="cc-search-sheet fixed inset-0 z-[90] flex h-[100dvh] flex-col overflow-hidden bg-sand-light pt-[env(safe-area-inset-top)] text-foreground shadow-[var(--shadow-lift)] outline-none ring-1 ring-ink/10 sm:inset-x-auto sm:bottom-auto sm:left-1/2 sm:top-[9vh] sm:h-auto sm:pt-0 sm:max-h-[min(82vh,46rem)] sm:w-[min(44rem,calc(100vw-3rem))] sm:-translate-x-1/2 sm:rounded-[28px] max-sm:pb-[env(safe-area-inset-bottom)]"
           >
             <DialogHeader className="sr-only">
@@ -265,8 +263,8 @@ export function SiteSearch({
                 </button>
               </div>
               {trimmedQuery.length === 0 ? (
-                <>
-                  <div className="flow flow-lg shrink-0 border-b border-border/80 px-5 py-5 sm:px-6" data-testid="search-empty">
+                <CommandList className="min-h-0 max-h-none flex-1 overscroll-contain pb-3" data-lenis-prevent>
+                  <div className="flow flow-lg border-b border-border/80 px-5 py-5 sm:px-6" data-testid="search-empty">
                     <div className="flow flow-sm">
                       <p className="eyebrow eyebrow-plain">Recommended searches</p>
                       <div className="flex flex-wrap gap-2">
@@ -305,7 +303,7 @@ export function SiteSearch({
                                 type="button"
                                 onClick={() => handleRecentRemove(recent)}
                                 aria-label={`Remove recent search ${recent}`}
-                                className="focus-ring inline-flex size-10 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-ink hover:text-sand-light"
+                                className="focus-ring inline-flex size-11 shrink-0 items-center justify-center rounded-full text-muted-foreground transition-colors hover:bg-ink hover:text-sand-light"
                               >
                                 <X className="h-3.5 w-3.5" />
                               </button>
@@ -315,7 +313,6 @@ export function SiteSearch({
                       </div>
                     ) : null}
                   </div>
-                  <CommandList className="min-h-0 max-h-none flex-1 overscroll-contain pb-3" data-lenis-prevent>
                     <CommandGroup heading="Popular questions" data-testid="search-group" className={GROUP_CLASS}>
                       {POPULAR_QUESTIONS.map((question, index) => (
                         <CommandItem
@@ -337,7 +334,6 @@ export function SiteSearch({
                       ))}
                     </CommandGroup>
                   </CommandList>
-                </>
               ) : (
                 <>
                   <CommandList className="min-h-0 max-h-none flex-1 overscroll-contain pb-3" data-lenis-prevent>
@@ -365,7 +361,7 @@ export function SiteSearch({
                                 key={link.href}
                                 href={link.href}
                                 onClick={(event) => handleAnswerLinkClick(event, "instant_answer", link.href)}
-                                className="focus-ring group inline-flex min-h-9 items-center gap-1.5 rounded-sm text-sm font-medium text-canary"
+                                className="focus-ring group inline-flex min-h-11 items-center gap-1.5 rounded-sm text-sm font-medium text-canary"
                               >
                                 <span className="link-underline">{link.label}</span>
                                 <ArrowUpRight className="arrow-nudge arrow-nudge-diag h-3.5 w-3.5" aria-hidden="true" />
@@ -459,7 +455,7 @@ export function SiteSearch({
                                 key={link.href}
                                 href={link.href}
                                 onClick={(event) => handleAnswerLinkClick(event, "fallback_answer", link.href)}
-                                className="focus-ring group inline-flex min-h-10 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-sand-light transition-colors hover:bg-lagoon"
+                                className="focus-ring group inline-flex min-h-11 items-center gap-1.5 rounded-full bg-ink px-4 text-sm font-medium text-sand-light transition-colors hover:bg-lagoon"
                               >
                                 {link.label}
                                 <ArrowUpRight className="arrow-nudge arrow-nudge-diag h-3.5 w-3.5" aria-hidden="true" />

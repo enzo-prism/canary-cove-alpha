@@ -31,6 +31,7 @@ export function Header() {
   const headerRef = useRef<HTMLElement | null>(null)
   const closeRef = useRef<HTMLButtonElement | null>(null)
   const menuTriggerRef = useRef<HTMLButtonElement | null>(null)
+  const closedForDesktop = useRef(false)
   const mobileSheetId = "mobile-nav-sheet"
   const bookCta = NAV_ITEMS.find((item) => item.type === "link" && item.cta)
 
@@ -91,8 +92,22 @@ export function Header() {
     setMobileOpen(false)
   }, [pathname])
 
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)")
+    const closeAtDesktop = () => {
+      if (desktop.matches && mobileOpen) {
+        closedForDesktop.current = true
+        setMobileOpen(false)
+      }
+    }
+    closeAtDesktop()
+    desktop.addEventListener("change", closeAtDesktop)
+    return () => desktop.removeEventListener("change", closeAtDesktop)
+  }, [mobileOpen])
+
   const handleMobileOpenChange = (open: boolean) => {
     if (open && !mobileOpen) {
+      closedForDesktop.current = false
       trackEvent("nav_menu_open", { surface: "header_mobile" })
     }
     setMobileOpen(open)
@@ -191,7 +206,14 @@ export function Header() {
                   // Radix's default restore calls focus() without
                   // preventScroll, which scrolled the page up on close.
                   event.preventDefault()
-                  menuTriggerRef.current?.focus({ preventScroll: true })
+                  // A search opened from the menu may already own focus.
+                  const active = document.activeElement
+                  if (active instanceof HTMLElement && active !== document.body && active.isConnected && !active.closest(`#${mobileSheetId}`)) return
+                  const target = closedForDesktop.current
+                    ? headerRef.current?.querySelector<HTMLButtonElement>('[data-testid="search-open-button"]')
+                    : menuTriggerRef.current
+                  target?.focus({ preventScroll: true })
+                  closedForDesktop.current = false
                 }}
                 className="gap-0 bg-sand px-5 pb-0 pt-0 sm:px-8"
               >

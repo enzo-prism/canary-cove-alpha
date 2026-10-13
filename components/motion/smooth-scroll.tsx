@@ -30,7 +30,20 @@ export function SmoothScroll() {
       lerp: 0.11,
       wheelMultiplier: 1,
       smoothWheel: true,
-      anchors: { offset: 0 },
+      anchors: {
+        offset: 0,
+        onComplete: () => {
+          // The header shrinks and responsive filmstrips can settle while a
+          // long anchor journey is in progress. Align against the final live
+          // geometry so the destination still lands under the current header.
+          const hash = window.location.hash.slice(1)
+          if (!hash) return
+          let id: string
+          try { id = decodeURIComponent(hash) } catch { return }
+          const target = document.getElementById(id)
+          if (target) lenis.scrollTo(target, { immediate: true, force: true })
+        },
+      },
       prevent: (node: HTMLElement) =>
         Boolean(node.closest?.("[data-lenis-prevent], [role='dialog'], [role='alertdialog'], [role='listbox']")),
       // Shift+wheel is a horizontal scroll on Windows/Linux mice: let the

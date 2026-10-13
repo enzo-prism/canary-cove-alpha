@@ -118,6 +118,7 @@ function UnitMonth({
             <span
               key={isoDate}
               data-testid={`availability-day-${unit}-${isoDate}`}
+              role="img"
               data-booked={state === "unknown" ? "unknown" : state === "booked" ? "true" : "false"}
               aria-label={`${formatDay(isoDate)}, ${state === "unknown" ? "not available to check" : state === "booked" ? "booked" : "open"}`}
               className="relative flex h-11 items-center justify-center text-sm tabular-nums"

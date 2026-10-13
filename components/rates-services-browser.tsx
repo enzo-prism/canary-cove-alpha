@@ -156,7 +156,7 @@ export function RatesServicesBrowser({ groups }: RatesServicesBrowserProps) {
                   aria-pressed={selected}
                   onClick={() => setCost(filter.value)}
                   className={cn(
-                    "focus-ring relative min-h-10 flex-1 touch-manipulation rounded-full px-5 text-sm font-medium transition-colors duration-300 sm:flex-none",
+                    "focus-ring relative min-h-11 flex-1 touch-manipulation rounded-full px-5 text-sm font-medium transition-colors duration-300 sm:flex-none",
                     selected ? "text-sand-light" : "text-foreground/70 hover:text-foreground",
                   )}
                 >

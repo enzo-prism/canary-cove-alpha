@@ -237,8 +237,8 @@ export function GuestReviewsBrowser({
     if (!strip || !activeYear) return
     const chip = strip.querySelector<HTMLElement>(`[data-year-chip="${activeYear}"]`)
     if (!chip || strip.scrollWidth <= strip.clientWidth) return
-    strip.scrollTo({ left: Math.max(0, chip.offsetLeft - 24), behavior: "smooth" })
-  }, [activeYear])
+    strip.scrollTo({ left: Math.max(0, chip.offsetLeft - 24), behavior: motionOk ? "smooth" : "auto" })
+  }, [activeYear, motionOk])
 
   const handleQueryChange = (value: string) => {
     // Typing takes over from any theme starting point.
@@ -343,13 +343,13 @@ export function GuestReviewsBrowser({
         {hasFilters ? (
           <span className="flex flex-wrap items-center gap-2">
             {themeWords && themeLabel ? (
-              <span className="enter-up inline-flex h-10 items-center gap-2 rounded-full bg-ink pl-4 pr-1 text-xs font-medium text-sand-light">
+              <span className="enter-up inline-flex min-h-12 items-center gap-2 rounded-full bg-ink pl-4 pr-1 text-xs font-medium text-sand-light">
                 Theme: {themeLabel}
                 <button
                   type="button"
                   onClick={() => onClearTheme?.()}
                   aria-label={`Clear ${themeLabel} theme filter`}
-                  className="focus-ring inline-flex size-8 items-center justify-center rounded-full bg-sand-light/10 transition-colors hover:bg-canary hover:text-ink"
+                  className="focus-ring inline-flex size-11 items-center justify-center rounded-full bg-sand-light/10 transition-colors hover:bg-canary hover:text-ink"
                 >
                   <X className="size-3.5" aria-hidden="true" />
                 </button>
@@ -358,7 +358,7 @@ export function GuestReviewsBrowser({
             <button
               type="button"
               onClick={handleReset}
-              className="focus-ring group inline-flex h-10 items-center gap-1.5 rounded-full px-4 text-xs font-medium text-foreground ring-1 ring-inset ring-border transition-colors duration-500 hover:bg-ink hover:text-sand-light hover:ring-ink"
+              className="focus-ring group inline-flex h-11 items-center gap-1.5 rounded-full px-4 text-xs font-medium text-foreground ring-1 ring-inset ring-border transition-colors duration-500 hover:bg-ink hover:text-sand-light hover:ring-ink"
             >
               <RotateCcw className="size-3.5 transition-transform duration-500 group-hover:-rotate-180" aria-hidden="true" />
               Reset filters
@@ -532,7 +532,7 @@ export function GuestReviewsBrowser({
           onCloseAutoFocus={handleNoteCloseAutoFocus}
         >
           {/* The body scrolls, not the dialog box, so the close button stays put. */}
-          <div className="min-h-0 overflow-y-auto overscroll-contain p-7 sm:p-12" data-lenis-prevent>
+          <div key={openNoteId} className="min-h-0 overflow-y-auto overscroll-contain p-7 sm:p-12" data-lenis-prevent>
           {openNote ? (
             <>
               <DialogHeader className="gap-3 pr-10 text-left">

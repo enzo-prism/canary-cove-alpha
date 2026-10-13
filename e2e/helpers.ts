@@ -37,7 +37,16 @@ export const waitForPageReady = async (page: Page) => {
   })).toBeLessThanOrEqual(1)
 }
 
-export const installErrorCollectors = (page: Page) => {
+export const installErrorCollectors = async (page: Page) => {
+  // The production Insights endpoint is injected by Vercel's hosting layer;
+  // next start on localhost cannot serve it. Mock only that local endpoint.
+  await page.route("**/_vercel/insights/script.js", (route) => {
+    const hostname = new URL(route.request().url()).hostname
+    if (hostname === "localhost" || hostname === "127.0.0.1") {
+      return route.fulfill({ status: 200, contentType: "application/javascript", body: "" })
+    }
+    return route.continue()
+  })
   const consoleErrors: string[] = []
   const pageErrors: string[] = []
   const failedRequests: string[] = []
@@ -66,6 +75,9 @@ export const installErrorCollectors = (page: Page) => {
     const resourceType = request.resourceType()
     const url = request.url()
     const failureText = request.failure()?.errorText ?? "unknown error"
+    // Next cancels superseded speculative route prefetches. Actual document
+    // loads and non-cancelled RSC failures still fail this health check.
+    if (new URL(url).searchParams.has("_rsc") && /ERR_ABORTED|NS_BINDING_ABORTED|cancelled|canceled/i.test(failureText)) return
     if (resourceType === "media") return
     if (url.includes("https://va.vercel-scripts.com/v1/script.debug.js")) return
     if (url.includes("https://www.googletagmanager.com/gtag/js")) return

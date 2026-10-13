@@ -123,6 +123,8 @@ Playwright runs across Chromium, Firefox, and WebKit. Visual-regression snapshot
 
 ## Docs for future sessions
 
+- `docs/ux-audit-2026-10-13.md`: responsive/keyboard/form/motion audit findings and regression coverage
+
 - `AGENTS.md`: repo-specific operating guidance for Codex
 - `docs/codex-playbook.md`: architecture, integrations, QA expectations, and deploy workflow
 - `docs/codex-route-map.md`: page-by-page ownership map with anchors, data sources, and likely regression surfaces

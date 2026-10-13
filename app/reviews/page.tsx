@@ -702,6 +702,7 @@ export default function Page() {
             </p>
           </Container>
           <Marquee
+            label="guest locations ticker"
             duration={48}
             items={SIGNED_FROM.map((place) => (
               <span key={place} className="font-display text-[2.4rem] leading-none text-foreground sm:text-[3.6rem]">
@@ -710,7 +711,7 @@ export default function Page() {
             ))}
             itemClassName="gap-8 pr-8 sm:gap-12 sm:pr-12"
             separator={<span className="h-2.5 w-2.5 rounded-full bg-canary" />}
-            className="[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]"
+            maskClassName="[mask-image:linear-gradient(90deg,transparent,#000_8%,#000_92%,transparent)]"
           />
         </section>
       ) : null}

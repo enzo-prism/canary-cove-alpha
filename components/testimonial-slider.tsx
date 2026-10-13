@@ -198,7 +198,7 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
             ))}
           </div>
         </div>
-        <div className="mt-7 flex items-center gap-2">
+        <div className="mt-7 flex flex-wrap items-center gap-x-0 gap-y-2 min-[360px]:gap-x-2">
           {visibleDots.map((index) => {
             const testimonial = testimonials[index]
             return (
@@ -208,11 +208,10 @@ export function TestimonialSlider({ testimonials }: TestimonialSliderProps) {
                 onClick={() => scrollTo(index)}
                 aria-label={`Go to testimonial ${index + 1}`}
                 aria-current={index === selectedIndex ? "true" : undefined}
-                className={cn(
-                  "relative h-[3px] rounded-full transition-[width,background-color] duration-500 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-1 after:-inset-y-5 after:content-['']",
-                  index === selectedIndex ? "w-14 bg-foreground" : "w-7 bg-muted-foreground/35 hover:bg-muted-foreground/60",
-                )}
-              />
+                className="focus-ring flex size-11 shrink-0 items-center justify-center rounded-full"
+              >
+                <span aria-hidden="true" className={cn("h-[3px] rounded-full transition-[width,background-color] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none", index === selectedIndex ? "w-11 bg-foreground" : "w-7 bg-muted-foreground/35")} />
+              </button>
             )
           })}
         </div>

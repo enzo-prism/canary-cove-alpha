@@ -91,7 +91,7 @@ export function SeasonLedger({ seasons }: { seasons: readonly LedgerSeason[] }) 
           role="group"
           aria-label="Months of the year"
           aria-describedby={statusId}
-          className="grid grid-cols-6 gap-1.5 sm:gap-2 lg:grid-cols-12"
+          className="grid grid-cols-4 gap-1.5 min-[360px]:grid-cols-6 sm:gap-2 lg:grid-cols-12"
         >
           {MONTHS.map((label, index) => {
             const seasonIndex = seasonOf(index)

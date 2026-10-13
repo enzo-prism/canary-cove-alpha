@@ -48,9 +48,9 @@ test.describe("carousel swipe gestures", () => {
     const modelDotOne = page.getByRole("button", { name: "Go to Main Villa" })
     const modelDotTwo = page.getByRole("button", { name: "Go to King Suites" })
 
-    await expect(modelDotOne).toHaveClass(/bg-foreground/)
+    await expect(modelDotOne).toHaveAttribute("aria-current", "true")
     await dragToNextSlide(page, modelViewport)
-    await expect(modelDotTwo).toHaveClass(/bg-foreground/)
+    await expect(modelDotTwo).toHaveAttribute("aria-current", "true")
 
     const testimonialViewport = page.getByTestId("testimonial-carousel-viewport")
     await testimonialViewport.scrollIntoViewIfNeeded()
@@ -58,9 +58,9 @@ test.describe("carousel swipe gestures", () => {
     const testimonialDotOne = page.getByRole("button", { name: "Go to testimonial 1", exact: true })
     const testimonialDotTwo = page.getByRole("button", { name: "Go to testimonial 2", exact: true })
 
-    await expect(testimonialDotOne).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotOne).toHaveAttribute("aria-current", "true")
     await dragToNextSlide(page, testimonialViewport)
-    await expect(testimonialDotTwo).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotTwo).toHaveAttribute("aria-current", "true")
   })
 
   test("experiences mini gallery responds to swipe", async ({ page }) => {
@@ -74,9 +74,9 @@ test.describe("carousel swipe gestures", () => {
     const dotOne = page.getByRole("button", { name: "Go to slide 1", exact: true })
     const dotTwo = page.getByRole("button", { name: "Go to slide 2", exact: true })
 
-    await expect(dotOne).toHaveClass(/bg-foreground/)
+    await expect(dotOne).toHaveAttribute("aria-current", "true")
     await dragToNextSlide(page, viewport)
-    await expect(dotTwo).toHaveClass(/bg-foreground/)
+    await expect(dotTwo).toHaveAttribute("aria-current", "true")
   })
 
   test("photo carousel responds to swipe", async ({ page }) => {
@@ -111,10 +111,10 @@ test.describe("desktop carousel gestures", () => {
     const modelDotOne = page.getByRole("button", { name: "Go to Main Villa", exact: true })
     const modelDotTwo = page.getByRole("button", { name: "Go to King Suites", exact: true })
 
-    await expect(modelDotOne).toHaveClass(/bg-foreground/)
+    await expect(modelDotOne).toHaveAttribute("aria-current", "true")
     await wheelToNextSlide(page, modelViewport)
     await expect(page).toHaveURL(startUrl)
-    await expect(modelDotTwo).toHaveClass(/bg-foreground/)
+    await expect(modelDotTwo).toHaveAttribute("aria-current", "true")
 
     const testimonialViewport = page.getByTestId("testimonial-carousel-viewport")
     await testimonialViewport.scrollIntoViewIfNeeded()
@@ -122,10 +122,10 @@ test.describe("desktop carousel gestures", () => {
     const testimonialDotOne = page.getByRole("button", { name: "Go to testimonial 1", exact: true })
     const testimonialDotTwo = page.getByRole("button", { name: "Go to testimonial 2", exact: true })
 
-    await expect(testimonialDotOne).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotOne).toHaveAttribute("aria-current", "true")
     await wheelToNextSlide(page, testimonialViewport)
     await expect(page).toHaveURL(startUrl)
-    await expect(testimonialDotTwo).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotTwo).toHaveAttribute("aria-current", "true")
   })
 
   test("other sliders respond to trackpad wheel", async ({ page }) => {
@@ -140,10 +140,10 @@ test.describe("desktop carousel gestures", () => {
     const dotOne = page.getByRole("button", { name: "Go to slide 1", exact: true })
     const dotTwo = page.getByRole("button", { name: "Go to slide 2", exact: true })
 
-    await expect(dotOne).toHaveClass(/bg-foreground/)
+    await expect(dotOne).toHaveAttribute("aria-current", "true")
     await wheelToNextSlide(page, viewport)
     await expect(page).toHaveURL(stayUrl)
-    await expect(dotTwo).toHaveClass(/bg-foreground/)
+    await expect(dotTwo).toHaveAttribute("aria-current", "true")
     await expect(dotTwo).toHaveAttribute("aria-current", "true")
     await expect.poll(async () => {
       const viewportBox = await viewport.boundingBox()
@@ -185,9 +185,9 @@ test.describe("keyboard slider navigation", () => {
     const modelDotOne = page.getByRole("button", { name: "Go to Main Villa", exact: true })
     const modelDotTwo = page.getByRole("button", { name: "Go to King Suites", exact: true })
 
-    await expect(modelDotOne).toHaveClass(/bg-foreground/)
+    await expect(modelDotOne).toHaveAttribute("aria-current", "true")
     await page.keyboard.press("ArrowRight")
-    await expect(modelDotTwo).toHaveClass(/bg-foreground/)
+    await expect(modelDotTwo).toHaveAttribute("aria-current", "true")
 
     const testimonialViewport = page.getByTestId("testimonial-carousel-viewport")
     await testimonialViewport.scrollIntoViewIfNeeded()
@@ -196,9 +196,9 @@ test.describe("keyboard slider navigation", () => {
     const testimonialDotOne = page.getByRole("button", { name: "Go to testimonial 1", exact: true })
     const testimonialDotTwo = page.getByRole("button", { name: "Go to testimonial 2", exact: true })
 
-    await expect(testimonialDotOne).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotOne).toHaveAttribute("aria-current", "true")
     await page.keyboard.press("ArrowRight")
-    await expect(testimonialDotTwo).toHaveClass(/bg-foreground/)
+    await expect(testimonialDotTwo).toHaveAttribute("aria-current", "true")
   })
 
   test("carousel component responds to arrow keys", async ({ page }) => {
@@ -212,9 +212,9 @@ test.describe("keyboard slider navigation", () => {
     const dotOne = page.getByRole("button", { name: "Go to slide 1", exact: true })
     const dotTwo = page.getByRole("button", { name: "Go to slide 2", exact: true })
 
-    await expect(dotOne).toHaveClass(/bg-foreground/)
+    await expect(dotOne).toHaveAttribute("aria-current", "true")
     await page.keyboard.press("ArrowRight")
-    await expect(dotTwo).toHaveClass(/bg-foreground/)
+    await expect(dotTwo).toHaveAttribute("aria-current", "true")
 
     await page.goto("/book")
     await page.waitForLoadState("domcontentloaded")

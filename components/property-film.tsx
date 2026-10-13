@@ -1,7 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
-import { Play } from "lucide-react"
+import { Pause, Play } from "lucide-react"
 import { motion, useScroll, useTransform } from "motion/react"
 
 import { AmbientVideo } from "@/components/motion/ambient-video"
@@ -22,6 +22,7 @@ const AMBIENT_POSTER = "/videos/ambient/manta-loop-poster.jpg"
  */
 export function PropertyFilm() {
   const [playing, setPlaying] = useState(false)
+  const [ambientPaused, setAmbientPaused] = useState(false)
   const frameRef = useRef<HTMLDivElement>(null)
   const ok = useMotionOk()
   const { scrollYProgress } = useScroll({ target: frameRef, offset: ["start end", "start 0.2"] })
@@ -35,10 +36,21 @@ export function PropertyFilm() {
       <motion.div style={{ clipPath }} className="surface-reef relative overflow-hidden">
         {!playing ? (
           <div aria-hidden="true" className="absolute inset-0">
-            <AmbientVideo src={AMBIENT_SRC} poster={AMBIENT_POSTER} className="scale-105 opacity-90" />
+            <AmbientVideo src={AMBIENT_SRC} poster={AMBIENT_POSTER} paused={ambientPaused} className="scale-105 opacity-90" />
             <div className="absolute inset-0 bg-[radial-gradient(80%_70%_at_50%_40%,rgba(8,26,29,0.05)_0%,rgba(8,26,29,0.55)_100%)]" />
             <div className="absolute inset-0 bg-gradient-to-t from-reef-deep via-reef-deep/30 to-reef-deep/40" />
           </div>
+        ) : null}
+        {!playing && ok ? (
+          <button
+            type="button"
+            aria-label={ambientPaused ? "Resume reef background" : "Pause reef background"}
+            aria-pressed={ambientPaused}
+            onClick={() => setAmbientPaused((value) => !value)}
+            className="focus-ring absolute right-[var(--gutter)] top-6 z-20 flex h-11 w-11 items-center justify-center rounded-full border border-white/40 bg-ink/70 text-white transition-colors hover:bg-ink"
+          >
+            {ambientPaused ? <Play aria-hidden="true" className="size-4" /> : <Pause aria-hidden="true" className="size-4" />}
+          </button>
         ) : null}
 
         <div data-testid="property-film" className="relative z-10">

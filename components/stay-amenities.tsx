@@ -114,8 +114,8 @@ export function StayAmenities() {
           lede="Arrival, meals, and daily support are already folded into the rhythm of the estate — pool days, dock departures, and easy evenings outdoors are built into the property itself."
         />
 
-        <div className="mt-14 grid gap-14 sm:mt-20 lg:grid-cols-12 lg:gap-16">
-          <figure className="flow flow-sm lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:col-span-5 lg:self-start">
+        <div className="mt-14 grid grid-cols-1 gap-14 sm:mt-20 lg:grid-cols-12 lg:gap-16">
+          <figure className="flow flow-sm min-w-0 lg:sticky lg:top-[calc(var(--site-header-height)+2rem)] lg:col-span-5 lg:self-start">
             <div data-reveal="clip" className="media-frame relative aspect-[4/5] sm:aspect-[4/3] lg:aspect-[4/5]">
               <Parallax amount={6}>
                 <Image
@@ -133,7 +133,7 @@ export function StayAmenities() {
             </figcaption>
           </figure>
 
-          <div className="flex flex-col gap-16 sm:gap-20 lg:col-span-7">
+          <div className="flex min-w-0 flex-col gap-16 sm:gap-20 lg:col-span-7">
             <div className="flow flow-lg">
               <ChapterHeading index="01" title="Arrival, meals, daily support" />
               <LedgerRows rows={arrivalRows} />

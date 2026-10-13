@@ -31,7 +31,7 @@ function focusPanelLink(panel: HTMLElement | null, index: number) {
   const links = panel ? Array.from(panel.querySelectorAll<HTMLAnchorElement>("a[href]")) : []
   if (links.length === 0) return
   const next = links[(index + links.length) % links.length]
-  next?.focus()
+  next?.focus({ preventScroll: true })
 }
 
 export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
@@ -40,6 +40,9 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const panelRefs = useRef<Record<string, HTMLElement | null>>({})
   const triggerRefs = useRef<Record<string, HTMLButtonElement | null>>({})
+  const navRef = useRef<HTMLElement | null>(null)
+  const openingMethod = useRef<"hover" | "pointer" | "keyboard">("hover")
+  const initialFocusIndex = useRef(0)
 
   const primary = items.filter((item) => item.type === "dropdown" || (item.type === "link" && !item.cta))
 
@@ -58,15 +61,38 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
     setOpenDropdown(null)
   }, [pathname])
 
+  useEffect(() => {
+    const desktop = window.matchMedia("(min-width: 1024px)")
+    const closeAtMobile = () => {
+      if (desktop.matches) return
+      clearTimer()
+      const active = document.activeElement
+      const ownsFocus = navRef.current?.contains(active) || Object.values(panelRefs.current).some((panel) => panel?.contains(active))
+      setOpenDropdown(null)
+      if (ownsFocus) {
+        navRef.current?.closest("header")?.querySelector<HTMLButtonElement>('[aria-label="Open navigation menu"]')?.focus({ preventScroll: true })
+      }
+    }
+    desktop.addEventListener("change", closeAtMobile)
+    return () => desktop.removeEventListener("change", closeAtMobile)
+  }, [])
+
   const scheduleOpen = (label: string) => {
     clearTimer()
     if (typeof window !== "undefined" && window.matchMedia("(hover: none)").matches) return
-    timer.current = setTimeout(() => setOpenDropdown(label), OPEN_DELAY_MS)
+    timer.current = setTimeout(() => {
+      openingMethod.current = "hover"
+      setOpenDropdown(label)
+    }, OPEN_DELAY_MS)
   }
 
   const scheduleClose = () => {
     clearTimer()
-    timer.current = setTimeout(() => setOpenDropdown(null), CLOSE_DELAY_MS)
+    timer.current = setTimeout(() => {
+      // Leaving with the mouse must not remove a keyboard user's focused link.
+      if (Object.values(panelRefs.current).some((panel) => panel?.contains(document.activeElement))) return
+      setOpenDropdown(null)
+    }, CLOSE_DELAY_MS)
   }
 
   const handlePanelKeyDown = (event: React.KeyboardEvent, label: string) => {
@@ -77,7 +103,7 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
     if (event.key === "Escape") {
       event.preventDefault()
       setOpenDropdown(null)
-      triggerRefs.current[label]?.focus()
+      triggerRefs.current[label]?.focus({ preventScroll: true })
       return
     }
     if (event.key === "ArrowDown") {
@@ -101,12 +127,36 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
       return
     }
     if (event.key === "Tab") {
+      const atBoundary = event.shiftKey ? current === 0 : current === links.length - 1
+      if (!atBoundary) {
+        // Safari's default Tab preference skips links. Within an open
+        // disclosure, keep the promised link-by-link traversal consistent.
+        if (current >= 0) {
+          event.preventDefault()
+          // Radix's composed key handler reads activeElement after ours. If
+          // we focus its last link immediately, it loops back to the first.
+          // Move focus after that handler finishes, before the next input.
+          queueMicrotask(() => {
+            if (panel?.isConnected) focusPanelLink(panel, current + (event.shiftKey ? -1 : 1))
+          })
+        }
+        return
+      }
+      // Radix loops Tab inside its portaled focus scope. At the edges, resume
+      // the header's reading order instead of looping or skipping every link.
+      event.preventDefault()
       setOpenDropdown(null)
+      const trigger = triggerRefs.current[label]
+      const controls = navRef.current
+        ? Array.from(navRef.current.querySelectorAll<HTMLElement>("a[href], button"))
+        : []
+      const next = event.shiftKey ? trigger : controls[controls.indexOf(trigger as HTMLElement) + 1]
+      next?.focus({ preventScroll: true })
     }
   }
 
   return (
-    <nav aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
+    <nav ref={navRef} aria-label="Primary navigation" className="hidden min-w-0 flex-1 items-center justify-center lg:flex">
       <ul className="flex min-w-0 list-none items-center gap-0.5 xl:gap-1">
         {primary.map((item) => {
           if (item.type === "dropdown") {
@@ -145,13 +195,31 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
                         aria-label={`${item.label} submenu`}
                         aria-expanded={open}
                         data-testid={`desktop-nav-${item.label.toLowerCase()}`}
-                        onClick={clearTimer}
+                        onClick={(event) => {
+                          clearTimer()
+                          // Safari does not focus buttons on pointer clicks.
+                          // Keep a promoted hover panel's keyboard entry point.
+                          event.currentTarget.focus({ preventScroll: true })
+                          // Hover may open the panel while the pointer moves
+                          // toward the chevron. The first click commits it open.
+                          if (open && openingMethod.current === "hover") event.preventDefault()
+                          openingMethod.current = event.detail === 0 ? "keyboard" : "pointer"
+                          initialFocusIndex.current = 0
+                        }}
                         onKeyDown={(event) => {
-                          if (event.key === "ArrowDown") {
+                          if (event.key === "Tab" && open && !event.shiftKey) {
                             event.preventDefault()
                             clearTimer()
+                            focusPanelLink(panelRefs.current[item.label], 0)
+                            return
+                          }
+                          if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+                            event.preventDefault()
+                            clearTimer()
+                            openingMethod.current = "keyboard"
+                            initialFocusIndex.current = event.key === "ArrowUp" ? -1 : 0
                             setOpenDropdown(item.label)
-                            requestAnimationFrame(() => focusPanelLink(panelRefs.current[item.label], 0))
+                            if (open) focusPanelLink(panelRefs.current[item.label], initialFocusIndex.current)
                           }
                         }}
                         className={cn(
@@ -172,6 +240,11 @@ export function DesktopNav({ items, isActive, pathname }: DesktopNavProps) {
                     align="center"
                     sideOffset={14}
                     onKeyDown={(event) => handlePanelKeyDown(event, item.label)}
+                    onOpenAutoFocus={(event) => {
+                      event.preventDefault()
+                      if (openingMethod.current !== "hover") focusPanelLink(panelRefs.current[item.label], initialFocusIndex.current)
+                    }}
+                    onCloseAutoFocus={(event) => event.preventDefault()}
                     onMouseEnter={clearTimer}
                     onMouseLeave={scheduleClose}
                     className="w-[600px] overflow-hidden rounded-[1.5rem] border-border/80 bg-sand-light p-2 shadow-[var(--shadow-lift)]"

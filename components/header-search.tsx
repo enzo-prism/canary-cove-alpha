@@ -15,24 +15,28 @@ export function HeaderSearch() {
   const [open, setOpen] = useState(false)
   const [shortcutHint, setShortcutHint] = useState("Ctrl K")
   const triggerRef = useRef<HTMLButtonElement | null>(null)
-  const wasOpen = useRef(false)
-
-  // The dialog's trigger lives outside the Radix Dialog, so Radix cannot
-  // restore focus on close. Return it to the header button ourselves (unless
-  // a result navigation already moved focus somewhere meaningful).
-  useEffect(() => {
-    if (wasOpen.current && !open) {
-      requestAnimationFrame(() => {
-        const active = document.activeElement
-        if (!active || active === document.body) triggerRef.current?.focus({ preventScroll: true })
-      })
-    }
-    wasOpen.current = open
-  }, [open])
+  const openerRef = useRef<HTMLElement | null>(null)
 
   const openSearch = () => {
+    // Preserve the keyboard shortcut or in-page entry point as well as the
+    // header button. A mobile-menu opener disappears, so it uses the fallback.
+    if (!document.querySelector('[data-testid="search-modal"][data-state="open"]')) {
+      openerRef.current = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    }
     setReady(true)
     setOpen(true)
+  }
+
+  const restoreFocus = (event: Event) => {
+    event.preventDefault()
+    const active = document.activeElement
+    // Navigation may already have focused the next page, or another dialog.
+    if (active instanceof HTMLElement && active !== document.body && active.isConnected && !active.closest('[data-testid="search-modal"]')) return
+    const opener = openerRef.current
+    const target = opener && opener !== document.body && opener.isConnected && opener.getClientRects().length > 0
+      ? opener
+      : triggerRef.current
+    target?.focus({ preventScroll: true })
   }
 
   useEffect(() => {
@@ -80,7 +84,7 @@ export function HeaderSearch() {
         <span className="sr-only">Search</span>
       </Button>
       {ready ? (
-        <SiteSearch variant="header" hideTrigger open={open} onOpenChange={setOpen} />
+        <SiteSearch variant="header" hideTrigger open={open} onOpenChange={setOpen} onCloseAutoFocus={restoreFocus} />
       ) : null}
     </>
   )

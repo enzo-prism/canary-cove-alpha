@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react"
 import Image from "next/image"
 import { motion, useScroll, useTransform } from "motion/react"
+import { Pause, Play } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { IMAGES, type ImageFocal } from "@/lib/images"
@@ -80,7 +81,6 @@ type HeroImageRotatorProps = {
 export function HeroImageRotator({ className, children, chrome }: HeroImageRotatorProps) {
   const rootRef = useRef<HTMLDivElement | null>(null)
   const motionOk = useMotionOk()
-  const [hasRotated, setHasRotated] = useState(false)
   // Scroll-linked depth: the photography sinks and dims as the page scrolls
   // away. Applied to an inner layer so the hero box itself never moves.
   const { scrollYProgress } = useScroll({ target: rootRef, offset: ["start start", "end start"] })
@@ -94,19 +94,31 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
   // remaining slides never compete with LCP; they mount (and start fetching)
   // right after hydration, well before the first 8s rotation.
   const [showAllSlides, setShowAllSlides] = useState(false)
+  const [paused, setPaused] = useState(false)
+  const [inView, setInView] = useState(true)
+  const [pageVisible, setPageVisible] = useState(true)
+  const [rotationCycle, setRotationCycle] = useState(0)
+  const loadedPhotos = useRef(new Set<string>())
 
   const goNext = useCallback(() => {
-    setHasRotated(true)
-    setActiveIndex((prev) => (prev + 1) % photos.length)
-  }, [photos.length])
+    setRotationCycle((cycle) => cycle + 1)
+    setActiveIndex((prev) => {
+      for (let step = 1; step < photos.length; step += 1) {
+        const next = (prev + step) % photos.length
+        if (loadedPhotos.current.has(photos[next].src)) return next
+      }
+      return prev
+    })
+  }, [photos])
 
   useEffect(() => {
-    const previousOrder = window.sessionStorage.getItem(HERO_ORDER_STORAGE_KEY)
+    let previousOrder: string | null = null
+    try { previousOrder = window.sessionStorage.getItem(HERO_ORDER_STORAGE_KEY) } catch { /* Storage can be unavailable in private browsing. */ }
     const shuffled = getRandomizedHeroImages(previousOrder)
 
     setPhotos(shuffled)
     setActiveIndex(0)
-    window.sessionStorage.setItem(HERO_ORDER_STORAGE_KEY, getOrderKey(shuffled))
+    try { window.sessionStorage.setItem(HERO_ORDER_STORAGE_KEY, getOrderKey(shuffled)) } catch { /* Rotation works without storage. */ }
 
     const idle =
       typeof window.requestIdleCallback === "function"
@@ -130,11 +142,27 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
   }, [])
 
   useEffect(() => {
+    const root = rootRef.current
+    if (!root) return
+    const observer = new IntersectionObserver(([entry]) => setInView(entry.isIntersecting))
+    observer.observe(root)
+    const onVisibilityChange = () => setPageVisible(document.visibilityState === "visible")
+    onVisibilityChange()
+    document.addEventListener("visibilitychange", onVisibilityChange)
+    return () => {
+      observer.disconnect()
+      document.removeEventListener("visibilitychange", onVisibilityChange)
+    }
+  }, [])
+
+  useEffect(() => {
     if (photos.length < 2 || !showAllSlides) return
-    if (prefersReducedMotion) return
+    if (prefersReducedMotion || paused || !inView || !pageVisible) return
+    // Restart the visual countdown alongside the timer after any pause.
+    setRotationCycle((cycle) => cycle + 1)
     const interval = window.setInterval(goNext, ROTATE_INTERVAL)
     return () => window.clearInterval(interval)
-  }, [goNext, photos.length, prefersReducedMotion, showAllSlides])
+  }, [goNext, photos.length, prefersReducedMotion, showAllSlides, paused, inView, pageVisible])
 
   return (
     <div
@@ -147,11 +175,12 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
           return (
             <div
               key={photo.src}
+              aria-hidden={!active}
               data-active={active ? "" : undefined}
+              style={{ animationPlayState: !active || paused || !inView || !pageVisible ? "paused" : "running" }}
               className={cn(
-                "hero-slide absolute inset-0",
+                "hero-slide ken-burns absolute inset-0",
                 active ? "opacity-100" : "opacity-0",
-                active && !hasRotated && "ken-burns",
               )}
             >
               <Image
@@ -168,6 +197,7 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
                   } satisfies CSSProperties
                 }
                 className="object-cover"
+                onLoad={() => loadedPhotos.current.add(photo.src)}
               />
             </div>
           )
@@ -198,7 +228,7 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
                 >
                   {isActive ? (
                     <span
-                      key={`${photo.src}-${activeIndex}`}
+                      key={`${photo.src}-${activeIndex}-${rotationCycle}`}
                       className="absolute inset-0 origin-left rounded-full bg-canary"
                       style={
                         prefersReducedMotion
@@ -211,6 +241,7 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
                               animationDuration: `${ROTATE_INTERVAL}ms`,
                               animationTimingFunction: "linear",
                               animationFillMode: "forwards",
+                              animationPlayState: paused || !inView || !pageVisible ? "paused" : "running",
                             } as CSSProperties)
                       }
                     />
@@ -221,8 +252,20 @@ export function HeroImageRotator({ className, children, chrome }: HeroImageRotat
           </div>
         </div>
       ) : null}
+      {!prefersReducedMotion && photos.length > 1 ? (
+        <button
+          type="button"
+          aria-label={paused ? "Resume property photos" : "Pause property photos"}
+          aria-pressed={paused}
+          onClick={() => setPaused((value) => !value)}
+          className="focus-ring absolute right-[var(--gutter)] top-4 z-30 flex h-11 min-w-11 items-center justify-center gap-2 rounded-full border border-white/40 bg-ink/70 px-3 text-sm text-white backdrop-blur-sm transition-colors hover:bg-ink"
+        >
+          {paused ? <Play aria-hidden="true" className="size-4" /> : <Pause aria-hidden="true" className="size-4" />}
+          <span className="hidden sm:inline">{paused ? "Resume photos" : "Pause photos"}</span>
+        </button>
+      ) : null}
       {chrome}
-      {children ? <div className="absolute inset-0 z-10">{children}</div> : null}
+      {children ? <div className="relative z-10 flex min-h-[inherit] items-end">{children}</div> : null}
     </div>
   )
 }

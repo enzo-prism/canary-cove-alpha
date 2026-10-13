@@ -2,6 +2,18 @@
 
 This log records production releases that materially change guest-facing behavior. Keep entries concise and evidence-based.
 
+## 2026-10-13 — Responsive guest journeys, navigation, forms, and media controls
+
+- Code commit: see the `main` push following `f9a60d8` ("Fix Canary Cove navigation, forms, and responsive UX").
+- Production: `https://www.canarycove.com`; deployment evidence is recorded after the main push.
+- Desktop dropdown Tab order, hover/click behavior, breakpoint cleanup, search opener focus, short-window search, and long smooth anchor alignment are corrected.
+- Hero copy grows with short windows. Photography, tickers, and decorative video have accessible pause controls and honor reduced motion/background visibility. Focused video controls remain available.
+- Carousels/lightboxes hide off-screen focus targets, expose phone tap arrows, and restore openers. Narrow grids, month selection, wizard progress, pagination, search controls, filters, and Main House prices remain usable at 320px; Safari media grids no longer widen the page.
+- Booking validates the Belize day, real dates, and whole adult counts; timezone-safe date reviews wrap complete details. Required choices remain selected, in-flight inputs lock, and short-window success dialogs scroll.
+- Release gate: typecheck, lint, 145 unit tests (16 files), production build, and 552 Playwright passes across Chromium/Firefox/WebKit with 30 designed skips. The 13-route audit spans widths 320–1920px and short landscape windows; synthetic forms never submit real leads.
+- Three intentional Darwin Chromium baselines were reviewed and refreshed (two home heroes and Stay gallery). Linux snapshots need their own runner refresh. Physical-device/assistive-technology acceptance and live lead delivery remain outside this emulated UX pass.
+- Audit findings and coverage: `docs/ux-audit-2026-10-13.md`; design system, QA criteria, playbook, and README updated.
+
 ## 2026-10-04 — Official Canary Cove logo across the site
 
 - Commit: see the `main` push that follows `d597ab0` ("Use the official Canary Cove logo…")

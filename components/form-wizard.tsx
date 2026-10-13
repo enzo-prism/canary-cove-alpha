@@ -48,7 +48,7 @@ export function FormStepIndicator({ steps, currentIndex, visitedCount, onSelectS
         {hint ? <p className="text-right text-xs text-muted-foreground">{hint}</p> : null}
       </div>
       <nav aria-label="Form progress">
-        <ol className="grid gap-1.5" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
+        <ol className="grid gap-0.5 min-[360px]:gap-1.5" style={{ gridTemplateColumns: `repeat(${steps.length}, minmax(0, 1fr))` }}>
           {steps.map((step, index) => {
             const isComplete = index < currentIndex
             const isCurrent = index === currentIndex
@@ -172,10 +172,12 @@ type OptionCardProps = {
   title: string
   description: string
   meta?: string
+  required?: boolean
+  describedBy?: string
 }
 
 /** Large tappable radio card. The title sits in its own span so it can be matched exactly. */
-export function OptionCard({ id, name, value, checked, onChange, icon: Icon, title, description, meta }: OptionCardProps) {
+export function OptionCard({ id, name, value, checked, onChange, icon: Icon, title, description, meta, required, describedBy }: OptionCardProps) {
   return (
     <label
       htmlFor={id}
@@ -193,6 +195,8 @@ export function OptionCard({ id, name, value, checked, onChange, icon: Icon, tit
         name={name}
         value={value}
         checked={checked}
+        required={required}
+        aria-describedby={describedBy}
         onChange={() => onChange(value)}
         className="sr-only"
       />
@@ -237,9 +241,13 @@ type ChipOptionProps = {
   icon?: LucideIcon
   label: string
   className?: string
+  /** Only optional radio groups can be cleared by clicking the selected chip. */
+  clearable?: boolean
+  required?: boolean
+  describedBy?: string
 }
 
-export function ChipOption({ id, name, value, checked, onChange, icon: Icon, label, className }: ChipOptionProps) {
+export function ChipOption({ id, name, value, checked, onChange, icon: Icon, label, className, clearable = true, required, describedBy }: ChipOptionProps) {
   return (
     <label
       htmlFor={id}
@@ -258,10 +266,12 @@ export function ChipOption({ id, name, value, checked, onChange, icon: Icon, lab
         name={name}
         value={value}
         checked={checked}
+        required={required}
+        aria-describedby={describedBy}
         onChange={() => onChange(value)}
         onClick={(event) => {
           // Optional chip groups can be cleared by choosing the active chip again.
-          if (checked) {
+          if (clearable && checked) {
             event.preventDefault()
             onChange("")
           }
@@ -310,6 +320,7 @@ export function WizardNav({
         <button
           type="button"
           onClick={onBack}
+          disabled={disabled ?? loading}
           className="focus-ring group/back inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full px-4 text-[15px] font-medium text-foreground/75 transition-colors duration-300 hover:text-foreground sm:-ml-3 sm:justify-start"
         >
           <ChevronLeft

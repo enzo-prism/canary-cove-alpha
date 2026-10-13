@@ -21,9 +21,12 @@ import {
 } from "lucide-react"
 
 import { trackFormSubmitAttempt, trackFormSubmitError, trackFormSubmitSuccess, trackLeadConversion } from "@/lib/analytics"
+import { addDays, isIsoDate, todayInPropertyTz } from "@/lib/availability/dates"
 import {
   countNights,
+  formatBookingDate,
   isBlank,
+  validateAdultGuests,
   validateDateRange,
   validateEmailPair,
   validateMainHouseEligibility,
@@ -151,12 +154,6 @@ const emptyValues = (defaults: Partial<BookingValues> = {}): BookingValues => ({
   ...defaults,
 })
 
-const formatIsoDate = (iso: string): string => {
-  const date = new Date(`${iso}T12:00:00`)
-  if (Number.isNaN(date.getTime())) return iso
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric", timeZone: "UTC" })
-}
-
 const ACCOMMODATION_TITLES: Record<string, string> = {
   villa: "Villa (1–3 suites)",
   "main-house": "Main House (5 suites)",
@@ -179,18 +176,12 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
   const headingRefs = useRef<Array<HTMLHeadingElement | null>>([])
   const cardRef = useRef<HTMLDivElement | null>(null)
 
-  const today = new Date().toISOString().slice(0, 10)
+  const today = todayInPropertyTz()
   const nights = countNights(values.arrival, values.departure)
 
   const setValue = (key: keyof BookingValues, value: string) => {
     setValues((current) => ({ ...current, [key]: value }))
-    if (invalidFields.has(key)) {
-      setInvalidFields((current) => {
-        const next = new Set(current)
-        next.delete(key)
-        return next
-      })
-    }
+    setInvalidFields(new Set())
     setStepError(null)
   }
 
@@ -238,7 +229,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
     if (index === 1) {
       const range = validateDateRange(values.arrival, values.departure)
       if (range) {
-        failStep(range, ["departure"])
+        failStep(range, ["arrival", "departure"])
         trackFormSubmitError(FORM_KEY, "invalid_date_range")
         return false
       }
@@ -246,12 +237,10 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
     }
 
     if (index === 2) {
-      if (values.adultGuests.trim() !== "") {
-        const adults = Number.parseInt(values.adultGuests, 10)
-        if (Number.isNaN(adults) || adults < 1) {
-          failStep("Please enter at least 1 adult, or leave the field blank if you're not sure yet.", ["adultGuests"])
-          return false
-        }
+      const partyError = validateAdultGuests(values.adultGuests)
+      if (partyError) {
+        failStep(partyError, ["adultGuests"])
+        return false
       }
       return true
     }
@@ -358,8 +347,10 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
   }
 
   const adjustAdults = (delta: number) => {
-    const current = Number.parseInt(values.adultGuests, 10)
-    const next = Number.isNaN(current) ? (delta > 0 ? 1 : "") : Math.max(1, current + delta)
+    const current = Number(values.adultGuests)
+    const next = !values.adultGuests || validateAdultGuests(values.adultGuests)
+      ? (delta > 0 ? 1 : "")
+      : Math.max(1, current + delta)
     setValue("adultGuests", next === "" ? "" : String(next))
   }
 
@@ -380,8 +371,12 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
       label: "Dates",
       value:
         values.arrival && values.departure
-          ? `${formatIsoDate(values.arrival)} → ${formatIsoDate(values.departure)}${nights !== null && nights > 0 ? ` · ${nights} night${nights === 1 ? "" : "s"}` : ""}`
-          : "Flexible dates",
+          ? `${formatBookingDate(values.arrival)} → ${formatBookingDate(values.departure)}${nights !== null && nights > 0 ? ` · ${nights} night${nights === 1 ? "" : "s"}` : ""}`
+          : values.arrival
+            ? `Arriving ${formatBookingDate(values.arrival)} · departure flexible`
+            : values.departure
+              ? `Departing ${formatBookingDate(values.departure)} · arrival flexible`
+              : "Flexible dates",
       step: 1,
     },
     {
@@ -419,6 +414,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
           className="pointer-events-none absolute inset-x-8 top-0 h-px bg-gradient-to-r from-transparent via-canary-deep/70 to-transparent"
         />
         <form onSubmit={handleSubmit} noValidate className="p-5 sm:p-8 lg:p-10">
+          <fieldset disabled={status === "sending"} className="min-w-0 border-0 p-0">
           <div className="flex items-start justify-between gap-6">
             <div className="space-y-3">
               <p className="eyebrow eyebrow-plain">Request to book</p>
@@ -463,6 +459,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                       key={option.value}
                       id={`accommodation-${option.value}`}
                       name="accommodation"
+                      required
+                      describedBy={invalidFields.has("accommodation") ? "booking-step-error" : undefined}
                       value={option.value}
                       checked={values.accommodation === option.value}
                       onChange={(value) => setValue("accommodation", value)}
@@ -501,6 +499,9 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                       key={option.value}
                       id={`returning-${option.value}`}
                       name="returningGuest"
+                      required
+                      clearable={false}
+                      describedBy={invalidFields.has("returningGuest") ? "booking-step-error" : undefined}
                       value={option.value}
                       checked={values.returningGuest === option.value}
                       onChange={(value) => setValue("returningGuest", value)}
@@ -542,8 +543,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     value={values.arrival}
                     onChange={(event) => setValue("arrival", event.target.value)}
                     className={cn(wizardFieldClass, "tabular-nums")}
-                    aria-invalid={invalidFields.has("departure") ? true : undefined}
-                    aria-describedby={invalidFields.has("departure") ? "booking-step-error" : undefined}
+                    aria-invalid={invalidFields.has("arrival") ? true : undefined}
+                    aria-describedby={invalidFields.has("arrival") ? "booking-step-error" : undefined}
                   />
                 </div>
                 <div className="space-y-2">
@@ -554,7 +555,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                     id="departure"
                     name="departure"
                     type="date"
-                    min={values.arrival || today}
+                    min={isIsoDate(values.arrival) && values.arrival >= today && values.arrival < "9999-12-31" ? addDays(values.arrival, 1) : today}
                     autoComplete="off"
                     value={values.departure}
                     onChange={(event) => setValue("departure", event.target.value)}
@@ -576,7 +577,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                   >
                     <MoonStar className="h-4 w-4 text-canary" aria-hidden />
                     <span className="tabular-nums">
-                      {formatIsoDate(values.arrival)} → {formatIsoDate(values.departure)} · {nights} night
+                      {formatBookingDate(values.arrival)} → {formatBookingDate(values.departure)} · {nights} night
                       {nights === 1 ? "" : "s"}
                     </span>
                   </p>
@@ -788,7 +789,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                         onClick={() => addRequestStarter(starter.text)}
                         aria-pressed={added}
                         className={cn(
-                          "focus-ring inline-flex min-h-10 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium transition-colors duration-500",
+                          "focus-ring inline-flex min-h-11 items-center gap-1.5 rounded-full border px-3.5 text-[13px] font-medium transition-colors duration-500",
                           added
                             ? "border-lagoon/30 bg-lagoon/10 text-lagoon"
                             : "border-border/90 bg-white/55 text-foreground hover:border-ink/40 hover:bg-white",
@@ -843,7 +844,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
                         <row.icon className="mt-1 h-4 w-4 shrink-0 text-lagoon" strokeWidth={1.75} aria-hidden />
                         <div className="min-w-0">
                           <dt className="text-xs text-muted-foreground">{row.label}</dt>
-                          <dd className="truncate text-sm font-medium text-foreground">{row.value}</dd>
+                          <dd className="text-sm font-medium text-foreground [overflow-wrap:anywhere]">{row.value}</dd>
                         </div>
                       </div>
                       <button
@@ -889,6 +890,7 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
               />
             </StepPanel>
           </div>
+          </fieldset>
         </form>
       </div>
       <AlertDialogContent
@@ -898,7 +900,8 @@ export function BookingForm({ className, defaultAccommodation, defaultReturningG
           event.preventDefault()
           requestAnimationFrame(() => focusStepHeading(headingRefs.current[0] ?? null, cardRef.current))
         }}
-        className="w-[calc(100%-2rem)] max-w-md gap-6 rounded-[28px] border-border/70 bg-surface p-7 shadow-[var(--shadow-lift)] sm:rounded-[28px] sm:p-9">
+        data-lenis-prevent
+        className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-md gap-6 overflow-y-auto overscroll-contain rounded-[28px] border-border/70 bg-surface p-7 shadow-[var(--shadow-lift)] sm:rounded-[28px] sm:p-9">
         <SuccessMark />
         <AlertDialogHeader className="gap-3 text-left sm:text-left">
           <AlertDialogTitle className="font-display text-[2.5rem] font-normal leading-none tracking-[-0.01em]">

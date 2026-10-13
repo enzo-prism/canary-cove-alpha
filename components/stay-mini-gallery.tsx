@@ -127,20 +127,21 @@ export function StayMiniGallery({ items }: StayMiniGalleryProps) {
           ) : null}
         </div>
 
-        <div className="flex items-center gap-5">
-          <div className="flex items-center gap-2.5 px-1">
+        <div className="flex max-w-full flex-wrap items-center gap-3 sm:gap-5">
+          <div className="flex flex-wrap items-center gap-1">
             {galleryItems.map((_, index) => (
               <button
                 key={index}
                 type="button"
                 onClick={() => api?.scrollTo(index)}
                 className={cn(
-                  "focus-ring relative h-[3px] rounded-full transition-[width,background-color] duration-700 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-[5px] after:-inset-y-5 after:content-[''] motion-reduce:transition-none",
-                  selectedIndex === index ? "w-12 bg-foreground" : "w-7 bg-ink/20 hover:bg-ink/45",
+                  "focus-ring flex size-11 items-center justify-center rounded-full",
                 )}
                 aria-label={`Go to slide ${index + 1}`}
                 aria-current={selectedIndex === index ? "true" : undefined}
-              />
+              >
+                <span aria-hidden="true" className={cn("h-[3px] rounded-full transition-[width,background-color] duration-700 ease-[var(--ease-out-expo)] motion-reduce:transition-none", selectedIndex === index ? "w-11 bg-foreground" : "w-7 bg-ink/20")} />
+              </button>
             ))}
           </div>
           <div className="flex items-center gap-2">

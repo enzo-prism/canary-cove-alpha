@@ -1,4 +1,5 @@
 import { expect, test, type Page } from "@playwright/test"
+import { waitForPageReady } from "./helpers"
 
 // components/motion/smooth-scroll.tsx skips Lenis for automated browsers, so
 // the rest of the suite always runs on native scrolling. These tests opt back
@@ -17,7 +18,7 @@ test.describe("smooth scrolling (Lenis on desktop pointers)", () => {
 
   const openWithLenis = async (page: Page, path: string) => {
     await page.goto(path)
-    await page.waitForLoadState("domcontentloaded")
+    await waitForPageReady(page)
     await expect(page.locator("html")).toHaveClass(/\blenis\b/)
     await page.mouse.move(720, 500)
   }
@@ -44,6 +45,21 @@ test.describe("smooth scrolling (Lenis on desktop pointers)", () => {
     await page.waitForTimeout(1_200)
     expect(await page.evaluate(() => window.scrollY)).toBe(0)
   })
+
+  for (const width of [320, 1440]) {
+    test(`long in-page links reach their section below the header at ${width}px`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await openWithLenis(page, "/stay")
+      await page.getByRole("link", { name: "5-suite Main House", exact: true }).click()
+      await expect.poll(() => page.locator("#main-house-stay").evaluate((target) => {
+        const header = document.querySelector("header")!
+        const gap = target.getBoundingClientRect().top - header.getBoundingClientRect().bottom
+        // A link near the page top uses the expanded header offset; the
+        // header then shrinks during the trip, leaving a little extra air.
+        return gap >= 0 && gap <= 64
+      }), { timeout: 10_000 }).toBe(true)
+    })
+  }
 
   test("dialogs pause page scrolling and release it on close", async ({ page }) => {
     await openWithLenis(page, "/")

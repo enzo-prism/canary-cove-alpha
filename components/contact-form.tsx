@@ -97,14 +97,8 @@ export function ContactForm() {
 
   const activePrompt = TOPIC_OPTIONS.find((option) => option.value === topic)?.prompt ?? DEFAULT_PROMPT
 
-  const clearFieldError = (field: string) => {
-    if (invalidFields.has(field)) {
-      setInvalidFields((current) => {
-        const next = new Set(current)
-        next.delete(field)
-        return next
-      })
-    }
+  const clearFieldError = () => {
+    setInvalidFields(new Set())
     setStepError(null)
   }
 
@@ -238,7 +232,7 @@ export function ContactForm() {
                 Your note is in. We respond within one business day
                 {sentSummary.email ? (
                   <>
-                    {" "}at <span className="font-medium text-foreground">{sentSummary.email}</span>
+                    {" "}at <span className="font-medium text-foreground [overflow-wrap:anywhere]">{sentSummary.email}</span>
                   </>
                 ) : null}
                 {sentSummary.topic && TOPIC_LABELS[sentSummary.topic] ? (
@@ -265,7 +259,10 @@ export function ContactForm() {
               <button
                 type="button"
                 className="focus-ring inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-5 text-[15px] font-medium text-foreground/75 transition-colors hover:text-foreground"
-                onClick={() => setStatus("idle")}
+                onClick={() => {
+                  setStatus("idle")
+                  focusHeading(0)
+                }}
               >
                 <RotateCcw className="h-4 w-4" aria-hidden />
                 Send another message
@@ -274,6 +271,7 @@ export function ContactForm() {
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate>
+            <fieldset disabled={status === "sending"} className="min-w-0 border-0 p-0">
             <div className="space-y-3">
               <p className="eyebrow eyebrow-plain">Write to us</p>
               <h2 className="font-display text-[2.25rem] leading-[1.02] tracking-[-0.015em] text-balance text-foreground sm:text-[2.75rem]">
@@ -332,14 +330,14 @@ export function ContactForm() {
                     value={message}
                     onChange={(event) => {
                       setMessage(event.target.value)
-                      clearFieldError("message")
+                      clearFieldError()
                     }}
                     autoComplete="off"
                     placeholder={activePrompt}
                     className={wizardTextareaClass}
                     aria-required
                     aria-invalid={invalidFields.has("message") ? true : undefined}
-                    aria-describedby="message-helper message-counter"
+                    aria-describedby={invalidFields.has("message") ? "contact-step-error message-helper message-counter" : "message-helper message-counter"}
                   />
                   <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between sm:gap-6">
                     <p id="message-helper" className="form-helper">
@@ -379,7 +377,7 @@ export function ContactForm() {
                       value={name}
                       onChange={(event) => {
                         setName(event.target.value)
-                        clearFieldError("name")
+                        clearFieldError()
                       }}
                       className={wizardFieldClass}
                       aria-required
@@ -400,7 +398,7 @@ export function ContactForm() {
                       value={email}
                       onChange={(event) => {
                         setEmail(event.target.value)
-                        clearFieldError("email")
+                        clearFieldError()
                       }}
                       className={wizardFieldClass}
                       aria-required
@@ -461,6 +459,7 @@ export function ContactForm() {
                 />
               </StepPanel>
             </div>
+            </fieldset>
           </form>
         )}
       </div>

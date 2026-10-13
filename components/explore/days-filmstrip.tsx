@@ -6,7 +6,7 @@ import { ArrowLeft, ArrowRight } from "lucide-react"
 import { motion, useScroll, useTransform } from "motion/react"
 
 import { Container } from "@/components/layout/container"
-import { useMotionOk } from "@/components/motion/use-motion-ok"
+import { useFinePointer, useMotionOk } from "@/components/motion/use-motion-ok"
 import { imageObjectPosition, type ImageRecord } from "@/lib/images"
 import { cn } from "@/lib/utils"
 
@@ -34,6 +34,7 @@ const PIN_QUERY = "(min-width: 1024px) and (min-height: 760px)"
  */
 export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProps) {
   const ok = useMotionOk()
+  const finePointer = useFinePointer()
   const sectionRef = useRef<HTMLElement>(null)
   const viewportRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLOListElement>(null)
@@ -41,7 +42,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
   const [distance, setDistance] = useState(0)
 
   useEffect(() => {
-    if (!ok) {
+    if (!ok || !finePointer) {
       setPinned(false)
       return
     }
@@ -50,7 +51,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
     sync()
     media.addEventListener("change", sync)
     return () => media.removeEventListener("change", sync)
-  }, [ok])
+  }, [ok, finePointer])
 
   useEffect(() => {
     if (!pinned) return
@@ -74,7 +75,7 @@ export function DaysFilmstrip({ id, items, heading, endCard }: DaysFilmstripProp
     const viewport = viewportRef.current
     const card = trackRef.current?.querySelector("li")
     if (!viewport || !card) return
-    viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + 20), behavior: "smooth" })
+    viewport.scrollBy({ left: direction * (card.getBoundingClientRect().width + 20), behavior: ok ? "smooth" : "auto" })
   }
 
   return (

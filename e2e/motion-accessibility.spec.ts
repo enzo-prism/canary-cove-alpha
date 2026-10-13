@@ -1,0 +1,73 @@
+import { expect, test } from "@playwright/test"
+
+import { expectTapTarget, waitForPageReady } from "./helpers"
+
+test.describe("guest control of automatic motion", () => {
+  test("interior tickers and reef motion expose accessible pause controls", async ({ page }) => {
+    for (const [path, label] of [["/stay", "amenities ticker"], ["/experiences", "activities ticker"], ["/reviews", "guest locations ticker"]]) {
+      await page.goto(path)
+      await waitForPageReady(page)
+      const control = page.getByRole("button", { name: `Pause ${label}`, exact: true })
+      await expectTapTarget(control)
+      expect(await control.evaluate((node) => node.closest('[aria-hidden="true"]'))).toBeNull()
+      await control.click()
+      await expect(page.getByRole("button", { name: `Resume ${label}`, exact: true })).toHaveAttribute("aria-pressed", "true")
+    }
+    await page.goto("/experiences")
+    await waitForPageReady(page)
+    const pause = page.getByRole("button", { name: "Pause reef background", exact: true })
+    await expectTapTarget(pause)
+    await pause.click()
+    await expect.poll(() => page.locator('video[poster$="manta-loop-poster.jpg"]').evaluate((video: HTMLVideoElement) => video.paused)).toBe(true)
+  })
+  test("property photos can be paused without hiding booking actions", async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto("/")
+    await waitForPageReady(page)
+    const pause = page.getByRole("button", { name: "Pause property photos" })
+    await expectTapTarget(pause)
+    await pause.click()
+    const resume = page.getByRole("button", { name: "Resume property photos" })
+    await expect(resume).toHaveAttribute("aria-pressed", "true")
+    const activePhoto = page.locator(".hero-slide[data-active] img")
+    const source = await activePhoto.getAttribute("src")
+    await page.waitForTimeout(8_200)
+    await expect(activePhoto).toHaveAttribute("src", source!)
+    await expect(page.getByTestId("homepage-primary-cta")).toBeVisible()
+    await resume.click()
+    await expect(pause).toHaveAttribute("aria-pressed", "false")
+  })
+
+  test("amenities ticker has a persistent keyboard pause control", async ({ page }) => {
+    await page.goto("/")
+    await waitForPageReady(page)
+    const pause = page.getByRole("button", { name: "Pause amenities ticker" })
+    await expectTapTarget(pause)
+    await pause.focus()
+    await page.keyboard.press("Enter")
+    await page.mouse.move(0, 0)
+    await expect(page.locator(".marquee-track")).toHaveCSS("animation-play-state", "paused")
+    const resume = page.getByRole("button", { name: "Resume amenities ticker" })
+    await expect(resume).toBeFocused()
+    await page.keyboard.press("Enter")
+    await expect(page.locator(".marquee-track")).toHaveCSS("animation-play-state", "running")
+  })
+
+  test("reef background pause and changed motion preference stop playback", async ({ page }) => {
+    await page.goto("/")
+    await waitForPageReady(page)
+    const pause = page.getByRole("button", { name: "Pause reef background" })
+    await pause.scrollIntoViewIfNeeded()
+    await expectTapTarget(pause)
+    const background = page.locator('video[poster$="manta-loop-poster.jpg"]')
+    await pause.click()
+    await expect.poll(() => background.evaluate((video: HTMLVideoElement) => video.paused)).toBe(true)
+    await page.getByRole("button", { name: "Resume reef background" }).click()
+    await page.emulateMedia({ reducedMotion: "reduce" })
+    await expect(background).not.toHaveAttribute("src")
+    await expect.poll(() => background.evaluate((video: HTMLVideoElement) => video.paused)).toBe(true)
+    await expect(page.getByRole("button", { name: "Pause property photos" })).toHaveCount(0)
+    await expect(page.getByRole("button", { name: "Pause reef background" })).toHaveCount(0)
+    await expect(page.locator(".marquee-track")).toHaveCSS("animation", /none/)
+  })
+})

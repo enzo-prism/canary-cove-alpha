@@ -35,7 +35,7 @@ test.describe("release gate smoke coverage", () => {
 
   for (const route of SITE_ROUTES) {
     test(`route ${route} loads cleanly`, async ({ page }) => {
-      const issues = installErrorCollectors(page)
+      const issues = await installErrorCollectors(page)
 
       await page.goto(route)
       await waitForPageReady(page)
@@ -126,13 +126,18 @@ test.describe("release gate smoke coverage", () => {
     await privacyLink.scrollIntoViewIfNeeded()
     await privacyLink.click()
     await expect(page).toHaveURL(/\/privacy$/)
+    await expect(page.getByRole("heading", { level: 1, name: "Privacy Policy", exact: true })).toBeVisible()
 
-    await page.goto("/")
+    // Follow the actual guest path. A hard goto immediately after an
+    // optimistic route URL can race Firefox's pending client navigation.
+    await page.getByRole("link", { name: "Canary Cove home" }).first().click()
+    await expect(page.getByRole("heading", { level: 1, name: "Private estate on Ambergris Caye", exact: true })).toBeVisible()
     await waitForPageReady(page)
     const termsLink = page.getByRole("link", { name: "Terms" }).last()
     await termsLink.scrollIntoViewIfNeeded()
     await termsLink.click()
     await expect(page).toHaveURL(/\/terms$/)
+    await expect(page.getByRole("heading", { level: 1, name: "Terms of Use", exact: true })).toBeVisible()
   })
 
   test("reef encounter films are accessible and load on demand", async ({ page }) => {

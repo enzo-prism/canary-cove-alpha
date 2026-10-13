@@ -89,10 +89,10 @@ Rules:
 | `SplitText` | Word-by-word masked rise for headlines. `mode="reveal"` (on scroll) or `mode="enter"` (on load, for heroes). Text content stays identical. |
 | `ScrollWordReveal` | Statement paragraph whose words light up with scroll progress. |
 | `Parallax` | Wrap a `fill` image inside a positioned, sized frame: `<div className="media-frame relative aspect-[4/5]"><Parallax><Image fill …/></Parallax></div>`. |
-| `Marquee` | Infinite CSS ticker (pauses on hover/reduced motion). |
+| `Marquee` | Infinite CSS ticker with a 44px pause control; pauses on hover/reduced motion. Use `label` for its subject, `contentHidden` for duplicate decorative content, and `maskClassName` for text masking. Never hide the control with an ancestor `aria-hidden` or mask. |
 | `CountUp` | Number that counts up when first seen; server-renders the final value. |
 | `Magnetic` | Desktop-only magnetic pull for a hero CTA. |
-| `AmbientVideo` | Muted decorative loop (aria-hidden, lazy, pauses off-screen, poster-only for reduced motion). Never on `/adventures` (its tests count exactly 3 `<video>` elements) and never inside `[data-testid=property-film]`. |
+| `AmbientVideo` | Muted decorative loop (video aria-hidden, lazy, pauses off-screen/in background tabs, poster-only for reduced motion). Set `showPauseControl` or supply a visible sibling control with `paused`; never hide the control from assistive technology. Never on `/adventures` and never inside `[data-testid=property-film]`. |
 | `LocalTime` | Live San Pedro clock (placeholder until mounted). |
 | `ScrollProgress` | Header hairline that fills with page progress. |
 | `SmoothScroll` | Lenis inertial wheel scrolling on desktop pointers (`autoRaf: true` is required in Lenis 1.3). Drives the real window scroll (sticky/anchors/IO unaffected). Off for touch, reduced motion and automation (`e2e/smooth-scroll.spec.ts` re-enables it). Halts its glide on any click/keypress so programmatic scrolls win; Shift+wheel passes through to horizontal rails. Add `data-lenis-prevent` only to areas that genuinely scroll on their own. |
@@ -117,6 +117,8 @@ Rules:
 - One visible h1 per page. Headline split spans keep textContent byte-identical.
 - Never put `text-shadow` on a `SplitText` headline: each word is a clipped mask box, so the blur renders as rectangles. Use a `filter: drop-shadow(...)` on the heading instead.
 - Contrast: body text on sand uses `text-foreground` or `text-muted-foreground`; on reef use white at ≥70% opacity.
-- Touch targets ≥44px on mobile.
+- Touch targets ≥44px on mobile in their actual rendered boxes, including secondary controls and completed wizard steps. Reduce gaps or column counts on narrow phones instead of shrinking controls.
+- Carousels keep off-screen slides inert/aria-hidden while retaining useful partial previews. Photo lightboxes provide tap arrows as well as swipe/keyboard controls. Pin scroll-driven filmstrips only for fine pointers when the full content fits.
+- The hero grows with its copy on short screens. Its photo pause stops zoom and rotation; the countdown restarts with the rotation timer on resume.
 - Guest quotes stay byte-identical to `lib/testimonial-spotlights.ts` or the guestbook. Never paraphrase or invent attributed quotes.
 - Keep every existing `id`, `data-testid`, analytics event and form behavior; see `docs/qa-success-criteria.md` and `e2e/`.

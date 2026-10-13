@@ -46,7 +46,14 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
 
   useEffect(() => {
     if (!emblaApi) return
-    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap())
+    const onSelect = () => {
+      const selected = emblaApi.selectedScrollSnap()
+      const focusedSlide = emblaApi.slideNodes().findIndex((slide) => slide.contains(document.activeElement))
+      if (focusedSlide !== -1 && focusedSlide !== selected) {
+        viewportNode.current?.focus({ preventScroll: true })
+      }
+      setSelectedIndex(selected)
+    }
     onSelect()
     emblaApi.on("select", onSelect)
     emblaApi.on("reInit", onSelect)
@@ -58,14 +65,14 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
 
   const handleKeyDown = useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return
+      event.preventDefault()
       const now = Date.now()
       if (now - keyThrottleRef.current < 250) return
       if (event.key === "ArrowLeft") {
-        event.preventDefault()
         emblaApi?.scrollPrev()
         keyThrottleRef.current = now
       } else if (event.key === "ArrowRight") {
-        event.preventDefault()
         emblaApi?.scrollNext()
         keyThrottleRef.current = now
       }
@@ -162,6 +169,9 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
       </div>
 
       <div className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
+        <span className="sr-only" role="status" aria-live="polite" aria-atomic="true">
+          {models[selectedIndex] ? `${models[selectedIndex].name}, space ${selectedIndex + 1} of ${models.length}` : null}
+        </span>
         <div
           className="overflow-hidden touch-pan-y overscroll-x-contain overscroll-y-contain carousel-viewport cursor-grab select-none active:cursor-grabbing focus-ring rounded-[var(--radius-media)]"
           ref={(node) => {
@@ -169,6 +179,8 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
             viewportRef(node)
           }}
           tabIndex={0}
+          role="region"
+          aria-roledescription="carousel"
           aria-label="Estate spaces slider"
           onKeyDown={handleKeyDown}
           onPointerEnter={() => {
@@ -189,6 +201,8 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                   role="group"
                   aria-roledescription="slide"
                   aria-label={`${index + 1} of ${models.length}: ${model.name}`}
+                  aria-hidden={!active || undefined}
+                  inert={!active}
                   className="min-w-0 flex-[0_0_100%] carousel-slide"
                 >
                   <div className="grid gap-8 lg:grid-cols-[minmax(0,1.35fr)_minmax(0,0.65fr)] lg:items-stretch lg:gap-14">
@@ -275,11 +289,16 @@ export function ModelCarousel({ models }: ModelCarouselProps) {
                 onClick={() => scrollTo(index)}
                 aria-label={`Go to ${model.name}`}
                 aria-current={index === selectedIndex ? "true" : undefined}
-                className={cn(
-                  "relative h-[3px] rounded-full transition-[width,background-color] duration-500 ease-[var(--ease-out-expo)] after:absolute after:-inset-x-1 after:-inset-y-5 after:content-['']",
-                  index === selectedIndex ? "w-14 bg-foreground" : "w-7 bg-muted-foreground/35 hover:bg-muted-foreground/60",
-                )}
-              />
+                className="focus-ring flex h-11 min-w-11 items-center justify-center rounded-full"
+              >
+                <span
+                  aria-hidden="true"
+                  className={cn(
+                    "h-[3px] rounded-full transition-[width,background-color] duration-500 ease-[var(--ease-out-expo)] motion-reduce:transition-none",
+                    index === selectedIndex ? "w-14 bg-foreground" : "w-7 bg-muted-foreground/35 hover:bg-muted-foreground/60",
+                  )}
+                />
+              </button>
             )
           })}
         </div>

@@ -25,13 +25,18 @@ This document defines the production-readiness bar for the public marketing site
 - The homepage diving film starts only after a guest click (no `<video>` inside `[data-testid=property-film]` before play); do not ship the raw autoplay MP4. The decorative muted manta loop behind it is aria-hidden, lazy, pauses off-screen, and never plays under reduced motion.
 - Hash-linked sections land cleanly below the sticky header on routes that use in-page navigation.
 - `/adventures#reef-encounters` exposes three playable reef films with matching posters and sources.
-- Reef films use native controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
+- Reef films use the shared accessible video controls, keyboard focus, inline playback, and never autoplay; only the featured film preloads metadata.
 - Production reef-film MP4s return `video/mp4` and support byte-range responses (`206`).
 
 ## Responsive & usability criteria
 
 - Core layouts stay free of horizontal overflow at mobile, tablet, and desktop breakpoints.
 - Primary mobile actions remain at least `44x44` pixels for touch.
+- Measure actual boxes at 320px and 390px, including search-history removal, instant/fallback answer links, and visited booking steps. Narrow month grids and pagination must not shrink their targets.
+- Carousel pagination and lightbox arrows have 44px targets; off-screen slides do not expose invisible keyboard targets, while real partial previews remain operable.
+- Crossing the 1024px navigation breakpoint dismisses obsolete overlays, releases scroll locks, and restores visible focus. Dropdown links support normal Tab traversal; closing search restores its actual opener.
+- Automatic photography, tickers, and decorative reef loops offer accessible pause controls and stop under reduced motion. Focused video controls never time out.
+- Booking dates reject past/impossible dates using Belize's current day. Adult counts accept whole positive numbers. Selected dates render consistently across visitor timezones, and sending locks form inputs.
 - Key content blocks remain visible and within the viewport after resize changes.
 - Carousels support touch, wheel, keyboard, and snap cleanly to full slides.
 - Reef-film cards stack cleanly on smaller screens, preserve 16:9 media framing, and introduce no horizontal overflow.
@@ -70,6 +75,11 @@ This document defines the production-readiness bar for the public marketing site
 - `e2e/design-visual.spec.ts`: Chromium-only visual baselines
 - `e2e/smooth-scroll.spec.ts`: Lenis-on wheel scrolling, mid-glide hand-off to programmatic scrolls, and dialog scroll locking (Chromium)
 - `e2e/slider-swipe.spec.ts`, `e2e/slider-snap.spec.ts`: slider interaction quality
+- `e2e/audit-responsive.spec.ts`: 13 public routes at 10 viewport sizes, short landscape journeys, breakpoint recovery, internal route/anchor inventory, and default/interactive phone targets
+- `e2e/navigation-accessibility.spec.ts`: Tab order, hover/click behavior, breakpoint focus, search opener restoration, short-window search
+- `e2e/form-edge-cases.spec.ts`: Belize-day validation, UTC+13 review dates, unsupported years, party counts, long review details, sending state, success/retry focus
+- `e2e/media-accessibility.spec.ts`: slide visibility/focus, 44px pagination, mobile lightboxes, outdoor fit fallback, focused video controls
+- `e2e/motion-accessibility.spec.ts`: accessible pause controls, persistent pause state, and changed reduced-motion preferences
 
 ## Notes
 

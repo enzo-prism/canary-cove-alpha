@@ -5,7 +5,7 @@ import Image from "next/image"
 import { motion, useScroll, useTransform } from "motion/react"
 
 import { CtaLink } from "@/components/ui/cta-link"
-import { useMotionOk } from "@/components/motion/use-motion-ok"
+import { useFinePointer, useMotionOk } from "@/components/motion/use-motion-ok"
 import { DAY_MOMENTS } from "@/lib/homepage-content"
 import { imageObjectPosition } from "@/lib/images"
 import { cn } from "@/lib/utils"
@@ -71,6 +71,7 @@ function Intro() {
  */
 export function DayAtTheCove() {
   const ok = useMotionOk()
+  const finePointer = useFinePointer()
   const [wide, setWide] = useState(false)
   const sectionRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
@@ -84,7 +85,7 @@ export function DayAtTheCove() {
     return () => media.removeEventListener("change", sync)
   }, [])
 
-  const pinned = ok && wide
+  const pinned = ok && wide && finePointer
 
   useEffect(() => {
     if (!pinned) return

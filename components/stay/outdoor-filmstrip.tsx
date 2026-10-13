@@ -5,7 +5,7 @@ import Image from "next/image"
 import { ArrowLeft, ArrowRight } from "lucide-react"
 import { motion, useMotionValue, useMotionValueEvent, useScroll } from "motion/react"
 
-import { useMotionOk } from "@/components/motion/use-motion-ok"
+import { useFinePointer, useMotionOk } from "@/components/motion/use-motion-ok"
 import { PhotoLightbox } from "@/components/photo-lightbox"
 import { SectionHeading } from "@/components/section-heading"
 import type { StayGalleryFeature } from "@/components/stay-gallery-section"
@@ -48,16 +48,20 @@ const clamp = (value: number, min: number, max: number) => Math.min(max, Math.ma
  */
 export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: OutdoorFilmstripProps) {
   const ok = useMotionOk()
+  const finePointer = useFinePointer()
   const [wide, setWide] = useState(false)
   const [distance, setDistance] = useState(0)
+  const [canFit, setCanFit] = useState(false)
   const [openIndex, setOpenIndex] = useState<number | null>(null)
   const wrapRef = useRef<HTMLDivElement>(null)
   const scrollerRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
+  const headingRef = useRef<HTMLDivElement>(null)
+  const progressRef = useRef<HTMLDivElement>(null)
   const headerPx = useRef(72)
   const x = useMotionValue(0)
   const pinnedProgress = useMotionValue(0)
-  const pinned = ok && wide && distance > 0
+  const pinned = ok && finePointer && wide && distance > 0 && canFit
 
   const { scrollY } = useScroll()
   const { scrollXProgress } = useScroll({ container: scrollerRef })
@@ -81,10 +85,19 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
       const header = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--site-header-height"))
       headerPx.current = Number.isFinite(header) ? header : 72
       setDistance(Math.max(0, Math.round(track.scrollWidth - window.innerWidth)))
+      const rem = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16
+      // The pinned layout needs 4rem padding, two 2.5rem gaps, and all
+      // heading/photo/caption content. Fall back to native scrolling when
+      // a short desktop window or larger text would clip any of it.
+      const contentHeight = (headingRef.current?.offsetHeight ?? 0) + track.offsetHeight + (progressRef.current?.offsetHeight ?? 0) + 9 * rem
+      setCanFit(contentHeight <= window.innerHeight - headerPx.current)
     }
     measure()
     const ro = new ResizeObserver(measure)
     ro.observe(track)
+    if (headingRef.current) ro.observe(headingRef.current)
+    if (progressRef.current) ro.observe(progressRef.current)
+    document.fonts.ready.then(measure)
     window.addEventListener("resize", measure)
     return () => {
       ro.disconnect()
@@ -144,7 +157,7 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
   const nudge = (direction: 1 | -1) => {
     const scroller = scrollerRef.current
     if (!scroller) return
-    scroller.scrollBy({ left: direction * scroller.clientWidth * 0.8, behavior: "smooth" })
+    scroller.scrollBy({ left: direction * scroller.clientWidth * 0.8, behavior: ok ? "smooth" : "auto" })
   }
 
   return (
@@ -152,6 +165,7 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
       id={id}
       ref={wrapRef}
       className="relative"
+      data-pinned={pinned ? "true" : "false"}
       style={pinned ? { height: `calc(100svh - var(--site-header-height) + ${distance}px)` } : undefined}
     >
       <div
@@ -161,7 +175,7 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
             "sticky top-[var(--site-header-height)] flex h-[calc(100svh-var(--site-header-height))] flex-col justify-center overflow-clip py-8",
         )}
       >
-        <div className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
+        <div ref={headingRef} className="mx-auto w-full max-w-[1320px] px-[var(--gutter)]">
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
             <SectionHeading
               align="split"
@@ -253,7 +267,7 @@ export function OutdoorFilmstrip({ id, eyebrow, title, description, items }: Out
         </div>
 
         <div className="mx-auto mt-8 w-full max-w-[1320px] px-[var(--gutter)] sm:mt-10">
-          <div className="relative h-px w-full bg-ink/12">
+          <div ref={progressRef} className="relative h-px w-full bg-ink/12">
             <motion.div
               aria-hidden="true"
               className="absolute inset-0 origin-left bg-ink"

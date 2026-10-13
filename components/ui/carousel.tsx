@@ -57,6 +57,9 @@ function Carousel({
     dragFree: false,
     skipSnaps: false,
     slidesToScroll: 1,
+    // Ignore the adjacent slide's zero-width edge intersection while keeping
+    // real partial photo previews available to touch and keyboard users.
+    inViewThreshold: 0.01,
     ...opts,
     axis: orientation === 'horizontal' ? 'x' : 'y',
   }
@@ -97,19 +100,23 @@ function Carousel({
 
   const handleKeyDown = React.useCallback(
     (event: React.KeyboardEvent<HTMLDivElement>) => {
+      const target = event.target as HTMLElement
+      if (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName)) return
+      const previousKey = orientation === 'horizontal' ? 'ArrowLeft' : 'ArrowUp'
+      const nextKey = orientation === 'horizontal' ? 'ArrowRight' : 'ArrowDown'
+      if (event.key !== previousKey && event.key !== nextKey) return
+      event.preventDefault()
       const now = Date.now()
       if (now - keyThrottleRef.current < 250) return
-      if (event.key === 'ArrowLeft') {
-        event.preventDefault()
+      if (event.key === previousKey) {
         scrollPrev()
         keyThrottleRef.current = now
-      } else if (event.key === 'ArrowRight') {
-        event.preventDefault()
+      } else {
         scrollNext()
         keyThrottleRef.current = now
       }
     },
-    [scrollPrev, scrollNext],
+    [orientation, scrollPrev, scrollNext],
   )
 
   return (
@@ -243,13 +250,43 @@ const CarouselItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => {
-  const { orientation } = useCarousel()
+  const { api } = useCarousel()
+  const itemRef = React.useRef<HTMLDivElement | null>(null)
+  const [inView, setInView] = React.useState(true)
+
+  React.useEffect(() => {
+    if (!api) return
+    const syncVisibility = () => {
+      const node = itemRef.current
+      if (!node) return
+      const index = api.slideNodes().indexOf(node)
+      // Include partial previews: a guest can still tap the next photo.
+      const visible = api.slidesInView().includes(index)
+      if (!visible && node.contains(document.activeElement)) {
+        node.closest<HTMLElement>('[aria-roledescription="carousel"]')?.focus({ preventScroll: true })
+      }
+      setInView(visible)
+    }
+    syncVisibility()
+    api.on('slidesInView', syncVisibility)
+    api.on('reInit', syncVisibility)
+    return () => {
+      api.off('slidesInView', syncVisibility)
+      api.off('reInit', syncVisibility)
+    }
+  }, [api])
 
   return (
     <div
-      ref={ref}
+      ref={(node) => {
+        itemRef.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      }}
       role="group"
       aria-roledescription="slide"
+      aria-hidden={!inView || undefined}
+      inert={!inView}
       className={cn(
         'min-w-0 shrink-0 grow-0 basis-full carousel-slide',
         className,

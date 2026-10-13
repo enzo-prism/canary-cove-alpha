@@ -78,6 +78,10 @@ export function VideoPlayer({
     setControlsVisible(true)
     clearHideTimer()
     hideTimer.current = window.setTimeout(() => {
+      hideTimer.current = null
+      // Keyboard users must be able to inspect and operate the transport
+      // without their focused control becoming inert after 2.8 seconds.
+      if (containerRef.current?.contains(document.activeElement)) return
       setControlsVisible(false)
     }, 2800)
   }, [])
@@ -296,6 +300,9 @@ export function VideoPlayer({
       onMouseMove={pokeControls}
       onTouchStart={pokeControls}
       onFocus={pokeControls}
+      onBlur={(event) => {
+        if (!event.currentTarget.contains(event.relatedTarget)) pokeControls()
+      }}
       className={cn(
         "group/player relative select-none overflow-hidden bg-black outline-none",
         "focus-visible:ring-2 focus-visible:ring-primary/40",

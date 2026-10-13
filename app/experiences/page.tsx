@@ -146,8 +146,10 @@ function ActivityMarquee() {
   return (
     <div className="border-b border-border/80 bg-sand-light py-6 sm:py-8">
       <p className="sr-only">Activities: {ACTIVITIES.join(", ")}.</p>
-      <div aria-hidden="true">
+      <div>
         <Marquee
+          contentHidden
+          label="activities ticker"
           duration={70}
           items={ACTIVITIES.map((activity, index) => (
             <span
@@ -311,6 +313,7 @@ function AddOnChapter() {
               src="/videos/ambient/manta-loop.mp4"
               poster="/videos/ambient/manta-loop-poster.jpg"
               className="absolute inset-0"
+              showPauseControl
             />
             <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_55%,rgba(12,36,40,0.75)_100%)]" />
             <figcaption className="absolute bottom-4 left-4 flex items-center gap-2 rounded-full bg-ink/45 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.2em] text-white/85 backdrop-blur-md">
