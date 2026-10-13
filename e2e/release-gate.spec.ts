@@ -30,7 +30,9 @@ test.describe("release gate smoke coverage", () => {
 
     const redirect = await request.get(`${baseURL}/stay/main-house`, { maxRedirects: 0 })
     expect(redirect.status()).toBe(307)
-    expect(redirect.headers()["location"]).toBe("https://mainhouse.canarycove.com/")
+    // Vercel can omit the root slash in its Location header; compare the
+    // resolved destination rather than the host's serialization of it.
+    expect(new URL(redirect.headers()["location"]).href).toBe("https://mainhouse.canarycove.com/")
   })
 
   for (const route of SITE_ROUTES) {

@@ -4,13 +4,14 @@ This log records production releases that materially change guest-facing behavio
 
 ## 2026-10-13 — Responsive guest journeys, navigation, forms, and media controls
 
-- Code commit: see the `main` push following `f9a60d8` ("Fix Canary Cove navigation, forms, and responsive UX").
-- Production: `https://www.canarycove.com`; deployment evidence is recorded after the main push.
+- Code commit: `3341c5f3e331b523532c4071561c77959e1e2527` ("Fix Canary Cove navigation, forms, and responsive UX").
+- Production: `https://www.canarycove.com`. Vercel `Ready` for code deployment `dpl_HT5ZwQTwBJ4TpUuqoKPsm78dTBGw`, with matching main SHA and both canonical aliases attached.
 - Desktop dropdown Tab order, hover/click behavior, breakpoint cleanup, search opener focus, short-window search, and long smooth anchor alignment are corrected.
 - Hero copy grows with short windows. Photography, tickers, and decorative video have accessible pause controls and honor reduced motion/background visibility. Focused video controls remain available.
 - Carousels/lightboxes hide off-screen focus targets, expose phone tap arrows, and restore openers. Narrow grids, month selection, wizard progress, pagination, search controls, filters, and Main House prices remain usable at 320px; Safari media grids no longer widen the page.
 - Booking validates the Belize day, real dates, and whole adult counts; timezone-safe date reviews wrap complete details. Required choices remain selected, in-flight inputs lock, and short-window success dialogs scroll.
 - Release gate: typecheck, lint, 145 unit tests (16 files), production build, and 552 Playwright passes across Chromium/Firefox/WebKit with 30 designed skips. The 13-route audit spans widths 320–1920px and short landscape windows; synthetic forms never submit real leads.
+- Live verification: 99 browser smoke checks passed across all three engines; all 13 public routes, sitemap/robots/AI discovery, Insights script, and availability returned `200`. Apex and legacy redirects resolve correctly; reef/ambient MP4s support `206` byte ranges. Main House external destination also returned `200`. Native review confirmed photo pause, Stay navigation, and phone lightbox tap navigation.
 - Three intentional Darwin Chromium baselines were reviewed and refreshed (two home heroes and Stay gallery). Linux snapshots need their own runner refresh. Physical-device/assistive-technology acceptance and live lead delivery remain outside this emulated UX pass.
 - Audit findings and coverage: `docs/ux-audit-2026-10-13.md`; design system, QA criteria, playbook, and README updated.
 
