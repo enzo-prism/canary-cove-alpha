@@ -290,13 +290,20 @@ test.describe("expanded public responsive audit", () => {
       for (const route of PUBLIC_ROUTES) {
         await page.goto(route)
         await waitForPageReady(page)
-        for (const button of await page.getByRole("button").all()) {
-          if (!(await button.isEnabled()) || !(await button.isVisible())) continue
-          const box = await button.boundingBox()
-          if (box && (box.width < 43.9 || box.height < 43.9)) {
-            undersized.push({ viewport: viewport.width, route, name: (await button.getAttribute("aria-label")) ?? (await button.innerText()), width: box.width, height: box.height })
-          }
-        }
+        // Snapshot in one browser task. Positional role locators can shift
+        // while Embla marks an off-screen slide inert or a calendar mounts.
+        const buttons = await page.getByRole("button").evaluateAll((elements) => elements.flatMap((element) => {
+          if (!element.isConnected || element.matches(":disabled")) return []
+          if (element.closest("[aria-disabled]")?.getAttribute("aria-disabled")?.toLowerCase() === "true") return []
+          const disclosure = element.closest("details,summary")
+          if (disclosure !== element && disclosure instanceof HTMLDetailsElement && !disclosure.open) return []
+          if (getComputedStyle(element).visibility !== "visible") return []
+          const box = element.getBoundingClientRect()
+          if (box.width <= 0 || box.height <= 0) return []
+          return [{ name: element.getAttribute("aria-label") ?? (element as HTMLElement).innerText, width: box.width, height: box.height }]
+        }))
+        expect(buttons.length, `${route} has enabled phone controls`).toBeGreaterThan(0)
+        undersized.push(...buttons.filter(({ width, height }) => width < 43.9 || height < 43.9).map((button) => ({ viewport: viewport.width, route, ...button })))
       }
     }
     expect(undersized, "Every enabled public phone button must have a 44px hit box").toEqual([])

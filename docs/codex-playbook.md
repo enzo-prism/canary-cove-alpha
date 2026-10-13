@@ -360,6 +360,7 @@ pnpm test:e2e
 
 - Functional coverage runs in Chromium, Firefox, and WebKit.
 - Run one Playwright command at a time when using the shared test-results and HTML-report directories. Complete focused checks before starting the full gate.
+- Measure dynamic button collections in one synchronous `getByRole(...).evaluateAll(...)` snapshot. Awaiting positional `.all()` locators can race carousel accessibility updates. Preserve visible/enabled filtering and assert a nonempty measurement set.
 - Visual-regression snapshots are intentionally Chromium-only to avoid cross-engine baseline churn.
 - Linux and Darwin Chromium snapshot files both live in `e2e/design-visual.spec.ts-snapshots/`. Update the OS you actually ran; a Linux agent cannot refresh Darwin baselines.
 - If a visual change is intentional, update the snapshot files and mention it in the commit or PR notes.
